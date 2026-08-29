@@ -10,6 +10,35 @@
 
   var $ = function (sel) { return document.querySelector(sel); };
   var state = { result: null, name: '' };
+  var refreshDateInputs; // initForm에서 할당
+
+  /* ---------- 음력 변환 (korean-lunar-calendar · 한국천문연구원 기준) ---------- */
+
+  var lunarCal = window.KoreanLunarCalendar ? new window.KoreanLunarCalendar() : null;
+
+  function calMode() {
+    var el = document.querySelector('input[name="calendar"]:checked');
+    return el ? el.value : 'solar';
+  }
+  function lunarValid(y, m, d, leap) {
+    return !!(lunarCal && lunarCal.setLunarDate(y, m, d, !!leap));
+  }
+  function lunarLeapExists(y, m) { return lunarValid(y, m, 1, true); }
+  function lunarMonthLen(y, m, leap) { return lunarValid(y, m, 30, leap) ? 30 : 29; }
+  function lunarToSolar(y, m, d, leap) {
+    if (!lunarValid(y, m, d, leap)) return null;
+    var s = lunarCal.getSolarCalendar();
+    return { y: s.year, m: s.month, d: s.day };
+  }
+
+  function birthDateText(inp) {
+    if (state.calInfo) {
+      var ci = state.calInfo;
+      return '음력 ' + ci.ly + '년 ' + (ci.leap ? '윤' : '') + ci.lm + '월 ' + ci.ld + '일 (양력 ' +
+        ci.sy + '.' + ci.sm + '.' + ci.sd + ')';
+    }
+    return inp.year + '년 ' + inp.month + '월 ' + inp.day + '일';
+  }
 
   var EL_ORDER = ['목', '화', '토', '금', '수'];
   var EL_HAN = { '목': '木', '화': '火', '토': '土', '금': '金', '수': '水' };
@@ -84,13 +113,17 @@
       monthSel.appendChild(om);
     }
     yearSel.value = 1995; monthSel.value = 1;
-    refreshDays();
-    yearSel.addEventListener('change', refreshDays);
-    monthSel.addEventListener('change', refreshDays);
 
-    function refreshDays() {
+    refreshDateInputs = function () {
       var y = +yearSel.value, mo = +monthSel.value;
-      var max = M._internals.daysInMonth(y, mo);
+      var lunar = calMode() === 'lunar';
+      var leapBtn = $('#btn-leap');
+      var leapAvailable = lunar && lunarLeapExists(y, mo);
+      leapBtn.hidden = !leapAvailable;
+      if (!leapAvailable) leapBtn.setAttribute('aria-pressed', 'false');
+      var leapOn = leapBtn.getAttribute('aria-pressed') === 'true';
+      $('#cal-mode-label').textContent = lunar ? '(음력)' : '';
+      var max = lunar ? lunarMonthLen(y, mo, leapOn) : M._internals.daysInMonth(y, mo);
       var keep = Math.min(+daySel.value || 1, max);
       daySel.innerHTML = '';
       for (var d = 1; d <= max; d++) {
@@ -99,17 +132,22 @@
         daySel.appendChild(od);
       }
       daySel.value = keep;
-    }
+    };
+    refreshDateInputs();
+    yearSel.addEventListener('change', refreshDateInputs);
+    monthSel.addEventListener('change', refreshDateInputs);
+    document.querySelectorAll('input[name="calendar"]').forEach(function (rd) {
+      rd.addEventListener('change', refreshDateInputs);
+    });
+    $('#btn-leap').addEventListener('click', function () {
+      var on = $('#btn-leap').getAttribute('aria-pressed') === 'true';
+      $('#btn-leap').setAttribute('aria-pressed', String(!on));
+      refreshDateInputs();
+    });
 
     // 시간 모름 토글
     $('#btn-unknown-time').addEventListener('click', function () {
       setUnknownTime(!isUnknownTime());
-    });
-
-    // 음력(준비 중) 안내
-    $('#lunar-label').addEventListener('click', function (e) {
-      e.preventDefault();
-      toast('음력 입력은 준비 중이에요. 지금은 양력으로 입력해 주세요.');
     });
 
     $('#saju-form').addEventListener('submit', function (e) {
@@ -138,10 +176,23 @@
     var timeVal = $('#in-time').value || '12:00';
     var parts = timeVal.split(':');
     try {
+      var selY = +$('#in-year').value, selM = +$('#in-month').value, selD = +$('#in-day').value;
+      var calInfo = null;
+      if (calMode() === 'lunar') {
+        var leapOn = $('#btn-leap').getAttribute('aria-pressed') === 'true';
+        var conv = lunarToSolar(selY, selM, selD, leapOn);
+        if (!conv) {
+          toast('해당 음력 날짜가 존재하지 않아요. 날짜를 확인해 주세요.');
+          return;
+        }
+        calInfo = { mode: 'lunar', ly: selY, lm: selM, ld: selD, leap: leapOn, sy: conv.y, sm: conv.m, sd: conv.d };
+        selY = conv.y; selM = conv.m; selD = conv.d;
+      }
+      state.calInfo = calInfo;
       var input = {
-        year: +$('#in-year').value,
-        month: +$('#in-month').value,
-        day: +$('#in-day').value,
+        year: selY,
+        month: selM,
+        day: selD,
         hour: +parts[0],
         minute: +parts[1],
         unknownTime: unknown,
@@ -161,7 +212,7 @@
       renderToday(result);
       renderCalendar();
       saveProfile(input);
-      track('saju_compute', { unknown_time: input.unknownTime ? 1 : 0 });
+      track('saju_compute', { unknown_time: input.unknownTime ? 1 : 0, cal: calInfo ? 'lunar' : 'solar' });
       if (state.invite) {
         var partnerResult = M.compute(state.invite);
         renderGunghap(partnerResult, result);
@@ -187,7 +238,11 @@
         hour: input.hour, minute: input.minute,
         unknownTime: input.unknownTime,
         gender: input.gender,
-        applySolarTime: input.applySolarTime
+        applySolarTime: input.applySolarTime,
+        calMode: state.calInfo ? 'lunar' : 'solar',
+        lunar: state.calInfo
+          ? { y: state.calInfo.ly, m: state.calInfo.lm, d: state.calInfo.ld, leap: state.calInfo.leap }
+          : null
       }));
     } catch (e) { /* 저장 불가 환경 — 무시 */ }
     renderResumeChip();
@@ -207,11 +262,21 @@
 
   function fillFormFromProfile(p) {
     $('#in-name').value = p.name || '';
-    $('#in-year').value = p.year;
+    var lunarProf = p.calMode === 'lunar' && p.lunar;
+    var calRadio = document.querySelector('input[name="calendar"][value="' + (lunarProf ? 'lunar' : 'solar') + '"]');
+    if (calRadio) calRadio.checked = true;
+    var fy = lunarProf ? p.lunar.y : p.year;
+    var fm = lunarProf ? p.lunar.m : p.month;
+    var fd = lunarProf ? p.lunar.d : p.day;
+    $('#in-year').value = fy;
     $('#in-year').dispatchEvent(new Event('change'));
-    $('#in-month').value = p.month;
+    $('#in-month').value = fm;
     $('#in-month').dispatchEvent(new Event('change'));
-    $('#in-day').value = p.day;
+    if (lunarProf && p.lunar.leap) {
+      $('#btn-leap').setAttribute('aria-pressed', 'true');
+      if (refreshDateInputs) refreshDateInputs();
+    }
+    $('#in-day').value = fd;
     if (!p.unknownTime && p.hour !== null && p.hour !== undefined) {
       $('#in-time').value = String(p.hour).padStart(2, '0') + ':' + String(p.minute).padStart(2, '0');
     }
@@ -226,7 +291,10 @@
     var p = loadProfile();
     if (!p) { chip.hidden = true; return; }
     $('#rc-name').textContent = p.name ? p.name + ' 님' : '저장된 사주';
-    $('#rc-birth').textContent = p.year + '.' + p.month + '.' + p.day +
+    var dateStr = (p.calMode === 'lunar' && p.lunar)
+      ? '음력 ' + p.lunar.y + '.' + (p.lunar.leap ? '윤' : '') + p.lunar.m + '.' + p.lunar.d
+      : p.year + '.' + p.month + '.' + p.day;
+    $('#rc-birth').textContent = dateStr +
       (p.unknownTime ? ' · 시간 모름' : ' · ' + fmtTime(p.hour * 60 + p.minute));
     chip.hidden = false;
   }
@@ -238,11 +306,10 @@
     $('#r-name').textContent = state.name ? state.name + ' 님의 사주' : '나의 사주';
 
     var birthBits = [
-      inp.year + '년 ' + inp.month + '월 ' + inp.day + '일' +
-        (inp.unknownTime ? '' : ' ' + fmtTime(inp.hour * 60 + inp.minute)),
-      '양력',
+      birthDateText(inp) + (inp.unknownTime ? '' : ' ' + fmtTime(inp.hour * 60 + inp.minute)),
+      state.calInfo ? null : '양력',
       inp.gender === 'F' ? '여성' : '남성'
-    ];
+    ].filter(Boolean);
     if (!inp.unknownTime && r.time.solarCorrectionMin !== 0) {
       birthBits.push('보정 ' + fmtTime(r.time.corrected.minOfDay));
     }
@@ -1259,9 +1326,9 @@
       '<div class="rp-cover">' +
       '<div class="rp-overline">四柱帖 · 전체 풀이 리포트</div>' +
       '<h2>' + (state.name ? G.escapeHtml(state.name) + ' 님의 사주' : '나의 사주') + '</h2>' +
-      '<div class="rp-birth">' + inp.year + '년 ' + inp.month + '월 ' + inp.day + '일' +
+      '<div class="rp-birth">' + birthDateText(inp) +
       (inp.unknownTime ? ' (시간 모름)' : ' ' + fmtTime(inp.hour * 60 + inp.minute)) +
-      ' · 양력 · ' + (inp.gender === 'F' ? '여성' : '남성') + '</div>' +
+      (state.calInfo ? '' : ' · 양력') + ' · ' + (inp.gender === 'F' ? '여성' : '남성') + '</div>' +
       '<div class="rp-date">발행일 ' + t.y + '년 ' + t.m + '월 ' + t.d + '일 · sajucheop.com</div>' +
       '</div>' +
 

@@ -112,13 +112,16 @@
           <span class="field-label" id="lb-cal">달력</span>
           <div class="segmented" role="radiogroup" aria-labelledby="lb-cal" id="cal-group">
             <label><input type="radio" name="calendar" value="solar" checked><span class="seg-text">양력</span></label>
-            <label id="lunar-label"><input type="radio" name="calendar" value="lunar" disabled><span class="seg-text">음력</span></label>
+            <label><input type="radio" name="calendar" value="lunar"><span class="seg-text">음력</span></label>
           </div>
         </div>
       </div>
 
       <div class="field">
-        <span class="field-label">생년월일</span>
+        <div class="field-label-row">
+          <span class="field-label">생년월일 <span class="opt" id="cal-mode-label"></span></span>
+          <button type="button" id="btn-leap" class="chip-btn" aria-pressed="false" hidden>윤달</button>
+        </div>
         <div class="select-row">
           <div class="select-wrap grow">
             <select id="in-year" aria-label="출생 연도"></select>
@@ -643,6 +646,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="js/vendor-korean-lunar.js"></script>
 <script src="js/manseryeok.js"></script>
 <script src="js/interpret.js"></script>
 <script src="js/characters.js"></script>

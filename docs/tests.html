@@ -17,6 +17,7 @@
 <div id="summary">실행 중…</div>
 <div id="out"></div>
 
+<script src="js/vendor-korean-lunar.js"></script>
 <script src="js/manseryeok.js"></script>
 <script src="js/interpret.js"></script>
 <script src="js/characters.js"></script>
@@ -236,6 +237,25 @@
   check('보완 1건 (戊의 토가 丙의 빈 토를 채움)', gh3.complement.length, 1);
   check('상생+보완 점수 65 (50+10+5)', gh3.score, 65);
   check('이름 이스케이프 적용', GH.compute(fakeA, fakeB, '<x>', '나').complement[0].indexOf('&lt;x&gt;') >= 0, true);
+
+  /* ---- 15. 음력 변환 (korean-lunar-calendar · 설날/추석 앵커) ---- */
+  var KL = new window.KoreanLunarCalendar();
+  function l2s(y, m, d, leap) {
+    if (!KL.setLunarDate(y, m, d, !!leap)) return null;
+    var s = KL.getSolarCalendar();
+    return s.year + '-' + s.month + '-' + s.day;
+  }
+  check('설날 2026 (음 1.1) = 2026-2-17', l2s(2026, 1, 1), '2026-2-17');
+  check('설날 2025 (음 1.1) = 2025-1-29', l2s(2025, 1, 1), '2025-1-29');
+  check('설날 1993 (음 1.1) = 1993-1-23', l2s(1993, 1, 1), '1993-1-23');
+  check('추석 2024 (음 8.15) = 2024-9-17', l2s(2024, 8, 15), '2024-9-17');
+  check('2025년 윤6월 존재', KL.setLunarDate(2025, 6, 1, true), true);
+  check('2025년 윤5월 없음', KL.setLunarDate(2025, 5, 1, true), false);
+  check('없는 날짜 거부 (음 2026.1.31)', KL.setLunarDate(2026, 1, 31, false), false);
+  // 왕복: 양력 → 음력 → 양력
+  KL.setSolarDate(2000, 6, 15);
+  var lc = KL.getLunarCalendar();
+  check('왕복 변환 (2000-06-15)', l2s(lc.year, lc.month, lc.day, lc.intercalation), '2000-6-15');
 
   document.getElementById('summary').textContent =
     '결과: ' + passCount + ' PASS / ' + failCount + ' FAIL';
