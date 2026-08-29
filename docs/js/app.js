@@ -1264,6 +1264,106 @@
       t.m + '월 ' + t.d + '일 ' + WEEKDAYS[t.w];
   }
 
+  /* ---------- 출산 택일 (베타) ---------- */
+
+  var WD = ['일', '월', '화', '수', '목', '금', '토'];
+
+  function initTaegil() {
+    var ySel = $('#tg-year'), mSel = $('#tg-month'), dSel = $('#tg-day');
+    var now = new Date();
+    for (var y = now.getFullYear(); y <= now.getFullYear() + 1; y++) {
+      var oy = document.createElement('option');
+      oy.value = y; oy.textContent = y + '년';
+      ySel.appendChild(oy);
+    }
+    for (var m = 1; m <= 12; m++) {
+      var om = document.createElement('option');
+      om.value = m; om.textContent = m + '월';
+      mSel.appendChild(om);
+    }
+    function refreshTgDays() {
+      var max = M._internals.daysInMonth(+ySel.value, +mSel.value);
+      var keep = Math.min(+dSel.value || 1, max);
+      dSel.innerHTML = '';
+      for (var d = 1; d <= max; d++) {
+        var od = document.createElement('option');
+        od.value = d; od.textContent = d + '일';
+        dSel.appendChild(od);
+      }
+      dSel.value = keep;
+    }
+    // 기본값: 두 달 뒤
+    var def = M._internals.civilFromDays(M._internals.daysFromCivil(now.getFullYear(), now.getMonth() + 1, now.getDate()) + 60);
+    ySel.value = def.y; mSel.value = def.m;
+    refreshTgDays();
+    dSel.value = def.d;
+    ySel.addEventListener('change', refreshTgDays);
+    mSel.addEventListener('change', refreshTgDays);
+    $('#btn-taegil-scan').addEventListener('click', runTaegilScan);
+  }
+
+  function runTaegilScan() {
+    var label = $('#tg-scan-label');
+    label.textContent = '아기 명식을 계산하는 중…';
+    track('taegil_scan', { range: +$('#tg-range').value });
+    setTimeout(function () {
+      try {
+        var gender = (document.querySelector('input[name="gender"]:checked') || { value: 'F' }).value;
+        var list = window.Taegil.scanDates(+$('#tg-year').value, +$('#tg-month').value, +$('#tg-day').value,
+          +$('#tg-range').value, gender);
+        var top = list.slice(0, 5);
+        $('#tg-results').innerHTML = top.map(function (c, i) {
+          var g = M.ganjiName(c.dayPillar.stem, c.dayPillar.branch);
+          var dow = WD[new Date(c.y, c.m - 1, c.d).getDay()];
+          var hours = c.bestHours.map(function (h, hi) {
+            var hg = M.ganjiName(h.hourGanji.stem, h.hourGanji.branch);
+            return '<div class="tg-hour"><span class="th-rank">' + (hi + 1) + '순위</span>' +
+              '<span class="th-label">' + h.label + '</span>' +
+              '<span class="th-ganji">' + hg.kor + '시</span>' +
+              '<span class="th-score">' + h.score + '점</span></div>';
+          }).join('');
+          return '<div class="tg-card">' +
+            '<div class="tg-head">' +
+            '<span class="tg-rank">' + (i + 1) + '</span>' +
+            '<span class="tg-date">' + c.m + '월 ' + c.d + '일 (' + dow + ')</span>' +
+            '<span class="tg-ganji">' + g.kor + '(' + g.han + ')일</span>' +
+            '<span class="tg-score">' + c.score + '<small>점</small></span>' +
+            '</div>' +
+            '<div class="pill-row" style="margin-top: 10px;">' +
+            c.reasons.slice(0, 3).map(function (rs) { return '<span class="pill">' + rs + '</span>'; }).join('') +
+            '</div>' +
+            (c.cautions.length ? '<div class="tg-caution">유의 — ' + c.cautions.join(' · ') + '</div>' : '') +
+            '<div class="tg-hours">' + hours + '</div>' +
+            '<button type="button" class="btn-outline tg-preview" style="height: 44px; margin-top: 12px; font-size: 13.5px;" ' +
+            'data-y="' + c.y + '" data-m="' + c.m + '" data-d="' + c.d + '" data-h="' + c.bestHours[0].repHour + '">' +
+            '이 날짜·시간의 아기 사주 미리 보기</button>' +
+            '</div>';
+        }).join('') +
+        '<p class="form-microcopy" style="margin: 16px 20px 0;">점수는 오행 균형·충 유무·강약 등을 지수화한 참고 값입니다. 후보 ' + list.length + '일 중 상위 5일을 보여드려요.</p>';
+
+        $('#tg-results').querySelectorAll('.tg-preview').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var solarRadio = document.querySelector('input[name="calendar"][value="solar"]');
+            if (solarRadio) solarRadio.checked = true;
+            $('#in-year').value = btn.getAttribute('data-y');
+            $('#in-year').dispatchEvent(new Event('change'));
+            $('#in-month').value = btn.getAttribute('data-m');
+            $('#in-month').dispatchEvent(new Event('change'));
+            $('#in-day').value = btn.getAttribute('data-d');
+            $('#in-time').value = String(btn.getAttribute('data-h')).padStart(2, '0') + ':00';
+            setUnknownTime(false);
+            $('#in-name').value = '';
+            runCompute();
+          });
+        });
+      } catch (e) {
+        toast('계산 중 문제가 생겼어요. 다시 시도해 주세요.');
+        if (window.console) console.error(e);
+      }
+      label.textContent = '좋은 날 찾기';
+    }, 30);
+  }
+
   /* ---------- 전체 풀이 리포트 (무료 v1 · 인쇄/PDF) ---------- */
 
   function renderReport() {
@@ -1444,6 +1544,12 @@
     $('#btn-share-today').addEventListener('click', shareToday);
     $('#btn-share-today2').addEventListener('click', shareToday);
     $('#btn-to-calendar').addEventListener('click', function () { showView('calendar'); });
+    $('#btn-to-taegil').addEventListener('click', function () { showView('taegil'); });
+    $('#menu-taegil').addEventListener('click', function (e) {
+      e.preventDefault();
+      $('#site-menu').hidden = true;
+      showView('taegil');
+    });
     $('#btn-to-character').addEventListener('click', function () { showView('character'); });
     $('#btn-char-to-today').addEventListener('click', function () { showView('today'); });
     $('#btn-save-card').addEventListener('click', saveCharacterCard);
@@ -1505,6 +1611,7 @@
   }
 
   initForm();
+  initTaegil();
   initEvents();
   renderHomeToday();
   var savedProfile = loadProfile();
@@ -1512,7 +1619,7 @@
   renderResumeChip();
   state.invite = parseInviteFromHash();
   if (state.invite) showInviteBanner();
-  showView('home');
+  showView(location.hash === '#taegil' ? 'taegil' : 'home');
 
   /* 디버그·검증용 최소 노출 */
   window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser };

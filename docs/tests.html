@@ -22,6 +22,7 @@
 <script src="js/interpret.js"></script>
 <script src="js/characters.js"></script>
 <script src="js/gunghap.js"></script>
+<script src="js/taegil.js"></script>
 <script>
 (function () {
   var M = window.Manseryeok, X = M._internals;
@@ -256,6 +257,23 @@
   KL.setSolarDate(2000, 6, 15);
   var lc = KL.getLunarCalendar();
   check('왕복 변환 (2000-06-15)', l2s(lc.year, lc.month, lc.day, lc.intercalation), '2000-6-15');
+
+  /* ---- 16. 출산 택일 ---- */
+  var TG = window.Taegil;
+  var tgScore = TG.scoreResult(r);
+  check('택일 채점: 점수 범위 5~99', tgScore.score >= 5 && tgScore.score <= 99, true);
+  check('택일 채점: 근거·유의 배열 반환', Array.isArray(tgScore.reasons) && Array.isArray(tgScore.cautions), true);
+  var scan1 = TG.scanDates(2026, 10, 15, 3, 'F');
+  check('택일 스캔: ±3일 → 후보 7일', scan1.length, 7);
+  check('택일 스캔: 종합 점수 내림차순 정렬', scan1.every(function (c, i) {
+    return i === 0 || scan1[i - 1].combined >= c.combined;
+  }), true);
+  check('택일 스캔: 각 후보에 추천 시간대 2개 (주간 시진)', scan1.every(function (c) {
+    return c.bestHours.length === 2 && c.bestHours.every(function (h) { return h.slot >= 4 && h.slot <= 9; });
+  }), true);
+  var scan2 = TG.scanDates(2026, 10, 15, 3, 'F');
+  check('택일 스캔: 결정론적 (같은 입력 = 같은 결과)', scan1[0].combined === scan2[0].combined &&
+    scan1[0].y === scan2[0].y && scan1[0].d === scan2[0].d, true);
 
   document.getElementById('summary').textContent =
     '결과: ' + passCount + ' PASS / ' + failCount + ' FAIL';

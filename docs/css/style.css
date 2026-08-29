@@ -1009,6 +1009,58 @@ a.btn-primary { text-decoration: none; }
 .guide-grid .guide-card h2 { font-size: 14.5px; margin-top: 4px; }
 .guide-grid .guide-card p { font-size: 12px; margin-top: 5px; }
 
+/* ---------- 출산 택일 ---------- */
+
+.tg-card {
+  margin: 16px 20px 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+}
+.tg-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.tg-rank {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--seal);
+  border: 1px solid rgba(184, 56, 45, 0.35);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  align-self: center;
+}
+.tg-date { font-family: var(--serif); font-size: 17px; font-weight: 600; }
+.tg-ganji { font-size: 12px; color: var(--faint); }
+.tg-score { margin-left: auto; font-family: var(--serif); font-size: 23px; font-weight: 600; }
+.tg-score small { font-size: 12px; color: var(--muted); font-weight: 400; }
+.tg-caution { margin-top: 10px; font-size: 12px; color: #7A2A21; }
+.tg-hours {
+  margin-top: 12px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 4px;
+}
+.tg-hour {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 0 0;
+  font-size: 13px;
+}
+.tg-hour .th-rank {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--seal);
+  flex: none;
+}
+.tg-hour .th-label { color: var(--ink-body); }
+.tg-hour .th-ganji { color: var(--faint); font-size: 12px; }
+.tg-hour .th-score { margin-left: auto; font-weight: 700; }
+
 /* ---------- ICS 도움말 ---------- */
 
 .ics-help {
