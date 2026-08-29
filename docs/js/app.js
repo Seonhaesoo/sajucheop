@@ -206,14 +206,15 @@
       state.calCache = {};
       var t = todayDateParts();
       state.calendar = { y: t.y, m: t.m, selected: t.d, purpose: null };
+      if (!state.quietCompute) saveProfile(input);
       renderResult(result);
       renderCharacter(result);
       renderDaeun(result);
       renderToday(result);
       renderCalendar();
-      saveProfile(input);
+      updateBookAddButton();
       track('saju_compute', { unknown_time: input.unknownTime ? 1 : 0, cal: calInfo ? 'lunar' : 'solar' });
-      if (state.invite) {
+      if (state.invite && !state.quietCompute) {
         var partnerResult = M.compute(state.invite);
         renderGunghap(partnerResult, result);
         state.gunghapUrl = location.origin + location.pathname + '#g=' +
@@ -292,7 +293,8 @@
   function renderResumeChip() {
     var chip = $('#resume-chip');
     var p = loadProfile();
-    if (!p) { chip.hidden = true; return; }
+    /* 명식첩이 있으면 첩이 이어보기 역할까지 대신함 */
+    if (!p || loadBook().length) { chip.hidden = true; return; }
     $('#rc-name').textContent = p.name ? p.name + ' 님' : '저장된 사주';
     var dateStr = (p.calMode === 'lunar' && p.lunar)
       ? '음력 ' + p.lunar.y + '.' + (p.lunar.leap ? '윤' : '') + p.lunar.m + '.' + p.lunar.d
@@ -300,6 +302,156 @@
     $('#rc-birth').textContent = dateStr +
       (p.unknownTime ? ' · 시간 모름' : ' · ' + fmtTime(p.hour * 60 + p.minute));
     chip.hidden = false;
+  }
+
+  /* ---------- 명식첩 (여러 명식 보관 · 이 기기에만) ---------- */
+
+  var BOOK_KEY = 'sajucheop.book.v1';
+  var BOOK_MAX = 10;
+
+  function loadBook() {
+    try {
+      var raw = localStorage.getItem(BOOK_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+
+  function saveBookList(list) {
+    try { localStorage.setItem(BOOK_KEY, JSON.stringify(list)); } catch (e) { /* 무시 */ }
+  }
+
+  function bookKeyOf(p) {
+    return [p.year, p.month, p.day, p.unknownTime ? 'u' : p.hour + ':' + p.minute, p.gender].join('-');
+  }
+
+  /* 현재 계산된 사람을 저장용 형태로 */
+  function currentProfileSnapshot() {
+    var input = state.lastInput;
+    if (!input) return null;
+    return {
+      id: 'b' + new Date().getTime(),
+      name: state.name || '',
+      year: input.year, month: input.month, day: input.day,
+      hour: input.hour, minute: input.minute,
+      unknownTime: input.unknownTime,
+      gender: input.gender,
+      applySolarTime: input.applySolarTime,
+      calMode: state.calInfo ? 'lunar' : 'solar',
+      lunar: state.calInfo
+        ? { y: state.calInfo.ly, m: state.calInfo.lm, d: state.calInfo.ld, leap: state.calInfo.leap }
+        : null
+    };
+  }
+
+  function bookIndexOf(list, p) {
+    var k = bookKeyOf(p);
+    for (var i = 0; i < list.length; i++) if (bookKeyOf(list[i]) === k) return i;
+    return -1;
+  }
+
+  /* 첩의 '나' 장 — 첫 저장 인물. 이후 폼으로 다른 사람을 계산해도 나의 기준점 유지 */
+  function bookSelf() {
+    return loadBook().filter(function (b) { return b.self; })[0] || null;
+  }
+
+  function addToBook() {
+    var snap = currentProfileSnapshot();
+    if (!snap) { toast('먼저 사주를 계산해 주세요.'); return; }
+    var list = loadBook();
+    var idx = bookIndexOf(list, snap);
+    if (idx >= 0) {
+      if (snap.name) { list[idx].name = snap.name; saveBookList(list); }
+      toast('이미 첩에 있는 명식이에요.');
+    } else {
+      if (list.length >= BOOK_MAX) {
+        toast('첩이 가득 찼어요 (최대 ' + BOOK_MAX + '명). 홈에서 하나 빼고 다시 끼워주세요.');
+        return;
+      }
+      if (!list.length) snap.self = true;
+      list.push(snap);
+      saveBookList(list);
+      track('book_add', { count: list.length });
+      toast((snap.name ? snap.name + ' 님을' : '이 명식을') + ' 첩에 끼웠어요. 홈에서 오늘 흐름을 한눈에 봐요.');
+    }
+    renderBook();
+    updateBookAddButton();
+  }
+
+  function removeFromBook(id) {
+    saveBookList(loadBook().filter(function (b) { return b.id !== id; }));
+    renderBook();
+    updateBookAddButton();
+    renderResumeChip();
+    toast('첩에서 뺐어요.');
+  }
+
+  function updateBookAddButton() {
+    var btn = $('#btn-book-add');
+    if (!btn) return;
+    var snap = currentProfileSnapshot();
+    var inBook = snap && bookIndexOf(loadBook(), snap) >= 0;
+    btn.textContent = inBook ? '명식첩에 있어요 ✓' : '이 명식, 첩에 끼워두기';
+    btn.disabled = !!inBook;
+  }
+
+  function renderBook() {
+    var sec = $('#book-section'), wrap = $('#book-cards');
+    if (!sec || !wrap) return;
+    var list = loadBook();
+    if (!list.length) { sec.hidden = true; return; }
+    var t = todayDateParts();
+    wrap.innerHTML = list.map(function (b) {
+      try {
+        var res = M.compute(b);
+        var info = M.todayInfo(res, t.y, t.m, t.d);
+        var score = I.scoreDay(res, info);
+        var st = M.STEMS[res.pillars.day.stem];
+        var rel = info.relation === '충' ? ' · 충 조심'
+          : (info.relation === '육합' || info.relation === '삼합' ? ' · 합이 드는 날' : '');
+        var line = info.stemSipseong + josa(info.stemSipseong, '이', '가') + ' 드는 날' + rel;
+        return '<div class="book-card" data-id="' + b.id + '" role="button" tabindex="0">' +
+          '<span class="bc-emblem">' + C.emblemSvg(st.han, 30, 'light') + '</span>' +
+          '<span class="bc-main"><b>' + G.escapeHtml(b.name || (b.year + '년생')) +
+          (b.self ? '<i class="bc-me">나</i>' : '') + '</b>' +
+          '<span class="bc-line">' + line + '</span></span>' +
+          '<b class="bc-score">' + score + '</b>' +
+          '<button type="button" class="bc-del" data-del="' + b.id + '" aria-label="첩에서 빼기">' +
+          '<svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="#9A8F7E" stroke-width="1.5" stroke-linecap="round"></path></svg>' +
+          '</button></div>';
+      } catch (e) { return ''; }
+    }).join('');
+    sec.hidden = false;
+    wrap.querySelectorAll('.book-card').forEach(function (card) {
+      card.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el !== card) {
+          if (el.classList && el.classList.contains('bc-del')) return;
+          el = el.parentNode;
+        }
+        var id = card.getAttribute('data-id');
+        var b = loadBook().filter(function (x) { return x.id === id; })[0];
+        if (b) openBookEntry(b);
+      });
+    });
+    wrap.querySelectorAll('.bc-del').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        removeFromBook(btn.getAttribute('data-del'));
+      });
+    });
+  }
+
+  function openBookEntry(b) {
+    track('book_open');
+    var my = bookSelf() || loadProfile();
+    fillFormFromProfile(b);
+    state.quietCompute = true;
+    runCompute();
+    state.quietCompute = false;
+    /* 입력 폼은 항상 내 정보로 되돌림 */
+    if (my) fillFormFromProfile(my);
+    if (state.result) showView('today');
   }
 
   /* ---------- 결과 렌더 ---------- */
@@ -641,6 +793,46 @@
       ? '음과 양이 만나 서로 다른 결이 하나로 완성됩니다.'
       : '같은 극성끼리라 익숙하고 편안한 결입니다.');
     $('#gh-complement').innerHTML = compLines;
+
+    state.gunghapPair = { a: partnerResult, b: myResult };
+    renderPairDays();
+  }
+
+  /* 둘 다 좋은 날 — 앞으로 30일 중 두 사람 모두 흐름이 좋고 충이 없는 날 */
+  function renderPairDays() {
+    var wrap = $('#pair-days');
+    var pr = state.gunghapPair;
+    if (!wrap || !pr) return;
+    var t = todayDateParts();
+    var dn0 = M._internals.daysFromCivil(t.y, t.m, t.d);
+    var out = [];
+    for (var i = 0; i < 30; i++) {
+      var cv = M._internals.civilFromDays(dn0 + i);
+      var ia = M.todayInfo(pr.a, cv.y, cv.m, cv.d);
+      var ib = M.todayInfo(pr.b, cv.y, cv.m, cv.d);
+      if (ia.relation === '충' || ib.relation === '충') continue;
+      var sa = I.scoreDay(pr.a, ia), sb = I.scoreDay(pr.b, ib);
+      if (sa < 60 || sb < 60) continue;
+      var hap = (ia.relation === '육합' || ia.relation === '삼합' || ib.relation === '육합' || ib.relation === '삼합');
+      out.push({ y: cv.y, m: cv.m, d: cv.d, avg: Math.round((sa + sb) / 2), pillar: ia.pillar, note: hap ? '합이 드는 날' : '' });
+    }
+    out.sort(function (a, b) { return b.avg - a.avg; });
+    var top = out.slice(0, 5).sort(function (a, b) {
+      return (a.y * 10000 + a.m * 100 + a.d) - (b.y * 10000 + b.m * 100 + b.d);
+    });
+    wrap.innerHTML = top.length
+      ? top.map(function (p) {
+          var g = M.ganjiName(p.pillar.stem, p.pillar.branch);
+          var dow = WD[new Date(p.y, p.m - 1, p.d).getDay()];
+          return '<div class="purpose-day-row">' +
+            '<span class="pd-date">' + p.m + '월 ' + p.d + '일 (' + dow + ')</span>' +
+            '<span class="pd-main"><span class="pd-reason">' + g.kor + '일 · 두 사람 평균 ' + p.avg + '점' +
+            (p.note ? ' — ' + p.note : '') + '</span>' +
+            gcalLink(p.y, p.m, p.d, '둘 다 좋은 날 · ' + g.kor + '일',
+              '두 사람 평균 ' + p.avg + '점 — 사주첩 sajucheop.com', '+ 구글 캘린더') +
+            '</span></div>';
+        }).join('')
+      : '<p class="purpose-empty">앞으로 30일 안엔 둘 다 트이는 날이 드물어요. 다음 달에 다시 확인해 주세요.</p>';
   }
 
   function makeGunghapLink() {
@@ -1056,6 +1248,138 @@
     }).join('');
     $('#t-hour-note').textContent = '힘이 붙는 시간은 ' + flow.best.branch.kor + '시(' + flow.best.label +
       '), 한 템포 쉴 시간은 ' + flow.worst.branch.kor + '시(' + flow.worst.label + ')예요.';
+
+    renderJournal();
+  }
+
+  /* ---------- 적중 기록 (운세 검증 · 이 기기에만) ---------- */
+
+  var JOURNAL_KEY = 'sajucheop.journal.v1';
+
+  function loadJournal() {
+    try {
+      var raw = localStorage.getItem(JOURNAL_KEY);
+      var o = raw ? JSON.parse(raw) : {};
+      return o && typeof o === 'object' ? o : {};
+    } catch (e) { return {}; }
+  }
+
+  function saveJournal(j) {
+    try { localStorage.setItem(JOURNAL_KEY, JSON.stringify(j)); } catch (e) { /* 무시 */ }
+  }
+
+  function journalDateKey(y, m, d) {
+    return y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+  }
+
+  /* 적중 기록은 '내 사주'를 볼 때만 — 첩의 다른 사람 화면에선 숨김 */
+  function journalIsMine() {
+    if (!state.lastInput) return true;
+    var self = bookSelf();
+    if (self) return bookKeyOf(self) === bookKeyOf(state.lastInput);
+    var my = loadProfile();
+    if (!my) return true;
+    return bookKeyOf(my) === bookKeyOf(state.lastInput);
+  }
+
+  function journalStats() {
+    var j = loadJournal();
+    var keys = Object.keys(j);
+    var n = keys.length;
+    if (!n) return { n: 0 };
+    var hit = 0, bySip = {};
+    keys.forEach(function (k) {
+      var e = j[k];
+      if (e.v === 1) hit += 1;
+      else if (e.v === 0) hit += 0.5;
+      if (e.sip) {
+        bySip[e.sip] = bySip[e.sip] || { n: 0, hit: 0 };
+        bySip[e.sip].n++;
+        if (e.v === 1) bySip[e.sip].hit++;
+      }
+    });
+    var t = todayDateParts();
+    var dn = M._internals.daysFromCivil(t.y, t.m, t.d);
+    if (!j[journalDateKey(t.y, t.m, t.d)]) dn -= 1;
+    var streak = 0;
+    for (;;) {
+      var cv = M._internals.civilFromDays(dn - streak);
+      if (j[journalDateKey(cv.y, cv.m, cv.d)]) streak++;
+      else break;
+    }
+    var best = null;
+    Object.keys(bySip).forEach(function (s) {
+      var e = bySip[s];
+      if (e.n >= 3) {
+        var rate = e.hit / e.n;
+        if (!best || rate > best.rate) best = { sip: s, rate: rate, n: e.n, hit: e.hit };
+      }
+    });
+    return { n: n, rate: Math.round(hit / n * 100), streak: streak, best: best };
+  }
+
+  function renderJournal() {
+    var card = $('#journal-card');
+    if (!card) return;
+    if (!journalIsMine()) { card.hidden = true; return; }
+    card.hidden = false;
+    var t = todayDateParts();
+    var today = loadJournal()[journalDateKey(t.y, t.m, t.d)];
+    card.querySelectorAll('.jr-btn').forEach(function (b) {
+      b.classList.toggle('selected', !!today && String(today.v) === b.getAttribute('data-jr'));
+    });
+    $('#jr-hint').textContent = today
+      ? '오늘 기록 완료 — 내일 밤에 또 만나요. (다시 누르면 취소)'
+      : '하루를 마치며, 오늘 흐름' + (state.todayFortune ? '(' + state.todayFortune.score + '점)' : '') +
+        '이 실제 하루와 맞았는지 눌러보세요.';
+    var s = journalStats();
+    var stats = $('#jr-stats');
+    if (s.n >= 1) {
+      stats.innerHTML =
+        '<span class="jr-num"><b>' + s.n + '</b>일 기록</span>' +
+        '<span class="jr-num">적중률 <b>' + s.rate + '%</b></span>' +
+        (s.streak >= 2 ? '<span class="jr-num">연속 <b>' + s.streak + '</b>일</span>' : '') +
+        (s.best ? '<p class="jr-best">나에게 유난히 잘 맞는 날 — <b>' + s.best.sip + '</b> 드는 날 (' +
+          s.best.hit + '/' + s.best.n + ' 적중)</p>' : '') +
+        (s.n >= 7 ? '<button type="button" class="btn-outline jr-share" id="btn-jr-share">내 적중률 공유하기</button>' : '');
+      stats.hidden = false;
+      var shareBtn = $('#btn-jr-share');
+      if (shareBtn) shareBtn.addEventListener('click', shareJournal);
+    } else {
+      stats.hidden = true;
+    }
+  }
+
+  function markJournal(v) {
+    if (!state.todayFortune || !state.todayInfo) return;
+    var t = todayDateParts();
+    var j = loadJournal();
+    var key = journalDateKey(t.y, t.m, t.d);
+    var same = j[key] && j[key].v === v;
+    if (same) {
+      delete j[key];
+    } else {
+      j[key] = { v: v, s: state.todayFortune.score, sip: state.todayInfo.stemSipseong };
+      track('journal_mark', { v: v });
+    }
+    saveJournal(j);
+    renderJournal();
+    if (!same) {
+      toast(v === 1 ? '기록했어요. 쌓일수록 나만의 패턴이 보여요.'
+        : (v === 0 ? '반반도 소중한 기록이에요.' : '안 맞은 날도 기록하면, 어떤 날 조심할지 보이기 시작해요.'));
+    }
+  }
+
+  function shareJournal() {
+    var s = journalStats();
+    if (!s.n) return;
+    track('journal_share');
+    var text = '나는 운세를 믿는 대신 기록해봤다 — ' + s.n + '일 기록, 적중률 ' + s.rate + '% · 사주첩 sajucheop.com';
+    if (navigator.share) {
+      navigator.share({ title: '사주첩 — 적중 기록', text: text }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () { toast('기록을 복사했어요.'); });
+    }
   }
 
   /* ---------- 운세 캘린더 ---------- */
@@ -2016,6 +2340,10 @@
     $('#btn-char-to-today').addEventListener('click', function () { showView('today'); });
     $('#btn-save-card').addEventListener('click', saveCharacterCard);
     $('#btn-share-card').addEventListener('click', shareCharacterCard);
+    $('#btn-book-add').addEventListener('click', addToBook);
+    document.querySelectorAll('#jr-btns .jr-btn').forEach(function (b) {
+      b.addEventListener('click', function () { markJournal(+b.getAttribute('data-jr')); });
+    });
     $('#btn-make-gunghap').addEventListener('click', makeGunghapLink);
     $('#btn-make-gunghap2').addEventListener('click', makeGunghapLink);
     $('#btn-make-gunghap3').addEventListener('click', makeGunghapLink);
@@ -2093,8 +2421,19 @@
   initTaegil();
   initEvents();
   renderHomeToday();
-  var savedProfile = loadProfile();
+  /* 입력 폼 자동 채움 — 첩의 '나' 장 우선, 없으면 마지막 계산 프로필 */
+  var savedProfile = bookSelf() || loadProfile();
   if (savedProfile) fillFormFromProfile(savedProfile);
+  /* 명식첩 시드: 예전 단일 프로필이 있으면 첫 장으로 옮겨 끼움 */
+  if (savedProfile && !loadBook().length) {
+    try {
+      var seed = JSON.parse(JSON.stringify(savedProfile));
+      seed.id = 'b' + new Date().getTime();
+      seed.self = true;
+      saveBookList([seed]);
+    } catch (e) { /* 무시 */ }
+  }
+  renderBook();
   renderResumeChip();
   var pairData = parsePairFromHash();
   if (pairData) {

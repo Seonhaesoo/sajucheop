@@ -1036,6 +1036,131 @@ a.btn-primary { text-decoration: none; }
 
 /* ---------- 출산 택일 ---------- */
 
+.btn-outline[disabled] { opacity: .55; cursor: default; }
+
+/* 명식첩 — 홈 보드 */
+.book-strip { margin: 18px 20px 0; }
+.bk-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0 2px 10px;
+}
+.bk-head b {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+.bk-note { font-size: 11px; color: var(--faint); }
+.book-card {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: #FFFDF9;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 10px 12px 14px;
+  cursor: pointer;
+}
+.book-card + .book-card { margin-top: 8px; }
+.book-card:active { background: #F6F0E4; }
+.bc-emblem { flex: none; width: 30px; height: 30px; }
+.bc-emblem svg { display: block; }
+.bc-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.bc-main b { font-size: 14px; }
+.bc-line {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bc-me {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--seal);
+  color: #F6F1E8;
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+.bc-score {
+  flex: none;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--seal);
+}
+.bc-del {
+  flex: none;
+  background: none;
+  border: 0;
+  padding: 8px;
+  cursor: pointer;
+  line-height: 0;
+}
+
+/* 적중 기록 */
+.jr-hint {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.jr-btns { display: flex; gap: 8px; margin-top: 12px; }
+.jr-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 0 8px;
+  background: #FFFDF9;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 18px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.jr-btn small {
+  font-size: 11px;
+  font-family: 'Noto Sans KR', sans-serif;
+  color: var(--muted);
+}
+.jr-btn.selected {
+  background: var(--ink);
+  color: #F6F1E8;
+  border-color: var(--ink);
+}
+.jr-btn.selected small { color: #CFC5B4; }
+.jr-stats {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+}
+.jr-num { font-size: 12.5px; color: var(--muted); }
+.jr-num b {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
+  color: var(--ink);
+}
+.jr-best { width: 100%; margin: 2px 0 0; font-size: 12.5px; color: var(--ink-body); line-height: 1.6; }
+.jr-share { width: 100%; height: 42px; font-size: 13px; margin-top: 4px; }
+
 /* 구글 캘린더 바로 추가 링크 */
 .gcal-link {
   display: inline-flex;
