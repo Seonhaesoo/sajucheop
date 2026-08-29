@@ -1257,6 +1257,84 @@
     }
   }
 
+  /* 오늘 카드 (스토리 1080×1920) */
+  function buildTodayCard() {
+    var r = state.result, info = state.todayInfo, f = state.todayFortune, t = state.todayDate;
+    var fonts = ['600 300px ' + SERIF_STACK, '600 60px ' + SERIF_STACK, '600 48px ' + SERIF_STACK,
+      '400 36px ' + SANS_STACK, '700 32px ' + SANS_STACK];
+    return Promise.all(fonts.map(function (ff) {
+      return document.fonts.load(ff, '사주첩四柱乙亥');
+    })).catch(function () {}).then(function () {
+      var cv = document.createElement('canvas');
+      cv.width = 1080; cv.height = 1920;
+      var ctx = cv.getContext('2d');
+      ctx.fillStyle = '#F6F1E8'; ctx.fillRect(0, 0, 1080, 1920);
+      ctx.strokeStyle = '#211C15'; ctx.lineWidth = 4; ctx.strokeRect(36, 36, 1008, 1848);
+      ctx.strokeStyle = '#D8CDB9'; ctx.lineWidth = 1.5; ctx.strokeRect(56, 56, 968, 1808);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#B8382D';
+      rr(ctx, 498, 110, 84, 84, 14); ctx.fill();
+      ctx.fillStyle = '#F6F1E8';
+      ctx.font = '600 30px ' + SERIF_STACK;
+      ctx.fillText('四', 540, 148); ctx.fillText('柱', 540, 184);
+      ctx.fillStyle = '#B8382D';
+      ctx.font = '700 32px ' + SANS_STACK;
+      try { ctx.letterSpacing = '8px'; } catch (e) { /* 무시 */ }
+      ctx.fillText('오늘의 운세', 544, 268);
+      try { ctx.letterSpacing = '0px'; } catch (e) { /* 무시 */ }
+      ctx.fillStyle = '#6E6455';
+      ctx.font = '400 36px ' + SANS_STACK;
+      ctx.fillText(t.y + '년 ' + t.m + '월 ' + t.d + '일 ' + WEEKDAYS[t.w], 540, 330);
+
+      var st = M.STEMS[info.pillar.stem], br = M.BRANCHES[info.pillar.branch];
+      ctx.font = '600 300px ' + SERIF_STACK;
+      ctx.fillStyle = CARD_EL_COLOR[st.el];
+      ctx.fillText(st.han, 540, 680);
+      ctx.fillStyle = CARD_EL_COLOR[br.el];
+      ctx.fillText(br.han, 540, 1010);
+      ctx.fillStyle = '#6E6455';
+      ctx.font = '600 48px ' + SERIF_STACK;
+      ctx.fillText(M.ganjiName(info.pillar.stem, info.pillar.branch).kor + '일', 540, 1105);
+
+      ctx.strokeStyle = '#D8CDB9'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(200, 1180); ctx.lineTo(880, 1180); ctx.stroke();
+
+      ctx.fillStyle = '#211C15';
+      ctx.font = '600 60px ' + SERIF_STACK;
+      ctx.fillText(f.score + '점 · ' + f.weather, 540, 1290);
+      ctx.fillStyle = '#40372B';
+      ctx.font = '600 48px ' + SERIF_STACK;
+      ctx.fillText('「 ' + f.theme.title + ' 」', 540, 1380);
+      var me = M.STEMS[r.pillars.day.stem];
+      ctx.fillStyle = '#6E6455';
+      ctx.font = '400 36px ' + SANS_STACK;
+      ctx.fillText(me.kor + me.el + ' 일간에게 ' + info.stemSipseong + josa(info.stemSipseong, '이', '가') + ' 드는 날', 540, 1455);
+      ctx.fillStyle = '#9A8F7E';
+      ctx.fillText('행운색 ' + f.lucky.color + ' · 방위 ' + f.lucky.dir + ' · 숫자 ' + f.lucky.number, 540, 1520);
+
+      ctx.strokeStyle = '#D8CDB9';
+      ctx.beginPath(); ctx.moveTo(240, 1750); ctx.lineTo(840, 1750); ctx.stroke();
+      ctx.fillStyle = '#9A8F7E';
+      ctx.font = '400 30px ' + SANS_STACK;
+      ctx.fillText('@sajucheop · 내 운세는 sajucheop.com', 540, 1805);
+      return cv;
+    });
+  }
+
+  function saveTodayCard() {
+    if (!state.todayFortune) return;
+    toast('오늘 카드를 그리는 중이에요…');
+    buildTodayCard().then(function (cv) {
+      cv.toBlob(function (blob) {
+        var mode = deliverFile(blob, '사주첩-오늘운세.png', '사주첩 — 오늘의 운세');
+        track('save_today', { mode: mode });
+        if (mode === 'downloaded') toast('오늘 카드를 저장했어요. 스토리에 올려보세요.');
+      }, 'image/png');
+    }).catch(function () {
+      toast('이미지 생성에 실패했어요. 다시 시도해 주세요.');
+    });
+  }
+
   /* 홈 화면 오늘 일진 표시 */
   function renderHomeToday() {
     var t = todayDateParts();
@@ -1866,6 +1944,7 @@
     $('#btn-save-graph').addEventListener('click', saveGraphPng);
     $('#btn-save-graph-top').addEventListener('click', saveGraphPng);
     $('#btn-save-myeongsik').addEventListener('click', saveMyeongsikCard);
+    $('#btn-save-today').addEventListener('click', saveTodayCard);
     $('#btn-report').addEventListener('click', function () {
       track('open_report');
       renderReport();
