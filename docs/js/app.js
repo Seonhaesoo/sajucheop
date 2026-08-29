@@ -443,6 +443,9 @@
     var scores = I.daeunScores(r);
     $('#d-graph').innerHTML = buildGraphSvg(r, scores, currentIdx);
 
+    /* 세운 */
+    renderSeun(r);
+
     /* 대운 상세 카드 (선택 가능) */
     state.daeunSel = currentIdx >= 0 ? currentIdx : 0;
     fillDaeunCard(r, state.daeunSel);
@@ -1264,7 +1267,156 @@
       t.m + '월 ' + t.d + '일 ' + WEEKDAYS[t.w];
   }
 
-  /* ---------- 출산 택일 (베타) ---------- */
+  /* ---------- 세운 (연운) ---------- */
+
+  var SEUN_TEXT = {
+    '비견': '중심을 다시 세우는 해', '겁재': '경쟁에 불이 붙는 해',
+    '식신': '만든 것이 밥이 되는 해', '상관': '끼와 말이 앞서는 해',
+    '편재': '기회가 번쩍이는 해', '정재': '차곡차곡 쌓이는 해',
+    '편관': '어깨가 무거워지는 해', '정관': '이름이 반듯해지는 해',
+    '편인': '공부가 깊어지는 해', '정인': '문서에 도장 찍는 해'
+  };
+
+  function renderSeun(r) {
+    var nowY = todayDateParts().y;
+    var me = r.pillars.day.stem;
+    var rows = [];
+    for (var y = nowY - 1; y <= nowY + 3; y++) {
+      var s = ((y - 4) % 10 + 10) % 10;
+      var b = ((y - 4) % 12 + 12) % 12;
+      var sip = M.sipseongOf(me, s);
+      var info = {
+        stemSipseong: sip,
+        branchSipseong: M.branchSipseong(me, b),
+        relation: M.branchRelation(b, r.pillars.day.branch)
+      };
+      var score = I.scoreDay(r, info);
+      var st = stemLabel(s), br = branchLabel(b);
+      var relNote = info.relation === '충' ? ' · 일지와 충' :
+        (info.relation === '육합' ? ' · 일지와 합' : '');
+      rows.push('<div class="seun-row' + (y === nowY ? ' now' : '') + '">' +
+        '<span class="sr-year">' + y + (y === nowY ? '<b>올해</b>' : '') + '</span>' +
+        '<span class="sr-ganji"><span class="el-' + st.el + '">' + st.han + '</span><span class="el-' + br.el + '">' + br.han + '</span></span>' +
+        '<span class="sr-text">' + SEUN_TEXT[sip] + relNote + '</span>' +
+        '<span class="sr-sip">' + sip + '</span>' +
+        '<span class="sr-score">' + score + '</span>' +
+        '</div>');
+    }
+    $('#d-seun').innerHTML = rows.join('');
+  }
+
+  /* ---------- 명식 이미지 (다크 카드 · 1080×1350) ---------- */
+
+  var CARD_EL_DARK = { '목': '#7CC79A', '화': '#F08265', '토': '#E0B04A', '금': '#A5C6F0', '수': '#74A3D6' };
+
+  function buildMyeongsikCard() {
+    var r = state.result;
+    var fonts = ['600 110px ' + SERIF_STACK, '600 40px ' + SERIF_STACK, '600 34px ' + SERIF_STACK,
+      '400 26px ' + SANS_STACK, '400 24px ' + SANS_STACK, '700 30px ' + SANS_STACK];
+    return Promise.all(fonts.map(function (f) {
+      return document.fonts.load(f, '사주첩四柱命式甲');
+    })).catch(function () {}).then(function () {
+      var cv = document.createElement('canvas');
+      cv.width = 1080; cv.height = 1350;
+      var ctx = cv.getContext('2d');
+      ctx.fillStyle = '#221D17';
+      ctx.fillRect(0, 0, 1080, 1350);
+      ctx.strokeStyle = 'rgba(243, 237, 224, 0.3)'; ctx.lineWidth = 3;
+      ctx.strokeRect(36, 36, 1008, 1278);
+      ctx.strokeStyle = 'rgba(243, 237, 224, 0.12)'; ctx.lineWidth = 1.5;
+      ctx.strokeRect(52, 52, 976, 1246);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+
+      /* 낙관 + 타이틀 */
+      ctx.fillStyle = '#B8382D';
+      rr(ctx, 498, 92, 84, 84, 14); ctx.fill();
+      ctx.fillStyle = '#F6F1E8';
+      ctx.font = '600 30px ' + SERIF_STACK;
+      ctx.fillText('四', 540, 130);
+      ctx.fillText('柱', 540, 166);
+      ctx.font = '600 40px ' + SERIF_STACK;
+      ctx.fillStyle = '#F3EDE0';
+      ctx.fillText(state.name ? state.name + ' 님의 命式' : '나의 命式', 540, 250);
+      ctx.fillStyle = '#A99E8C';
+      ctx.font = '400 26px ' + SANS_STACK;
+      ctx.fillText(birthDateText(r.input) + (r.input.unknownTime ? '' : ' ' + fmtTime(r.input.hour * 60 + r.input.minute)), 540, 300);
+
+      /* 명식 4주 */
+      var cols = [
+        { label: '시주', p: r.pillars.hour, sipT: r.sipseong.hourStem, sipB: r.sipseong.hourBranch },
+        { label: '일주', p: r.pillars.day, sipT: null, sipB: M.branchSipseong(r.pillars.day.stem, r.pillars.day.branch), isDay: true },
+        { label: '월주', p: r.pillars.month, sipT: r.sipseong.monthStem, sipB: r.sipseong.monthBranch },
+        { label: '년주', p: r.pillars.year, sipT: r.sipseong.yearStem, sipB: r.sipseong.yearBranch }
+      ];
+      var centers = [225, 435, 645, 855];
+      ctx.fillStyle = 'rgba(184, 56, 45, 0.16)';
+      rr(ctx, 435 - 95, 360, 190, 620, 16); ctx.fill();
+      cols.forEach(function (col, i) {
+        var x = centers[i];
+        ctx.fillStyle = '#A99E8C';
+        ctx.font = '400 26px ' + SANS_STACK;
+        ctx.fillText(col.label, x, 410);
+        ctx.font = '400 24px ' + SANS_STACK;
+        ctx.fillStyle = col.isDay ? '#F08265' : '#8F8574';
+        ctx.fillText(col.isDay ? '일간 · 나' : (col.sipT || ' '), x, 455);
+        if (!col.p) {
+          ctx.fillStyle = '#8F8574';
+          ctx.font = '600 90px ' + SERIF_STACK;
+          ctx.fillText('─', x, 600);
+          ctx.fillText('─', x, 850);
+          return;
+        }
+        var st = M.STEMS[col.p.stem], br = M.BRANCHES[col.p.branch];
+        ctx.font = '600 110px ' + SERIF_STACK;
+        ctx.fillStyle = CARD_EL_DARK[st.el];
+        ctx.fillText(st.han, x, 610);
+        ctx.fillStyle = '#A99E8C';
+        ctx.font = '400 24px ' + SANS_STACK;
+        ctx.fillText(st.kor + st.el, x, 655);
+        ctx.font = '600 110px ' + SERIF_STACK;
+        ctx.fillStyle = CARD_EL_DARK[br.el];
+        ctx.fillText(br.han, x, 830);
+        ctx.fillStyle = '#A99E8C';
+        ctx.font = '400 24px ' + SANS_STACK;
+        ctx.fillText(br.kor + br.el, x, 875);
+        ctx.fillStyle = '#8F8574';
+        ctx.fillText(col.sipB || ' ', x, 940);
+      });
+
+      /* 요약 */
+      ctx.strokeStyle = 'rgba(243, 237, 224, 0.15)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(140, 1020); ctx.lineTo(940, 1020); ctx.stroke();
+      var me = M.STEMS[r.pillars.day.stem];
+      ctx.fillStyle = '#F3EDE0';
+      ctx.font = '700 30px ' + SANS_STACK;
+      ctx.fillText('일간 ' + me.kor + me.el + ' ' + me.han + EL_HAN[me.el] + '  ·  ' + r.strength.label +
+        '  ·  ' + (r.season ? r.season.name + ' ' + r.season.wang : ''), 540, 1085);
+
+      ctx.fillStyle = '#8F8574';
+      ctx.font = '400 24px ' + SANS_STACK;
+      ctx.fillText('절기 시각 기준 정밀 만세력', 540, 1210);
+      ctx.fillStyle = '#CFC4B0';
+      ctx.font = '400 26px ' + SANS_STACK;
+      ctx.fillText('sajucheop.com', 540, 1252);
+      return cv;
+    });
+  }
+
+  function saveMyeongsikCard() {
+    if (!state.result) return;
+    toast('명식 이미지를 그리는 중이에요…');
+    buildMyeongsikCard().then(function (cv) {
+      cv.toBlob(function (blob) {
+        var mode = deliverFile(blob, '사주첩-명식-' + (state.name || '나의사주') + '.png', '사주첩 — 나의 명식');
+        track('save_myeongsik', { mode: mode });
+        if (mode === 'downloaded') toast('명식 이미지를 저장했어요.');
+      }, 'image/png');
+    }).catch(function () {
+      toast('이미지 생성에 실패했어요. 다시 시도해 주세요.');
+    });
+  }
+
+  /* ---------- 출산·결혼 택일 (베타) ---------- */
 
   var WD = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -1299,7 +1451,144 @@
     dSel.value = def.d;
     ySel.addEventListener('change', refreshTgDays);
     mSel.addEventListener('change', refreshTgDays);
-    $('#btn-taegil-scan').addEventListener('click', runTaegilScan);
+    $('#btn-taegil-scan').addEventListener('click', function () {
+      if (taegilMode() === 'wedding') runWeddingScan();
+      else runTaegilScan();
+    });
+
+    /* 결혼 택일 입력 */
+    ['a', 'b'].forEach(function (who) {
+      var wy = $('#tgw-' + who + '-year'), wm = $('#tgw-' + who + '-month'), wd = $('#tgw-' + who + '-day');
+      for (var yy = now.getFullYear(); yy >= 1930; yy--) {
+        var o = document.createElement('option');
+        o.value = yy; o.textContent = yy + '년';
+        wy.appendChild(o);
+      }
+      for (var mm = 1; mm <= 12; mm++) {
+        var o2 = document.createElement('option');
+        o2.value = mm; o2.textContent = mm + '월';
+        wm.appendChild(o2);
+      }
+      function refresh() {
+        var max = M._internals.daysInMonth(+wy.value, +wm.value);
+        var keep = Math.min(+wd.value || 1, max);
+        wd.innerHTML = '';
+        for (var d = 1; d <= max; d++) {
+          var od = document.createElement('option');
+          od.value = d; od.textContent = d + '일';
+          wd.appendChild(od);
+        }
+        wd.value = keep;
+      }
+      wy.value = who === 'a' ? 1995 : 1995;
+      refresh();
+      wy.addEventListener('change', refresh);
+      wm.addEventListener('change', refresh);
+    });
+    var wYear = $('#tgw-year'), wMonth = $('#tgw-month');
+    for (var wy2 = now.getFullYear(); wy2 <= now.getFullYear() + 2; wy2++) {
+      var oy2 = document.createElement('option');
+      oy2.value = wy2; oy2.textContent = wy2 + '년';
+      wYear.appendChild(oy2);
+    }
+    for (var wm2 = 1; wm2 <= 12; wm2++) {
+      var om2 = document.createElement('option');
+      om2.value = wm2; om2.textContent = wm2 + '월부터';
+      wMonth.appendChild(om2);
+    }
+    var wDef = M._internals.civilFromDays(M._internals.daysFromCivil(now.getFullYear(), now.getMonth() + 1, now.getDate()) + 90);
+    wYear.value = wDef.y; wMonth.value = wDef.m;
+
+    $('#tg-load-me').addEventListener('click', function () {
+      var p = loadProfile();
+      if (!p) { toast('저장된 사주가 없어요. 홈에서 내 사주를 먼저 봐주세요.'); return; }
+      $('#tgw-a-year').value = p.year;
+      $('#tgw-a-year').dispatchEvent(new Event('change'));
+      $('#tgw-a-month').value = p.month;
+      $('#tgw-a-month').dispatchEvent(new Event('change'));
+      $('#tgw-a-day').value = p.day;
+      toast((p.name ? p.name + ' 님' : '저장된') + ' 정보를 불러왔어요.');
+    });
+
+    document.querySelectorAll('input[name="tgmode"]').forEach(function (rd) {
+      rd.addEventListener('change', function () {
+        var wedding = taegilMode() === 'wedding';
+        $('#tg-baby-form').hidden = wedding;
+        $('#tg-wedding-form').hidden = !wedding;
+        $('#tg-medical-notice').hidden = wedding;
+        $('#tg-results').innerHTML = '';
+        $('#tg-intro-text').innerHTML = wedding
+          ? '두 사람 모두에게 좋은 기운이 드는 날을 찾아드립니다. 각자의 일간에 드는 <b>십성</b>과 일지의 <b>합·충</b>을 함께 채점하고, 어느 한쪽에 충이 드는 날은 후보에서 뺍니다.'
+          : '병원과 조율할 수 있는 범위 안에서, 아기가 <b>균형 잡힌 명식</b>을 갖는 날과 시간대를 찾아드립니다.';
+      });
+    });
+  }
+
+  function taegilMode() {
+    var el = document.querySelector('input[name="tgmode"]:checked');
+    return el ? el.value : 'baby';
+  }
+
+  function runWeddingScan() {
+    var label = $('#tg-scan-label');
+    label.textContent = '두 사람의 흐름을 계산하는 중…';
+    track('taegil_scan', { mode: 'wedding' });
+    setTimeout(function () {
+      try {
+        var resA = M.compute({ year: +$('#tgw-a-year').value, month: +$('#tgw-a-month').value, day: +$('#tgw-a-day').value, unknownTime: true, gender: 'F', applySolarTime: true });
+        var resB = M.compute({ year: +$('#tgw-b-year').value, month: +$('#tgw-b-month').value, day: +$('#tgw-b-day').value, unknownTime: true, gender: 'F', applySolarTime: true });
+        var startY = +$('#tgw-year').value, startM = +$('#tgw-month').value;
+        var span = +$('#tgw-span').value;
+        var weekendOnly = $('#tgw-weekend').checked;
+        var t = todayDateParts();
+        var todayDn = M._internals.daysFromCivil(t.y, t.m, t.d);
+        var out = [], excluded = 0;
+        for (var k = 0; k < span; k++) {
+          var mm = startM + k, yy = startY + Math.floor((mm - 1) / 12);
+          mm = ((mm - 1) % 12) + 1;
+          var dim = M._internals.daysInMonth(yy, mm);
+          for (var d = 1; d <= dim; d++) {
+            if (M._internals.daysFromCivil(yy, mm, d) < todayDn) continue;
+            var dow = new Date(yy, mm - 1, d).getDay();
+            if (weekendOnly && dow !== 0 && dow !== 6) continue;
+            var infoA = M.todayInfo(resA, yy, mm, d);
+            var infoB = M.todayInfo(resB, yy, mm, d);
+            if (infoA.relation === '충' || infoB.relation === '충') { excluded++; continue; }
+            var sA = I.scoreDay(resA, infoA), sB = I.scoreDay(resB, infoB);
+            var score = Math.round((sA + sB) / 2);
+            var reasons = [];
+            if (sA >= 65 && sB >= 65) { score += 5; reasons.push('두 사람 모두에게 순풍이 부는 날'); }
+            if (infoA.relation === '육합' || infoA.relation === '삼합') reasons.push('나의 일지와 합이 드는 날');
+            if (infoB.relation === '육합' || infoB.relation === '삼합') reasons.push('상대의 일지와 합이 드는 날');
+            out.push({ y: yy, m: mm, d: d, dow: dow, pillar: infoA.pillar, score: Math.min(99, score), sA: sA, sB: sB, sipA: infoA.stemSipseong, sipB: infoB.stemSipseong, reasons: reasons });
+          }
+        }
+        out.sort(function (a, b) { return b.score - a.score || a.m - b.m || a.d - b.d; });
+        var top = out.slice(0, 5);
+        $('#tg-results').innerHTML = (top.length ? top.map(function (c, i) {
+          var g = M.ganjiName(c.pillar.stem, c.pillar.branch);
+          return '<div class="tg-card">' +
+            '<div class="tg-head">' +
+            '<span class="tg-rank">' + (i + 1) + '</span>' +
+            '<span class="tg-date">' + c.y + '년 ' + c.m + '월 ' + c.d + '일 (' + WD[c.dow] + ')</span>' +
+            '<span class="tg-ganji">' + g.kor + '일</span>' +
+            '<span class="tg-score">' + c.score + '<small>점</small></span>' +
+            '</div>' +
+            '<div class="tg-hours">' +
+            '<div class="tg-hour"><span class="th-rank">나</span><span class="th-label">' + c.sipA + josa(c.sipA, '이', '가') + ' 드는 날</span><span class="th-score">' + c.sA + '점</span></div>' +
+            '<div class="tg-hour"><span class="th-rank">상대</span><span class="th-label">' + c.sipB + josa(c.sipB, '이', '가') + ' 드는 날</span><span class="th-score">' + c.sB + '점</span></div>' +
+            '</div>' +
+            (c.reasons.length ? '<div class="pill-row" style="margin-top: 10px;">' +
+              c.reasons.map(function (rs) { return '<span class="pill">' + rs + '</span>'; }).join('') + '</div>' : '') +
+            '</div>';
+        }).join('') : '<p class="purpose-empty" style="margin: 20px;">조건에 맞는 날이 없어요. 기간을 넓히거나 주말만 보기를 꺼보세요.</p>') +
+        '<p class="form-microcopy" style="margin: 16px 20px 0;">후보 중 어느 한쪽 일지와 충이 드는 날 ' + excluded + '일은 제외했어요. 점수는 참고용 지수입니다.</p>';
+      } catch (e) {
+        toast('계산 중 문제가 생겼어요. 다시 시도해 주세요.');
+        if (window.console) console.error(e);
+      }
+      label.textContent = '좋은 날 찾기';
+    }, 30);
   }
 
   function runTaegilScan() {
@@ -1576,9 +1865,7 @@
     });
     $('#btn-save-graph').addEventListener('click', saveGraphPng);
     $('#btn-save-graph-top').addEventListener('click', saveGraphPng);
-    $('#btn-save-myeongsik').addEventListener('click', function () {
-      toast('명식 이미지 저장은 준비 중이에요.');
-    });
+    $('#btn-save-myeongsik').addEventListener('click', saveMyeongsikCard);
     $('#btn-report').addEventListener('click', function () {
       track('open_report');
       renderReport();
@@ -1622,5 +1909,5 @@
   showView(location.hash === '#taegil' ? 'taegil' : 'home');
 
   /* 디버그·검증용 최소 노출 */
-  window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser };
+  window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, buildMyeongsikCard: buildMyeongsikCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser };
 })();

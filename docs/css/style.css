@@ -1009,6 +1009,31 @@ a.btn-primary { text-decoration: none; }
 .guide-grid .guide-card h2 { font-size: 14.5px; margin-top: 4px; }
 .guide-grid .guide-card p { font-size: 12px; margin-top: 5px; }
 
+/* ---------- 세운 ---------- */
+
+.seun-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 0;
+  font-size: 13px;
+}
+.seun-row + .seun-row { border-top: 1px solid var(--line-soft); }
+.seun-row.now { background: rgba(184, 56, 45, 0.05); margin: 0 -8px; padding: 11px 8px; border-radius: 6px; }
+.seun-row .sr-year { width: 58px; flex: none; color: var(--faint); font-size: 12px; }
+.seun-row .sr-year b { display: block; color: var(--seal); font-size: 10px; }
+.seun-row .sr-ganji { font-family: var(--serif); font-size: 16px; font-weight: 600; flex: none; }
+.seun-row .sr-text { flex: 1; min-width: 0; color: var(--ink-body); }
+.seun-row .sr-sip {
+  flex: none;
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+.seun-row .sr-score { flex: none; font-weight: 700; font-size: 13px; width: 24px; text-align: right; }
+
 /* ---------- 출산 택일 ---------- */
 
 .tg-card {
