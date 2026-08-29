@@ -6,6 +6,7 @@
 
   var M = window.Manseryeok;
   var I = window.Interpret;
+  var G = window.Gunghap;
 
   var $ = function (sel) { return document.querySelector(sel); };
   var state = { result: null, name: '' };
@@ -142,6 +143,7 @@
       var result = M.compute(input);
       state.result = result;
       state.name = $('#in-name').value.trim();
+      state.lastInput = input;
       state.calCache = {};
       var t = todayDateParts();
       state.calendar = { y: t.y, m: t.m, selected: t.d, purpose: null };
@@ -151,7 +153,13 @@
       renderToday(result);
       renderCalendar();
       saveProfile(input);
-      showView('result');
+      if (state.invite) {
+        var partnerResult = M.compute(state.invite);
+        renderGunghap(partnerResult, result);
+        showView('gunghap');
+      } else {
+        showView('result');
+      }
     } catch (err) {
       toast('계산 중 문제가 생겼어요. 입력을 확인해 주세요.');
       if (window.console) console.error(err);
@@ -457,6 +465,97 @@
 
     svg += '</svg>';
     return svg;
+  }
+
+  /* ---------- 링크 궁합 ---------- */
+
+  function parseInviteFromHash() {
+    var m = location.hash.match(/^#p=([A-Za-z0-9_-]+)$/);
+    if (!m) return null;
+    return G.decodeProfile(m[1]);
+  }
+
+  function showInviteBanner() {
+    var inv = state.invite;
+    if (!inv) return;
+    $('#ib-title').textContent = (inv.name ? inv.name + ' 님이' : '친구가') + ' 궁합을 청했어요';
+    $('#invite-banner').hidden = false;
+    $('#btn-submit-label').textContent = '궁합 열어보기';
+  }
+
+  function dismissInvite() {
+    state.invite = null;
+    $('#invite-banner').hidden = true;
+    $('#btn-submit-label').textContent = '내 사주 풀어보기';
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* 무시 */ }
+  }
+
+  function renderGunghap(partnerResult, myResult) {
+    var partnerName = (state.invite && state.invite.name) || '상대';
+    var myName = state.name || '나';
+    var gh = G.compute(partnerResult, myResult, partnerName, myName);
+    state.gunghap = { score: gh.score, tier: gh.tier, partnerName: partnerName };
+
+    var pa = partnerResult.pillars.day.stem, pb = myResult.pillars.day.stem;
+    var stA = M.STEMS[pa], stB = M.STEMS[pb];
+    $('#gh-emblem-b').innerHTML = C.emblemSvg(stB.han, 56, 'dark');
+    $('#gh-emblem-a').innerHTML = C.emblemSvg(stA.han, 56, 'dark');
+    $('#gh-name-b').textContent = myName;
+    $('#gh-name-a').textContent = partnerName;
+    $('#gh-ilgan-b').textContent = stB.kor + stB.el + ' · ' + C.of(stB.han).name;
+    $('#gh-ilgan-a').textContent = stA.kor + stA.el + ' · ' + C.of(stA.han).name;
+    $('#gh-score').textContent = gh.score;
+    $('#gh-tier').textContent = gh.tier;
+
+    $('#gh-stem-title').textContent = gh.stemRel.title;
+    $('#gh-stem-body').innerHTML = gh.stemRel.body;
+    $('#gh-sip').innerHTML =
+      '<div class="fortune-row" style="padding: 12px 0 6px;"><span class="f-label" style="width: 52px;">상대는</span>' +
+      '<span class="f-text">나에게 <b>' + gh.sipseong.aboutA.name + '</b> — ' + gh.sipseong.aboutA.line + '</span></div>' +
+      '<div class="fortune-row" style="padding: 6px 0 0; border-top: 1px solid var(--line-soft);"><span class="f-label" style="width: 52px;">나는</span>' +
+      '<span class="f-text">상대에게 <b>' + gh.sipseong.aboutB.name + '</b> — ' + gh.sipseong.aboutB.line + '</span></div>';
+
+    $('#gh-branch-title').textContent = gh.branchRel.title;
+    $('#gh-branch-body').textContent = gh.branchRel.body;
+
+    var compLines = gh.complement.length
+      ? gh.complement.join(' ')
+      : '서로의 빈 곳을 채우기보다, 닮은 균형을 나눠 가진 두 사람이에요.';
+    compLines += ' ' + (gh.yinyang
+      ? '음과 양이 만나 서로 다른 결이 하나로 완성됩니다.'
+      : '같은 극성끼리라 익숙하고 편안한 결입니다.');
+    $('#gh-complement').innerHTML = compLines;
+  }
+
+  function makeGunghapLink() {
+    if (!state.lastInput) {
+      toast('먼저 내 사주를 입력해 주세요.');
+      return;
+    }
+    var payload = Object.assign({ name: state.name }, state.lastInput);
+    var url = location.origin + location.pathname + '#p=' + G.encodeProfile(payload);
+    var text = (state.name ? state.name + ' — ' : '') + '우리 궁합 볼래? 생일만 넣으면 바로 나와.';
+    if (navigator.share) {
+      navigator.share({ title: '사주첩 — 궁합', text: text, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function () {
+        toast('궁합 링크를 복사했어요. 생년월일시가 담기니 아는 사람에게만 보내세요.');
+      });
+    }
+  }
+
+  function shareGunghap() {
+    var g = state.gunghap;
+    if (!g) return;
+    var text = (state.name || '나') + ' × ' + g.partnerName + ' 궁합 ' + g.score + '점 — ' +
+      g.tier + ' · 사주첩';
+    if (navigator.share) {
+      navigator.share({ title: '사주첩 — 궁합 결과', text: text }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () {
+        toast('궁합 결과를 복사했어요.');
+      });
+    }
   }
 
   /* ---------- 사주 캐릭터 ---------- */
@@ -1103,6 +1202,12 @@
     $('#btn-char-to-today').addEventListener('click', function () { showView('today'); });
     $('#btn-save-card').addEventListener('click', saveCharacterCard);
     $('#btn-share-card').addEventListener('click', shareCharacterCard);
+    $('#btn-make-gunghap').addEventListener('click', makeGunghapLink);
+    $('#btn-make-gunghap2').addEventListener('click', makeGunghapLink);
+    $('#btn-make-gunghap3').addEventListener('click', makeGunghapLink);
+    $('#btn-share-gunghap').addEventListener('click', shareGunghap);
+    $('#btn-my-result').addEventListener('click', function () { showView('result'); });
+    $('#ib-dismiss').addEventListener('click', dismissInvite);
     $('#cal-prev').addEventListener('click', function () { moveMonth(-1); });
     $('#cal-next').addEventListener('click', function () { moveMonth(1); });
     $('#btn-ics').addEventListener('click', downloadIcs);
@@ -1140,6 +1245,8 @@
   var savedProfile = loadProfile();
   if (savedProfile) fillFormFromProfile(savedProfile);
   renderResumeChip();
+  state.invite = parseInviteFromHash();
+  if (state.invite) showInviteBanner();
   showView('home');
 
   /* 디버그·검증용 최소 노출 */

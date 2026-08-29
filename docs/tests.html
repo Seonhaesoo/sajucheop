@@ -20,6 +20,7 @@
 <script src="js/manseryeok.js"></script>
 <script src="js/interpret.js"></script>
 <script src="js/characters.js"></script>
+<script src="js/gunghap.js"></script>
 <script>
 (function () {
   var M = window.Manseryeok, X = M._internals;
@@ -196,6 +197,45 @@
   check('戊己는 충 없음 + 안내문', !CH.of('戊').chung && !CH.of('己').chung &&
     typeof CH.of('戊').noChungLine === 'string' && typeof CH.of('己').noChungLine === 'string', true);
   check('엠블럼 SVG 생성', CH.emblemSvg('丙', 40, 'dark').indexOf('<svg') === 0, true);
+
+  /* ---- 14. 링크 궁합 ---- */
+  var GH = window.Gunghap;
+  var prof = { name: '김서연', year: 1993, month: 3, day: 26, hour: 11, minute: 40,
+    unknownTime: false, gender: 'F', applySolarTime: true };
+  var rt = GH.decodeProfile(GH.encodeProfile(prof));
+  check('프로필 인코딩 왕복 (한글 이름)', rt && rt.name === '김서연' && rt.year === 1993 &&
+    rt.month === 3 && rt.day === 26 && rt.hour === 11 && rt.minute === 40 && rt.gender === 'F', true);
+  check('잘못된 해시 → null', GH.decodeProfile('!!!broken!!!'), null);
+  check('범위 밖 연도 → null', GH.decodeProfile(GH.encodeProfile({ name: '', year: 1800, month: 1, day: 1, hour: 0, minute: 0, gender: 'F' })), null);
+  check('escapeHtml', GH.escapeHtml('<b>&"'), '&lt;b&gt;&amp;&quot;');
+
+  // 丙午(1993-03-26) × 辛亥(1993-03-31): 천간합, 일지 무관계
+  var gA = M.compute({ year: 1993, month: 3, day: 26, hour: 11, minute: 40, gender: 'F', applySolarTime: true });
+  var gB1 = M.compute({ year: 1993, month: 3, day: 31, hour: 12, minute: 0, gender: 'M', applySolarTime: true });
+  check('궁합 상대 일주 辛亥', ganji(gB1.pillars.day), '辛亥');
+  var gh1 = GH.compute(gA, gB1, '가', '나');
+  check('丙×辛 = 천간합', gh1.stemRel.type, 'hap');
+  check('午×亥 일지 무관계', gh1.branchRel.type, null);
+  check('丙×辛 점수 72 (50+18+음양4)', gh1.score, 72);
+  check('상대(丙)는 나(辛)에게 정관', gh1.sipseong.aboutA.name, '정관');
+  check('나(辛)는 상대(丙)에게 정재', gh1.sipseong.aboutB.name, '정재');
+
+  // 丙午 × 壬子(1993-04-01): 천간충 + 자오충
+  var gB2 = M.compute({ year: 1993, month: 4, day: 1, hour: 12, minute: 0, gender: 'M', applySolarTime: true });
+  check('궁합 상대 일주 壬子', ganji(gB2.pillars.day), '壬子');
+  var gh2 = GH.compute(gA, gB2, '가', '나');
+  check('丙×壬 = 천간충', gh2.stemRel.type, 'chung');
+  check('午×子 = 일지충', gh2.branchRel.type, '충');
+  check('충충 조합 점수 하한 30', gh2.score, 30);
+
+  // 상생 + 오행 보완 (가짜 명식으로 단위 검증)
+  var fakeA = { pillars: { day: { stem: 2, branch: 6 } }, elements: { '목': 3, '화': 3, '토': 0, '금': 1, '수': 1 } };
+  var fakeB = { pillars: { day: { stem: 4, branch: 1 } }, elements: { '목': 1, '화': 1, '토': 3, '금': 2, '수': 1 } };
+  var gh3 = GH.compute(fakeA, fakeB, '가', '나');
+  check('丙×戊 = 상생 (화생토)', gh3.stemRel.type, 'saeng');
+  check('보완 1건 (戊의 토가 丙의 빈 토를 채움)', gh3.complement.length, 1);
+  check('상생+보완 점수 65 (50+10+5)', gh3.score, 65);
+  check('이름 이스케이프 적용', GH.compute(fakeA, fakeB, '<x>', '나').complement[0].indexOf('&lt;x&gt;') >= 0, true);
 
   document.getElementById('summary').textContent =
     '결과: ' + passCount + ' PASS / ' + failCount + ' FAIL';

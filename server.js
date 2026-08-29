@@ -17,6 +17,28 @@ const MIME = {
 };
 
 http.createServer((req, res) => {
+  // 개발 전용: 브라우저 캔버스로 만든 에셋을 assets/ 폴더로 저장
+  if (req.method === 'POST' && req.url === '/dev/save-asset') {
+    let body = '';
+    req.on('data', (c) => { body += c; });
+    req.on('end', () => {
+      try {
+        const { name, dataUrl } = JSON.parse(body);
+        if (!/^[a-z0-9-]+\.png$/.test(name)) throw new Error('bad name');
+        const b64 = String(dataUrl || '').split(',')[1];
+        if (!b64) throw new Error('bad data');
+        const dir = path.join(__dirname, 'assets');
+        fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(path.join(dir, name), Buffer.from(b64, 'base64'));
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end('{"ok":true}');
+      } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('bad request');
+      }
+    });
+    return;
+  }
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
   if (urlPath === '/') urlPath = '/index.html';
   const filePath = path.join(ROOT, path.normalize(urlPath).replace(/^([.][.][/\\])+/, ''));
