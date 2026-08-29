@@ -4,3 +4,8 @@ design/sajuseojae-ui.html
 # 로컬 설정
 .claude/settings.local.json
 *.log
+
+# 봇 워크스페이스 산출물
+node_modules/
+package.json
+package-lock.json

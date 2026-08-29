@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>오늘의 일진 카드 — 사주첩</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app doc" style="align-items: center; padding: 24px; display: flex; flex-direction: column;">
+  <h1 style="font-family: var(--serif); font-size: 20px; font-weight: 600;">오늘의 일진 카드</h1>
+  <p style="margin-top: 8px; font-size: 13px; color: #6E6455;">브랜드 계정용 범용 카드 — 매일 자정 자동 갱신</p>
+  <img id="preview" alt="오늘의 일진 카드" style="margin-top: 18px; width: 100%; max-width: 360px; border: 1px solid #E6DCC9; border-radius: 12px;">
+  <button id="btn-dl" class="btn-primary" style="margin-top: 16px; max-width: 360px;">이미지 저장</button>
+</div>
+
+<script src="js/vendor-korean-lunar.js"></script>
+<script src="js/manseryeok.js"></script>
+<script src="js/characters.js"></script>
+<script>
+(function () {
+  'use strict';
+  var M = window.Manseryeok, C = window.SajuCharacters;
+  var SERIF = '"Noto Serif KR", "Nanum Myeongjo", Batang, serif';
+  var SANS = '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif';
+  var EL_COLOR = { '목': '#3B9C69', '화': '#BC3E28', '토': '#B98D28', '금': '#6297DC', '수': '#2C69A8' };
+  var STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
+  var STEM_CHUNG = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3 };
+  var CHUNG_B = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3, 4: 10, 10: 4, 5: 11, 11: 5 };
+  var WEEKDAYS = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+
+  function kstToday() {
+    var k = new Date(Date.now() + 9 * 3600 * 1000);
+    return { y: k.getUTCFullYear(), m: k.getUTCMonth() + 1, d: k.getUTCDate(), w: k.getUTCDay() };
+  }
+
+  function rr(ctx, x, y, w, h, r) {
+    if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+    else { ctx.beginPath(); ctx.rect(x, y, w, h); }
+  }
+
+  function build() {
+    var fonts = ['600 300px ' + SERIF, '600 56px ' + SERIF, '600 44px ' + SERIF,
+      '400 34px ' + SANS, '700 32px ' + SANS, '400 30px ' + SANS];
+    return Promise.all(fonts.map(function (f) {
+      return document.fonts.load(f, '사주첩四柱乙亥날');
+    })).catch(function () {}).then(function () {
+      var t = kstToday();
+      var p = M.dayPillarOf(t.y, t.m, t.d);
+      var st = M.STEMS[p.stem], br = M.BRANCHES[p.branch];
+      var g = M.ganjiName(p.stem, p.branch);
+      var ch = C.of(st.han);
+      var hapStem = M.STEMS[STEM_HAP[p.stem]];
+      var chungStem = STEM_CHUNG[p.stem] !== undefined ? M.STEMS[STEM_CHUNG[p.stem]] : null;
+      var chungBranch = M.BRANCHES[CHUNG_B[p.branch]];
+
+      var cv = document.createElement('canvas');
+      cv.width = 1080; cv.height = 1920;
+      var ctx = cv.getContext('2d');
+      ctx.fillStyle = '#F6F1E8'; ctx.fillRect(0, 0, 1080, 1920);
+      ctx.strokeStyle = '#211C15'; ctx.lineWidth = 4; ctx.strokeRect(36, 36, 1008, 1848);
+      ctx.strokeStyle = '#D8CDB9'; ctx.lineWidth = 1.5; ctx.strokeRect(56, 56, 968, 1808);
+      ctx.textAlign = 'center';
+
+      ctx.fillStyle = '#B8382D';
+      rr(ctx, 498, 104, 84, 84, 14); ctx.fill();
+      ctx.fillStyle = '#F6F1E8';
+      ctx.font = '600 30px ' + SERIF;
+      ctx.fillText('四', 540, 142); ctx.fillText('柱', 540, 178);
+      ctx.fillStyle = '#B8382D';
+      ctx.font = '700 32px ' + SANS;
+      try { ctx.letterSpacing = '8px'; } catch (e) { }
+      ctx.fillText('오늘의 일진', 544, 258);
+      try { ctx.letterSpacing = '0px'; } catch (e) { }
+      ctx.fillStyle = '#6E6455';
+      ctx.font = '400 34px ' + SANS;
+      ctx.fillText(t.y + '년 ' + t.m + '월 ' + t.d + '일 ' + WEEKDAYS[t.w], 540, 318);
+
+      ctx.font = '600 300px ' + SERIF;
+      ctx.fillStyle = EL_COLOR[st.el];
+      ctx.fillText(st.han, 540, 650);
+      ctx.fillStyle = EL_COLOR[br.el];
+      ctx.fillText(br.han, 540, 975);
+      ctx.fillStyle = '#6E6455';
+      ctx.font = '600 44px ' + SERIF;
+      ctx.fillText(g.kor + '일', 540, 1065);
+
+      ctx.fillStyle = '#40372B';
+      ctx.font = '600 56px ' + SERIF;
+      ctx.fillText('「 ' + ch.metaphor + ' 」', 540, 1180);
+      ctx.fillStyle = '#6E6455';
+      ctx.font = '400 34px ' + SANS;
+      ctx.fillText(st.kor + st.el + '의 기운이 흐르는 날', 540, 1245);
+
+      ctx.strokeStyle = '#D8CDB9'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(180, 1320); ctx.lineTo(900, 1320); ctx.stroke();
+
+      ctx.fillStyle = '#211C15';
+      ctx.font = '700 32px ' + SANS;
+      ctx.fillText('오늘 유난히 순한 일간 — ' + hapStem.kor + hapStem.el + ' (' + hapStem.han + ')', 540, 1405);
+      if (chungStem) {
+        ctx.fillStyle = '#6E6455';
+        ctx.font = '400 32px ' + SANS;
+        ctx.fillText('한 템포 쉬어갈 일간 — ' + chungStem.kor + chungStem.el + ' (' + chungStem.han + ')', 540, 1465);
+      }
+      ctx.fillStyle = '#9A8F7E';
+      ctx.font = '400 30px ' + SANS;
+      ctx.fillText('일지가 ' + chungBranch.kor + '(' + chungBranch.han + ')인 분은 변동 조심', 540, 1525);
+
+      ctx.fillStyle = '#40372B';
+      ctx.font = '400 34px ' + SANS;
+      ctx.fillText('내 일간은 뭘까? 생일만 넣으면 10초', 540, 1660);
+
+      ctx.strokeStyle = '#D8CDB9';
+      ctx.beginPath(); ctx.moveTo(240, 1740); ctx.lineTo(840, 1740); ctx.stroke();
+      ctx.fillStyle = '#B8382D';
+      ctx.font = '700 32px ' + SANS;
+      ctx.fillText('sajucheop.com', 540, 1800);
+      return cv;
+    });
+  }
+
+  build().then(function (cv) {
+    var jpeg = cv.toDataURL('image/jpeg', 0.92);
+    document.getElementById('preview').src = jpeg;
+    document.getElementById('btn-dl').addEventListener('click', function () {
+      var a = document.createElement('a');
+      a.download = '사주첩-오늘일진.jpg';
+      a.href = jpeg;
+      a.click();
+    });
+    window.__cardDataUrl = jpeg;
+    window.__cardReady = true;
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+name: daily-story
+
+on:
+  schedule:
+    - cron: '10 15 * * *' # 매일 00:10 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  story:
+    runs-on: ubuntu-latest
+    env:
+      IG_USER_ID: ${{ secrets.IG_USER_ID }}
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Playwright 설치
+        run: |
+          npm init -y > /dev/null
+          npm i --no-audit --no-fund playwright > /dev/null
+          npx playwright install --with-deps chromium
+
+      - name: 오늘 카드 생성
+        run: node tools/daily-story.mjs
+
+      - name: 커밋 및 배포
+        run: |
+          git config user.name 'sajucheop-bot'
+          git config user.email 'bot@users.noreply.github.com'
+          git add docs/daily/story.jpg
+          git commit -m "데일리 일진 카드 $(TZ=Asia/Seoul date +%F)" || echo '변경 없음'
+          git pull --rebase
+          git push
+
+      - name: Pages 배포 대기
+        run: |
+          for i in $(seq 1 20); do
+            sleep 15
+            if curl -s https://sajucheop.com/daily/story.jpg | cmp -s - docs/daily/story.jpg; then
+              echo '배포 확인 완료'
+              exit 0
+            fi
+            echo "대기 중... ($i/20)"
+          done
+          echo '배포 확인 실패 — 게시는 이전 이미지로 진행될 수 있음'
+
+      - name: 인스타 스토리 게시
+        if: env.IG_ACCESS_TOKEN != ''
+        env:
+          IMAGE_URL: https://sajucheop.com/daily/story.jpg?v=${{ github.run_id }}
+        run: node tools/ig-publish.mjs
