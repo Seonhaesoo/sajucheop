@@ -1036,6 +1036,24 @@ a.btn-primary { text-decoration: none; }
 
 /* ---------- 출산 택일 ---------- */
 
+/* 구글 캘린더 바로 추가 링크 */
+.gcal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px 11px;
+  white-space: nowrap;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: #FFFDF9;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+.gcal-link:active { background: #F1EADD; }
+
 .tg-card {
   margin: 16px 20px 0;
   background: var(--card);
@@ -1656,6 +1674,13 @@ a.btn-primary { text-decoration: none; }
   align-items: baseline;
 }
 .purpose-day-row + .purpose-day-row { border-top: 1px solid var(--line-soft); }
+.purpose-day-row .pd-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+.purpose-day-row .pd-main .gcal-link { margin-top: 6px; }
 .purpose-day-row .pd-date {
   flex: none;
   width: 86px;

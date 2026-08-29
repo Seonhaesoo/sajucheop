@@ -211,6 +211,15 @@
   check('범위 밖 연도 → null', GH.decodeProfile(GH.encodeProfile({ name: '', year: 1800, month: 1, day: 1, hour: 0, minute: 0, gender: 'F' })), null);
   check('escapeHtml', GH.escapeHtml('<b>&"'), '&lt;b&gt;&amp;&quot;');
 
+  var prof2 = { name: '이도윤', year: 1994, month: 7, day: 2, hour: 9, minute: 10,
+    unknownTime: false, gender: 'M', applySolarTime: true };
+  var pairRt = GH.decodePair(GH.encodePair(prof, prof2));
+  check('결과 링크 왕복 (두 사람)', pairRt && pairRt.a.name === '김서연' && pairRt.b.name === '이도윤' &&
+    pairRt.a.year === 1993 && pairRt.b.day === 2 && pairRt.b.gender === 'M', true);
+  check('결과 링크 — 깨진 문자열 → null', GH.decodePair('###broken###'), null);
+  check('결과 링크 — 한쪽 범위 밖 → null',
+    GH.decodePair(GH.encodePair(prof, { name: '', year: 1800, month: 1, day: 1, hour: 0, minute: 0, gender: 'F' })), null);
+
   // 丙午(1993-03-26) × 辛亥(1993-03-31): 천간합, 일지 무관계
   var gA = M.compute({ year: 1993, month: 3, day: 26, hour: 11, minute: 40, gender: 'F', applySolarTime: true });
   var gB1 = M.compute({ year: 1993, month: 3, day: 31, hour: 12, minute: 0, gender: 'M', applySolarTime: true });

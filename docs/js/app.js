@@ -216,6 +216,9 @@
       if (state.invite) {
         var partnerResult = M.compute(state.invite);
         renderGunghap(partnerResult, result);
+        state.gunghapUrl = location.origin + location.pathname + '#g=' +
+          G.encodePair(state.invite, Object.assign({ name: state.name }, input));
+        updateGunghapButtons('mine');
         showView('gunghap');
       } else {
         showView('result');
@@ -603,11 +606,11 @@
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* 무시 */ }
   }
 
-  function renderGunghap(partnerResult, myResult) {
-    var partnerName = (state.invite && state.invite.name) || '상대';
-    var myName = state.name || '나';
+  function renderGunghap(partnerResult, myResult, partnerName, myName) {
+    partnerName = partnerName || (state.invite && state.invite.name) || '상대';
+    myName = myName || state.name || '나';
     var gh = G.compute(partnerResult, myResult, partnerName, myName);
-    state.gunghap = { score: gh.score, tier: gh.tier, partnerName: partnerName };
+    state.gunghap = { score: gh.score, tier: gh.tier, partnerName: partnerName, myName: myName };
 
     var pa = partnerResult.pillars.day.stem, pb = myResult.pillars.day.stem;
     var stA = M.STEMS[pa], stB = M.STEMS[pb];
@@ -661,13 +664,51 @@
   function shareGunghap() {
     var g = state.gunghap;
     if (!g) return;
-    var text = (state.name || '나') + ' × ' + g.partnerName + ' 궁합 ' + g.score + '점 — ' +
+    var text = (g.myName || state.name || '나') + ' × ' + g.partnerName + ' 궁합 ' + g.score + '점 — ' +
       g.tier + ' · 사주첩';
     if (navigator.share) {
-      navigator.share({ title: '사주첩 — 궁합 결과', text: text }).catch(function () {});
+      var payload = { title: '사주첩 — 궁합 결과', text: text };
+      if (state.gunghapUrl) payload.url = state.gunghapUrl;
+      navigator.share(payload).catch(function () {});
     } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(function () {
+      navigator.clipboard.writeText(text + (state.gunghapUrl ? '\n' + state.gunghapUrl : '')).then(function () {
         toast('궁합 결과를 복사했어요.');
+      });
+    }
+  }
+
+  /* 결과 링크(#g=): 두 사람 정보가 모두 담겨, 여는 사람은 입력 없이 바로 결과를 봄 */
+  function parsePairFromHash() {
+    var m = location.hash.match(/^#g=([A-Za-z0-9_-]+)$/);
+    if (!m) return null;
+    return G.decodePair(m[1]);
+  }
+
+  function updateGunghapButtons(mode) {
+    var ret = $('#btn-return-gunghap'), mine = $('#btn-my-result'), make = $('#btn-make-gunghap3');
+    if (mode === 'pair') {
+      ret.hidden = true;
+      make.hidden = true;
+      mine.className = 'btn-primary';
+      mine.textContent = '나도 내 사주 풀어보기';
+    } else {
+      ret.hidden = false;
+      make.hidden = false;
+      mine.className = 'btn-outline';
+      mine.textContent = '내 사주 전체 보기';
+    }
+  }
+
+  function shareGunghapResultLink() {
+    var g = state.gunghap;
+    if (!g || !state.gunghapUrl) return;
+    track('gunghap_return');
+    var text = '우리 궁합 결과 나왔어 — ' + g.score + '점 「' + g.tier + '」. 링크 열면 바로 보여!';
+    if (navigator.share) {
+      navigator.share({ title: '사주첩 — 궁합 결과', text: text, url: state.gunghapUrl }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + '\n' + state.gunghapUrl).then(function () {
+        toast('결과 링크를 복사했어요. 링크를 연 사람은 입력 없이 바로 결과를 봐요.');
       });
     }
   }
@@ -1103,9 +1144,12 @@
         var g = M.ganjiName(dd.info.pillar.stem, dd.info.pillar.branch);
         var relNote = dd.info.relation === '충' ? ' · 일지와 충 — 큰 결정은 피하세요'
           : (dd.info.relation === '육합' ? ' · 일지와 합 — 인연이 순조로워요' : '');
+        var evPrefix = dd.score >= 80 ? '○ 길일 · ' : (dd.info.relation === '충' ? '△ 충 주의 · ' : '');
         detail.innerHTML = '<b>' + c.m + '월 ' + dd.d + '일 · ' + g.kor + '(' + g.han + ')일</b><br>' +
           '흐름 ' + dd.score + '점 — ' + dd.info.stemSipseong +
-          josa(dd.info.stemSipseong, '이', '가') + ' 드는 날' + relNote;
+          josa(dd.info.stemSipseong, '이', '가') + ' 드는 날' + relNote + '<br>' +
+          gcalLink(c.y, c.m, dd.d, evPrefix + g.kor + '일 · 흐름 ' + dd.score + '점',
+            dd.info.stemSipseong + josa(dd.info.stemSipseong, '이', '가') + ' 드는 날 — 사주첩 sajucheop.com');
         detail.hidden = false;
       }
     } else {
@@ -1135,8 +1179,10 @@
             var dow = ['일', '월', '화', '수', '목', '금', '토'][new Date(c.y, c.m - 1, p.d).getDay()];
             return '<div class="purpose-day-row">' +
               '<span class="pd-date">' + c.m + '월 ' + p.d + '일 (' + dow + ')</span>' +
-              '<span class="pd-reason">' + g.kor + '일 — ' + p.reason + '</span>' +
-              '</div>';
+              '<span class="pd-main"><span class="pd-reason">' + g.kor + '일 — ' + p.reason + '</span>' +
+              gcalLink(c.y, c.m, p.d, pDef.label + ' 좋은 날 · ' + g.kor + '일',
+                p.reason + ' — 사주첩 sajucheop.com', '+ 구글 캘린더') +
+              '</span></div>';
           }).join('')
         : '<p class="purpose-empty">이번 달 남은 날 중엔 꼭 맞는 날이 없어요. 다음 달을 봐주세요.</p>';
     } else {
@@ -1192,6 +1238,20 @@
   }
 
   /* ---------- 캘린더 내보내기 (.ics) ---------- */
+
+  /* 구글 캘린더 바로 추가 링크 — 기기의 .ics 기본 앱 설정과 무관하게 동작.
+   * href는 innerHTML 속성에만 쓰므로 &는 &amp;로 넣음 */
+  function gcalLink(y, m, d, title, details, label) {
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var nx = M._internals.civilFromDays(M._internals.daysFromCivil(y, m, d) + 1);
+    var href = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+      '&amp;text=' + encodeURIComponent(title) +
+      '&amp;dates=' + y + pad(m) + pad(d) + '/' + nx.y + pad(nx.m) + pad(nx.d) +
+      '&amp;details=' + encodeURIComponent(details) +
+      '&amp;ctz=Asia/Seoul';
+    return '<a class="gcal-link" target="_blank" rel="noopener" href="' + href + '">' +
+      (label || '+ 구글 캘린더에 저장') + '</a>';
+  }
 
   function icsEscape(s) {
     return s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
@@ -1676,6 +1736,8 @@
             '</div>' +
             (c.reasons.length ? '<div class="pill-row" style="margin-top: 10px;">' +
               c.reasons.map(function (rs) { return '<span class="pill">' + rs + '</span>'; }).join('') + '</div>' : '') +
+            '<div>' + gcalLink(c.y, c.m, c.d, '결혼 택일 후보 · ' + g.kor + '일',
+              '두 사람 평균 ' + c.score + '점 — 사주첩 sajucheop.com') + '</div>' +
             '</div>';
         }).join('') : '<p class="purpose-empty" style="margin: 20px;">조건에 맞는 날이 없어요. 기간을 넓히거나 주말만 보기를 꺼보세요.</p>') +
         '<p class="form-microcopy" style="margin: 16px 20px 0;">후보 중 어느 한쪽 일지와 충이 드는 날 ' + excluded + '일은 제외했어요. 점수는 참고용 지수입니다.</p>';
@@ -1719,6 +1781,8 @@
             '</div>' +
             (c.cautions.length ? '<div class="tg-caution">유의 — ' + c.cautions.join(' · ') + '</div>' : '') +
             '<div class="tg-hours">' + hours + '</div>' +
+            '<div>' + gcalLink(c.y, c.m, c.d, '출산 택일 후보 · ' + g.kor + '일',
+              c.reasons.slice(0, 2).join(' · ') + ' — 사주첩 sajucheop.com') + '</div>' +
             '<button type="button" class="btn-outline tg-preview" style="height: 44px; margin-top: 12px; font-size: 13.5px;" ' +
             'data-y="' + c.y + '" data-m="' + c.m + '" data-d="' + c.d + '" data-h="' + c.bestHours[0].repHour + '">' +
             '이 날짜·시간의 아기 사주 미리 보기</button>' +
@@ -1956,7 +2020,25 @@
     $('#btn-make-gunghap2').addEventListener('click', makeGunghapLink);
     $('#btn-make-gunghap3').addEventListener('click', makeGunghapLink);
     $('#btn-share-gunghap').addEventListener('click', shareGunghap);
-    $('#btn-my-result').addEventListener('click', function () { showView('result'); });
+    $('#btn-return-gunghap').addEventListener('click', shareGunghapResultLink);
+    $('#btn-my-result').addEventListener('click', function () {
+      if (state.pairView) {
+        state.pairView = false;
+        state.gunghapUrl = null;
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* 무시 */ }
+        showView('home');
+      } else {
+        showView('result');
+      }
+    });
+    /* 구글 캘린더 링크 클릭 집계 (위임) */
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      while (t && t !== document) {
+        if (t.classList && t.classList.contains('gcal-link')) { track('gcal_add'); break; }
+        t = t.parentNode;
+      }
+    });
     $('#ib-dismiss').addEventListener('click', dismissInvite);
     $('#cal-prev').addEventListener('click', function () { moveMonth(-1); });
     $('#cal-next').addEventListener('click', function () { moveMonth(1); });
@@ -2014,10 +2096,27 @@
   var savedProfile = loadProfile();
   if (savedProfile) fillFormFromProfile(savedProfile);
   renderResumeChip();
-  state.invite = parseInviteFromHash();
-  if (state.invite) showInviteBanner();
-  showView(location.hash === '#taegil' ? 'taegil' : 'home');
+  var pairData = parsePairFromHash();
+  if (pairData) {
+    try {
+      var pairA = M.compute(pairData.a), pairB = M.compute(pairData.b);
+      state.pairView = true;
+      state.gunghapUrl = location.origin + location.pathname + '#g=' + G.encodePair(pairData.a, pairData.b);
+      /* 링크를 받은 원 발신자(a) 시점: a가 '나' 자리, b가 상대 자리 */
+      renderGunghap(pairB, pairA, pairData.b.name || '상대', pairData.a.name || '상대');
+      updateGunghapButtons('pair');
+      track('gunghap_pair_view');
+    } catch (e) {
+      state.pairView = false;
+      if (window.console) console.error(e);
+    }
+  }
+  if (!state.pairView) {
+    state.invite = parseInviteFromHash();
+    if (state.invite) showInviteBanner();
+  }
+  showView(state.pairView ? 'gunghap' : (location.hash === '#taegil' ? 'taegil' : 'home'));
 
   /* 디버그·검증용 최소 노출 */
-  window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, buildMyeongsikCard: buildMyeongsikCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser };
+  window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, buildMyeongsikCard: buildMyeongsikCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser, _state: state };
 })();

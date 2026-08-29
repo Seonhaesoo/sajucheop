@@ -37,24 +37,53 @@
     }));
   }
 
+  function unpackProfile(o) {
+    var y = +o.y, m = +o.m, d = +o.d;
+    if (!(y >= 1900 && y <= 2100)) return null;
+    if (!(m >= 1 && m <= 12)) return null;
+    if (!(d >= 1 && d <= 31)) return null;
+    var unknown = o.u === 1;
+    var h = unknown ? 12 : +o.h, mi = unknown ? 0 : +o.i;
+    if (!unknown && !(h >= 0 && h <= 23 && mi >= 0 && mi <= 59)) return null;
+    return {
+      name: String(o.n || '').slice(0, 12),
+      year: y, month: m, day: d,
+      hour: h, minute: mi,
+      unknownTime: unknown,
+      gender: o.g === 'M' ? 'M' : 'F',
+      applySolarTime: o.s !== 0
+    };
+  }
+
+  function packProfile(p) {
+    return {
+      n: (p.name || '').slice(0, 12),
+      y: p.year, m: p.month, d: p.day,
+      h: p.unknownTime ? null : p.hour,
+      i: p.unknownTime ? null : p.minute,
+      u: p.unknownTime ? 1 : 0,
+      g: p.gender === 'M' ? 'M' : 'F',
+      s: p.applySolarTime === false ? 0 : 1
+    };
+  }
+
   function decodeProfile(str) {
     try {
+      return unpackProfile(JSON.parse(b64urlDecode(str)));
+    } catch (e) { return null; }
+  }
+
+  /* 두 사람 결과 링크: #g=… */
+  function encodePair(a, b) {
+    return b64urlEncode(JSON.stringify({ a: packProfile(a), b: packProfile(b) }));
+  }
+
+  function decodePair(str) {
+    try {
       var o = JSON.parse(b64urlDecode(str));
-      var y = +o.y, m = +o.m, d = +o.d;
-      if (!(y >= 1900 && y <= 2100)) return null;
-      if (!(m >= 1 && m <= 12)) return null;
-      if (!(d >= 1 && d <= 31)) return null;
-      var unknown = o.u === 1;
-      var h = unknown ? 12 : +o.h, mi = unknown ? 0 : +o.i;
-      if (!unknown && !(h >= 0 && h <= 23 && mi >= 0 && mi <= 59)) return null;
-      return {
-        name: String(o.n || '').slice(0, 12),
-        year: y, month: m, day: d,
-        hour: h, minute: mi,
-        unknownTime: unknown,
-        gender: o.g === 'M' ? 'M' : 'F',
-        applySolarTime: o.s !== 0
-      };
+      var a = unpackProfile(o.a), b = unpackProfile(o.b);
+      if (!a || !b) return null;
+      return { a: a, b: b };
     } catch (e) { return null; }
   }
 
@@ -229,6 +258,8 @@
   window.Gunghap = {
     encodeProfile: encodeProfile,
     decodeProfile: decodeProfile,
+    encodePair: encodePair,
+    decodePair: decodePair,
     escapeHtml: escapeHtml,
     compute: compute
   };
