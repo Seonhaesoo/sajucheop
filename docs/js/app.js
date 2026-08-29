@@ -812,11 +812,11 @@
     if (!state.result) return;
     toast('명함을 그리는 중이에요…');
     buildCharacterCard().then(function (cv) {
-      var a = document.createElement('a');
-      a.download = cardFileName();
-      a.href = cv.toDataURL('image/png');
-      a.click();
-      toast('사주 명함을 저장했어요. 스토리에 올려보세요.');
+      cv.toBlob(function (blob) {
+        if (deliverFile(blob, cardFileName(), '사주첩 — 나의 사주 캐릭터') === 'downloaded') {
+          toast('사주 명함을 저장했어요. 스토리에 올려보세요.');
+        }
+      }, 'image/png');
     }).catch(function () {
       toast('이미지 생성에 실패했어요. 다시 시도해 주세요.');
     });
@@ -833,12 +833,7 @@
             title: '사주첩 — 나의 사주 캐릭터',
             text: '나의 사주 캐릭터: ' + state.character.data.name
           }).catch(function () {});
-        } else {
-          var a = document.createElement('a');
-          a.download = cardFileName();
-          a.href = URL.createObjectURL(blob);
-          a.click();
-          setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        } else if (deliverFile(blob, cardFileName(), '사주첩 — 나의 사주 캐릭터') === 'downloaded') {
           toast('이 기기에선 바로 공유가 안 돼서 이미지로 저장했어요.');
         }
       }, 'image/png');
@@ -1059,6 +1054,43 @@
     renderCalendar();
   }
 
+  /* ---------- 파일 전달 (다운로드 / 공유 시트 / 인앱 브라우저 안내) ---------- */
+
+  function isMobileUA() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  function isInAppBrowser() {
+    return /Instagram|FBAN|FBAV|FB_IAB|KAKAOTALK|NAVER\(inapp|Line\/|DaumApps/i.test(navigator.userAgent);
+  }
+
+  /* 반환: 'shared' | 'blocked' | 'downloaded' */
+  function deliverFile(blob, filename, shareTitle) {
+    var file = null, canShare = false;
+    try {
+      file = new File([blob], filename, { type: blob.type });
+      canShare = isMobileUA() && !!(navigator.canShare && navigator.canShare({ files: [file] }));
+    } catch (e) { canShare = false; }
+
+    if (canShare) {
+      navigator.share({ files: [file], title: shareTitle }).then(function () {
+        toast('공유 창에서 저장하거나 캘린더·사진 앱을 선택하면 돼요.');
+      }).catch(function () { /* 사용자가 닫음 — 조용히 */ });
+      return 'shared';
+    }
+    if (isInAppBrowser()) {
+      toast('인스타·카톡 안 브라우저에서는 저장이 막혀요. 오른쪽 위 ⋯ 메뉴 → 외부 브라우저로 열기 후 다시 시도해 주세요.');
+      return 'blocked';
+    }
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.download = filename;
+    a.href = url;
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    return 'downloaded';
+  }
+
   /* ---------- 캘린더 내보내기 (.ics) ---------- */
 
   function icsEscape(s) {
@@ -1115,15 +1147,12 @@
     try {
       var ics = buildIcs();
       var blob = new Blob([ics.text], { type: 'text/calendar;charset=utf-8' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.download = '사주첩-운세캘린더.ics';
-      a.href = url;
-      a.click();
-      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-      toast('30일치 ' + ics.count + '개 일정을 파일로 받았어요. 캘린더에 넣는 법은 아래 안내를 보세요.');
+      var mode = deliverFile(blob, '사주첩-운세캘린더.ics', '사주첩 — 운세 캘린더');
       var help = $('#ics-help');
-      if (help) help.open = true;
+      if (mode === 'downloaded') {
+        toast('30일치 ' + ics.count + '개 일정을 파일로 받았어요. 캘린더에 넣는 법은 아래 안내를 보세요.');
+      }
+      if (help && mode !== 'shared') help.open = true;
     } catch (e) {
       toast('파일 생성에 문제가 생겼어요. 새로고침 후 다시 시도해 주세요.');
       if (window.console) console.error(e);
@@ -1290,11 +1319,11 @@
       ctx.fillRect(0, 0, 640, 400);
       ctx.drawImage(img, 0, 0, 640, 400);
       URL.revokeObjectURL(url);
-      var a = document.createElement('a');
-      a.download = '사주첩-대운그래프.png';
-      a.href = canvas.toDataURL('image/png');
-      a.click();
-      toast('그래프 이미지를 저장했어요.');
+      canvas.toBlob(function (blob) {
+        if (deliverFile(blob, '사주첩-대운그래프.png', '사주첩 — 대운 그래프') === 'downloaded') {
+          toast('그래프 이미지를 저장했어요.');
+        }
+      }, 'image/png');
     };
     img.onerror = function () {
       URL.revokeObjectURL(url);
@@ -1405,5 +1434,5 @@
   showView('home');
 
   /* 디버그·검증용 최소 노출 */
-  window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard };
+  window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser };
 })();
