@@ -9,7 +9,12 @@ if (!IG_USER_ID || !TOKEN) {
   process.exit(0);
 }
 
-const base = 'https://graph.facebook.com/v21.0/' + IG_USER_ID;
+/* 토큰 유형 자동 감지:
+ * - "IG"로 시작하는 토큰 = Instagram 로그인 방식(페이스북 페이지 불필요) → graph.instagram.com
+ * - 그 외(페이스북 페이지 토큰 등) → graph.facebook.com */
+const HOST = TOKEN.startsWith('IG') ? 'graph.instagram.com' : 'graph.facebook.com';
+console.log('API 호스트:', HOST);
+const base = 'https://' + HOST + '/v21.0/' + IG_USER_ID;
 
 const r1 = await fetch(base + '/media?media_type=STORIES&image_url=' +
   encodeURIComponent(IMAGE_URL) + '&access_token=' + TOKEN, { method: 'POST' });
