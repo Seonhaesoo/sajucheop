@@ -1044,6 +1044,7 @@ a.btn-primary { text-decoration: none; }
   gap: 10px;
   margin: 14px 20px 0;
 }
+a.feature-card { text-decoration: none; color: inherit; }
 .feature-card {
   flex: 1;
   display: flex;

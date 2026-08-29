@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>아기 이름 짓기 무료 — 81수리·발음오행·작명 한자 사전 | 사주첩</title>
+  <meta name="description" content="81수리 네 격, 발음오행, 사주에 부족한 오행을 채우는 글자까지 — 무료 작명 도구. 이름 평가와 추천, 획수·자원오행이 정리된 작명 한자 사전.">
+  <link rel="canonical" href="https://sajucheop.com/naming/">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"사주첩 이름 짓기","url":"https://sajucheop.com/naming/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"inLanguage":"ko"}</script>
+  <meta property="og:title" content="아기 이름 짓기 무료 — 수리·오행 작명">
+  <meta property="og:description" content="81수리 네 격과 발음오행, 사주 부족 오행 보완까지 한 번에.">
+  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .dict-item {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 11px 2px;
+    }
+    .dict-item + .dict-item { border-top: 1px solid var(--line-soft); }
+    .dict-han { font-family: 'Noto Serif KR', serif; font-size: 22px; width: 34px; flex: none; }
+    .dict-main { flex: 1; min-width: 0; font-size: 13px; }
+    .dict-sub { font-size: 11.5px; color: var(--faint); }
+    .dict-el { flex: none; font-size: 11px; padding: 2px 8px; border: 1px solid var(--line-soft); border-radius: 999px; color: var(--muted); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header class="doc-header">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">사주첩</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="../">사주 보기</a>
+      <a href="../tojeong/">토정비결</a>
+      <a href="../guide/">서재</a>
+    </nav>
+  </header>
+
+  <div class="daeun-intro" style="margin-top: 26px;">
+    <h2 style="font-size: 24px;">수리와 오행으로 짓는 이름</h2>
+    <p>81수리 네 격과 발음오행, 그리고 <b>사주에 부족한 오행을 채우는 글자</b>까지 함께 봅니다. 아래에는 획수·자원오행이 정리된 <b>작명 한자 사전</b>도 있어요.</p>
+  </div>
+
+  <!-- 성씨 -->
+  <div class="card card-pad" style="margin-top: 8px;">
+    <div class="section-head"><h3 class="section-title" style="font-size: 15px;">성씨</h3></div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1;"><select id="nmp-sur"></select></div>
+    </div>
+    <div class="nm-row" id="nmp-sur-custom" hidden>
+      <input type="text" class="text-input" id="nmp-sur-kor" maxlength="1" placeholder="성 (한글)" style="flex: 1;">
+      <input type="number" class="text-input" id="nmp-sur-strokes" min="1" max="30" placeholder="한자 획수" style="flex: 1;">
+    </div>
+  </div>
+
+  <!-- 아기 정보 (선택) -->
+  <div class="card card-pad" style="margin-top: 14px;">
+    <div class="section-head">
+      <h3 class="section-title" style="font-size: 15px;">아기 정보</h3>
+      <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">생일은 선택 — 넣으면 오행 보완</span>
+    </div>
+    <div class="nm-row" role="radiogroup" aria-label="성별">
+      <label class="nm-gender"><input type="radio" name="nmp-gender" value="M" checked><span>남자</span></label>
+      <label class="nm-gender"><input type="radio" name="nmp-gender" value="F"><span>여자</span></label>
+    </div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1.3;"><select id="nmp-year"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="nmp-month"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="nmp-day"></select></div>
+    </div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1;"><select id="nmp-hour"></select></div>
+    </div>
+    <p class="purpose-hint" id="nmp-saju-line" style="margin-top: 10px;">생년월일(양력)을 넣으면 명식을 분석해 부족한 오행을 채우는 글자를 먼저 골라드려요.</p>
+  </div>
+
+  <!-- 탭 -->
+  <div class="seg-row" id="nmp-tabs" style="margin: 16px 20px 0;">
+    <button type="button" class="seg-btn active" data-tab="rec">이름 추천</button>
+    <button type="button" class="seg-btn" data-tab="eval">이름 평가</button>
+  </div>
+
+  <!-- 추천 -->
+  <div id="nmp-rec-panel">
+    <div class="btn-stack" style="margin-top: 16px;">
+      <button class="btn-primary" id="nmp-run-rec">이름 추천 받기</button>
+    </div>
+    <div id="nmp-rec-results"></div>
+  </div>
+
+  <!-- 평가 -->
+  <div id="nmp-eval-panel" hidden>
+    <div class="card card-pad" style="margin-top: 16px;">
+      <div class="section-head"><h3 class="section-title" style="font-size: 15px;">이름 글자</h3></div>
+      <div class="nm-char-block" data-idx="0">
+        <div class="nm-row">
+          <input type="text" class="text-input nm-read" maxlength="1" placeholder="첫 글자 음 (예: 서)" style="flex: 1;">
+          <input type="number" class="text-input nm-strokes" min="1" max="30" placeholder="획수 직접" style="width: 96px;" hidden>
+        </div>
+        <div class="nm-chips" hidden></div>
+      </div>
+      <div class="nm-char-block" data-idx="1" style="margin-top: 12px;">
+        <div class="nm-row">
+          <input type="text" class="text-input nm-read" maxlength="1" placeholder="둘째 글자 음 (외자면 비움)" style="flex: 1;">
+          <input type="number" class="text-input nm-strokes" min="1" max="30" placeholder="획수 직접" style="width: 96px;" hidden>
+        </div>
+        <div class="nm-chips" hidden></div>
+      </div>
+      <p class="form-microcopy" style="margin-top: 10px;">음을 넣으면 한자 후보가 떠요. 목록에 없는 한자는 <b>획수 직접</b>에 획수만 넣어도 평가돼요.</p>
+      <button class="btn-primary" id="nmp-run-eval" style="margin-top: 12px;">이름 평가하기</button>
+    </div>
+    <div id="nmp-eval-result"></div>
+  </div>
+
+  <!-- 한자 사전 -->
+  <div class="card card-pad" style="margin-top: 20px;">
+    <div class="section-head">
+      <h3 class="section-title" style="font-size: 16px;">작명 한자 사전</h3>
+      <span class="section-tag" style="color: #9A8F7E; font-weight: 400;" id="nmp-dict-count"></span>
+    </div>
+    <div class="nm-row">
+      <input type="text" class="text-input" id="nmp-dict-q" maxlength="2" placeholder="음으로 검색 (예: 수, 현, 준)" style="flex: 1;">
+    </div>
+    <div class="purpose-chips" id="nmp-dict-els" style="margin-top: 12px;"></div>
+    <div id="nmp-dict-list" style="margin-top: 6px;"></div>
+    <button class="btn-outline" id="nmp-dict-more" style="margin-top: 12px; width: 100%;" hidden>더 보기</button>
+  </div>
+
+  <p class="form-microcopy" style="margin: 14px 24px 0;">획수는 성명학 원획(강희자전) 기준이며 자전·유파에 따라 다를 수 있어요. 최종 이름은 소리 내어 불러 보고, 출생신고 전 대법원 인명용 한자 여부를 확인하세요.</p>
+
+  <footer class="site-footer" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© 사주첩</span>
+      <nav class="footer-links">
+        <a href="../guide/">서재</a>
+        <a href="../terms.html">이용약관</a>
+        <a href="../privacy.html">개인정보</a>
+      </nav>
+    </div>
+    <p class="footer-note">본 도구는 전통 성명학 이론을 지수화한 참고용 콘텐츠입니다. 이름은 가족의 마음이 가장 큰 기준입니다.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="bottom-space"></div>
+
+</div>
+
+<script src="../js/manseryeok.js"></script>
+<script src="../js/naming.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var M = window.Manseryeok, NM = window.Naming;
+  var EL_LIST = ['목', '화', '토', '금', '수'];
+
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+  function track(name, params) {
+    if (window.gtag) { try { window.gtag('event', name, params || {}); } catch (e) { /* 무시 */ } }
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ---------- 입력 채우기 ---------- */
+
+  var sel = $('#nmp-sur');
+  sel.innerHTML = NM.SURNAMES.map(function (s, i) {
+    return '<option value="' + i + '">' + s.r + ' (' + s.h + ' · ' + s.s + '획)</option>';
+  }).join('') + '<option value="custom">직접 입력…</option>';
+  sel.addEventListener('change', function () {
+    $('#nmp-sur-custom').hidden = sel.value !== 'custom';
+  });
+
+  var nowY = new Date().getFullYear();
+  var opts = '<option value="">연도 (선택)</option>';
+  for (var y = nowY + 1; y >= nowY - 15; y--) opts += '<option value="' + y + '">' + y + '년</option>';
+  $('#nmp-year').innerHTML = opts;
+  opts = '';
+  for (var m = 1; m <= 12; m++) opts += '<option value="' + m + '">' + m + '월</option>';
+  $('#nmp-month').innerHTML = opts;
+  opts = '';
+  for (var d = 1; d <= 31; d++) opts += '<option value="' + d + '">' + d + '일</option>';
+  $('#nmp-day').innerHTML = opts;
+  opts = '<option value="">태어난 시 (몰라도 돼요)</option>';
+  for (var h = 0; h < 24; h++) opts += '<option value="' + h + '">' + String(h).padStart(2, '0') + '시</option>';
+  $('#nmp-hour').innerHTML = opts;
+
+  function surname() {
+    if (sel.value === 'custom') {
+      var kor = $('#nmp-sur-kor').value.trim();
+      var st = +$('#nmp-sur-strokes').value;
+      if (!kor || !st) return null;
+      return { h: kor, r: kor, s: st };
+    }
+    return NM.SURNAMES[+sel.value];
+  }
+
+  function babyLack() {
+    var y = +$('#nmp-year').value;
+    if (!y) return null;
+    var hourV = $('#nmp-hour').value;
+    try {
+      var res = M.compute({
+        year: y, month: +$('#nmp-month').value, day: +$('#nmp-day').value,
+        hour: hourV === '' ? 12 : +hourV, minute: 0,
+        unknownTime: hourV === '',
+        gender: document.querySelector('input[name="nmp-gender"]:checked').value,
+        applySolarTime: true
+      });
+      var els = res.elements;
+      return { lack: Object.keys(els).filter(function (k) { return els[k] === 0; }), els: els };
+    } catch (e) { return null; }
+  }
+
+  function refreshSajuLine() {
+    var b = babyLack();
+    $('#nmp-saju-line').innerHTML = !b
+      ? '생년월일(양력)을 넣으면 명식을 분석해 부족한 오행을 채우는 글자를 먼저 골라드려요.'
+      : (b.lack.length
+        ? '아기 명식에 부족한 오행 <b>' + b.lack.join(' · ') + '</b> — 이 기운을 채우는 글자를 먼저 추천해요.'
+        : '아기 명식은 오행이 고루 갖춰져 있어요. 수리·발음 좋은 이름을 추천합니다.');
+  }
+  ['nmp-year', 'nmp-month', 'nmp-day', 'nmp-hour'].forEach(function (id) {
+    $('#' + id).addEventListener('change', refreshSajuLine);
+  });
+  document.querySelectorAll('input[name="nmp-gender"]').forEach(function (r) {
+    r.addEventListener('change', refreshSajuLine);
+  });
+
+  /* ---------- 탭 ---------- */
+
+  document.querySelectorAll('[data-tab]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var tab = b.getAttribute('data-tab');
+      document.querySelectorAll('[data-tab]').forEach(function (x) { x.classList.toggle('active', x === b); });
+      $('#nmp-rec-panel').hidden = tab !== 'rec';
+      $('#nmp-eval-panel').hidden = tab !== 'eval';
+    });
+  });
+
+  /* ---------- 추천 ---------- */
+
+  function runRec() {
+    var sur = surname();
+    if (!sur) { toast('성씨를 선택하거나 직접 입력해 주세요.'); return; }
+    var gender = document.querySelector('input[name="nmp-gender"]:checked').value;
+    var b = babyLack();
+    var lack = b ? b.lack : null;
+    track('naming_rec', { page: 'standalone', lack: lack ? lack.join(',') : '' });
+    var list = NM.recommend(sur, gender, lack, 8);
+    $('#nmp-rec-results').innerHTML = (list.length
+      ? list.map(function (it) {
+          var pills = ['수리 사격 모두 길'];
+          if (it.ev.sound.score >= 14) pills.push('발음오행 상생');
+          if (it.ev.jawon.score > 0) pills.push('부족 오행 보완');
+          return '<div class="card card-pad nm-name-card" style="margin-top: 14px;">' +
+            '<div class="nm-name-head">' +
+            '<b class="nm-name-big">' + esc(sur.r) + it.c1.r + it.c2.r + '</b>' +
+            '<span class="nm-name-han">' + esc(sur.h) + it.c1.h + it.c2.h + '</span>' +
+            '<span class="tg-score">' + it.ev.total + '<small>점</small></span>' +
+            '</div>' +
+            '<p class="nm-name-mean">' + it.c1.h + ' ' + it.c1.m + ' (' + it.c1.s + '획·' + it.c1.e + ') + ' +
+            it.c2.h + ' ' + it.c2.m + ' (' + it.c2.s + '획·' + it.c2.e + ')</p>' +
+            '<div class="pill-row" style="margin-top: 8px;">' +
+            pills.map(function (p) { return '<span class="pill">' + p + '</span>'; }).join('') +
+            '</div></div>';
+        }).join('') +
+        '<div class="btn-stack" style="margin-top: 14px;"><button class="btn-outline" id="nmp-reroll">다른 이름 다시 뽑기</button>' +
+        '<p class="form-microcopy">후보는 획수·오행 기준이에요. 소리 내어 불러 보고, 성과 이어 읽었을 때 자연스러운지 꼭 확인하세요.</p></div>'
+      : '<p class="purpose-empty" style="margin: 20px;">조건에 맞는 조합을 찾지 못했어요. 성별을 바꾸거나 생일 없이 다시 시도해 보세요.</p>');
+    var again = $('#nmp-reroll');
+    if (again) again.addEventListener('click', runRec);
+  }
+  $('#nmp-run-rec').addEventListener('click', runRec);
+
+  /* ---------- 평가 ---------- */
+
+  var chosen = [null, null];
+  document.querySelectorAll('.nm-char-block').forEach(function (block) {
+    var idx = +block.getAttribute('data-idx');
+    var read = block.querySelector('.nm-read');
+    var strokes = block.querySelector('.nm-strokes');
+    var chips = block.querySelector('.nm-chips');
+    read.addEventListener('input', function () {
+      chosen[idx] = null;
+      strokes.value = '';
+      var v = read.value.trim();
+      if (!v) { chips.hidden = true; strokes.hidden = true; chips.innerHTML = ''; return; }
+      var list = NM.charsByReading(v);
+      chips.innerHTML = list.length
+        ? list.map(function (c, i) {
+            return '<button type="button" class="nm-chip" data-ci="' + i + '">' + c.h +
+              ' <small>' + c.s + '획 · ' + c.e + ' · ' + c.m + '</small></button>';
+          }).join('')
+        : '<span class="nm-none">목록에 없는 음이에요 — 획수를 직접 넣으면 수리로 평가해요.</span>';
+      chips.hidden = false;
+      strokes.hidden = false;
+      chips.querySelectorAll('.nm-chip').forEach(function (chipBtn) {
+        chipBtn.addEventListener('click', function () {
+          var c = list[+chipBtn.getAttribute('data-ci')];
+          chosen[idx] = c;
+          strokes.value = c.s;
+          chips.querySelectorAll('.nm-chip').forEach(function (x) { x.classList.toggle('selected', x === chipBtn); });
+        });
+      });
+    });
+    strokes.addEventListener('input', function () { chosen[idx] = null; });
+  });
+
+  var GYEOK_ICON = { '대길': '◎', '길': '○', '평': '△', '흉': '✕' };
+
+  $('#nmp-run-eval').addEventListener('click', function () {
+    var sur = surname();
+    if (!sur) { toast('성씨를 선택하거나 직접 입력해 주세요.'); return; }
+    var chars = [], missing = false;
+    document.querySelectorAll('.nm-char-block').forEach(function (block) {
+      var idx = +block.getAttribute('data-idx');
+      var readV = block.querySelector('.nm-read').value.trim();
+      if (!readV) return;
+      var st = +block.querySelector('.nm-strokes').value;
+      if (chosen[idx]) chars.push(chosen[idx]);
+      else if (st) chars.push({ h: '', r: readV, s: st, e: null });
+      else missing = true;
+    });
+    if (missing || !chars.length) {
+      toast('이름 글자마다 한자를 고르거나 획수를 넣어주세요.');
+      return;
+    }
+    track('naming_eval', { page: 'standalone' });
+    var b = babyLack();
+    var ev = NM.evaluate(sur, chars, b ? b.lack : null);
+    var nameKor = sur.r + chars.map(function (c) { return c.r; }).join('');
+    var nameHan = chars.every(function (c) { return c.h; })
+      ? sur.h + chars.map(function (c) { return c.h; }).join('') : null;
+
+    $('#nmp-eval-result').innerHTML =
+      '<div class="char-hero" style="margin-top: 14px;">' +
+      '<div class="tj-code">' + esc(nameKor) + (nameHan ? ' (' + esc(nameHan) + ')' : '') + '</div>' +
+      '<div class="gh-score"><span class="t-score">' + ev.total + '</span>점</div>' +
+      '<div class="gh-tier">' + ev.tier + '</div>' +
+      '</div>' +
+      '<div class="card card-pad" style="margin-top: 14px;">' +
+      '<div class="section-head"><h3 class="section-title" style="font-size: 15px;">수리 사격 (81수리)</h3></div>' +
+      ev.gyeok.map(function (g) {
+        return '<div class="fortune-row"><span class="f-label" style="width: 88px;">' + g.name +
+          ' <small style="color: #9A8F7E;">' + g.desc + '</small></span>' +
+          '<span class="f-text"><b>' + GYEOK_ICON[g.su.tier] + ' ' + g.su.v + '수 · ' + g.su.tier + '</b> — ' +
+          g.su.label + '격</span></div>';
+      }).join('') +
+      '</div>' +
+      '<div class="card card-pad" style="margin-top: 14px;">' +
+      '<div class="section-head"><h3 class="section-title" style="font-size: 15px;">소리와 오행</h3></div>' +
+      '<p class="reading-body" style="margin-top: 10px;">' + ev.sound.line + '</p>' +
+      (ev.jawon.line ? '<p class="reading-body" style="margin-top: 8px;">' + ev.jawon.line + '</p>' : '') +
+      '<p class="reading-body" style="margin-top: 8px;">' + ev.eumyang.line + '</p>' +
+      ev.warns.map(function (w) { return '<p class="notice" style="margin-top: 10px;">' + w + '</p>'; }).join('') +
+      '</div>';
+    $('#nmp-eval-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  /* ---------- 한자 사전 ---------- */
+
+  var dictEl = null; /* 오행 필터 */
+  var dictShown = 30;
+
+  $('#nmp-dict-els').innerHTML = '<button type="button" class="purpose-chip active" data-el="">전체</button>' +
+    EL_LIST.map(function (e) {
+      return '<button type="button" class="purpose-chip" data-el="' + e + '">' + e + '</button>';
+    }).join('');
+  $('#nmp-dict-els').querySelectorAll('[data-el]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      dictEl = b.getAttribute('data-el') || null;
+      dictShown = 30;
+      $('#nmp-dict-els').querySelectorAll('[data-el]').forEach(function (x) { x.classList.toggle('active', x === b); });
+      renderDict();
+    });
+  });
+  $('#nmp-dict-q').addEventListener('input', function () { dictShown = 30; renderDict(); });
+  $('#nmp-dict-more').addEventListener('click', function () { dictShown += 30; renderDict(); });
+
+  function renderDict() {
+    var q = $('#nmp-dict-q').value.trim();
+    var list = NM.HANJA.filter(function (c) {
+      if (dictEl && c.e !== dictEl) return false;
+      if (q && c.r.indexOf(q) < 0) return false;
+      return true;
+    });
+    /* 음 가나다 → 획수 순 */
+    list.sort(function (a, b) { return a.r === b.r ? a.s - b.s : (a.r < b.r ? -1 : 1); });
+    $('#nmp-dict-count').textContent = list.length + '자';
+    $('#nmp-dict-list').innerHTML = list.slice(0, dictShown).map(function (c) {
+      return '<div class="dict-item">' +
+        '<span class="dict-han">' + c.h + '</span>' +
+        '<span class="dict-main"><b>' + c.r + '</b> · ' + c.m +
+        ' <span class="dict-sub">' + c.s + '획' + (c.g === 'M' ? ' · 남아 어울림' : (c.g === 'F' ? ' · 여아 어울림' : '')) + '</span></span>' +
+        '<span class="dict-el">' + c.e + '</span>' +
+        '</div>';
+    }).join('') || '<p class="purpose-empty" style="margin: 14px 0;">해당하는 글자가 없어요. 다른 음이나 오행으로 찾아보세요.</p>';
+    $('#nmp-dict-more').hidden = list.length <= dictShown;
+  }
+  renderDict();
+})();
+</script>
+</body>
+</html>
