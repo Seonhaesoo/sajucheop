@@ -43,6 +43,9 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* hidden 속성은 어떤 display 지정보다 우선한다 (메뉴·배너·칩 토글의 기반) */
+[hidden] { display: none !important; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
