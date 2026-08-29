@@ -137,6 +137,29 @@
     window.__cardDataUrl = jpeg;
     window.__cardReady = true;
   });
+
+  /* 봇용 메타데이터 (쓰레드 텍스트 생성 등) */
+  (function () {
+    var t = kstToday();
+    var p = M.dayPillarOf(t.y, t.m, t.d);
+    var st = M.STEMS[p.stem], br = M.BRANCHES[p.branch];
+    var g = M.ganjiName(p.stem, p.branch);
+    var ch = C.of(st.han);
+    var hap = M.STEMS[STEM_HAP[p.stem]];
+    var chung = STEM_CHUNG[p.stem] !== undefined ? M.STEMS[STEM_CHUNG[p.stem]] : null;
+    var cb = M.BRANCHES[CHUNG_B[p.branch]];
+    window.__cardMeta = {
+      date: t.y + '-' + String(t.m).padStart(2, '0') + '-' + String(t.d).padStart(2, '0'),
+      dateKor: t.m + '월 ' + t.d + '일 ' + WEEKDAYS[t.w],
+      ganjiKor: g.kor,
+      ganjiHan: g.han,
+      stemKor: st.kor + st.el,
+      metaphor: ch.metaphor,
+      hapKor: hap.kor + hap.el + '(' + hap.han + ')',
+      chungKor: chung ? chung.kor + chung.el + '(' + chung.han + ')' : null,
+      chungBranchKor: cb.kor + '(' + cb.han + ')'
+    };
+  })();
 })();
 </script>
 </body>

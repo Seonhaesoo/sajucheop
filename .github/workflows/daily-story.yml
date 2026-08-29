@@ -14,6 +14,8 @@ jobs:
     env:
       IG_USER_ID: ${{ secrets.IG_USER_ID }}
       IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -56,3 +58,7 @@ jobs:
         env:
           IMAGE_URL: https://sajucheop.com/daily/story.jpg?v=${{ github.run_id }}
         run: node tools/ig-publish.mjs
+
+      - name: 쓰레드 일진 글 게시
+        if: env.THREADS_ACCESS_TOKEN != ''
+        run: node tools/threads-publish.mjs
