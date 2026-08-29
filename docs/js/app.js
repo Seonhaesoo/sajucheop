@@ -367,11 +367,42 @@
     var scores = I.daeunScores(r);
     $('#d-graph').innerHTML = buildGraphSvg(r, scores, currentIdx);
 
-    /* 지금의 대운 카드 */
-    var st = stemLabel(cur.stem), br = branchLabel(cur.branch);
-    var dt = I.daeunText(cur.sipseong);
-    var rangeLabel = (currentIdx >= 0 ? '지금의 대운' : '다가오는 첫 대운') +
-      ' · ' + cur.startAge + '~' + cur.endAge + '세 · ' + cur.sipseong;
+    /* 대운 상세 카드 (선택 가능) */
+    state.daeunSel = currentIdx >= 0 ? currentIdx : 0;
+    fillDaeunCard(r, state.daeunSel);
+
+    /* 타임라인 — 행을 누르면 위 카드가 그 시기 풀이로 바뀐다 */
+    $('#d-list').innerHTML = list.map(function (dw, i) {
+      var s = stemLabel(dw.stem), b = branchLabel(dw.branch);
+      var g = M.ganjiName(dw.stem, dw.branch);
+      var sipPill = dw.current
+        ? '<span class="d-sip">' + dw.sipseong + ' · 지금</span>'
+        : '<span class="d-sip">' + dw.sipseong + '</span>';
+      return '<button type="button" class="daeun-row' + (dw.current ? ' current' : '') +
+        (i === state.daeunSel ? ' selected' : '') + '" data-di="' + i + '">' +
+        '<div class="d-age">' + dw.startAge + '~' + dw.endAge + '세</div>' +
+        '<div class="d-ganji">' +
+        '<div class="d-han"><span class="el-' + s.el + '">' + s.han + '</span><span class="el-' + b.el + '">' + b.han + '</span></div>' +
+        '<div class="d-kor">' + g.kor + '</div>' +
+        '</div>' + sipPill + '</button>';
+    }).join('');
+    $('#d-list').querySelectorAll('.daeun-row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        state.daeunSel = +row.getAttribute('data-di');
+        fillDaeunCard(state.result, state.daeunSel);
+        $('#d-list').querySelectorAll('.daeun-row').forEach(function (rw) {
+          rw.classList.toggle('selected', +rw.getAttribute('data-di') === state.daeunSel);
+        });
+      });
+    });
+  }
+
+  function fillDaeunCard(r, idx) {
+    var dw = r.daeun.list[idx];
+    var st = stemLabel(dw.stem), br = branchLabel(dw.branch);
+    var dt = I.daeunText(dw.sipseong);
+    var label = dw.current ? '지금의 대운'
+      : (r.daeun.koreanAge < dw.startAge ? '다가올 대운' : '지나온 대운');
     $('#d-current').innerHTML =
       '<div class="ganji-col">' +
       '<span class="el-d-' + st.el + '">' + st.han + '</span>' +
@@ -379,25 +410,10 @@
       '</div>' +
       '<div class="v-div"></div>' +
       '<div class="cd-info">' +
-      '<div class="cd-range">' + rangeLabel + '</div>' +
+      '<div class="cd-range">' + label + ' · ' + dw.startAge + '~' + dw.endAge + '세 · ' + dw.sipseong + '</div>' +
       '<div class="cd-title">' + dt.title + '</div>' +
       '<div class="cd-body">' + dt.body + '</div>' +
       '</div>';
-
-    /* 타임라인 */
-    $('#d-list').innerHTML = list.map(function (dw) {
-      var s = stemLabel(dw.stem), b = branchLabel(dw.branch);
-      var g = M.ganjiName(dw.stem, dw.branch);
-      var sipPill = dw.current
-        ? '<span class="d-sip">' + dw.sipseong + ' · 지금</span>'
-        : '<span class="d-sip">' + dw.sipseong + '</span>';
-      return '<div class="daeun-row' + (dw.current ? ' current' : '') + '">' +
-        '<div class="d-age">' + dw.startAge + '~' + dw.endAge + '세</div>' +
-        '<div class="d-ganji">' +
-        '<div class="d-han"><span class="el-' + s.el + '">' + s.han + '</span><span class="el-' + b.el + '">' + b.han + '</span></div>' +
-        '<div class="d-kor">' + g.kor + '</div>' +
-        '</div>' + sipPill + '</div>';
-    }).join('');
   }
 
   function buildGraphSvg(r, scores, currentIdx) {
@@ -1062,7 +1078,7 @@
     ];
     var dn0 = M._internals.daysFromCivil(t.y, t.m, t.d);
     var count = 0;
-    for (var i = 0; i < 90; i++) {
+    for (var i = 0; i < 30; i++) {
       var cv = M._internals.civilFromDays(dn0 + i);
       var info = M.todayInfo(state.result, cv.y, cv.m, cv.d);
       var score = I.scoreDay(state.result, info);
@@ -1104,7 +1120,7 @@
     a.href = url;
     a.click();
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-    toast('90일치 ' + ics.count + '개 일정을 내보냈어요. 캘린더 앱에서 열어 추가하세요.');
+    toast('앞으로 30일, ' + ics.count + '개 일정을 내보냈어요. 다음 달에 또 받아 가세요.');
   }
 
   function shareToday() {
@@ -1130,6 +1146,110 @@
     $('#home-today').innerHTML =
       '<span class="mini-dot" aria-hidden="true"></span>오늘은 ' + g.kor + '(' + g.han + ')일 · ' +
       t.m + '월 ' + t.d + '일 ' + WEEKDAYS[t.w];
+  }
+
+  /* ---------- 전체 풀이 리포트 (무료 v1 · 인쇄/PDF) ---------- */
+
+  function renderReport() {
+    var r = state.result;
+    if (!r) return;
+    var p = r.pillars;
+    var me = M.STEMS[p.day.stem];
+    var ch = C.of(me.han);
+    var t = todayDateParts();
+    var inp = r.input;
+
+    function pillarCol(name, pillar, sipTop, sipBot, isDay) {
+      if (!pillar) {
+        return '<div class="rp-col"><div class="l">' + name + '</div><div class="s">&nbsp;</div>' +
+          '<div class="h" style="color: #B5AA97;">─</div><div class="k">시간</div>' +
+          '<div class="h" style="color: #B5AA97;">─</div><div class="k">모름</div><div class="s">&nbsp;</div></div>';
+      }
+      var st = stemLabel(pillar.stem), br = branchLabel(pillar.branch);
+      return '<div class="rp-col' + (isDay ? ' day' : '') + '">' +
+        '<div class="l">' + name + '</div>' +
+        '<div class="s">' + (isDay ? '<b style="color: #B8382D;">일간 · 나</b>' : (sipTop || '&nbsp;')) + '</div>' +
+        '<div class="h el-' + st.el + '">' + st.han + '</div><div class="k">' + st.kor + '</div>' +
+        '<div class="h el-' + br.el + '">' + br.han + '</div><div class="k">' + br.kor + '</div>' +
+        '<div class="s">' + (sipBot || '&nbsp;') + '</div></div>';
+    }
+
+    var elBars = EL_ORDER.map(function (el) {
+      var c = r.elements[el];
+      var maxC = Math.max.apply(null, EL_ORDER.map(function (e) { return r.elements[e]; }).concat([1]));
+      var zero = c === 0;
+      return '<div class="el-bar-row">' +
+        '<div class="el-name' + (zero ? ' zero' : '') + '">' + EL_HAN[el] + ' ' + el + '</div>' +
+        '<div class="track">' + (zero ? '' : '<div class="fill" style="width: ' + Math.round(c / maxC * 100) + '%; background: var(' + EL_VAR[el] + ');"></div>') + '</div>' +
+        '<div class="el-count' + (zero ? ' zero' : '') + '">' + c + '</div></div>';
+    }).join('');
+
+    var sip = I.sipseongSummary(r);
+    var ilgan = I.ilganText(me.han);
+
+    var daeunItems = r.daeun.list.map(function (dw) {
+      var g = M.ganjiName(dw.stem, dw.branch);
+      var dt = I.daeunText(dw.sipseong);
+      return '<div class="rp-daeun">' +
+        '<div class="rd-head"><span class="rd-range">' + dw.startAge + '~' + dw.endAge + '세</span>' +
+        '<span class="rd-ganji">' + g.kor + '(' + g.han + ')</span>' +
+        '<span class="rd-sip">' + dw.sipseong + (dw.current ? ' · 지금' : '') + '</span></div>' +
+        '<div class="rd-title">' + dt.title + '</div>' +
+        '<div class="rd-body">' + dt.body + '</div></div>';
+    }).join('');
+
+    var basisNotes = [
+      '절기(節氣)는 태양의 시황경을 천문 계산해 시각 단위로 판정했습니다.',
+      inp.applySolarTime ? '진태양시 보정(서울 기준 −32분)을 적용했습니다.' : '진태양시 보정 없이 표준시 그대로 계산했습니다.',
+      '자시(子時)는 야자시 방식으로 처리했습니다.'
+    ];
+    if (r.time.dstEraWarning) basisNotes.push('출생 연도에 서머타임이 시행되어, 실제 출생 시각과 1시간 차이가 있을 수 있습니다.');
+    if (r.jeolipWarning) basisNotes.push('절기 경계에 가까운 출생이라, 출생 시각에 따라 월주가 달라질 수 있습니다.');
+
+    $('#report-body').innerHTML =
+      '<div class="rp-cover">' +
+      '<div class="rp-overline">四柱帖 · 전체 풀이 리포트</div>' +
+      '<h2>' + (state.name ? G.escapeHtml(state.name) + ' 님의 사주' : '나의 사주') + '</h2>' +
+      '<div class="rp-birth">' + inp.year + '년 ' + inp.month + '월 ' + inp.day + '일' +
+      (inp.unknownTime ? ' (시간 모름)' : ' ' + fmtTime(inp.hour * 60 + inp.minute)) +
+      ' · 양력 · ' + (inp.gender === 'F' ? '여성' : '남성') + '</div>' +
+      '<div class="rp-date">발행일 ' + t.y + '년 ' + t.m + '월 ' + t.d + '일 · sajucheop.com</div>' +
+      '</div>' +
+
+      '<div class="report-section"><div class="rp-h">命式 — 나의 여덟 글자</div>' +
+      '<div class="rp-pillars">' +
+      pillarCol('시주', p.hour, r.sipseong.hourStem, r.sipseong.hourBranch, false) +
+      pillarCol('일주', p.day, null, M.branchSipseong(p.day.stem, p.day.branch), true) +
+      pillarCol('월주', p.month, r.sipseong.monthStem, r.sipseong.monthBranch, false) +
+      pillarCol('년주', p.year, r.sipseong.yearStem, r.sipseong.yearBranch, false) +
+      '</div>' +
+      '<p class="rp-line">일간 <b>' + me.kor + me.el + ' ' + me.han + EL_HAN[me.el] + '</b> · 강약 <b>' + r.strength.label + '</b> · 계절 <b>' + (r.season ? r.season.name + ' · ' + r.season.wang : '─') + '</b></p></div>' +
+
+      '<div class="report-section"><div class="rp-h">나의 사주 캐릭터</div>' +
+      '<div class="rp-char"><span class="rp-emblem">' + C.emblemSvg(me.han, 54, 'light') + '</span>' +
+      '<div><div class="rd-title" style="font-size: 15px;">' + ch.name + '</div>' +
+      '<div class="rd-body">「' + ch.metaphor + '」 · ' + ch.essence + '</div></div></div>' +
+      '<p class="rp-line">' + ch.body + '</p>' +
+      '<p class="rp-line"><b style="color: #B8382D;">' + r.strength.label + '</b> · ' + ch.variant[r.strength.label] + '</p>' +
+      '<p class="rp-line"><b>강점</b> — ' + ch.strengths.join(' / ') + '</p>' +
+      '<p class="rp-line"><b>조심할 것</b> — ' + ch.cautions.join(' / ') + '</p></div>' +
+
+      '<div class="report-section"><div class="rp-h">오행의 균형 — ' + I.elementHeadline(r) + '</div>' +
+      '<div style="display: flex; flex-direction: column; gap: 11px;">' + elBars + '</div>' +
+      '<p class="rp-line" style="margin-top: 14px;">' + I.elementComment(r) + '</p></div>' +
+
+      '<div class="report-section"><div class="rp-h">십성 구성 — ' + sip.title + '</div>' +
+      '<p class="rp-line">' + sip.body + '</p>' +
+      '<p class="rp-line">' + ilgan.body + '</p>' +
+      '<p class="rp-line">' + I.strengthText(r.strength.label) + '</p></div>' +
+
+      '<div class="report-section"><div class="rp-h">대운 — 인생의 여덟 계절</div>' +
+      '<p class="rp-line">' + r.daeun.su + '살에 첫 대운이 들어와 10년마다 ' + (r.daeun.forward ? '순행' : '역행') + '으로 바뀝니다.</p>' +
+      daeunItems + '</div>' +
+
+      '<div class="report-section"><div class="rp-h">계산 기준과 안내</div>' +
+      '<p class="rp-line">' + basisNotes.join(' ') + '</p>' +
+      '<p class="rp-line" style="color: #9A8F7E;">본 리포트는 전통 명리학 이론을 바탕으로 한 참고용 콘텐츠입니다. 중요한 결정은 스스로의 판단을 따르세요. © 사주첩</p></div>';
   }
 
   /* ---------- 그래프 PNG 저장 ---------- */
@@ -1228,8 +1348,11 @@
       toast('명식 이미지 저장은 준비 중이에요.');
     });
     $('#btn-report').addEventListener('click', function () {
-      toast('전체 풀이 리포트는 준비 중이에요.');
+      renderReport();
+      showView('report');
     });
+    $('#btn-print').addEventListener('click', function () { window.print(); });
+    $('#btn-print-top').addEventListener('click', function () { window.print(); });
     $('#btn-share').addEventListener('click', shareResult);
     document.querySelectorAll('[data-todo]').forEach(function (a) {
       a.addEventListener('click', function (e) {

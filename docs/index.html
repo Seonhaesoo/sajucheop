@@ -133,10 +133,10 @@
       <div class="field">
         <div class="field-label-row">
           <label class="field-label" for="in-time">태어난 시간</label>
-          <button type="button" id="btn-unknown-time" class="link-sm" aria-pressed="false">시간을 몰라요</button>
+          <button type="button" id="btn-unknown-time" class="chip-btn" aria-pressed="false">시간을 몰라요</button>
         </div>
         <div class="select-wrap no-caret" id="time-wrap">
-          <input id="in-time" type="time" value="12:00" step="300">
+          <input id="in-time" type="time" value="12:00" step="60">
         </div>
         <span class="time-unknown-note" id="time-note" hidden>시간 없이 세 기둥(년·월·일)으로 풀어드려요.</span>
       </div>
@@ -352,6 +352,34 @@
 
   </section>
 
+  <!-- ================= 전체 풀이 리포트 ================= -->
+  <section id="view-report" class="view">
+
+    <header class="sub-header rise no-print">
+      <button class="icon-btn" data-back="daeun" aria-label="대운으로 돌아가기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">전체 풀이 리포트</div>
+      <button class="icon-btn" id="btn-print-top" aria-label="인쇄">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6.5 9V3.5h11V9" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <rect x="3.5" y="9" width="17" height="8" rx="2" stroke="#211C15" stroke-width="1.6"></rect>
+          <path d="M6.5 14.5h11v6h-11z" stroke="#211C15" stroke-width="1.6" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div id="report-body" class="rise"></div>
+
+    <div class="btn-stack rise no-print">
+      <button class="btn-primary" id="btn-print">인쇄 · PDF로 저장</button>
+      <p class="form-microcopy">인쇄 창에서 프린터를 "PDF로 저장"으로 선택하면 파일이 됩니다</p>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
   <!-- ================= 궁합 ================= -->
   <section id="view-gunghap" class="view">
 
@@ -541,7 +569,7 @@
         </svg>
         <span>내 캘린더 앱에 넣기 (.ics)</span>
       </button>
-      <p class="form-microcopy">앞으로 90일의 길일과 충 주의일을 구글·아이폰 캘린더로 가져갈 수 있어요</p>
+      <p class="form-microcopy">앞으로 30일의 길일과 충 주의일을 구글·아이폰 캘린더로 — 매달 새로 받아 가세요</p>
     </div>
 
     <div class="bottom-space"></div>

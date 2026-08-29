@@ -249,7 +249,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 
 .field-label-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -259,6 +259,25 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   margin: -14px 0 -14px -14px;
   background: none;
   border: none;
+}
+
+.chip-btn {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(184, 56, 45, 0.45);
+  background: rgba(184, 56, 45, 0.05);
+  color: var(--seal);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.chip-btn:hover { background: rgba(184, 56, 45, 0.12); }
+.chip-btn[aria-pressed="true"] {
+  background: var(--seal);
+  border-color: var(--seal);
+  color: #FFFDF8;
 }
 
 .text-input {
@@ -782,7 +801,12 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   align-items: center;
   gap: 14px;
   padding: 13px 18px;
+  width: 100%;
+  text-align: left;
+  transition: background 0.12s ease;
 }
+.daeun-row:hover { background: rgba(33, 28, 21, 0.035); }
+.daeun-row.selected:not(.current) { background: rgba(33, 28, 21, 0.055); }
 .daeun-row + .daeun-row { border-top: 1px solid var(--line-soft); }
 .daeun-row.current { background: rgba(184, 56, 45, 0.06); }
 .daeun-row .d-age { width: 58px; font-size: 12px; color: var(--faint); font-weight: 500; }
@@ -984,6 +1008,96 @@ a.btn-primary { text-decoration: none; }
 .guide-grid .guide-card { padding: 14px 16px; }
 .guide-grid .guide-card h2 { font-size: 14.5px; margin-top: 4px; }
 .guide-grid .guide-card p { font-size: 12px; margin-top: 5px; }
+
+/* ---------- 전체 풀이 리포트 ---------- */
+
+.rp-cover { padding: 30px 22px 4px; }
+.rp-cover .rp-overline {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--seal);
+  letter-spacing: 0.16em;
+}
+.rp-cover h2 {
+  margin-top: 10px;
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+}
+.rp-cover .rp-birth { margin-top: 8px; font-size: 13px; color: var(--muted); }
+.rp-cover .rp-date { margin-top: 4px; font-size: 11px; color: var(--faint); }
+
+.report-section {
+  margin: 18px 20px 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+}
+.rp-h {
+  font-family: var(--serif);
+  font-size: 15.5px;
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 14px;
+}
+.rp-line {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--ink-body);
+  margin: 9px 0 0;
+}
+.rp-line b { font-weight: 700; }
+
+.rp-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  text-align: center;
+}
+.rp-col { padding: 6px 2px; display: flex; flex-direction: column; gap: 2px; }
+.rp-col + .rp-col { border-left: 1px solid var(--line-soft); }
+.rp-col.day { background: rgba(184, 56, 45, 0.06); border-radius: 8px; }
+.rp-col .l { font-size: 10px; color: var(--faint); letter-spacing: 0.08em; margin-bottom: 4px; }
+.rp-col .h { font-family: var(--serif); font-size: 29px; font-weight: 600; line-height: 1.2; }
+.rp-col .k { font-size: 10px; color: var(--muted); }
+.rp-col .s { font-size: 10px; color: var(--faint); margin-top: 2px; }
+
+.rp-char { display: flex; gap: 14px; align-items: center; }
+.rp-char .rp-emblem {
+  flex: none;
+  width: 68px;
+  height: 68px;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rp-daeun { padding: 12px 0 2px; }
+.rp-daeun + .rp-daeun { border-top: 1px solid var(--line-soft); margin-top: 10px; }
+.rp-daeun .rd-head { display: flex; align-items: baseline; gap: 10px; }
+.rp-daeun .rd-range { font-size: 12px; color: var(--faint); width: 62px; flex: none; }
+.rp-daeun .rd-ganji { font-family: var(--serif); font-size: 15px; font-weight: 600; }
+.rp-daeun .rd-sip {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.rp-daeun .rd-title { font-size: 13.5px; font-weight: 700; margin-top: 8px; }
+.rp-daeun .rd-body { font-size: 13px; line-height: 1.65; color: var(--muted); margin-top: 3px; }
+
+@media print {
+  body::before { display: none; }
+  body, .app { background: #fff; }
+  .app { max-width: none; border: 0; min-height: 0; }
+  .no-print, .toast { display: none !important; }
+  .report-section, .rp-daeun { break-inside: avoid; }
+}
 
 /* ---------- 헤더 메뉴 ---------- */
 
