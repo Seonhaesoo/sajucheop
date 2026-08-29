@@ -1237,6 +1237,21 @@
         toast('페이지 준비 중이에요.');
       });
     });
+
+    /* 헤더 메뉴 */
+    var menuBtn = $('#btn-menu'), menuPop = $('#site-menu');
+    menuBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = menuPop.hidden;
+      menuPop.hidden = !open;
+      menuBtn.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', function (e) {
+      if (!menuPop.hidden && !menuPop.contains(e.target)) {
+        menuPop.hidden = true;
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
   }
 
   initForm();

@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://sajucheop.com/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
+  <url><loc>https://sajucheop.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://sajucheop.com/guide/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://sajucheop.com/guide/saju-basics.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/ilgan.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/ohaeng.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/sipseong.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/daeun.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/singang.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/jeolgi.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/birth-time.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/hapchung.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/guide/jijanggan.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sajucheop.com/terms.html</loc><priority>0.3</priority></url>
+  <url><loc>https://sajucheop.com/privacy.html</loc><priority>0.3</priority></url>
 </urlset>

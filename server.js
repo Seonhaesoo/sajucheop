@@ -40,7 +40,7 @@ http.createServer((req, res) => {
     return;
   }
   let urlPath = decodeURIComponent(req.url.split('?')[0]);
-  if (urlPath === '/') urlPath = '/index.html';
+  if (urlPath.endsWith('/')) urlPath += 'index.html';
   const filePath = path.join(ROOT, path.normalize(urlPath).replace(/^([.][.][/\\])+/, ''));
   if (!filePath.startsWith(ROOT)) { res.writeHead(403); res.end(); return; }
   fs.readFile(filePath, (err, data) => {
