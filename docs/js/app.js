@@ -1,5 +1,5 @@
 /* ============================================================
- * 사주서재 — UI 컨트롤러
+ * 사주첩 — UI 컨트롤러
  * ============================================================ */
 (function () {
   'use strict';
@@ -160,7 +160,7 @@
 
   /* ---------- 내 사주 기억 (이 기기에만 저장) ---------- */
 
-  var PROFILE_KEY = 'sajuseojae.profile.v1';
+  var PROFILE_KEY = 'sajucheop.profile.v1';
 
   function saveProfile(input) {
     try {
@@ -683,14 +683,14 @@
       ctx.beginPath(); ctx.moveTo(200, 1742); ctx.lineTo(880, 1742); ctx.stroke();
       ctx.fillStyle = '#9A8F7E';
       ctx.font = '400 28px ' + SANS_STACK;
-      ctx.fillText('사주서재 · 절기 시각 기준 정밀 만세력', 540, 1798);
+      ctx.fillText('사주첩 · 절기 시각 기준 정밀 만세력', 540, 1798);
 
       return cv;
     });
   }
 
   function cardFileName() {
-    return '사주서재-명함-' + (state.name || '나의사주') + '.png';
+    return '사주첩-명함-' + (state.name || '나의사주') + '.png';
   }
 
   function saveCharacterCard() {
@@ -715,7 +715,7 @@
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           navigator.share({
             files: [file],
-            title: '사주서재 — 나의 사주 캐릭터',
+            title: '사주첩 — 나의 사주 캐릭터',
             text: '나의 사주 캐릭터: ' + state.character.data.name
           }).catch(function () {});
         } else {
@@ -957,9 +957,9 @@
     var lines = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//sajuseojae//fortune-calendar//KO',
+      'PRODID:-//sajucheop//fortune-calendar//KO',
       'CALSCALE:GREGORIAN',
-      'X-WR-CALNAME:사주서재 — 나의 길일'
+      'X-WR-CALNAME:사주첩 — 나의 길일'
     ];
     var dn0 = M._internals.daysFromCivil(t.y, t.m, t.d);
     var count = 0;
@@ -976,11 +976,11 @@
         ? '○ 길일 · ' + g.kor + '일 (' + score + '점)'
         : '△ 충 주의 · ' + g.kor + '일';
       var desc = isGood
-        ? info.stemSipseong + josa(info.stemSipseong, '이', '가') + ' 드는 날 — 사주서재'
-        : '내 일지와 충(沖)이 드는 날. 중요한 결정과 서명은 미루는 게 좋아요 — 사주서재';
+        ? info.stemSipseong + josa(info.stemSipseong, '이', '가') + ' 드는 날 — 사주첩'
+        : '내 일지와 충(沖)이 드는 날. 중요한 결정과 서명은 미루는 게 좋아요 — 사주첩';
       lines.push(
         'BEGIN:VEVENT',
-        'UID:sjsj-' + cv.y + pad(cv.m) + pad(cv.d) + '@sajuseojae',
+        'UID:sjsj-' + cv.y + pad(cv.m) + pad(cv.d) + '@sajucheop',
         'DTSTAMP:' + stamp,
         'DTSTART;VALUE=DATE:' + cv.y + pad(cv.m) + pad(cv.d),
         'DTEND;VALUE=DATE:' + next.y + pad(next.m) + pad(next.d),
@@ -1001,7 +1001,7 @@
     var blob = new Blob([ics.text], { type: 'text/calendar;charset=utf-8' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
-    a.download = '사주서재-운세캘린더.ics';
+    a.download = '사주첩-운세캘린더.ics';
     a.href = url;
     a.click();
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
@@ -1013,9 +1013,9 @@
     if (!f) return;
     var g = M.ganjiName(info.pillar.stem, info.pillar.branch);
     var text = t.m + '월 ' + t.d + '일 오늘의 운세 — ' + g.kor + '일 · 흐름 ' + f.score + '점(' +
-      f.weather + ') · ' + f.theme.title + ' — 사주서재';
+      f.weather + ') · ' + f.theme.title + ' — 사주첩';
     if (navigator.share) {
-      navigator.share({ title: '사주서재 — 오늘의 운세', text: text }).catch(function () {});
+      navigator.share({ title: '사주첩 — 오늘의 운세', text: text }).catch(function () {});
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text).then(function () {
         toast('오늘 운세를 복사했어요.');
@@ -1055,7 +1055,7 @@
       ctx.drawImage(img, 0, 0, 640, 400);
       URL.revokeObjectURL(url);
       var a = document.createElement('a');
-      a.download = '사주서재-대운그래프.png';
+      a.download = '사주첩-대운그래프.png';
       a.href = canvas.toDataURL('image/png');
       a.click();
       toast('그래프 이미지를 저장했어요.');
@@ -1080,7 +1080,7 @@
       (p.hour ? ' ' + M.ganjiName(p.hour.stem, p.hour.branch).kor + '시' : '') +
       ' · 일간 ' + M.STEMS[p.day.stem].kor + M.STEMS[p.day.stem].el;
     if (navigator.share) {
-      navigator.share({ title: '사주서재', text: text }).catch(function () {});
+      navigator.share({ title: '사주첩', text: text }).catch(function () {});
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text).then(function () {
         toast('사주 요약을 복사했어요.');

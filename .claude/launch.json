@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "sajuseojae",
+      "name": "sajucheop",
       "runtimeExecutable": "node",
       "runtimeArgs": ["server.js"],
       "port": 8321

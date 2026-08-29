@@ -26,4 +26,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': MIME[path.extname(filePath).toLowerCase()] || 'application/octet-stream' });
     res.end(data);
   });
-}).listen(PORT, () => console.log('사주서재 dev server: http://localhost:' + PORT));
+}).listen(PORT, () => console.log('사주첩 dev server: http://localhost:' + PORT));
