@@ -1223,16 +1223,27 @@
       pillarCol('월주', p.month, r.sipseong.monthStem, r.sipseong.monthBranch, false) +
       pillarCol('년주', p.year, r.sipseong.yearStem, r.sipseong.yearBranch, false) +
       '</div>' +
-      '<p class="rp-line">일간 <b>' + me.kor + me.el + ' ' + me.han + EL_HAN[me.el] + '</b> · 강약 <b>' + r.strength.label + '</b> · 계절 <b>' + (r.season ? r.season.name + ' · ' + r.season.wang : '─') + '</b></p></div>' +
+      '<div class="rp-stats">' +
+      '<span>일간 <b>' + me.kor + me.el + ' ' + me.han + EL_HAN[me.el] + '</b></span>' +
+      '<span>강약 <b>' + r.strength.label + '</b></span>' +
+      '<span>계절 <b>' + (r.season ? r.season.name + ' · ' + r.season.wang : '─') + '</b></span>' +
+      '</div>' +
+      '<p class="rp-line">' + ilgan.body + '</p></div>' +
 
       '<div class="report-section"><div class="rp-h">나의 사주 캐릭터</div>' +
       '<div class="rp-char"><span class="rp-emblem">' + C.emblemSvg(me.han, 54, 'light') + '</span>' +
-      '<div><div class="rd-title" style="font-size: 15px;">' + ch.name + '</div>' +
-      '<div class="rd-body">「' + ch.metaphor + '」 · ' + ch.essence + '</div></div></div>' +
+      '<div class="rc-info">' +
+      '<div class="rc-name">' + ch.name + '</div>' +
+      '<div class="rc-meta">「 ' + ch.metaphor + ' 」</div>' +
+      '<div class="rc-ess">' + ch.essence + '</div>' +
+      '</div></div>' +
       '<p class="rp-line">' + ch.body + '</p>' +
-      '<p class="rp-line"><b style="color: #B8382D;">' + r.strength.label + '</b> · ' + ch.variant[r.strength.label] + '</p>' +
-      '<p class="rp-line"><b>강점</b> — ' + ch.strengths.join(' / ') + '</p>' +
-      '<p class="rp-line"><b>조심할 것</b> — ' + ch.cautions.join(' / ') + '</p></div>' +
+      '<div class="rp-kv"><span class="kv-label accent">' + r.strength.label + '</span>' +
+      '<div class="kv-text">' + ch.variant[r.strength.label] + '</div></div>' +
+      '<div class="rp-kv"><span class="kv-label">강점</span><div class="kv-text">' +
+      ch.strengths.map(function (s) { return '<div class="kv-item">· ' + s + '</div>'; }).join('') + '</div></div>' +
+      '<div class="rp-kv"><span class="kv-label">조심</span><div class="kv-text">' +
+      ch.cautions.map(function (s) { return '<div class="kv-item">· ' + s + '</div>'; }).join('') + '</div></div></div>' +
 
       '<div class="report-section"><div class="rp-h">오행의 균형 — ' + I.elementHeadline(r) + '</div>' +
       '<div style="display: flex; flex-direction: column; gap: 11px;">' + elBars + '</div>' +
@@ -1240,7 +1251,6 @@
 
       '<div class="report-section"><div class="rp-h">십성 구성 — ' + sip.title + '</div>' +
       '<p class="rp-line">' + sip.body + '</p>' +
-      '<p class="rp-line">' + ilgan.body + '</p>' +
       '<p class="rp-line">' + I.strengthText(r.strength.label) + '</p></div>' +
 
       '<div class="report-section"><div class="rp-h">대운 — 인생의 여덟 계절</div>' +
