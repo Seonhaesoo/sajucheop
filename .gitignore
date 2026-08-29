@@ -1,0 +1,6 @@
+# 시드된 디자인 캔버스 (2MB+, design/*.dc.html 원본에서 재생성 가능)
+design/sajuseojae-ui.html
+
+# 로컬 설정
+.claude/settings.local.json
+*.log

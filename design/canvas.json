@@ -1,0 +1,18 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 390, "h": 1120, "title": "홈 — 입력", "page": "page-1" },
+    { "file": "Result.dc.html", "x": 480, "y": 0, "w": 390, "h": 1640, "title": "사주 결과", "page": "page-1" },
+    { "file": "Daeun.dc.html", "x": 960, "y": 0, "w": 390, "h": 1240, "title": "대운 그래프", "page": "page-1" },
+    { "file": "DirectionB.dc.html", "x": 0, "y": 0, "w": 390, "h": 720, "title": "다른 방향 B — 자정", "page": "page-2" },
+    { "file": "DirectionC.dc.html", "x": 480, "y": 0, "w": 390, "h": 720, "title": "다른 방향 C — 볕", "page": "page-2" }
+  ],
+  "annotations": [
+    { "id": "flow-note", "x": -310, "y": 0, "w": 260, "page": "page-1", "text": "화면 흐름: 입력 → 결과 → 대운 그래프\n샘플 인물: 1993년 3월 26일 오전 11:40 출생\n서비스명 '사주서재'는 가칭입니다" },
+    { "id": "direction-note", "x": 960, "y": 0, "w": 280, "page": "page-2", "text": "디자인 방향은 '먹과 한지'로 확정했습니다.\n이 페이지의 B(자정) · C(볕)는 탐색 과정에서 검토한 대안 기록입니다." }
+  ],
+  "pages": [
+    { "id": "page-1", "name": "메인 시안" },
+    { "id": "page-2", "name": "다른 방향 탐색" }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

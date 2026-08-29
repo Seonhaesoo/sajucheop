@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>사주서재 — 여덟 글자에 담긴 당신의 이야기</title>
+  <meta name="description" content="절기 시각 기준 정밀 만세력으로 사주팔자를 세우고, 오행과 십성으로 풀어드립니다. 나만의 길일 캘린더, 사주 캐릭터 명함까지 — 무료 사주풀이.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#F6F1E8">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="사주서재 — 여덟 글자에 담긴 당신의 이야기">
+  <meta property="og:description" content="절기 시각 기준 정밀 만세력, 나만의 길일 캘린더, 사주 캐릭터 명함. 무료 사주풀이.">
+  <meta property="og:locale" content="ko_KR">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;900&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= 홈 / 입력 ================= -->
+  <section id="view-home" class="view active">
+
+    <header class="site-header rise">
+      <div class="brand">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+          <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+          <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+          <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+        </svg>
+        <div class="brand-name">사주서재</div>
+      </div>
+    </header>
+
+    <div class="hero rise">
+      <div class="hero-overline">절기 시각 기준 · 정통 명리</div>
+      <h1 class="hero-title">여덟 글자에 담긴<br>당신의 이야기</h1>
+      <p class="hero-sub">태어난 해·달·날·시를 천간과 지지로 옮겨<br>명식을 세우고, 오행과 십성으로 풀어드립니다.</p>
+      <p class="home-today" id="home-today"></p>
+      <div class="hero-vertical" aria-hidden="true">
+        <div class="v-text">命을 읽다</div>
+        <div class="v-rule"></div>
+      </div>
+    </div>
+
+    <div class="resume-chip rise" id="resume-chip" hidden>
+      <div class="rc-info">
+        <b id="rc-name"></b>
+        <span id="rc-birth"></span>
+      </div>
+      <button class="rc-go" id="rc-go">오늘 운세</button>
+      <button class="rc-clear" id="rc-clear" aria-label="저장된 정보 지우기">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="#9A8F7E" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      </button>
+    </div>
+
+    <form id="saju-form" class="form-card rise">
+
+      <div class="field">
+        <label class="field-label" for="in-name">이름 <span class="opt">(선택)</span></label>
+        <input id="in-name" class="text-input" type="text" placeholder="이름을 입력하세요" autocomplete="off" maxlength="12">
+      </div>
+
+      <div class="select-row">
+        <div class="field" style="flex: 1;">
+          <span class="field-label" id="lb-gender">성별</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lb-gender">
+            <label><input type="radio" name="gender" value="F" checked><span class="seg-text">여성</span></label>
+            <label><input type="radio" name="gender" value="M"><span class="seg-text">남성</span></label>
+          </div>
+        </div>
+        <div class="field" style="flex: 1;">
+          <span class="field-label" id="lb-cal">달력</span>
+          <div class="segmented" role="radiogroup" aria-labelledby="lb-cal" id="cal-group">
+            <label><input type="radio" name="calendar" value="solar" checked><span class="seg-text">양력</span></label>
+            <label id="lunar-label"><input type="radio" name="calendar" value="lunar" disabled><span class="seg-text">음력</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">생년월일</span>
+        <div class="select-row">
+          <div class="select-wrap grow">
+            <select id="in-year" aria-label="출생 연도"></select>
+          </div>
+          <div class="select-wrap">
+            <select id="in-month" aria-label="출생 월"></select>
+          </div>
+          <div class="select-wrap">
+            <select id="in-day" aria-label="출생 일"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-label-row">
+          <label class="field-label" for="in-time">태어난 시간</label>
+          <button type="button" id="btn-unknown-time" class="link-sm" aria-pressed="false">시간을 몰라요</button>
+        </div>
+        <div class="select-wrap no-caret" id="time-wrap">
+          <input id="in-time" type="time" value="12:00" step="300">
+        </div>
+        <span class="time-unknown-note" id="time-note" hidden>시간 없이 세 기둥(년·월·일)으로 풀어드려요.</span>
+      </div>
+
+      <div class="toggle-row">
+        <span class="toggle-label"><b>진태양시 보정</b> · 서울 기준 −32분</span>
+        <label class="switch">
+          <input type="checkbox" id="in-solar" checked>
+          <span class="track"></span>
+        </label>
+      </div>
+
+      <div class="field" style="gap: 12px;">
+        <button type="submit" class="btn-primary">
+          <span class="seal-dot" aria-hidden="true"></span>
+          <span>내 사주 풀어보기</span>
+        </button>
+        <p class="form-microcopy">입력한 생년월일시는 서버로 전송되지 않습니다</p>
+      </div>
+
+    </form>
+
+    <div class="trust rise">
+      <div class="trust-item">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="4" stroke="#6E6455" stroke-width="1.5"></circle>
+          <path d="M11 2v3M11 17v3M2 11h3M17 11h3M4.9 4.9l2 2M15.1 15.1l2 2M17.1 4.9l-2 2M7 15.1l-2 2" stroke="#6E6455" stroke-width="1.5" stroke-linecap="round"></path>
+        </svg>
+        <span>절기가 바뀌는 시각까지 반영한 정밀 만세력</span>
+      </div>
+      <div class="trust-item">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" stroke="#6E6455" stroke-width="1.5"></circle>
+          <path d="M11 6.5V11l3 2" stroke="#6E6455" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>진태양시(동경 127.5도)와 과거 표준시 변경 반영</span>
+      </div>
+      <div class="trust-item">
+        <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M11 2.5l6.5 2.8v4.9c0 4.2-2.8 7-6.5 8.3-3.7-1.3-6.5-4.1-6.5-8.3V5.3z" stroke="#6E6455" stroke-width="1.5" stroke-linejoin="round"></path>
+          <path d="M8.2 11l2 2 3.6-3.8" stroke="#6E6455" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>계산은 모두 이 기기 안에서 이뤄집니다</span>
+      </div>
+    </div>
+
+    <footer class="site-footer rise">
+      <div class="footer-row">
+        <span class="copy">© 사주서재</span>
+        <nav class="footer-links">
+          <a href="#" data-todo>이용약관</a>
+          <a href="#" data-todo>개인정보</a>
+        </nav>
+      </div>
+      <p class="footer-note">본 풀이는 전통 명리학 이론을 바탕으로 한 참고용 콘텐츠입니다. 중요한 결정은 스스로의 판단을 따르세요.</p>
+    </footer>
+
+  </section>
+
+  <!-- ================= 결과 ================= -->
+  <section id="view-result" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="home" aria-label="입력으로 돌아가기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">나의 명식</div>
+      <button class="icon-btn" id="btn-share" aria-label="공유">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 14V4" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 7L12 3.5 15.5 7" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 11.5v8h13v-8" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="result-summary rise">
+      <div class="result-name" id="r-name">나의 사주</div>
+      <div class="result-birth" id="r-birth"></div>
+    </div>
+
+    <div id="r-notices" class="rise"></div>
+
+    <div class="myeongsik rise">
+      <div class="myeongsik-head">
+        <span class="label">命式</span>
+        <span class="method" id="r-method">시두법 · 절기력 기준</span>
+      </div>
+      <div class="pillar-grid" id="r-pillars"></div>
+      <div class="myeongsik-foot" id="r-foot"></div>
+    </div>
+
+    <button class="card rise today-teaser" id="btn-to-character">
+      <span class="ch-mini" id="ch-mini"></span>
+      <span class="tt-text">
+        <b id="ch-teaser-name">나의 사주 캐릭터</b>
+        <span id="ch-teaser-sub"></span>
+      </span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5" stroke="#9A8F7E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+
+    <div class="card rise card-pad">
+      <div class="section-head">
+        <h2 class="section-title">오행의 균형</h2>
+        <span class="section-tag" id="r-el-headline"></span>
+      </div>
+      <div class="el-bars" id="r-el-bars"></div>
+      <p class="callout" id="r-el-callout"></p>
+    </div>
+
+    <div class="card rise reading-card">
+      <div class="reading-overline">일간 풀이</div>
+      <h2 class="reading-title" id="r-ilgan-title"></h2>
+      <p class="reading-body" id="r-ilgan-body"></p>
+      <p class="reading-body" id="r-strength-body" style="margin-top: 8px;"></p>
+    </div>
+
+    <div class="card rise reading-card">
+      <div class="reading-overline">십성 구성</div>
+      <h2 class="reading-title" id="r-sip-title"></h2>
+      <p class="reading-body" id="r-sip-body"></p>
+      <div class="pill-row" id="r-sip-pills"></div>
+    </div>
+
+    <button class="card rise today-teaser" id="btn-to-today">
+      <span class="tt-ganji" id="tt-ganji"></span>
+      <span class="tt-text">
+        <b>오늘의 운세</b>
+        <span id="tt-sub"></span>
+      </span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5" stroke="#9A8F7E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+
+    <div class="btn-stack rise">
+      <button class="btn-primary" id="btn-to-daeun">
+        <span>대운의 흐름 보기</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 8h8M9 4.5L12.5 8 9 11.5" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <button class="btn-outline" id="btn-save-myeongsik">명식 이미지로 저장</button>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
+  <!-- ================= 사주 캐릭터 ================= -->
+  <section id="view-character" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="result" aria-label="결과로 돌아가기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">나의 캐릭터</div>
+      <button class="icon-btn" id="btn-share-card" aria-label="명함 공유">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 14V4" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 7L12 3.5 15.5 7" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 11.5v8h13v-8" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="char-hero rise">
+      <div class="ch-emblem" id="ch-emblem"></div>
+      <div class="ch-overline">나의 사주 캐릭터</div>
+      <h2 class="ch-name" id="ch-name"></h2>
+      <div class="ch-sub" id="ch-sub"></div>
+      <div class="ch-keywords" id="ch-keywords"></div>
+    </div>
+
+    <div class="card rise reading-card">
+      <div class="reading-overline">이런 사람이에요</div>
+      <h3 class="reading-title" id="ch-essence" style="font-size: 17px;"></h3>
+      <p class="reading-body" id="ch-body"></p>
+      <p class="callout" id="ch-variant" style="margin-top: 14px;"></p>
+    </div>
+
+    <div class="card rise reading-card">
+      <div class="sc-cols">
+        <div class="sc-col">
+          <div class="reading-overline">강점</div>
+          <ul class="sc-list good" id="ch-strengths"></ul>
+        </div>
+        <div class="sc-col">
+          <div class="reading-overline" style="color: #6E6455;">조심할 것</div>
+          <ul class="sc-list warn" id="ch-cautions"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rise reading-card">
+      <div class="reading-overline">케미</div>
+      <div id="ch-chemi"></div>
+    </div>
+
+    <div class="btn-stack rise">
+      <button class="btn-primary" id="btn-save-card">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4v10" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 11L12 14.5 15.5 11" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 18.5h13" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        <span>사주 명함 이미지 저장</span>
+      </button>
+      <p class="form-microcopy">인스타 스토리 사이즈(1080×1920)로 저장돼요</p>
+      <button class="btn-outline" id="btn-char-to-today">오늘의 운세 보기</button>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
+  <!-- ================= 오늘의 운세 ================= -->
+  <section id="view-today" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="result" aria-label="결과로 돌아가기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">오늘의 운세</div>
+      <button class="icon-btn" id="btn-share-today" aria-label="오늘 운세 공유">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 14V4" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 7L12 3.5 15.5 7" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 11.5v8h13v-8" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="daeun-intro rise">
+      <h2 id="t-date"></h2>
+      <p id="t-sub"></p>
+    </div>
+
+    <div class="current-daeun rise" id="t-hero"></div>
+
+    <div id="t-relation" class="rise"></div>
+
+    <div class="card rise reading-card">
+      <div class="reading-overline">총운</div>
+      <h2 class="reading-title" id="t-theme-title"></h2>
+      <p class="reading-body" id="t-theme-body"></p>
+    </div>
+
+    <div class="card rise" id="t-categories"></div>
+
+    <div class="card rise card-pad">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">시간대별 흐름</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;" id="t-hour-tag"></span>
+      </div>
+      <div class="hour-strip" id="t-hours"></div>
+      <p class="graph-caption" id="t-hour-note"></p>
+    </div>
+
+    <div class="card rise card-pad">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">오늘의 행운</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">매일 자정에 바뀌어요</span>
+      </div>
+      <div class="pill-row" id="t-lucky" style="margin-top: 14px;"></div>
+    </div>
+
+    <button class="card rise today-teaser" id="btn-to-calendar">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+        <rect x="3" y="5" width="20" height="18" rx="3" stroke="#B8382D" stroke-width="1.6"></rect>
+        <path d="M3 10h20M8.5 2.5v5M17.5 2.5v5" stroke="#B8382D" stroke-width="1.6" stroke-linecap="round"></path>
+        <circle cx="13" cy="16.5" r="2" fill="#B8382D"></circle>
+      </svg>
+      <span class="tt-text">
+        <b>운세 캘린더</b>
+        <span id="cal-teaser-sub">내 사주 기준 이번 달의 좋은 날 찾기</span>
+      </span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5" stroke="#9A8F7E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+
+    <div class="btn-stack rise">
+      <button class="btn-primary" id="btn-share-today2">오늘 운세 공유하기</button>
+      <button class="btn-outline" data-back="result">내 명식 다시 보기</button>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
+  <!-- ================= 운세 캘린더 ================= -->
+  <section id="view-calendar" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="today" aria-label="오늘의 운세로 돌아가기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">운세 캘린더</div>
+      <span class="icon-btn" aria-hidden="true"></span>
+    </header>
+
+    <div class="daeun-intro rise">
+      <h2>나만의 좋은 날</h2>
+      <p>모두에게 똑같은 손없는날이 아니라, 내 명식과 그날의 일진이 만드는 <b>나만의 길일</b>입니다.</p>
+    </div>
+
+    <div class="card rise card-pad">
+      <div class="cal-nav">
+        <button class="icon-btn" id="cal-prev" aria-label="이전 달">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+        <div class="cal-title" id="cal-title"></div>
+        <button class="icon-btn" id="cal-next" aria-label="다음 달">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 5l7 7-7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+      </div>
+      <div class="cal-legend">
+        <span><i class="lg-dot good"></i>길일 (80점 이상)</span>
+        <span><i class="lg-dot warn"></i>충 — 조심할 날</span>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-detail" id="cal-detail" hidden></div>
+    </div>
+
+    <div class="card rise card-pad">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">목적별 좋은 날</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;" id="purpose-month"></span>
+      </div>
+      <div class="purpose-chips" id="purpose-chips"></div>
+      <p class="purpose-hint" id="purpose-hint"></p>
+      <div id="purpose-days"></div>
+    </div>
+
+    <div class="btn-stack rise">
+      <button class="btn-primary" id="btn-ics">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4v10" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 11L12 14.5 15.5 11" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 18.5h13" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        <span>내 캘린더 앱에 넣기 (.ics)</span>
+      </button>
+      <p class="form-microcopy">앞으로 90일의 길일과 충 주의일을 구글·아이폰 캘린더로 가져갈 수 있어요</p>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
+  <!-- ================= 대운 ================= -->
+  <section id="view-daeun" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="result" aria-label="결과로 돌아가기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">대운의 흐름</div>
+      <button class="icon-btn" id="btn-save-graph-top" aria-label="그래프 저장">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4v10" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 11L12 14.5 15.5 11" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 18.5h13" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="daeun-intro rise">
+      <h2>10년마다 바뀌는 큰 물길</h2>
+      <p id="d-intro"></p>
+    </div>
+
+    <div class="card rise graph-card">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">인생 대운 그래프</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;" id="d-range"></span>
+      </div>
+      <div id="d-graph"></div>
+      <p class="graph-caption">세로축은 대운 간지가 일간과 어울리는 정도를 지수로 나타낸 참고 값입니다</p>
+    </div>
+
+    <div class="current-daeun rise" id="d-current"></div>
+
+    <div class="card rise daeun-list" id="d-list"></div>
+
+    <div class="btn-stack rise">
+      <button class="btn-primary" id="btn-report">전체 풀이 리포트 보기</button>
+      <button class="btn-outline" id="btn-save-graph">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4v10" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 11L12 14.5 15.5 11" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 18.5h13" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        <span>그래프 이미지로 저장</span>
+      </button>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/manseryeok.js"></script>
+<script src="js/interpret.js"></script>
+<script src="js/characters.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

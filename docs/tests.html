@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>사주서재 — 엔진 테스트</title>
+  <style>
+    body { font-family: Consolas, monospace; background: #1b1b1b; color: #ddd; padding: 24px; font-size: 13px; }
+    .pass { color: #7fd18a; }
+    .fail { color: #ff7a6e; font-weight: bold; }
+    h1 { font-size: 16px; color: #fff; }
+    #summary { margin: 12px 0; font-size: 15px; }
+    div.case { margin: 3px 0; }
+  </style>
+</head>
+<body>
+<h1>사주서재 만세력 엔진 테스트</h1>
+<div id="summary">실행 중…</div>
+<div id="out"></div>
+
+<script src="js/manseryeok.js"></script>
+<script src="js/interpret.js"></script>
+<script src="js/characters.js"></script>
+<script>
+(function () {
+  var M = window.Manseryeok, X = M._internals;
+  var out = document.getElementById('out');
+  var passCount = 0, failCount = 0;
+
+  function check(name, actual, expected) {
+    var ok = JSON.stringify(actual) === JSON.stringify(expected);
+    if (ok) passCount++; else failCount++;
+    var div = document.createElement('div');
+    div.className = 'case ' + (ok ? 'pass' : 'fail');
+    div.textContent = (ok ? 'PASS  ' : 'FAIL  ') + name +
+      (ok ? '' : '  → got ' + JSON.stringify(actual) + ', want ' + JSON.stringify(expected));
+    out.appendChild(div);
+  }
+
+  function ganji(p) { return M.STEMS[p.stem].han + M.BRANCHES[p.branch].han; }
+
+  /* ---- 1. 달력 기초 ---- */
+  check('JDN(2000-01-01) = 2451545', X.daysFromCivil(2000, 1, 1) + X.JDN_EPOCH, 2451545);
+  check('civilFromDays 왕복', X.civilFromDays(X.daysFromCivil(1987, 6, 29)), { y: 1987, m: 6, d: 29 });
+  check('윤년 2000', X.isLeap(2000), true);
+  check('평년 1900', X.isLeap(1900), false);
+  check('2월 일수 1996', X.daysInMonth(1996, 2), 29);
+
+  /* ---- 2. 일주 60갑자 앵커 ---- */
+  function dayGanji(y, m, d) {
+    var idx = X.dayPillarIndex(X.daysFromCivil(y, m, d) + X.JDN_EPOCH);
+    return M.STEMS[idx % 10].han + M.BRANCHES[idx % 12].han;
+  }
+  check('일주 2000-01-01 = 戊午', dayGanji(2000, 1, 1), '戊午');
+  check('일주 1900-01-01 = 甲戌', dayGanji(1900, 1, 1), '甲戌');
+  check('일주 1993-03-26 = 丙午', dayGanji(1993, 3, 26), '丙午');
+  check('일주 1993-03-27 = 丁未 (연속성)', dayGanji(1993, 3, 27), '丁未');
+
+  /* ---- 3. 태양 황경 ---- */
+  var jdEquinox2000 = 2451623.816; // 2000-03-20 07:35 UT 춘분
+  var lam = X.solarLongitude(jdEquinox2000);
+  check('춘분 2000 황경 ≈ 0°', (lam < 0.05 || lam > 359.95), true);
+
+  var ip1993 = X.ipchunJd(1993);
+  var ipCivil = X.civilFromDays(Math.floor(ip1993 + 540 / 1440 - X.JDN_EPOCH + 0.5));
+  check('입춘 1993 = 2월 3~5일 (KST)', ipCivil.m === 2 && ipCivil.d >= 3 && ipCivil.d <= 5, true);
+
+  /* ---- 4. 표준시 이력 ---- */
+  check('1955년 UTC+8:30', X.utcOffsetMinutes(1955, 6, 15), 510);
+  check('1962년 UTC+9', X.utcOffsetMinutes(1962, 6, 15), 540);
+  check('2000년 UTC+9', X.utcOffsetMinutes(2000, 6, 15), 540);
+
+  /* ---- 5. 샘플 명식 (1993-03-26 11:40 여성, 서울, 진태양시) ---- */
+  var r = M.compute({ year: 1993, month: 3, day: 26, hour: 11, minute: 40,
+    gender: 'F', applySolarTime: true, nowYear: 2026 });
+  check('샘플 년주 癸酉', ganji(r.pillars.year), '癸酉');
+  check('샘플 월주 乙卯', ganji(r.pillars.month), '乙卯');
+  check('샘플 일주 丙午', ganji(r.pillars.day), '丙午');
+  check('샘플 시주 甲午', ganji(r.pillars.hour), '甲午');
+  check('샘플 오행 목3 화3 토0 금1 수1', r.elements, { '목': 3, '화': 3, '토': 0, '금': 1, '수': 1 });
+  check('샘플 신강', r.strength.label, '신강');
+  check('샘플 십성: 년간 정관', r.sipseong.yearStem, '정관');
+  check('샘플 십성: 월간 정인', r.sipseong.monthStem, '정인');
+  check('샘플 십성: 시간 편인', r.sipseong.hourStem, '편인');
+  check('샘플 십성: 년지 정재', r.sipseong.yearBranch, '정재');
+  check('샘플 보정 -32분', r.time.solarCorrectionMin, -32);
+  check('샘플 대운 순행 (계년 여성)', r.daeun.forward, true);
+  check('샘플 첫 대운 丙辰', ganji({ stem: r.daeun.list[0].stem, branch: r.daeun.list[0].branch }), '丙辰');
+  var cur = r.daeun.list.filter(function (d) { return d.current; })[0];
+  check('샘플 현재 대운 己未 (2026년, 34세)', cur ? ganji({ stem: cur.stem, branch: cur.branch }) : null, '己未');
+  check('샘플 현재 대운 십성 상관', cur ? cur.sipseong : null, '상관');
+
+  /* ---- 6. 입춘 경계 (년주 전환) ---- */
+  var before = M.compute({ year: 1993, month: 2, day: 3, hour: 12, minute: 0, gender: 'M', applySolarTime: false });
+  var after = M.compute({ year: 1993, month: 2, day: 5, hour: 12, minute: 0, gender: 'M', applySolarTime: false });
+  check('입춘 전(2/3) 년주 壬申', ganji(before.pillars.year), '壬申');
+  check('입춘 전(2/3) 월주 癸丑', ganji(before.pillars.month), '癸丑');
+  check('입춘 후(2/5) 년주 癸酉', ganji(after.pillars.year), '癸酉');
+  check('입춘 후(2/5) 월주 甲寅', ganji(after.pillars.month), '甲寅');
+
+  /* ---- 7. 시두법 ---- */
+  var night = M.compute({ year: 1993, month: 3, day: 26, hour: 0, minute: 10, gender: 'F', applySolarTime: false });
+  check('자시(00:10, 보정 없음) 시주 戊子 (丙일)', ganji(night.pillars.hour), '戊子');
+  var corrected = M.compute({ year: 1993, month: 3, day: 26, hour: 0, minute: 10, gender: 'F', applySolarTime: true });
+  check('00:10 → 보정 후 전날 23:38 → 일주 乙巳', ganji(corrected.pillars.day), '乙巳');
+  check('보정 후 야자시 → 시주 戊子 (익일 丙 기준)', ganji(corrected.pillars.hour), '戊子');
+  check('야자시 플래그', corrected.time.yajasi, true);
+
+  /* ---- 8. 시간 모름 ---- */
+  var unknown = M.compute({ year: 1993, month: 3, day: 26, unknownTime: true, gender: 'F' });
+  check('시간 모름 → 시주 없음', unknown.pillars.hour, null);
+  check('시간 모름 → 6글자', unknown.totalChars, 6);
+
+  /* ---- 9. 남성 역행 ---- */
+  var male = M.compute({ year: 1993, month: 3, day: 26, hour: 11, minute: 40, gender: 'M', applySolarTime: true });
+  check('계년(음간) 남성 → 역행', male.daeun.forward, false);
+  check('남성 첫 대운 甲寅 (역행)', ganji({ stem: male.daeun.list[0].stem, branch: male.daeun.list[0].branch }), '甲寅');
+
+  /* ---- 10. 십성 함수 단위 ---- */
+  check('丙 vs 丙 = 비견', M.sipseongOf(2, 2), '비견');
+  check('丙 vs 丁 = 겁재', M.sipseongOf(2, 3), '겁재');
+  check('丙 vs 戊 = 식신', M.sipseongOf(2, 4), '식신');
+  check('丙 vs 庚 = 편재', M.sipseongOf(2, 6), '편재');
+  check('丙 vs 癸 = 정관', M.sipseongOf(2, 9), '정관');
+  check('丙 vs 甲 = 편인', M.sipseongOf(2, 0), '편인');
+
+  /* ---- 11. 오늘의 운세 ---- */
+  check('일진 2026-08-29 = 乙亥', ganji(M.dayPillarOf(2026, 8, 29)), '乙亥');
+  check('육합 子+丑', M.branchRelation(0, 1), '육합');
+  check('충 子+午', M.branchRelation(0, 6), '충');
+  check('삼합 申+子', M.branchRelation(8, 0), '삼합');
+  check('무관계 子+寅', M.branchRelation(0, 2), null);
+  check('동일 午+午', M.branchRelation(6, 6), '동일');
+  var tinfo = M.todayInfo(r, 2026, 8, 29);
+  check('오늘 천간 십성 (丙 vs 乙) = 정인', tinfo.stemSipseong, '정인');
+  check('오늘 지지 십성 (亥→壬) = 편관', tinfo.branchSipseong, '편관');
+  check('오늘 관계 (亥 vs 午) 없음', tinfo.relation, null);
+  var tIdx60 = X.dayPillarIndex(X.daysFromCivil(2026, 8, 29) + X.JDN_EPOCH);
+  check('오늘 60갑자 인덱스 = 11 (乙亥)', tIdx60, 11);
+  var tf = window.Interpret.todayFortune(r, tinfo, tIdx60);
+  check('오늘 지수 57 (신강: 정인 -8, 편관 +10)', tf.score, 57);
+  check('오늘 날씨 구름 조금', tf.weather, '구름 조금');
+  check('행운 오행 수 (need[토,금,수] 중 11%3=2)', tf.lucky.el, '수');
+  check('행운 숫자 3 (11%9+1)', tf.lucky.number, 3);
+  check('총운 테마 존재', typeof tf.theme.title === 'string' && tf.theme.title.length > 0, true);
+  var mkInfo = function (rel) {
+    return { pillar: { stem: 8, branch: 0 }, stemSipseong: M.sipseongOf(r.pillars.day.stem, 8),
+      branchSipseong: M.branchSipseong(r.pillars.day.stem, 0), relation: rel };
+  };
+  var tBase = window.Interpret.todayFortune(r, mkInfo(null), 0);
+  var tChung = window.Interpret.todayFortune(r, mkInfo('충'), 0);
+  var tHap = window.Interpret.todayFortune(r, mkInfo('육합'), 0);
+  check('충이 들면 같은 조건 대비 -16', tBase.score - tChung.score, 16);
+  check('육합이 들면 같은 조건 대비 +12', tHap.score - tBase.score, 12);
+  check('충 안내문 존재', typeof tChung.relationText === 'string', true);
+
+  /* ---- 12. 캘린더·택일·시간대 ---- */
+  check('scoreDay = todayFortune.score (일관성)', window.Interpret.scoreDay(r, tinfo), tf.score);
+  check('충일은 모든 목적에서 제외', window.Interpret.purposeMatch('docs', mkInfo('충')), null);
+  var mDocs = window.Interpret.purposeMatch('docs', tinfo); // 乙亥: 천간 정인(인성)
+  check('인성일 → 계약·문서 +20', mDocs && mDocs.bonus, 20);
+  check('재성 없는 날 → 거래·재물 매칭 없음', window.Interpret.purposeMatch('money', tinfo), null);
+  var hapInfo = { pillar: { stem: 0, branch: 7 }, stemSipseong: '편인', branchSipseong: '상관', relation: '육합' };
+  var mMeet = window.Interpret.purposeMatch('meet', hapInfo);
+  check('육합일 → 만남·고백 +18', mMeet && mMeet.bonus, 18);
+  var flow = window.Interpret.hourFlow(r, 1); // 乙일 (자시 丙子부터)
+  check('시간대 12칸', flow.slots.length, 12);
+  check('최고 시간 = 미시(未) — 정관·상관·오미합', flow.best.idx, 7);
+  check('조심 시간 = 자시(子) — 자오충', flow.worst.idx, 0);
+  check('시간대 점수 범위', flow.slots.every(function (s) { return s.score >= 15 && s.score <= 90; }), true);
+
+  /* ---- 13. 사주 캐릭터 ---- */
+  var CH = window.SajuCharacters;
+  var stemHans = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+  check('캐릭터 10종 완비', stemHans.every(function (h) {
+    var c = CH.of(h);
+    return c && c.name && c.metaphor && c.essence && c.body &&
+      c.keywords.length === 4 && c.strengths.length === 2 && c.cautions.length === 2 &&
+      c.variant['신강'] && c.variant['중화'] && c.variant['신약'];
+  }), true);
+  check('엠블럼 10종 완비', stemHans.every(function (h) {
+    return CH.EMBLEMS[h] && CH.EMBLEMS[h].length > 0;
+  }), true);
+  check('천간합 대칭 (甲己·乙庚·丙辛·丁壬·戊癸)', stemHans.every(function (h) {
+    var c = CH.of(h);
+    return c.hap && CH.of(c.hap.partner).hap.partner === h;
+  }), true);
+  var HAP_PAIRS = { '甲': '己', '乙': '庚', '丙': '辛', '丁': '壬', '戊': '癸' };
+  check('천간합 짝 정확성', Object.keys(HAP_PAIRS).every(function (a) {
+    return CH.of(a).hap.partner === HAP_PAIRS[a] && CH.of(HAP_PAIRS[a]).hap.partner === a;
+  }), true);
+  var CHUNG_PAIRS = { '甲': '庚', '乙': '辛', '丙': '壬', '丁': '癸' };
+  check('천간충 짝 정확성 (4쌍 대칭)', Object.keys(CHUNG_PAIRS).every(function (a) {
+    return CH.of(a).chung && CH.of(a).chung.partner === CHUNG_PAIRS[a] &&
+      CH.of(CHUNG_PAIRS[a]).chung && CH.of(CHUNG_PAIRS[a]).chung.partner === a;
+  }), true);
+  check('戊己는 충 없음 + 안내문', !CH.of('戊').chung && !CH.of('己').chung &&
+    typeof CH.of('戊').noChungLine === 'string' && typeof CH.of('己').noChungLine === 'string', true);
+  check('엠블럼 SVG 생성', CH.emblemSvg('丙', 40, 'dark').indexOf('<svg') === 0, true);
+
+  document.getElementById('summary').textContent =
+    '결과: ' + passCount + ' PASS / ' + failCount + ' FAIL';
+  document.getElementById('summary').style.color = failCount ? '#ff7a6e' : '#7fd18a';
+  document.title = (failCount ? 'FAIL ' : 'PASS ') + '사주서재 엔진 테스트';
+})();
+</script>
+</body>
+</html>
