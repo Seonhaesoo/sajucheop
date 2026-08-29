@@ -332,7 +332,8 @@
 
   var PURPOSES = [
     { key: 'docs', label: '계약 · 문서', hint: '계약서 서명, 등기, 시험 접수, 제출' },
-    { key: 'start', label: '새 시작', hint: '오픈, 첫 출근, 프로젝트 시작, 이사' },
+    { key: 'start', label: '새 시작', hint: '오픈, 첫 출근, 프로젝트 시작' },
+    { key: 'move', label: '이사 · 입주', hint: '이사, 입주, 잔금 치르기 — 손없는날과 내 길일을 함께 봐요' },
     { key: 'money', label: '거래 · 재물', hint: '큰 구매, 판매, 협상, 투자 결정' },
     { key: 'meet', label: '만남 · 고백', hint: '소개팅, 고백, 상견례, 중요한 모임' }
   ];
@@ -355,6 +356,11 @@
     if (key === 'money') {
       if (sg === '비겁' || bg === '비겁') return null; // 탈재 기운
       if (has('재성')) return { bonus: 20, reason: '재물 흐름이 밝은 재성(' + (sg === '재성' ? info.stemSipseong : info.branchSipseong) + ')의 날' };
+      return null;
+    }
+    if (key === 'move') {
+      if (has('인성')) return { bonus: 14, reason: '터와 문서를 지켜주는 인성(' + (sg === '인성' ? info.stemSipseong : info.branchSipseong) + ')이 드는 날' };
+      if (info.stemSipseong === '정재') return { bonus: 8, reason: '살림의 터를 단단히 하는 정재의 날' };
       return null;
     }
     if (key === 'meet') {

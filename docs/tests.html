@@ -23,6 +23,8 @@
 <script src="js/characters.js"></script>
 <script src="js/gunghap.js"></script>
 <script src="js/taegil.js"></script>
+<script src="js/tojeong.js"></script>
+<script src="js/naming.js"></script>
 <script>
 (function () {
   var M = window.Manseryeok, X = M._internals;
@@ -283,6 +285,51 @@
   var scan2 = TG.scanDates(2026, 10, 15, 3, 'F');
   check('택일 스캔: 결정론적 (같은 입력 = 같은 결과)', scan1[0].combined === scan2[0].combined &&
     scan1[0].y === scan2[0].y && scan1[0].d === scan2[0].d, true);
+
+  /* ---- 17. 토정비결 ---- */
+  var TJ = window.Tojeong;
+  check('태세수 2026 병오 = 7+9', TJ.taeseSu(2026), 16);
+  check('태세수 2027 정미 = 6+8', TJ.taeseSu(2027), 14);
+  check('월건수 2026 음3월 임진 = 6+5', TJ.wolgeonSu(2026, 3), 11);
+  var tj1 = TJ.compute(2026, { sy: 1993, sm: 3, sd: 26 });
+  check('토정비결: 괘 범위 (상1~8 중1~6 하1~3)', tj1 &&
+    tj1.sang >= 1 && tj1.sang <= 8 && tj1.jung >= 1 && tj1.jung <= 6 && tj1.ha >= 1 && tj1.ha <= 3, true);
+  check('토정비결: 코드 조합', tj1.code, tj1.sang * 100 + tj1.jung * 10 + tj1.ha);
+  check('토정비결: 세는나이 (음력 출생년 기준)', tj1.age, 2026 - tj1.lunarBirth.y + 1);
+  var tj2 = TJ.compute(2026, { sy: 1993, sm: 3, sd: 26 });
+  check('토정비결: 결정론적', tj1.code, tj2.code);
+  var all144 = true;
+  for (var ts = 1; ts <= 8; ts++) for (var tjj = 1; tjj <= 6; tjj++) for (var th = 1; th <= 3; th++) {
+    var ttx = TJ.text(ts * 100 + tjj * 10 + th);
+    if (!ttx || !ttx.han || !ttx.overview || !ttx.caution) { all144 = false; }
+  }
+  check('토정비결: 144괘 풀이 전부 존재', all144, true);
+  var tjm = TJ.monthly(2026, 0);
+  check('토정비결: 월별 12개 · 정월 인월', tjm.length === 12 && tjm[0].ganji.han.indexOf('寅') === 1, true);
+
+  /* ---- 18. 작명 ---- */
+  var NM = window.Naming;
+  check('81수리: 1 대길 · 2 흉 · 38 평 · 81 대길', NM.su81(1).tier === '대길' && NM.su81(2).tier === '흉' &&
+    NM.su81(38).tier === '평' && NM.su81(81).tier === '대길', true);
+  check('81수리: 81 초과는 80을 뺌', NM.su81(82).v, 2);
+  check('발음오행: 김=목 · 민=수 · 서=금 · 하=토 · 도=화',
+    NM.soundElOf('김') === '목' && NM.soundElOf('민') === '수' && NM.soundElOf('서') === '금' &&
+    NM.soundElOf('하') === '토' && NM.soundElOf('도') === '화', true);
+  check('불용한자: 天 불용 · 瑞 사용 가능', NM.isBulyong('天') && !NM.isBulyong('瑞'), true);
+  var nmSur = { h: '金', r: '김', s: 8 };
+  var nmC1 = NM.HANJA.filter(function (c) { return c.h === '瑞'; })[0];
+  var nmC2 = NM.HANJA.filter(function (c) { return c.h === '賢'; })[0];
+  var nmEv = NM.evaluate(nmSur, [nmC1, nmC2], null);
+  check('수리 사격: 김(8)+서(14)+현(15) = 원29 형22 이23 정37',
+    nmEv.gyeok[0].su.v === 29 && nmEv.gyeok[1].su.v === 22 && nmEv.gyeok[2].su.v === 23 && nmEv.gyeok[3].su.v === 37, true);
+  check('수리 사격: 등급 판정 (29대길 22흉)', nmEv.gyeok[0].su.tier === '대길' && nmEv.gyeok[1].su.tier === '흉', true);
+  var nmRec = NM.recommend(nmSur, 'M', ['수'], 6);
+  check('이름 추천: 결과 반환 + 80점 이상 + 전 격 길',
+    nmRec.length > 0 && nmRec.every(function (it) {
+      return it.ev.total >= 80 && it.ev.gyeok.every(function (g) { return g.su.tier === '대길' || g.su.tier === '길'; });
+    }), true);
+  check('이름 추천: 부족 오행 우선 (첫 글자 수 기운)',
+    nmRec.length > 0 && nmRec.every(function (it) { return it.c1.e === '수'; }), true);
 
   document.getElementById('summary').textContent =
     '결과: ' + passCount + ' PASS / ' + failCount + ' FAIL';

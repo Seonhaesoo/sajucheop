@@ -52,6 +52,8 @@
         </button>
         <nav class="menu-pop" id="site-menu" hidden>
           <a href="guide/">서재 — 사주 이야기</a>
+          <a href="#tojeong" id="menu-tojeong">토정비결 신수</a>
+          <a href="#naming" id="menu-naming">이름 짓기 <span style="font-size: 10px; color: #B8382D;">베타</span></a>
           <a href="#taegil" id="menu-taegil">출산 택일 <span style="font-size: 10px; color: #B8382D;">베타</span></a>
           <a href="https://www.instagram.com/sajucheop/" target="_blank" rel="noopener">인스타그램 @sajucheop</a>
           <div class="mp-div"></div>
@@ -107,6 +109,20 @@
         <span class="bk-note">이 기기에만 저장돼요</span>
       </div>
       <div class="book-cards" id="book-cards"></div>
+    </div>
+
+    <!-- 특별 콘텐츠 바로가기 -->
+    <div class="feature-row rise">
+      <button class="feature-card" id="btn-to-tojeong" type="button">
+        <span class="fc-han" aria-hidden="true">卦</span>
+        <b>토정비결</b>
+        <span>144괘로 보는 한 해 신수</span>
+      </button>
+      <button class="feature-card" id="btn-to-naming" type="button">
+        <span class="fc-han" aria-hidden="true">名</span>
+        <b>이름 짓기</b>
+        <span>수리·오행으로 평가와 추천</span>
+      </button>
     </div>
 
     <form id="saju-form" class="form-card rise">
@@ -702,6 +718,7 @@
       <div class="cal-legend">
         <span><i class="lg-dot good"></i>길일 (80점 이상)</span>
         <span><i class="lg-dot warn"></i>충 — 조심할 날</span>
+        <span><i class="lg-son">손</i>손없는날</span>
       </div>
       <div class="cal-grid" id="cal-grid"></div>
       <div class="cal-detail" id="cal-detail" hidden></div>
@@ -751,6 +768,148 @@
         </div>
       </details>
     </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
+  <!-- ================= 토정비결 ================= -->
+  <section id="view-tojeong" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="home" aria-label="처음으로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">토정비결 신수</div>
+      <button class="icon-btn" id="btn-share-tojeong" aria-label="토정비결 공유" hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 14V4" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 7L12 3.5 15.5 7" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 11.5v8h13v-8" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="daeun-intro rise">
+      <h2>올해의 괘를 뽑습니다</h2>
+      <p>토정비결의 전통 산출법(나이·태세수, 생월·월건수, 생일·일진수)으로 <b>144괘</b> 중 나의 괘를 뽑고, 풀이는 사주첩이 오늘의 언어로 새로 썼습니다.</p>
+    </div>
+
+    <div class="card rise card-pad" id="tj-need" hidden>
+      <p class="reading-body">생년월일이 있어야 괘를 뽑을 수 있어요. 홈에서 사주를 먼저 계산해 주세요.</p>
+      <button class="btn-primary" id="tj-go-home" style="margin-top: 14px;">사주 보러 가기</button>
+    </div>
+
+    <div id="tj-body" hidden>
+      <div class="seg-row rise" id="tj-year-seg" style="margin: 0 20px;"></div>
+
+      <div class="char-hero rise" style="margin-top: 14px;">
+        <div class="tj-code" id="tj-code"></div>
+        <div class="tj-han" id="tj-han"></div>
+        <div class="tj-gloss" id="tj-gloss"></div>
+      </div>
+
+      <div class="card rise reading-card">
+        <div class="reading-overline">총운</div>
+        <h3 class="reading-title" id="tj-title" style="font-size: 17px;"></h3>
+        <p class="reading-body" id="tj-overview"></p>
+        <p class="reading-body" id="tj-half" style="margin-top: 8px; color: #6E6455;"></p>
+      </div>
+
+      <div class="card rise reading-card">
+        <div class="reading-overline">마음에 둘 것</div>
+        <p class="reading-body" id="tj-caution"></p>
+      </div>
+
+      <div class="card rise card-pad">
+        <div class="section-head">
+          <h3 class="section-title" style="font-size: 16px;">월별 흐름</h3>
+          <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">음력 달 기준</span>
+        </div>
+        <div id="tj-months"></div>
+      </div>
+
+      <p class="form-microcopy rise" style="margin: 14px 24px 0;" id="tj-note"></p>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
+  <!-- ================= 이름 짓기 ================= -->
+  <section id="view-naming" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="home" aria-label="처음으로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">이름 짓기</div>
+      <span class="icon-btn" aria-hidden="true"></span>
+    </header>
+
+    <div class="daeun-intro rise">
+      <h2>수리와 오행으로 짓는 이름</h2>
+      <p>81수리 네 격과 발음오행, 그리고 <b>사주에 부족한 오행을 채우는 글자</b>까지 함께 봅니다.</p>
+    </div>
+
+    <div class="seg-row rise" id="nm-tabs" style="margin: 0 20px;">
+      <button type="button" class="seg-btn active" data-nm-tab="rec">이름 추천</button>
+      <button type="button" class="seg-btn" data-nm-tab="eval">이름 평가</button>
+    </div>
+
+    <!-- 공통: 성씨 -->
+    <div class="card rise card-pad" style="margin-top: 14px;">
+      <div class="section-head"><h3 class="section-title" style="font-size: 15px;">성씨</h3></div>
+      <div class="nm-row">
+        <div class="select-wrap" style="flex: 1;">
+          <select id="nm-sur"></select>
+        </div>
+      </div>
+      <div class="nm-row" id="nm-sur-custom" hidden>
+        <input type="text" class="text-input" id="nm-sur-kor" maxlength="1" placeholder="성 (한글)" style="flex: 1;">
+        <input type="number" class="text-input" id="nm-sur-strokes" min="1" max="30" placeholder="한자 획수" style="flex: 1;">
+      </div>
+    </div>
+
+    <!-- 추천 탭 -->
+    <div id="nm-rec-panel">
+      <div class="card rise card-pad">
+        <div class="section-head"><h3 class="section-title" style="font-size: 15px;">아기 정보</h3></div>
+        <div class="nm-row" role="radiogroup" aria-label="성별">
+          <label class="nm-gender"><input type="radio" name="nm-gender" value="M" checked><span>남자</span></label>
+          <label class="nm-gender"><input type="radio" name="nm-gender" value="F"><span>여자</span></label>
+        </div>
+        <p class="purpose-hint" id="nm-saju-line" style="margin-top: 10px;"></p>
+        <button class="btn-primary" id="nm-run-rec" style="margin-top: 14px;">이름 추천 받기</button>
+      </div>
+      <div id="nm-rec-results"></div>
+    </div>
+
+    <!-- 평가 탭 -->
+    <div id="nm-eval-panel" hidden>
+      <div class="card rise card-pad">
+        <div class="section-head"><h3 class="section-title" style="font-size: 15px;">이름 글자</h3></div>
+        <div class="nm-char-block" data-idx="0">
+          <div class="nm-row">
+            <input type="text" class="text-input nm-read" maxlength="1" placeholder="첫 글자 음 (예: 서)" style="flex: 1;">
+            <input type="number" class="text-input nm-strokes" min="1" max="30" placeholder="획수 직접" style="width: 96px;" hidden>
+          </div>
+          <div class="nm-chips" hidden></div>
+        </div>
+        <div class="nm-char-block" data-idx="1" style="margin-top: 12px;">
+          <div class="nm-row">
+            <input type="text" class="text-input nm-read" maxlength="1" placeholder="둘째 글자 음 (외자면 비움)" style="flex: 1;">
+            <input type="number" class="text-input nm-strokes" min="1" max="30" placeholder="획수 직접" style="width: 96px;" hidden>
+          </div>
+          <div class="nm-chips" hidden></div>
+        </div>
+        <p class="form-microcopy" style="margin-top: 10px;">음을 넣으면 한자 후보가 떠요. 목록에 없는 한자는 <b>획수 직접</b>에 획수만 넣어도 평가돼요.</p>
+        <button class="btn-primary" id="nm-run-eval" style="margin-top: 12px;">이름 평가하기</button>
+      </div>
+      <div id="nm-eval-result"></div>
+    </div>
+
+    <p class="form-microcopy rise" style="margin: 14px 24px 0;">획수는 성명학 원획(강희자전) 기준이며 자전·유파에 따라 다를 수 있어요. 최종 이름은 소리 내어 불러 보고, 출생신고 전 인명용 한자 여부를 확인하세요.</p>
 
     <div class="bottom-space"></div>
 
@@ -825,6 +984,8 @@
 <script src="js/characters.js"></script>
 <script src="js/gunghap.js"></script>
 <script src="js/taegil.js"></script>
+<script src="js/tojeong.js"></script>
+<script src="js/naming.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

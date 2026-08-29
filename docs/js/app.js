@@ -1382,6 +1382,255 @@
     }
   }
 
+  /* ---------- 토정비결 ---------- */
+
+  function tojeongTarget() {
+    if (state.lastInput) return { prof: state.lastInput, name: state.name || '', res: state.result };
+    var p = bookSelf() || loadProfile();
+    if (!p) return null;
+    try { return { prof: p, name: p.name || '', res: M.compute(p) }; } catch (e) { return null; }
+  }
+
+  function showTojeong() {
+    var t = tojeongTarget();
+    $('#tj-need').hidden = !!t;
+    $('#tj-body').hidden = !t;
+    if (t) {
+      if (!state.tojeongYear) state.tojeongYear = todayDateParts().y;
+      renderTojeong();
+    }
+    showView('tojeong');
+  }
+
+  function yearGanjiKor(y) {
+    return M.ganjiName(((y - 4) % 10 + 10) % 10, ((y - 4) % 12 + 12) % 12).kor;
+  }
+
+  function renderTojeong() {
+    var t = tojeongTarget();
+    if (!t) return;
+    var fy = state.tojeongYear;
+    var nowY = todayDateParts().y;
+
+    $('#tj-year-seg').innerHTML = [nowY, nowY + 1].map(function (y) {
+      return '<button type="button" class="seg-btn' + (y === fy ? ' active' : '') + '" data-tj-year="' + y + '">' +
+        y + '년 ' + yearGanjiKor(y) + '</button>';
+    }).join('');
+    $('#tj-year-seg').querySelectorAll('[data-tj-year]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        state.tojeongYear = +b.getAttribute('data-tj-year');
+        renderTojeong();
+      });
+    });
+
+    var r = window.Tojeong.compute(fy, { sy: t.prof.year, sm: t.prof.month, sd: t.prof.day });
+    if (!r) { toast('괘 계산에 문제가 생겼어요. 생년월일을 확인해 주세요.'); return; }
+    var tx = window.Tojeong.text(r.code);
+    state.tojeong = { r: r, tx: tx, name: t.name };
+    track('tojeong_view', { y: fy });
+
+    $('#tj-code').textContent = (t.name ? t.name + ' 님 · ' : '') + fy + '년 제' + r.code + '괘';
+    $('#tj-han').textContent = tx.han;
+    $('#tj-gloss').textContent = '「' + tx.gloss + '」';
+    $('#tj-title').textContent = tx.title;
+    $('#tj-overview').textContent = tx.overview;
+    $('#tj-half').textContent = tx.half + ' 한 해의 맺음은 「' + tx.ending + '」의 상입니다.';
+    $('#tj-caution').textContent = tx.caution;
+
+    $('#tj-months').innerHTML = window.Tojeong.monthly(fy, t.res.pillars.day.stem).map(function (mo) {
+      return '<div class="fortune-row"><span class="f-label" style="width: 66px;">음력 ' + mo.m + '월</span>' +
+        '<span class="f-text"><b>' + mo.ganji.kor + '월 · ' + mo.sip + '</b> — ' + mo.line + '</span></div>';
+    }).join('');
+
+    $('#tj-note').textContent = '음력 ' + r.lunarBirth.m + '월 ' + r.lunarBirth.d + '일생 · ' + fy + '년 세는나이 ' +
+      r.age + '세 기준' + (r.lunarBirth.leap ? ' (윤달생은 본달로 계산)' : '') +
+      '. 괘 산출은 전통 방식(태세·월건·일진수)을 따르고, 풀이 글은 사주첩이 오늘의 언어로 새로 쓴 것입니다.';
+    $('#btn-share-tojeong').hidden = false;
+  }
+
+  function shareTojeong() {
+    var tj = state.tojeong;
+    if (!tj) return;
+    track('tojeong_share');
+    var text = tj.r.fy + '년 나의 토정비결 — 제' + tj.r.code + '괘 「' + tj.tx.gloss + '」 · 사주첩';
+    if (navigator.share) {
+      navigator.share({ title: '사주첩 — 토정비결', text: text, url: 'https://sajucheop.com/#tojeong' }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + '\nsajucheop.com/#tojeong').then(function () { toast('토정비결을 복사했어요.'); });
+    }
+  }
+
+  /* ---------- 이름 짓기 ---------- */
+
+  var NM = window.Naming;
+  var nmState = { chars: [null, null] };
+
+  function initNaming() {
+    var sel = $('#nm-sur');
+    sel.innerHTML = NM.SURNAMES.map(function (s, i) {
+      return '<option value="' + i + '">' + s.r + ' (' + s.h + ' · ' + s.s + '획)</option>';
+    }).join('') + '<option value="custom">직접 입력…</option>';
+    sel.addEventListener('change', function () {
+      $('#nm-sur-custom').hidden = sel.value !== 'custom';
+    });
+
+    document.querySelectorAll('[data-nm-tab]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var tab = b.getAttribute('data-nm-tab');
+        document.querySelectorAll('[data-nm-tab]').forEach(function (x) {
+          x.classList.toggle('active', x === b);
+        });
+        $('#nm-rec-panel').hidden = tab !== 'rec';
+        $('#nm-eval-panel').hidden = tab !== 'eval';
+      });
+    });
+
+    document.querySelectorAll('.nm-char-block').forEach(function (block) {
+      var idx = +block.getAttribute('data-idx');
+      var read = block.querySelector('.nm-read');
+      var strokes = block.querySelector('.nm-strokes');
+      var chips = block.querySelector('.nm-chips');
+      read.addEventListener('input', function () {
+        nmState.chars[idx] = null;
+        strokes.value = '';
+        var v = read.value.trim();
+        if (!v) { chips.hidden = true; strokes.hidden = true; chips.innerHTML = ''; return; }
+        var list = NM.charsByReading(v);
+        chips.innerHTML = list.length
+          ? list.map(function (c, i) {
+              return '<button type="button" class="nm-chip" data-ci="' + i + '">' + c.h +
+                ' <small>' + c.s + '획 · ' + c.e + ' · ' + c.m + '</small></button>';
+            }).join('')
+          : '<span class="nm-none">목록에 없는 음이에요 — 획수를 직접 넣으면 수리로 평가해요.</span>';
+        chips.hidden = false;
+        strokes.hidden = false;
+        chips.querySelectorAll('.nm-chip').forEach(function (chipBtn) {
+          chipBtn.addEventListener('click', function () {
+            var c = list[+chipBtn.getAttribute('data-ci')];
+            nmState.chars[idx] = c;
+            strokes.value = c.s;
+            chips.querySelectorAll('.nm-chip').forEach(function (x) { x.classList.toggle('selected', x === chipBtn); });
+          });
+        });
+      });
+      strokes.addEventListener('input', function () { nmState.chars[idx] = null; });
+    });
+
+    $('#nm-run-eval').addEventListener('click', runNamingEval);
+    $('#nm-run-rec').addEventListener('click', runNamingRec);
+  }
+
+  function nmSurname() {
+    var sel = $('#nm-sur');
+    if (sel.value === 'custom') {
+      var kor = $('#nm-sur-kor').value.trim();
+      var st = +$('#nm-sur-strokes').value;
+      if (!kor || !st) return null;
+      return { h: kor, r: kor, s: st };
+    }
+    return NM.SURNAMES[+sel.value];
+  }
+
+  function nmLackEls() {
+    if (!state.result) return null;
+    var els = state.result.elements;
+    return Object.keys(els).filter(function (k) { return els[k] === 0; });
+  }
+
+  function showNaming() {
+    var lack = nmLackEls();
+    $('#nm-saju-line').innerHTML = state.result
+      ? (lack && lack.length
+        ? '연동된 명식(' + (state.name ? state.name + ' 님' : state.lastInput.year + '년생') + ')에 부족한 오행 <b>' +
+          lack.join(' · ') + '</b> — 이 기운을 채우는 글자를 먼저 추천해요.'
+        : '연동된 명식은 오행이 고루 갖춰져 있어요. 수리·발음 좋은 이름을 추천합니다.')
+      : '아기 생일로 홈에서 사주를 먼저 계산하면, 부족한 오행을 채우는 글자를 골라드려요.';
+    showView('naming');
+  }
+
+  var GYEOK_ICON = { '대길': '◎', '길': '○', '평': '△', '흉': '✕' };
+
+  function runNamingEval() {
+    var sur = nmSurname();
+    if (!sur) { toast('성씨를 선택하거나 직접 입력해 주세요.'); return; }
+    var chars = [], missing = false;
+    document.querySelectorAll('.nm-char-block').forEach(function (block) {
+      var idx = +block.getAttribute('data-idx');
+      var readV = block.querySelector('.nm-read').value.trim();
+      if (!readV) return;
+      var chosen = nmState.chars[idx];
+      var st = +block.querySelector('.nm-strokes').value;
+      if (chosen) chars.push(chosen);
+      else if (st) chars.push({ h: '', r: readV, s: st, e: null });
+      else missing = true;
+    });
+    if (missing || !chars.length) {
+      toast('이름 글자마다 한자를 고르거나 획수를 넣어주세요.');
+      return;
+    }
+    track('naming_eval');
+    var lack = nmLackEls();
+    var ev = NM.evaluate(sur, chars, lack);
+    var nameKor = sur.r + chars.map(function (c) { return c.r; }).join('');
+    var nameHan = chars.every(function (c) { return c.h; })
+      ? sur.h + chars.map(function (c) { return c.h; }).join('') : null;
+
+    $('#nm-eval-result').innerHTML =
+      '<div class="char-hero rise" style="margin-top: 14px;">' +
+      '<div class="tj-code">' + G.escapeHtml(nameKor) + (nameHan ? ' (' + nameHan + ')' : '') + '</div>' +
+      '<div class="gh-score"><span class="t-score">' + ev.total + '</span>점</div>' +
+      '<div class="gh-tier">' + ev.tier + '</div>' +
+      '</div>' +
+      '<div class="card rise card-pad">' +
+      '<div class="section-head"><h3 class="section-title" style="font-size: 15px;">수리 사격 (81수리)</h3></div>' +
+      ev.gyeok.map(function (g) {
+        return '<div class="fortune-row"><span class="f-label" style="width: 88px;">' + g.name + ' <small style="color: #9A8F7E;">' + g.desc + '</small></span>' +
+          '<span class="f-text"><b>' + GYEOK_ICON[g.su.tier] + ' ' + g.su.v + '수 · ' + g.su.tier + '</b> — ' + g.su.label + '격</span></div>';
+      }).join('') +
+      '</div>' +
+      '<div class="card rise card-pad">' +
+      '<div class="section-head"><h3 class="section-title" style="font-size: 15px;">소리와 오행</h3></div>' +
+      '<p class="reading-body" style="margin-top: 10px;">' + ev.sound.line + '</p>' +
+      (ev.jawon.line ? '<p class="reading-body" style="margin-top: 8px;">' + ev.jawon.line + '</p>' : '') +
+      '<p class="reading-body" style="margin-top: 8px;">' + ev.eumyang.line + '</p>' +
+      ev.warns.map(function (w) { return '<p class="notice" style="margin-top: 10px;">' + w + '</p>'; }).join('') +
+      '</div>';
+  }
+
+  function runNamingRec() {
+    var sur = nmSurname();
+    if (!sur) { toast('성씨를 선택하거나 직접 입력해 주세요.'); return; }
+    var gender = document.querySelector('input[name="nm-gender"]:checked').value;
+    var lack = nmLackEls();
+    track('naming_rec', { lack: lack ? lack.join(',') : '' });
+    var list = NM.recommend(sur, gender, lack, 8);
+    $('#nm-rec-results').innerHTML = (list.length
+      ? list.map(function (it) {
+          var pills = ['수리 사격 모두 길', ev2Text(it.ev.sound.score)];
+          if (it.ev.jawon.score > 0) pills.push('부족 오행 보완');
+          return '<div class="card rise card-pad nm-name-card">' +
+            '<div class="nm-name-head">' +
+            '<b class="nm-name-big">' + sur.r + it.c1.r + it.c2.r + '</b>' +
+            '<span class="nm-name-han">' + sur.h + it.c1.h + it.c2.h + '</span>' +
+            '<span class="tg-score">' + it.ev.total + '<small>점</small></span>' +
+            '</div>' +
+            '<p class="nm-name-mean">' + it.c1.h + ' ' + it.c1.m + ' (' + it.c1.s + '획·' + it.c1.e + ') + ' +
+            it.c2.h + ' ' + it.c2.m + ' (' + it.c2.s + '획·' + it.c2.e + ')</p>' +
+            '<div class="pill-row" style="margin-top: 8px;">' +
+            pills.map(function (p) { return '<span class="pill">' + p + '</span>'; }).join('') +
+            '</div></div>';
+        }).join('') +
+        '<div class="btn-stack rise" style="margin-top: 4px;"><button class="btn-outline" id="nm-reroll">다른 이름 다시 뽑기</button>' +
+        '<p class="form-microcopy">후보는 획수·오행 기준이에요. 소리 내어 불러 보고, 성과 이어 읽었을 때 자연스러운지 꼭 확인하세요.</p></div>'
+      : '<p class="purpose-empty" style="margin: 20px;">조건에 맞는 조합을 찾지 못했어요. 성별을 바꾸거나, 사주 연동 없이 다시 시도해 보세요.</p>');
+    var again = $('#nm-reroll');
+    if (again) again.addEventListener('click', runNamingRec);
+  }
+
+  function ev2Text(s) {
+    return s >= 14 ? '발음오행 상생' : (s >= 10 ? '발음오행 순조' : '발음오행 무난');
+  }
+
   /* ---------- 운세 캘린더 ---------- */
 
   function monthKey(y, m) { return y * 12 + (m - 1); }
@@ -1393,10 +1642,18 @@
     var max = M._internals.daysInMonth(y, m);
     for (var d = 1; d <= max; d++) {
       var info = M.todayInfo(state.result, y, m, d);
+      var lun = null, son = false;
+      if (lunarCal && lunarCal.setSolarDate(y, m, d)) {
+        lun = lunarCal.getLunarCalendar();
+        var tail = lun.day % 10;
+        son = (tail === 9 || tail === 0); /* 손없는날 — 음력 끝자리 9·0 */
+      }
       days.push({
         d: d,
         info: info,
-        score: I.scoreDay(state.result, info)
+        score: I.scoreDay(state.result, info),
+        lunar: lun,
+        son: son
       });
     }
     state.calCache[key] = days;
@@ -1411,6 +1668,12 @@
       .filter(function (dd) { return !isCurrentMonth || dd.d >= t.d; })
       .map(function (dd) {
         var match = I.purposeMatch(purposeKey, dd.info);
+        /* 이사 목적: 손없는날 교차 보너스 */
+        if (purposeKey === 'move' && dd.son && dd.info.relation !== '충') {
+          match = match
+            ? { bonus: match.bonus + 8, reason: '손없는날 · ' + match.reason }
+            : { bonus: 8, reason: '손없는날 — 탈이 적다는 전통 이삿날' };
+        }
         return match ? { d: dd.d, score: dd.score + match.bonus, reason: match.reason, info: dd.info } : null;
       })
       .filter(Boolean)
@@ -1447,6 +1710,7 @@
         (isPast ? ' past' : '') + (c.selected === dd.d ? ' selected' : '');
       html += '<button class="' + cls + '" data-day="' + dd.d + '">' +
         (purposeDays.indexOf(dd.d) >= 0 ? '<span class="cc-purpose"></span>' : '') +
+        (dd.son ? '<span class="cc-son">손</span>' : '') +
         '<span>' + dd.d + '</span>' +
         '<span class="cc-mark ' + mark + '"></span>' +
         '</button>';
@@ -1469,11 +1733,16 @@
         var relNote = dd.info.relation === '충' ? ' · 일지와 충 — 큰 결정은 피하세요'
           : (dd.info.relation === '육합' ? ' · 일지와 합 — 인연이 순조로워요' : '');
         var evPrefix = dd.score >= 80 ? '○ 길일 · ' : (dd.info.relation === '충' ? '△ 충 주의 · ' : '');
+        var lunLine = dd.lunar
+          ? '<br><span class="cd-lunar">음력 ' + dd.lunar.month + '월 ' + dd.lunar.day + '일' +
+            (dd.son ? ' · <b>손없는날</b> — 이사·이전에 탈이 적다는 날' : '') + '</span>'
+          : '';
         detail.innerHTML = '<b>' + c.m + '월 ' + dd.d + '일 · ' + g.kor + '(' + g.han + ')일</b><br>' +
           '흐름 ' + dd.score + '점 — ' + dd.info.stemSipseong +
-          josa(dd.info.stemSipseong, '이', '가') + ' 드는 날' + relNote + '<br>' +
+          josa(dd.info.stemSipseong, '이', '가') + ' 드는 날' + relNote + lunLine + '<br>' +
           gcalLink(c.y, c.m, dd.d, evPrefix + g.kor + '일 · 흐름 ' + dd.score + '점',
-            dd.info.stemSipseong + josa(dd.info.stemSipseong, '이', '가') + ' 드는 날 — 사주첩 sajucheop.com');
+            dd.info.stemSipseong + josa(dd.info.stemSipseong, '이', '가') + ' 드는 날' +
+            (dd.son ? ' · 손없는날' : '') + ' — 사주첩 sajucheop.com');
         detail.hidden = false;
       }
     } else {
@@ -2336,6 +2605,20 @@
       $('#site-menu').hidden = true;
       showView('taegil');
     });
+    $('#menu-tojeong').addEventListener('click', function (e) {
+      e.preventDefault();
+      $('#site-menu').hidden = true;
+      showTojeong();
+    });
+    $('#menu-naming').addEventListener('click', function (e) {
+      e.preventDefault();
+      $('#site-menu').hidden = true;
+      showNaming();
+    });
+    $('#btn-to-tojeong').addEventListener('click', showTojeong);
+    $('#btn-to-naming').addEventListener('click', showNaming);
+    $('#tj-go-home').addEventListener('click', function () { showView('home'); });
+    $('#btn-share-tojeong').addEventListener('click', shareTojeong);
     $('#btn-to-character').addEventListener('click', function () { showView('character'); });
     $('#btn-char-to-today').addEventListener('click', function () { showView('today'); });
     $('#btn-save-card').addEventListener('click', saveCharacterCard);
@@ -2419,6 +2702,7 @@
 
   initForm();
   initTaegil();
+  initNaming();
   initEvents();
   renderHomeToday();
   /* 입력 폼 자동 채움 — 첩의 '나' 장 우선, 없으면 마지막 계산 프로필 */
@@ -2454,7 +2738,15 @@
     state.invite = parseInviteFromHash();
     if (state.invite) showInviteBanner();
   }
-  showView(state.pairView ? 'gunghap' : (location.hash === '#taegil' ? 'taegil' : 'home'));
+  if (state.pairView) {
+    showView('gunghap');
+  } else if (location.hash === '#tojeong') {
+    showTojeong();
+  } else if (location.hash === '#naming') {
+    showNaming();
+  } else {
+    showView(location.hash === '#taegil' ? 'taegil' : 'home');
+  }
 
   /* 디버그·검증용 최소 노출 */
   window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, buildMyeongsikCard: buildMyeongsikCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser, _state: state };
