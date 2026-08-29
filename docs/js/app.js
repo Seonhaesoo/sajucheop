@@ -25,12 +25,20 @@
     el._t = setTimeout(function () { el.classList.remove('show'); }, 2600);
   }
 
+  /* GA4 이벤트 (미탑재 환경에선 조용히 무시) */
+  function track(name, params) {
+    if (window.gtag) {
+      try { window.gtag('event', name, params || {}); } catch (e) { /* 무시 */ }
+    }
+  }
+
   function showView(name) {
     document.querySelectorAll('.view').forEach(function (v) {
       v.classList.remove('active', 'animate-in');
     });
     var el = $('#view-' + name);
     el.classList.add('active');
+    track('page_view', { page_path: '/#' + name, page_title: '사주첩 — ' + name });
     // 화면이 실제로 보일 때만 등장 애니메이션 — 숨겨진 상태에서 멈춰
     // 콘텐츠가 투명하게 고정되는 일을 막는다. 안전 타임아웃으로 항상 해제.
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -153,6 +161,7 @@
       renderToday(result);
       renderCalendar();
       saveProfile(input);
+      track('saju_compute', { unknown_time: input.unknownTime ? 1 : 0 });
       if (state.invite) {
         var partnerResult = M.compute(state.invite);
         renderGunghap(partnerResult, result);
@@ -548,6 +557,7 @@
       toast('먼저 내 사주를 입력해 주세요.');
       return;
     }
+    track('gunghap_link');
     var payload = Object.assign({ name: state.name }, state.lastInput);
     var url = location.origin + location.pathname + '#p=' + G.encodeProfile(payload);
     var text = (state.name ? state.name + ' — ' : '') + '우리 궁합 볼래? 생일만 넣으면 바로 나와.';
@@ -813,7 +823,9 @@
     toast('명함을 그리는 중이에요…');
     buildCharacterCard().then(function (cv) {
       cv.toBlob(function (blob) {
-        if (deliverFile(blob, cardFileName(), '사주첩 — 나의 사주 캐릭터') === 'downloaded') {
+        var mode = deliverFile(blob, cardFileName(), '사주첩 — 나의 사주 캐릭터');
+        track('save_card', { mode: mode });
+        if (mode === 'downloaded') {
           toast('사주 명함을 저장했어요. 스토리에 올려보세요.');
         }
       }, 'image/png');
@@ -1148,6 +1160,7 @@
       var ics = buildIcs();
       var blob = new Blob([ics.text], { type: 'text/calendar;charset=utf-8' });
       var mode = deliverFile(blob, '사주첩-운세캘린더.ics', '사주첩 — 운세 캘린더');
+      track('ics_export', { mode: mode });
       var help = $('#ics-help');
       if (mode === 'downloaded') {
         toast('30일치 ' + ics.count + '개 일정을 파일로 받았어요. 캘린더에 넣는 법은 아래 안내를 보세요.');
@@ -1394,6 +1407,7 @@
       toast('명식 이미지 저장은 준비 중이에요.');
     });
     $('#btn-report').addEventListener('click', function () {
+      track('open_report');
       renderReport();
       showView('report');
     });
