@@ -402,6 +402,24 @@
     }).join('');
     $('#r-el-callout').textContent = I.elementComment(r);
 
+    /* 아기 풀이 (만 5세 이하 자동) */
+    var isBaby = inp.year >= todayDateParts().y - 5;
+    if (isBaby) {
+      var baby = I.babyReading(r);
+      var ch = C.of(me.han);
+      $('#r-baby').innerHTML =
+        '<div class="card reading-card">' +
+        '<div class="reading-overline">아기 풀이</div>' +
+        '<h2 class="reading-title" style="font-size: 18px;">' + ch.name.replace('사람', '아이') + ' — ' + me.kor + me.el + ' 아기</h2>' +
+        '<p class="reading-body">' + baby.temper + '</p>' +
+        '<div class="rp-kv"><span class="kv-label accent">양육</span><div class="kv-text">' + baby.care + '</div></div>' +
+        '<div class="rp-kv"><span class="kv-label">이름</span><div class="kv-text">' + baby.nameHint + '</div></div>' +
+        '<p class="callout" style="margin-top: 14px;">아기의 건강과 발달에 관한 판단은 언제나 소아청소년과 의료진과 함께하세요. 이 풀이는 전통 명리 관점의 참고 정보입니다.</p>' +
+        '</div>';
+    } else {
+      $('#r-baby').innerHTML = '';
+    }
+
     /* 일간 풀이 */
     var ilgan = I.ilganText(me.han);
     $('#r-ilgan-title').textContent = ilgan.title;
@@ -1781,6 +1799,17 @@
         '<div class="rd-body">' + dt.body + '</div></div>';
     }).join('');
 
+    var babySection = '';
+    if (inp.year >= todayDateParts().y - 5) {
+      var baby = I.babyReading(r);
+      babySection =
+        '<div class="report-section"><div class="rp-h">아기를 위한 안내</div>' +
+        '<p class="rp-line">' + baby.temper + '</p>' +
+        '<div class="rp-kv"><span class="kv-label accent">양육</span><div class="kv-text">' + baby.care + '</div></div>' +
+        '<div class="rp-kv"><span class="kv-label">이름</span><div class="kv-text">' + baby.nameHint + '</div></div>' +
+        '<p class="rp-line" style="color: #9A8F7E;">아기의 건강·발달 판단은 언제나 소아청소년과 의료진과 함께하세요.</p></div>';
+    }
+
     var basisNotes = [
       '절기(節氣)는 태양의 시황경을 천문 계산해 시각 단위로 판정했습니다.',
       inp.applySolarTime ? '진태양시 보정(서울 기준 −32분)을 적용했습니다.' : '진태양시 보정 없이 표준시 그대로 계산했습니다.',
@@ -1827,6 +1856,8 @@
       ch.strengths.map(function (s) { return '<div class="kv-item">· ' + s + '</div>'; }).join('') + '</div></div>' +
       '<div class="rp-kv"><span class="kv-label">조심</span><div class="kv-text">' +
       ch.cautions.map(function (s) { return '<div class="kv-item">· ' + s + '</div>'; }).join('') + '</div></div></div>' +
+
+      babySection +
 
       '<div class="report-section"><div class="rp-h">오행의 균형 — ' + I.elementHeadline(r) + '</div>' +
       '<div style="display: flex; flex-direction: column; gap: 11px;">' + elBars + '</div>' +
