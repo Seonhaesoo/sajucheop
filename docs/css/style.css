@@ -959,6 +959,29 @@ a.btn-primary { text-decoration: none; }
   line-height: 1.65;
 }
 
+.guide-section {
+  padding: 22px 22px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.guide-section h2 {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+}
+.guide-section span { font-size: 12px; color: var(--faint); }
+
+.guide-grid {
+  padding: 14px 22px 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.guide-grid .guide-card { padding: 14px 16px; }
+.guide-grid .guide-card h2 { font-size: 14.5px; margin-top: 4px; }
+.guide-grid .guide-card p { font-size: 12px; margin-top: 5px; }
+
 /* ---------- 헤더 메뉴 ---------- */
 
 .menu-wrap { position: relative; }
