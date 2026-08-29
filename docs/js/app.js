@@ -1112,15 +1112,22 @@
 
   function downloadIcs() {
     if (!state.result) return;
-    var ics = buildIcs();
-    var blob = new Blob([ics.text], { type: 'text/calendar;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.download = '사주첩-운세캘린더.ics';
-    a.href = url;
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-    toast('앞으로 30일, ' + ics.count + '개 일정을 내보냈어요. 다음 달에 또 받아 가세요.');
+    try {
+      var ics = buildIcs();
+      var blob = new Blob([ics.text], { type: 'text/calendar;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.download = '사주첩-운세캘린더.ics';
+      a.href = url;
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+      toast('30일치 ' + ics.count + '개 일정을 파일로 받았어요. 캘린더에 넣는 법은 아래 안내를 보세요.');
+      var help = $('#ics-help');
+      if (help) help.open = true;
+    } catch (e) {
+      toast('파일 생성에 문제가 생겼어요. 새로고침 후 다시 시도해 주세요.');
+      if (window.console) console.error(e);
+    }
   }
 
   function shareToday() {

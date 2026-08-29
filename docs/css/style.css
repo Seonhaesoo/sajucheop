@@ -1009,6 +1009,45 @@ a.btn-primary { text-decoration: none; }
 .guide-grid .guide-card h2 { font-size: 14.5px; margin-top: 4px; }
 .guide-grid .guide-card p { font-size: 12px; margin-top: 5px; }
 
+/* ---------- ICS 도움말 ---------- */
+
+.ics-help {
+  margin-top: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+}
+.ics-help summary {
+  cursor: pointer;
+  padding: 13px 15px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--seal);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.ics-help summary::-webkit-details-marker { display: none; }
+.ics-help summary::after {
+  content: '▾';
+  color: var(--faint);
+  transition: transform 0.15s ease;
+}
+.ics-help[open] summary::after { transform: rotate(180deg); }
+.ics-help .ih-body {
+  padding: 2px 15px 13px;
+  border-top: 1px solid var(--line-soft);
+}
+.ics-help .ih-body p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 10px 0 0;
+}
+.ics-help .ih-body b { color: var(--ink); font-weight: 700; }
+
 /* ---------- 전체 풀이 리포트 ---------- */
 
 .rp-cover { padding: 30px 22px 4px; }
