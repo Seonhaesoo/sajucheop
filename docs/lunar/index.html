@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>음력 양력 변환 — 제사·음력 생신 10년치 날짜와 캘린더 등록 | 사주첩</title>
+  <meta name="description" content="음력 날짜를 양력으로 바로 변환하고, 제사·음력 생신을 등록하면 앞으로 10년치 양력 날짜를 계산해 캘린더(.ics)에 넣어드립니다. 윤달 처리까지 — 무료.">
+  <link rel="canonical" href="https://sajucheop.com/lunar/">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"사주첩 음력 기념일","url":"https://sajucheop.com/lunar/","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"inLanguage":"ko"}</script>
+  <meta property="og:title" content="음력 양력 변환 · 제사 날짜 계산기">
+  <meta property="og:description" content="제사·음력 생신, 10년치 양력 날짜를 한 번에. 캘린더 등록까지.">
+  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .lc-result {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: #FFFDF9;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .ld-item {
+      background: #FFFDF9;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 10px;
+    }
+    .ld-head { display: flex; align-items: baseline; gap: 10px; }
+    .ld-head b { font-size: 15px; }
+    .ld-head .ld-lunar { font-size: 12px; color: var(--muted); flex: 1; }
+    .ld-del { background: none; border: 0; padding: 4px; cursor: pointer; line-height: 0; }
+    .ld-next { margin-top: 8px; font-size: 13px; color: var(--ink-body); line-height: 1.7; }
+    .ld-next b { color: var(--seal); }
+    .ld-years { margin-top: 8px; }
+    .ld-years summary { font-size: 12px; color: var(--faint); cursor: pointer; }
+    .ld-years table { width: 100%; margin-top: 8px; border-collapse: collapse; font-size: 12.5px; }
+    .ld-years td { padding: 4px 2px; border-top: 1px solid var(--line-soft); color: var(--muted); }
+    .ld-years td:last-child { text-align: right; color: var(--ink-body); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header class="doc-header">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">사주첩</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="../">사주 보기</a>
+      <a href="../manse/">만세력</a>
+      <a href="../guide/">서재</a>
+    </nav>
+  </header>
+
+  <div class="daeun-intro" style="margin-top: 26px;">
+    <h2 style="font-size: 24px;">음력 기념일 지킴이</h2>
+    <p>제사, 부모님 음력 생신 — 매년 달력을 뒤지는 그 날짜들. 한 번 등록하면 <b>앞으로 10년치 양력 날짜</b>를 계산해 캘린더에 넣어드립니다.</p>
+  </div>
+
+  <!-- 빠른 변환 -->
+  <div class="card card-pad" style="margin-top: 8px;">
+    <div class="section-head"><h3 class="section-title" style="font-size: 15px;">빠른 변환 — 음력 → 양력</h3></div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1.3;"><select id="qc-year"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="qc-month"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="qc-day"></select></div>
+    </div>
+    <label class="nm-row" style="gap: 8px; font-size: 13px; color: #6E6455; cursor: pointer;">
+      <input type="checkbox" id="qc-leap" style="width: 16px; height: 16px;"> 윤달
+    </label>
+    <button class="btn-primary" id="qc-run" style="margin-top: 14px;">양력으로 변환</button>
+    <div class="lc-result" id="qc-result" hidden></div>
+  </div>
+
+  <!-- 기념일 보관함 -->
+  <div class="card card-pad" style="margin-top: 16px;">
+    <div class="section-head">
+      <h3 class="section-title" style="font-size: 15px;">내 음력 기념일</h3>
+      <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">이 기기에만 저장돼요</span>
+    </div>
+    <div class="nm-row">
+      <input type="text" class="text-input" id="ld-name" maxlength="14" placeholder="이름 (예: 아버지 제사, 엄마 생신)" style="flex: 1;">
+    </div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1;"><select id="ld-month"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="ld-day"></select></div>
+    </div>
+    <label class="nm-row" style="gap: 8px; font-size: 13px; color: #6E6455; cursor: pointer;">
+      <input type="checkbox" id="ld-leap" style="width: 16px; height: 16px;"> 윤달 기준 (해당 해에 윤달이 없으면 평달로)
+    </label>
+    <button class="btn-primary" id="ld-add" style="margin-top: 14px;">기념일 등록</button>
+    <div id="ld-list"></div>
+    <div class="btn-stack" style="margin-top: 16px; padding: 0;">
+      <button class="btn-outline" id="ld-ics" hidden>10년치 캘린더 파일(.ics) 받기</button>
+    </div>
+  </div>
+
+  <div class="card reading-card" style="margin-top: 20px;">
+    <div class="reading-overline">알아두면 좋은 것</div>
+    <p class="reading-body">제사는 보통 <b>돌아가신 날의 음력 날짜</b>에 지내며, 윤달에 돌아가신 경우 평달에 지내는 것이 일반적인 관행입니다. 음력 30일이 없는 해(작은달)에는 29일로 계산해 드려요.</p>
+  </div>
+
+  <footer class="site-footer" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© 사주첩</span>
+      <nav class="footer-links">
+        <a href="../guide/">서재</a>
+        <a href="../terms.html">이용약관</a>
+        <a href="../privacy.html">개인정보</a>
+      </nav>
+    </div>
+    <p class="footer-note">음력 변환은 한국천문연구원 자료 기반(1000~2050년)입니다. 등록한 기념일은 서버로 전송되지 않습니다.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="bottom-space"></div>
+
+</div>
+
+<script src="../js/vendor-korean-lunar.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var KEY = 'sajucheop.lunardays.v1';
+  var WD = ['일', '월', '화', '수', '목', '금', '토'];
+  var cal = window.KoreanLunarCalendar ? new window.KoreanLunarCalendar() : null;
+
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+  function track(name, params) {
+    if (window.gtag) { try { window.gtag('event', name, params || {}); } catch (e) { /* 무시 */ } }
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  var nowY = new Date().getFullYear();
+
+  /* 셀렉트 채우기 */
+  var o = '';
+  for (var y = nowY; y >= 1930; y--) o += '<option value="' + y + '">' + y + '년</option>';
+  $('#qc-year').innerHTML = o;
+  o = '';
+  for (var m = 1; m <= 12; m++) o += '<option value="' + m + '">' + m + '월</option>';
+  $('#qc-month').innerHTML = o;
+  $('#ld-month').innerHTML = o;
+  o = '';
+  for (var d = 1; d <= 30; d++) o += '<option value="' + d + '">' + d + '일</option>';
+  $('#qc-day').innerHTML = o;
+  $('#ld-day').innerHTML = o;
+
+  /* 음력(lm, ld, leapPref) → 해당 연도의 양력. 윤달 없으면 평달, 30일 없으면 29일 */
+  function toSolar(yy, lm, ld, leapPref) {
+    if (!cal) return null;
+    var tries = [];
+    if (leapPref) tries.push([ld, true], [ld === 30 ? 29 : ld, true]);
+    tries.push([ld, false]);
+    if (ld === 30) tries.push([29, false]);
+    for (var i = 0; i < tries.length; i++) {
+      if (cal.setLunarDate(yy, lm, tries[i][0], tries[i][1])) {
+        var s = cal.getSolarCalendar();
+        return { y: s.year, m: s.month, d: s.day, usedDay: tries[i][0], usedLeap: tries[i][1] };
+      }
+    }
+    return null;
+  }
+
+  function fmt(s) {
+    var dow = WD[new Date(s.y, s.m - 1, s.d).getDay()];
+    return s.y + '년 ' + s.m + '월 ' + s.d + '일 (' + dow + ')';
+  }
+
+  /* ---------- 빠른 변환 ---------- */
+
+  $('#qc-run').addEventListener('click', function () {
+    var y = +$('#qc-year').value, lm = +$('#qc-month').value, ld = +$('#qc-day').value;
+    var leap = $('#qc-leap').checked;
+    if (!cal || !cal.setLunarDate(y, lm, ld, leap)) {
+      $('#qc-result').hidden = false;
+      $('#qc-result').textContent = '해당 음력 날짜가 없어요. ' + (leap ? '그 해엔 윤' + lm + '월이 없거나 ' : '') + '날짜를 확인해 주세요.';
+      return;
+    }
+    var s = cal.getSolarCalendar();
+    $('#qc-result').hidden = false;
+    $('#qc-result').innerHTML = '음력 ' + y + '년 ' + (leap ? '윤' : '') + lm + '월 ' + ld + '일은<br>' +
+      '<b style="font-size: 17px;">양력 ' + fmt({ y: s.year, m: s.month, d: s.day }) + '</b> 입니다.';
+    track('lunar_convert');
+  });
+
+  /* ---------- 기념일 보관함 ---------- */
+
+  function load() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(KEY) || '[]');
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function save(list) {
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) { /* 무시 */ }
+  }
+
+  $('#ld-add').addEventListener('click', function () {
+    var name = $('#ld-name').value.trim();
+    if (!name) { toast('기념일 이름을 넣어주세요. (예: 아버지 제사)'); return; }
+    var list = load();
+    if (list.length >= 20) { toast('최대 20개까지 저장할 수 있어요.'); return; }
+    list.push({
+      id: 'l' + new Date().getTime(),
+      name: name,
+      m: +$('#ld-month').value,
+      d: +$('#ld-day').value,
+      leap: $('#ld-leap').checked
+    });
+    save(list);
+    $('#ld-name').value = '';
+    track('lunar_add');
+    toast('등록했어요. 앞으로 10년치 날짜를 계산해 드릴게요.');
+    render();
+  });
+
+  function nextOccurrences(item, count) {
+    var out = [];
+    var today = new Date();
+    var t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    for (var yy = nowY; yy <= nowY + 11 && out.length < count; yy++) {
+      var s = toSolar(yy, item.m, item.d, item.leap);
+      if (!s) continue;
+      var time = new Date(s.y, s.m - 1, s.d).getTime();
+      if (time >= t0) out.push(s);
+    }
+    return out;
+  }
+
+  function render() {
+    var list = load();
+    $('#ld-ics').hidden = !list.length;
+    $('#ld-list').innerHTML = list.map(function (item) {
+      var occ = nextOccurrences(item, 10);
+      var next = occ[0];
+      var dday = next ? Math.round((new Date(next.y, next.m - 1, next.d) - new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())) / 86400000) : null;
+      return '<div class="ld-item">' +
+        '<div class="ld-head"><b>' + esc(item.name) + '</b>' +
+        '<span class="ld-lunar">음력 ' + (item.leap ? '윤' : '') + item.m + '월 ' + item.d + '일</span>' +
+        '<button type="button" class="ld-del" data-del="' + item.id + '" aria-label="삭제">' +
+        '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="#9A8F7E" stroke-width="1.5" stroke-linecap="round"></path></svg>' +
+        '</button></div>' +
+        (next
+          ? '<div class="ld-next">다가오는 날짜 — <b>' + fmt(next) + '</b>' + (dday === 0 ? ' · 오늘이에요!' : (dday !== null ? ' · D-' + dday : '')) + '</div>'
+          : '<div class="ld-next">다가오는 날짜를 계산하지 못했어요.</div>') +
+        '<details class="ld-years"><summary>10년치 날짜 보기</summary><table>' +
+        occ.map(function (s) {
+          return '<tr><td>' + s.y + '년</td><td>' + s.m + '월 ' + s.d + '일 (' + WD[new Date(s.y, s.m - 1, s.d).getDay()] + ')' +
+            (s.usedDay !== item.d ? ' · ' + s.usedDay + '일로 조정' : '') + '</td></tr>';
+        }).join('') +
+        '</table></details>' +
+        '</div>';
+    }).join('');
+    $('#ld-list').querySelectorAll('[data-del]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        save(load().filter(function (x) { return x.id !== b.getAttribute('data-del'); }));
+        toast('삭제했어요.');
+        render();
+      });
+    });
+  }
+
+  /* ---------- ICS ---------- */
+
+  function icsEscape(s) {
+    return s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+  }
+
+  $('#ld-ics').addEventListener('click', function () {
+    var list = load();
+    if (!list.length) return;
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var t = new Date();
+    var stamp = t.getFullYear() + pad(t.getMonth() + 1) + pad(t.getDate()) + 'T000000Z';
+    var lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//sajucheop//lunar-days//KO',
+      'CALSCALE:GREGORIAN', 'X-WR-CALNAME:사주첩 — 음력 기념일'];
+    var count = 0;
+    list.forEach(function (item) {
+      nextOccurrences(item, 10).forEach(function (s) {
+        var nxt = new Date(s.y, s.m - 1, s.d + 1);
+        lines.push('BEGIN:VEVENT',
+          'UID:sjld-' + item.id + '-' + s.y + '@sajucheop',
+          'DTSTAMP:' + stamp,
+          'DTSTART;VALUE=DATE:' + s.y + pad(s.m) + pad(s.d),
+          'DTEND;VALUE=DATE:' + nxt.getFullYear() + pad(nxt.getMonth() + 1) + pad(nxt.getDate()),
+          'SUMMARY:' + icsEscape(item.name + ' (음력 ' + (item.leap ? '윤' : '') + item.m + '.' + item.d + ')'),
+          'DESCRIPTION:' + icsEscape('사주첩 음력 기념일 — sajucheop.com/lunar/'),
+          'TRANSP:TRANSPARENT', 'END:VEVENT');
+        count++;
+      });
+    });
+    lines.push('END:VCALENDAR');
+    var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    var file = null;
+    try { file = new File([blob], '사주첩-음력기념일.ics', { type: blob.type }); } catch (e) { /* 무시 */ }
+    track('lunar_ics', { events: count });
+    if (file && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) &&
+        navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: '사주첩 — 음력 기념일' }).catch(function () {});
+      return;
+    }
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.download = '사주첩-음력기념일.ics';
+    a.href = url;
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    toast(count + '개 일정을 파일로 받았어요. 파일을 열면 캘린더에 들어갑니다.');
+  });
+
+  render();
+  track('lunar_view');
+})();
+</script>
+</body>
+</html>

@@ -1041,9 +1041,11 @@ a.btn-primary { text-decoration: none; }
 /* 홈 특별 콘텐츠 바로가기 */
 .feature-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin: 14px 20px 0;
 }
+.feature-row .feature-card { flex: 0 0 calc(50% - 5px); }
 a.feature-card { text-decoration: none; color: inherit; }
 .feature-card {
   flex: 1;

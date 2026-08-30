@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>내 일간 테스트 — 12문항으로 알아보는 나의 사주 캐릭터 | 사주첩</title>
+  <meta name="description" content="생일 없이 12개 질문으로 나의 일간(사주 캐릭터)을 추정해 드립니다. 곧은 소나무 갑목? 한낮의 태양 병화? 1분 무료 테스트.">
+  <link rel="canonical" href="https://sajucheop.com/test/">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"사주첩 일간 테스트","url":"https://sajucheop.com/test/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"inLanguage":"ko"}</script>
+  <meta property="og:title" content="내 일간 테스트 — 나는 어떤 자연일까">
+  <meta property="og:description" content="생일 없이 12문항으로 알아보는 나의 사주 캐릭터. 1분이면 끝.">
+  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .qz-progress {
+      height: 5px;
+      background: var(--line-soft);
+      border-radius: 999px;
+      margin: 18px 20px 0;
+      overflow: hidden;
+    }
+    .qz-progress i {
+      display: block;
+      height: 100%;
+      background: var(--seal);
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+    .qz-count { margin: 10px 24px 0; font-size: 12px; color: var(--faint); }
+    .qz-q {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.5;
+      margin: 8px 24px 0;
+      word-break: keep-all;
+    }
+    .qz-opts { margin: 18px 20px 0; display: flex; flex-direction: column; gap: 10px; }
+    .qz-opt {
+      text-align: left;
+      padding: 16px 18px;
+      background: #FFFDF9;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: var(--ink);
+      cursor: pointer;
+      word-break: keep-all;
+      font-family: inherit;
+    }
+    .qz-opt:active { background: #F1EADD; }
+    .rs-strength { margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header class="doc-header">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">사주첩</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="../">사주 보기</a>
+      <a href="../manse/">만세력</a>
+      <a href="../guide/">서재</a>
+    </nav>
+  </header>
+
+  <!-- 시작 화면 -->
+  <div id="qz-start">
+    <div class="daeun-intro" style="margin-top: 26px;">
+      <h2 style="font-size: 24px;">나는 어떤 자연일까</h2>
+      <p>사주에서 "나"는 열 가지 자연 중 하나입니다 — 곧은 소나무, 한낮의 태양, 깊은 강물…<br><b>12개의 질문</b>으로 당신의 일간을 추정해 드릴게요. 1분이면 됩니다.</p>
+    </div>
+    <div class="btn-stack" style="margin-top: 20px;">
+      <button class="btn-primary" id="qz-begin">테스트 시작하기</button>
+      <p class="form-microcopy">생일이 필요 없어요 — 끝나면 진짜 일간과 비교해 볼 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- 질문 화면 -->
+  <div id="qz-quiz" hidden>
+    <div class="qz-progress"><i id="qz-bar" style="width: 0%;"></i></div>
+    <div class="qz-count" id="qz-count"></div>
+    <h2 class="qz-q" id="qz-question"></h2>
+    <div class="qz-opts" id="qz-opts"></div>
+  </div>
+
+  <!-- 결과 화면 -->
+  <div id="qz-result" hidden>
+    <div class="char-hero" style="margin-top: 20px;">
+      <div id="rs-emblem" style="display: flex; justify-content: center;"></div>
+      <div class="tj-han" style="font-size: 26px; margin-top: 16px; letter-spacing: 0;" id="rs-name"></div>
+      <div class="tj-gloss" id="rs-metaphor"></div>
+    </div>
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">당신의 결</div>
+      <p class="reading-body" id="rs-essence"></p>
+      <div class="pill-row rs-strength" id="rs-keywords"></div>
+    </div>
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">그런데, 진짜 일간은요</div>
+      <p class="reading-body">이 결과는 성향으로 추정한 것이고, <b>진짜 일간은 태어난 날이 정합니다.</b> 생일만 넣으면 10초 — 추정과 실제가 같은지 확인해 보세요. 다르다면 그것대로 재미있는 이야기가 됩니다.</p>
+    </div>
+    <div class="btn-stack" style="margin-top: 16px;">
+      <a class="btn-primary" href="../" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">진짜 일간 확인하러 가기</a>
+      <button class="btn-outline" id="rs-share">결과 공유하기</button>
+      <button class="btn-outline" id="rs-retry">다시 해보기</button>
+    </div>
+  </div>
+
+  <footer class="site-footer" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© 사주첩</span>
+      <nav class="footer-links">
+        <a href="../guide/">서재</a>
+        <a href="../terms.html">이용약관</a>
+        <a href="../privacy.html">개인정보</a>
+      </nav>
+    </div>
+    <p class="footer-note">이 테스트는 성향 기반의 재미용 추정입니다. 정확한 일간은 생년월일로 계산됩니다.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="bottom-space"></div>
+
+</div>
+
+<script src="../js/manseryeok.js"></script>
+<script src="../js/characters.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var M = window.Manseryeok, C = window.SajuCharacters;
+
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+  function track(name, params) {
+    if (window.gtag) { try { window.gtag('event', name, params || {}); } catch (e) { /* 무시 */ } }
+  }
+
+  /* 문항 — el: 목화토금수 가중, yy: 양(+)/음(-) 가중 */
+  var QUESTIONS = [
+    { q: '처음 만나는 모임에 갔다. 나는?', opts: [
+      { t: '분위기를 주도하며 먼저 말을 건다', el: { 화: 2 }, yy: 1 },
+      { t: '조용히 듣다가 필요한 말만 정확히 한다', el: { 금: 2 }, yy: -1 },
+      { t: '편한 사람 옆에서 두루두루 어울린다', el: { 토: 2 } }
+    ] },
+    { q: '새로운 일이 떨어졌다. 첫 행동은?', opts: [
+      { t: '일단 시작한다 — 하면서 배우면 된다', el: { 목: 2 }, yy: 1 },
+      { t: '전체 그림과 최악의 경우부터 그려본다', el: { 수: 2 }, yy: -1 },
+      { t: '기준과 절차부터 확인한다', el: { 금: 2 } }
+    ] },
+    { q: '스트레스가 쌓이면 나는', opts: [
+      { t: '몸을 움직인다 — 걷거나 운동', el: { 목: 2 } },
+      { t: '혼자만의 동굴로 들어간다', el: { 수: 2 }, yy: -1 },
+      { t: '맛있는 걸 먹으며 사람들과 수다', el: { 토: 2 }, yy: 1 }
+    ] },
+    { q: '친구들이 말하는 나는?', opts: [
+      { t: '"화끈하고 뒤끝 없다"', el: { 화: 2 }, yy: 1 },
+      { t: '"한결같고 든든하다"', el: { 토: 2 } },
+      { t: '"예리하고 똑 부러진다"', el: { 금: 2 }, yy: -1 }
+    ] },
+    { q: '계획을 세울 때 나는', opts: [
+      { t: '방향만 정하고 달리면서 고친다', el: { 목: 2 }, yy: 1 },
+      { t: '디테일까지 촘촘하게 짜야 안심', el: { 금: 2 }, yy: -1 },
+      { t: '계획보다 흐름 — 그때그때 맞춘다', el: { 수: 2 } }
+    ] },
+    { q: '갈등이 생겼을 때 나는', opts: [
+      { t: '그 자리에서 바로 풀어야 한다', el: { 화: 2 }, yy: 1 },
+      { t: '일단 삼키고, 오래 곱씹는다', el: { 수: 1, 금: 1 }, yy: -1 },
+      { t: '양쪽을 달래서 웃으며 넘긴다', el: { 토: 2 } }
+    ] },
+    { q: '완벽한 휴일은?', opts: [
+      { t: '나가야 충전된다 — 어디든 밖으로', el: { 목: 1, 화: 1 }, yy: 1 },
+      { t: '집이 최고 — 이불 속 세상', el: { 토: 1, 수: 1 }, yy: -1 },
+      { t: '뭔가 배우러 간다 — 클래스, 책, 전시', el: { 금: 1, 수: 1 } }
+    ] },
+    { q: '중요한 결정을 내릴 때 나는', opts: [
+      { t: '직감이 오면 바로 지른다', el: { 화: 2 }, yy: 1 },
+      { t: '옳으냐 그르냐, 명분을 따진다', el: { 목: 2 } },
+      { t: '얻는 것과 잃는 것을 계산한다', el: { 금: 2 }, yy: -1 }
+    ] },
+    { q: '사람들 사이에서 내 역할은', opts: [
+      { t: '새 판을 벌이는 사람', el: { 목: 2 }, yy: 1 },
+      { t: '벌어진 판의 완성도를 높이는 사람', el: { 금: 2 }, yy: -1 },
+      { t: '지친 사람을 품어주는 사람', el: { 토: 2 } }
+    ] },
+    { q: '내 감정은', opts: [
+      { t: '얼굴에 다 드러난다 — 숨겨지지 않음', el: { 화: 2 }, yy: 1 },
+      { t: '깊이 넣어둔다 — 아무도 모르게', el: { 수: 2 }, yy: -1 },
+      { t: '말 대신 취향과 글로 은근히 새어 나온다', el: { 수: 1, 금: 1 } }
+    ] },
+    { q: '더 끌리는 삶의 방식은?', opts: [
+      { t: '크게 벌이고 넓게 — 스케일이 좋다', yy: 3 },
+      { t: '작게 깊게 오래 — 밀도가 좋다', yy: -3 }
+    ] },
+    { q: '주목받는 자리에 서면', opts: [
+      { t: '은근히 즐긴다 — 무대 체질', yy: 3 },
+      { t: '부담스럽다 — 뒤에서 돕는 게 좋다', yy: -3 }
+    ] }
+  ];
+
+  var ELS = ['목', '화', '토', '금', '수'];
+  var state = { i: 0, score: { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 }, yy: 0 };
+
+  function begin() {
+    state = { i: 0, score: { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 }, yy: 0 };
+    $('#qz-start').hidden = true;
+    $('#qz-result').hidden = true;
+    $('#qz-quiz').hidden = false;
+    track('test_start');
+    renderQ();
+  }
+
+  function renderQ() {
+    var q = QUESTIONS[state.i];
+    $('#qz-bar').style.width = Math.round(state.i / QUESTIONS.length * 100) + '%';
+    $('#qz-count').textContent = (state.i + 1) + ' / ' + QUESTIONS.length;
+    $('#qz-question').textContent = q.q;
+    $('#qz-opts').innerHTML = q.opts.map(function (o, i) {
+      return '<button type="button" class="qz-opt" data-i="' + i + '">' + o.t + '</button>';
+    }).join('');
+    $('#qz-opts').querySelectorAll('.qz-opt').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var o = QUESTIONS[state.i].opts[+b.getAttribute('data-i')];
+        if (o.el) ELS.forEach(function (e) { if (o.el[e]) state.score[e] += o.el[e]; });
+        if (o.yy) state.yy += o.yy;
+        state.i++;
+        if (state.i < QUESTIONS.length) renderQ();
+        else finish();
+      });
+    });
+    window.scrollTo(0, 0);
+  }
+
+  function finish() {
+    var best = ELS[0];
+    ELS.forEach(function (e) { if (state.score[e] > state.score[best]) best = e; });
+    var yang = state.yy >= 0;
+    var stemIdx = ELS.indexOf(best) * 2 + (yang ? 0 : 1);
+    var st = M.STEMS[stemIdx];
+    var ch = C.of(st.han);
+    state.resultStem = st;
+    state.resultCh = ch;
+    track('test_done', { stem: st.kor });
+
+    $('#qz-quiz').hidden = true;
+    $('#qz-result').hidden = false;
+    $('#rs-emblem').innerHTML = C.emblemSvg(st.han, 96, 'dark');
+    $('#rs-name').textContent = ch.name + ' — ' + st.kor + st.el;
+    $('#rs-metaphor').textContent = '「' + ch.metaphor + '」';
+    $('#rs-essence').textContent = ch.essence;
+    $('#rs-keywords').innerHTML = ch.keywords.map(function (k) {
+      return '<span class="pill">' + k + '</span>';
+    }).join('');
+    window.scrollTo(0, 0);
+  }
+
+  $('#qz-begin').addEventListener('click', begin);
+  $('#rs-retry').addEventListener('click', begin);
+  $('#rs-share').addEventListener('click', function () {
+    if (!state.resultCh) return;
+    track('test_share');
+    var text = '나의 사주 캐릭터는 「' + state.resultCh.name + '」 — ' + state.resultCh.metaphor +
+      '. 너는 어떤 자연이야?';
+    var url = 'https://sajucheop.com/test/';
+    if (navigator.share) {
+      navigator.share({ title: '사주첩 — 내 일간 테스트', text: text, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + '\n' + url).then(function () { toast('결과를 복사했어요.'); });
+    }
+  });
+})();
+</script>
+</body>
+</html>
