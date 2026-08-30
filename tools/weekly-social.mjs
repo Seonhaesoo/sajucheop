@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { CAROUSELS, THREADS, CTA_TAGS } from './social-content.mjs';
+import { VIRAL_CAROUSELS, VIRAL_THREADS } from './viral-content.mjs';
 
 const OUT_DIR = 'docs/social';
 const CARD_DIR = path.join(OUT_DIR, 'carousel');
@@ -17,11 +18,16 @@ try {
   if (Number.isInteger(prev.seq)) seq = prev.seq + 1;
 } catch { /* 첫 실행 */ }
 
-const carousel = CAROUSELS[seq % CAROUSELS.length];
-const thread = THREADS[seq % THREADS.length];
+/* 짝수 회차 = 교육(서재) 풀, 홀수 회차 = 바이럴(일간 저격·기능 시연) 풀 */
+const isViral = seq % 2 === 1;
+const cPool = isViral ? VIRAL_CAROUSELS : CAROUSELS;
+const tPool = isViral ? VIRAL_THREADS : THREADS;
+const poolIdx = Math.floor(seq / 2);
+const carousel = cPool[poolIdx % cPool.length];
+const thread = tPool[poolIdx % tPool.length];
 const kstDate = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 
-console.log(`회차 ${seq} · ${kstDate} — 캐러셀 "${carousel.slug}", 쓰레드 ${seq % THREADS.length + 1}번`);
+console.log(`회차 ${seq} (${isViral ? '바이럴' : '교육'}) · ${kstDate} — 캐러셀 "${carousel.slug}", 쓰레드 ${poolIdx % tPool.length + 1}번`);
 
 /* 출력 폴더 초기화 */
 fs.rmSync(CARD_DIR, { recursive: true, force: true });
@@ -53,10 +59,12 @@ for (let i = 0; i < cards.length; i++) {
 await browser.close();
 
 /* 캡션 · 쓰레드 · 메타 */
-fs.writeFileSync(path.join(OUT_DIR, 'caption.txt'), carousel.caption + '\n\n' + CTA_TAGS + '\n');
+const tagLine = (carousel.tags ? carousel.tags + ' ' : '') + CTA_TAGS;
+fs.writeFileSync(path.join(OUT_DIR, 'caption.txt'), carousel.caption + '\n\n' + tagLine + '\n');
 fs.writeFileSync(path.join(OUT_DIR, 'thread.txt'), thread + '\n');
 fs.writeFileSync(path.join(OUT_DIR, 'meta.json'), JSON.stringify({
   seq,
+  type: isViral ? 'viral' : 'edu',
   date: kstDate,
   slug: carousel.slug,
   title: carousel.title.replace(/\n/g, ' '),
