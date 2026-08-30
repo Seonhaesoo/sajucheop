@@ -487,6 +487,19 @@
     if (r.time.yajasi) {
       notices.push('23시 이후 출생이라 야자시 기준(시주는 다음 날 천간)으로 계산했어요.');
     }
+    /* 시간을 모르는데 그날 월 경계 절기(節)가 드는 경우 — 시각에 따라 월주가 달라짐 */
+    if (inp.unknownTime && !r.jeolipWarning) {
+      try {
+        var MI = M._internals;
+        var jd0 = MI.daysFromCivil(inp.year, inp.month, inp.day) + MI.JDN_EPOCH - 0.5 - 9 / 24;
+        var n360 = function (x) { return ((x % 360) + 360) % 360; };
+        var mIdx0 = Math.floor(n360(MI.solarLongitude(jd0) - 315) / 30);
+        var mIdx1 = Math.floor(n360(MI.solarLongitude(jd0 + 1) - 315) / 30);
+        if (mIdx0 !== mIdx1) {
+          notices.push('태어난 날은 절기가 바뀌는 날이에요. 출생 시각을 모르는 상태라, 실제 시각이 절기 전인지 후인지에 따라 월주가 달라질 수 있습니다.');
+        }
+      } catch (e) { /* 무시 */ }
+    }
     $('#r-notices').innerHTML = notices.map(function (n) {
       return '<p class="notice">' + n + '</p>';
     }).join('');

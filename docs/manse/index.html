@@ -301,6 +301,8 @@
       if (dd2.lun) {
         lines += '<br>음력 ' + dd2.lun.year + '년 ' + (dd2.lun.intercalation ? '윤' : '') + dd2.lun.month + '월 ' + dd2.lun.day + '일' +
           (dd2.son ? ' · <b style="color:#B8382D;">손없는날</b>' : '');
+      } else {
+        lines += '<br><span style="color:#9A8F7E; font-size:12px;">음력·손없는날 표기는 2050년까지 제공돼요</span>';
       }
       if (term) {
         lines += '<br>절기 <b>' + term.name + '</b> — ' +

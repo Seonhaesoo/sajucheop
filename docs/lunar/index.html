@@ -273,7 +273,8 @@
         '<details class="ld-years"><summary>10년치 날짜 보기</summary><table>' +
         occ.map(function (s) {
           return '<tr><td>' + s.y + '년</td><td>' + s.m + '월 ' + s.d + '일 (' + WD[new Date(s.y, s.m - 1, s.d).getDay()] + ')' +
-            (s.usedDay !== item.d ? ' · ' + s.usedDay + '일로 조정' : '') + '</td></tr>';
+            (s.usedDay !== item.d ? ' · ' + s.usedDay + '일로 조정' : '') +
+            (item.leap && !s.usedLeap ? ' · 평달' : '') + '</td></tr>';
         }).join('') +
         '</table></details>' +
         '</div>';
