@@ -41,6 +41,8 @@ if (kind === 'daily') {
     '',
     '내 일간이 뭔지 모른다면, 생일만 넣으면 10초 → sajucheop.com'
   ];
+  let threadEn = null;
+  try { threadEn = fs.readFileSync('docs/daily/thread-en.txt', 'utf8').trim(); } catch { /* 아직 없음 */ }
   payload = {
     kind: 'daily',
     date: meta.date,
@@ -48,7 +50,8 @@ if (kind === 'daily') {
     post_instagram: postInstagram,
     post_threads: postThreads,
     image_url: 'https://sajucheop.com/daily/story.jpg?v=' + ver,
-    thread_text: lines.join('\n')
+    thread_text: lines.join('\n'),
+    thread_text_en: threadEn
   };
 } else {
   let meta = {};

@@ -77,6 +77,13 @@
   </div>
 
   <div class="box">
+    <div class="box-head"><b>데일리 영문 글 (쓰레드·인스타 EN)</b><span>매일 자정 갱신</span></div>
+    <textarea id="dailyen" readonly>불러오는 중…</textarea>
+    <button data-copy="dailyen">복사하기</button>
+    <p class="hint">영문 계정이나 영문 해시태그 게시용 — 링크는 sajucheop.com/en/ 으로 갑니다.</p>
+  </div>
+
+  <div class="box">
     <div class="box-head"><b>주간 리스트글 (쓰레드)</b><span>화·금 갱신</span></div>
     <textarea id="weekly" readonly>불러오는 중…</textarea>
     <button data-copy="weekly">복사하기</button>
@@ -101,6 +108,7 @@
       .catch(function () { document.getElementById(id).value = '아직 생성 전이에요 — 다음 봇 실행 후에 생깁니다.'; });
   }
   load('daily', '../daily/thread.txt');
+  load('dailyen', '../daily/thread-en.txt');
   load('weekly', 'thread.txt');
   load('caption', 'caption.txt');
 

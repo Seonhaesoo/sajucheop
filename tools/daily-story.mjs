@@ -34,4 +34,25 @@ if (meta) {
   ];
   fs.writeFileSync('docs/daily/thread.txt', lines.join('\n') + '\n');
   console.log('docs/daily/thread.txt 저장 완료');
+
+  /* 영문 데일리 글 (쓰레드·인스타 영문용) — 간지 한자에서 직접 매핑 */
+  const STEM_EN = { '甲': 'Yang Wood', '乙': 'Yin Wood', '丙': 'Yang Fire', '丁': 'Yin Fire', '戊': 'Yang Earth', '己': 'Yin Earth', '庚': 'Yang Metal', '辛': 'Yin Metal', '壬': 'Yang Water', '癸': 'Yin Water' };
+  const BR_EN = { '子': 'Rat', '丑': 'Ox', '寅': 'Tiger', '卯': 'Rabbit', '辰': 'Dragon', '巳': 'Snake', '午': 'Horse', '未': 'Goat', '申': 'Monkey', '酉': 'Rooster', '戌': 'Dog', '亥': 'Pig' };
+  const MON_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const hanOf = (s) => ((s || '').match(/\(([^)]+)\)/) || [])[1];
+  const dparts = meta.date.split('-');
+  const dateEn = MON_EN[+dparts[1] - 1] + ' ' + (+dparts[2]);
+  const hapEn = STEM_EN[hanOf(meta.hapKor)];
+  const chungEn = meta.chungKor ? STEM_EN[hanOf(meta.chungKor)] : null;
+  const chungBrEn = BR_EN[hanOf(meta.chungBranchKor)];
+  const enLines = [
+    dateEn + ' — a ' + STEM_EN[meta.ganjiHan[0]] + ' ' + BR_EN[meta.ganjiHan[1]] + ' (' + meta.ganjiHan + ') day.',
+    '',
+    'Gentlest on ' + hapEn + ' Day Masters' + (chungEn ? '; a slower lane for ' + chungEn + '.' : '.'),
+    'If your Day Branch is the ' + chungBrEn + ', keep today\'s plans flexible.',
+    '',
+    'Find your Day Master in 10 seconds → sajucheop.com/en/'
+  ];
+  fs.writeFileSync('docs/daily/thread-en.txt', enLines.join('\n') + '\n');
+  console.log('docs/daily/thread-en.txt 저장 완료');
 }

@@ -119,18 +119,28 @@
     <p class="reading-body" style="margin-top: 10px;">키워드로 줄이면 — <b>지속 · 내실 · 완성 · 온기</b>. 새 판을 크게 벌이는 해라기보다, 작년에 시작한 것을 끝까지 데워 결실로 만드는 해입니다.</p>
   </div>
 
+  <!-- 오픈 전 안내 (11월 1일 자동 해제) -->
+  <div class="card reading-card y-preopen-only" id="y-gate" hidden style="margin-top: 18px;">
+    <div class="reading-overline">오픈 준비 중</div>
+    <h3 class="reading-title" style="font-size: 18px;" id="y-gate-title">정미년 운세는 11월 1일에 열립니다</h3>
+    <p class="reading-body">띠별 흐름과 "내 사주로 보는 2027"은 신년 시즌에 맞춰 공개돼요. 그때까지는 <b>토정비결</b>에서 2027년 신수를 미리 볼 수 있습니다.</p>
+    <div class="btn-stack" style="margin-top: 14px; padding: 0;">
+      <a class="btn-primary" href="../tojeong/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">토정비결로 2027 신수 미리 보기</a>
+    </div>
+  </div>
+
   <!-- 내 사주로 보는 2027 -->
-  <div class="daeun-intro" style="margin-top: 26px;">
+  <div class="daeun-intro y-gate-hide" style="margin-top: 26px;">
     <h2 style="font-size: 21px;">내 사주로 보는 2027</h2>
     <p>같은 정미년도 사람마다 다르게 옵니다. 내 일간이 정화(丁)를 어떤 별로 맞느냐 — 그것이 나의 2027입니다.</p>
   </div>
 
-  <div class="resume-chip" id="y-resume" hidden style="margin-top: 4px;">
+  <div class="resume-chip y-gate-hide" id="y-resume" hidden style="margin-top: 4px;">
     <div class="rc-info"><b id="y-resume-name"></b><span id="y-resume-birth"></span></div>
     <button class="rc-go" id="y-resume-go">바로 보기</button>
   </div>
 
-  <div class="card card-pad" style="margin-top: 12px;">
+  <div class="card card-pad y-gate-hide" style="margin-top: 12px;">
     <div class="nm-row">
       <div class="select-wrap" style="flex: 1.3;"><select id="y-year"></select></div>
       <div class="select-wrap" style="flex: 1;"><select id="y-month"></select></div>
@@ -155,7 +165,7 @@
   </div>
 
   <!-- 띠별 -->
-  <div class="card card-pad" style="margin-top: 26px;">
+  <div class="card card-pad y-gate-hide" style="margin-top: 26px;">
     <div class="section-head">
       <h3 class="section-title" style="font-size: 16px;">띠별로 보는 정미년</h3>
       <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">미(未)와의 관계 기준</span>
@@ -165,7 +175,7 @@
   </div>
 
   <!-- 삼재 -->
-  <div class="card reading-card" style="margin-top: 14px;">
+  <div class="card reading-card y-gate-hide" style="margin-top: 14px;">
     <div class="reading-overline">2027년의 삼재</div>
     <h3 class="reading-title" style="font-size: 17px;">돼지·토끼·양띠 — 날삼재(마지막 해)</h3>
     <p class="reading-body">해묘미(돼지·토끼·양) 그룹의 삼재가 2027년으로 <b>3년 차, 마지막 해</b>를 맞습니다. 흔히 날삼재는 "나가는 삼재"라 하여 마무리와 정리에 좋다고 봅니다. 2028년부터는 인오술(호랑이·말·개) 그룹의 삼재가 새로 시작돼요. 다만 삼재는 명리학의 본론이 아닌 민속 참고 항목 — 겁내기보다 확인만 해두세요.</p>
@@ -216,6 +226,17 @@
   }
   function track(name, params) {
     if (window.gtag) { try { window.gtag('event', name, params || {}); } catch (e) { /* 무시 */ } }
+  }
+
+  /* 시즌 게이트 — 2026-11-01 00:00에 자동 오픈. ?preview=1 로 미리 보기 가능 */
+  var OPEN_AT = new Date(2026, 10, 1);
+  var preopen = (new Date() < OPEN_AT) && location.search.indexOf('preview') < 0;
+  if (preopen) {
+    document.querySelectorAll('.y-gate-hide').forEach(function (el) { el.hidden = true; });
+    $('#y-gate').hidden = false;
+    var dleft = Math.ceil((OPEN_AT - new Date()) / 86400000);
+    $('#y-gate-title').textContent = '정미년 운세는 11월 1일에 열립니다 — D-' + dleft;
+    track('y2027_preopen');
   }
 
   /* ---------- 입춘 시각 (정미년 시작) ---------- */
