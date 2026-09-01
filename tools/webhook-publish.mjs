@@ -58,6 +58,7 @@ if (kind === 'daily') {
   const files = fs.readdirSync('docs/social/carousel')
     .filter((f) => /^card-\d+\.jpg$/.test(f))
     .sort((a, b) => (+a.match(/\d+/)[0]) - (+b.match(/\d+/)[0]));
+  const urls = files.map((f) => 'https://sajucheop.com/social/carousel/' + f + '?v=' + ver);
   payload = {
     kind: 'weekly',
     date: meta.date || null,
@@ -66,11 +67,13 @@ if (kind === 'daily') {
     type: meta.type || null,
     post_instagram: postInstagram,
     post_threads: postThreads,
-    images: files.map((f) => 'https://sajucheop.com/social/carousel/' + f + '?v=' + ver),
-    image_url: 'https://sajucheop.com/social/carousel/card-1.jpg?v=' + ver,
+    images: urls,
+    image_url: urls[0],
     caption: caption,
     thread_text: thread
   };
+  /* Make 등에서 배열 인덱싱 없이 바로 매핑할 수 있게 평면 필드도 제공 (카드는 항상 7장) */
+  urls.forEach((u, i) => { payload['image' + (i + 1)] = u; });
 }
 
 const r = await fetch(HOOK, {
