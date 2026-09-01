@@ -20,4 +20,18 @@ console.log('docs/daily/story.jpg 저장 완료 —', Math.round(buf.length / 10
 if (meta) {
   fs.writeFileSync('docs/daily/meta.json', JSON.stringify(meta, null, 2));
   console.log('docs/daily/meta.json 저장 완료 —', meta.date, meta.ganjiKor + '일');
+
+  /* 수동 게시용 일진 글 텍스트 (쓰레드 복붙용) */
+  const lines = [
+    meta.dateKor + ', 오늘은 ' + meta.ganjiKor + '(' + meta.ganjiHan + ')일.',
+    '「 ' + meta.metaphor + ' 」 — ' + meta.stemKor + '의 기운이 흐르는 날입니다.',
+    '',
+    '오늘 유난히 순한 일간은 ' + meta.hapKor +
+      (meta.chungKor ? ', 한 템포 쉬어갈 일간은 ' + meta.chungKor + '.' : '.'),
+    '일지가 ' + meta.chungBranchKor + '인 분은 변동만 조심하세요.',
+    '',
+    '내 일간이 뭔지 모른다면, 생일만 넣으면 10초 → sajucheop.com'
+  ];
+  fs.writeFileSync('docs/daily/thread.txt', lines.join('\n') + '\n');
+  console.log('docs/daily/thread.txt 저장 완료');
 }

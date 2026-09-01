@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>오늘 올릴 글 — 사주첩 운영</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #F6F1E8;
+      color: #211C15;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 18px 60px;
+    }
+    h1 { font-size: 20px; margin-bottom: 4px; }
+    .sub { font-size: 12.5px; color: #6E6455; margin-bottom: 22px; }
+    .box {
+      background: #FFFDF9;
+      border: 1px solid #E6DCC9;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .box-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .box-head b { font-size: 14.5px; }
+    .box-head span { font-size: 11px; color: #9A8F7E; }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      border: 1px solid #F0E9DA;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #40372B;
+      background: #F6F1E8;
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      height: 44px;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 10px;
+      background: #211C15;
+      color: #F6F1E8;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.copied { background: #B8382D; }
+    .cards { display: flex; gap: 6px; overflow-x: auto; margin-top: 10px; }
+    .cards img { width: 72px; border-radius: 6px; border: 1px solid #E6DCC9; }
+    .hint { font-size: 11.5px; color: #9A8F7E; margin-top: 8px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <h1>오늘 올릴 글 📋</h1>
+  <p class="sub">봇이 만들어 둔 글을 복사해서 붙여넣기만 하세요 · 이 페이지는 검색에 안 잡혀요</p>
+
+  <div class="box">
+    <div class="box-head"><b>데일리 일진 글 (쓰레드)</b><span>매일 자정 갱신</span></div>
+    <textarea id="daily" readonly>불러오는 중…</textarea>
+    <button data-copy="daily">복사하기</button>
+    <p class="hint">쓰레드 앱 → 새 스레드 → 붙여넣기 → 게시. 끝!</p>
+  </div>
+
+  <div class="box">
+    <div class="box-head"><b>주간 리스트글 (쓰레드)</b><span>화·금 갱신</span></div>
+    <textarea id="weekly" readonly>불러오는 중…</textarea>
+    <button data-copy="weekly">복사하기</button>
+    <p class="hint">화·금에 인스타 캐러셀과 같은 주제의 쓰레드용 글이에요.</p>
+  </div>
+
+  <div class="box">
+    <div class="box-head"><b>인스타 캡션 (백업용)</b><span>화·금 갱신</span></div>
+    <textarea id="caption" readonly>불러오는 중…</textarea>
+    <button data-copy="caption">복사하기</button>
+    <div class="cards" id="cards"></div>
+    <p class="hint">캐러셀은 Make가 자동 게시하니 평소엔 쓸 일 없어요. 자동화가 멈췄을 때만 카드 저장 + 이 캡션으로 수동 게시.</p>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+  function load(id, url) {
+    fetch(url, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+      .then(function (t) { document.getElementById(id).value = t.trim(); })
+      .catch(function () { document.getElementById(id).value = '아직 생성 전이에요 — 다음 봇 실행 후에 생깁니다.'; });
+  }
+  load('daily', '../daily/thread.txt');
+  load('weekly', 'thread.txt');
+  load('caption', 'caption.txt');
+
+  var cardsEl = document.getElementById('cards');
+  for (var i = 1; i <= 7; i++) {
+    cardsEl.innerHTML += '<a href="carousel/card-' + i + '.jpg" target="_blank" rel="noopener">' +
+      '<img src="carousel/card-' + i + '.jpg" alt="카드 ' + i + '" loading="lazy"></a>';
+  }
+
+  document.querySelectorAll('button[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var ta = document.getElementById(btn.getAttribute('data-copy'));
+      var done = function () {
+        btn.textContent = '복사됐어요 ✓';
+        btn.classList.add('copied');
+        setTimeout(function () {
+          btn.textContent = '복사하기';
+          btn.classList.remove('copied');
+        }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value).then(done).catch(function () {
+          ta.select(); document.execCommand('copy'); done();
+        });
+      } else {
+        ta.select(); document.execCommand('copy'); done();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
