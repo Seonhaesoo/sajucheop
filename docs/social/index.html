@@ -72,7 +72,8 @@
     <div class="box-head"><b>데일리 일진 글 (쓰레드)</b><span>매일 자정 갱신</span></div>
     <textarea id="daily" readonly>불러오는 중…</textarea>
     <button data-copy="daily">복사하기</button>
-    <p class="hint">쓰레드 앱 → 새 스레드 → 붙여넣기 → 게시. 끝!</p>
+    <div class="cards"><a id="daily-card-link" href="../daily/story.jpg" target="_blank" rel="noopener"><img id="daily-card" alt="오늘의 일진 카드" style="width: 96px;"></a></div>
+    <p class="hint">쓰레드 앱 → 새 스레드 → 붙여넣기 → 게시. 카드 이미지를 함께 올리려면 위 카드를 꾹 눌러 저장 후 첨부하세요.</p>
   </div>
 
   <div class="box">
@@ -102,6 +103,11 @@
   load('daily', '../daily/thread.txt');
   load('weekly', 'thread.txt');
   load('caption', 'caption.txt');
+
+  /* 데일리 카드 미리보기 (캐시 회피) */
+  var dcv = '../daily/story.jpg?v=' + Date.now();
+  document.getElementById('daily-card').src = dcv;
+  document.getElementById('daily-card-link').href = dcv;
 
   var cardsEl = document.getElementById('cards');
   for (var i = 1; i <= 7; i++) {
