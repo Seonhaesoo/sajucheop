@@ -1,5 +1,5 @@
-/* 쓰레드 데일리 일진 글 자동 게시 (Threads API)
- * 필요 환경변수: THREADS_USER_ID, THREADS_ACCESS_TOKEN */
+/* 쓰레드 데일리 일진 글 자동 게시 (Threads API) — 카드 이미지 + 글
+ * 필요 환경변수: THREADS_USER_ID, THREADS_ACCESS_TOKEN, (선택) IMAGE_VER */
 import fs from 'node:fs';
 
 const UID = process.env.THREADS_USER_ID;
@@ -11,6 +11,8 @@ if (!UID || !TOKEN) {
 }
 
 const meta = JSON.parse(fs.readFileSync('docs/daily/meta.json', 'utf8'));
+const ver = process.env.IMAGE_VER || Date.now();
+const imageUrl = 'https://sajucheop.com/daily/story.jpg?v=' + ver;
 
 const lines = [
   meta.dateKor + ', 오늘은 ' + meta.ganjiKor + '(' + meta.ganjiHan + ')일.',
@@ -26,22 +28,29 @@ const text = lines.join('\n');
 
 const base = 'https://graph.threads.net/v1.0/' + UID;
 
-const r1 = await fetch(base + '/threads?media_type=TEXT&text=' +
-  encodeURIComponent(text) + '&access_token=' + TOKEN, { method: 'POST' });
-const j1 = await r1.json();
+async function post(url, params) {
+  const body = new URLSearchParams({ ...params, access_token: TOKEN });
+  const r = await fetch(url, { method: 'POST', body });
+  return r.json();
+}
+
+/* 1) 이미지+글 컨테이너 — 실패하면 텍스트만으로 재시도 */
+let j1 = await post(base + '/threads', { media_type: 'IMAGE', image_url: imageUrl, text });
+if (!j1.id) {
+  console.error('이미지 컨테이너 실패, 텍스트로 재시도:', JSON.stringify(j1));
+  j1 = await post(base + '/threads', { media_type: 'TEXT', text });
+}
 if (!j1.id) {
   console.error('쓰레드 컨테이너 생성 실패:', JSON.stringify(j1));
   process.exit(1);
 }
 console.log('컨테이너 생성:', j1.id);
 
-await new Promise((r) => setTimeout(r, 6000));
+await new Promise((r) => setTimeout(r, 8000));
 
-const r2 = await fetch(base + '/threads_publish?creation_id=' + j1.id +
-  '&access_token=' + TOKEN, { method: 'POST' });
-const j2 = await r2.json();
+const j2 = await post(base + '/threads_publish', { creation_id: j1.id });
 if (!j2.id) {
   console.error('쓰레드 게시 실패:', JSON.stringify(j2));
   process.exit(1);
 }
-console.log('쓰레드 게시 완료:', j2.id);
+console.log('쓰레드 게시 완료 (카드 이미지 + 글):', j2.id);

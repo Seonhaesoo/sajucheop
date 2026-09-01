@@ -83,6 +83,8 @@ jobs:
 
       - name: 쓰레드 일진 글 게시
         if: steps.gate.outputs.go == '1' && env.THREADS_ACCESS_TOKEN != ''
+        env:
+          IMAGE_VER: ${{ github.run_id }}
         run: node tools/threads-publish.mjs
 
       - name: 웹훅 발행 (Make 등 서드파티)
