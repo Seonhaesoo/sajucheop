@@ -286,6 +286,18 @@
   check('택일 스캔: 결정론적 (같은 입력 = 같은 결과)', scan1[0].combined === scan2[0].combined &&
     scan1[0].y === scan2[0].y && scan1[0].d === scan2[0].d, true);
 
+  /* ---- 16.5 시간대 오버라이드 (영문판) ---- */
+  var tzA = M.compute({ year: 2000, month: 1, day: 1, hour: 12, minute: 0, gender: 'F', applySolarTime: false });
+  var tzB = M.compute({ year: 2000, month: 1, day: 1, hour: 3, minute: 0, gender: 'F', applySolarTime: false, tzOffsetMinutes: 0 });
+  check('tz 오버라이드: 같은 UT 순간 → 같은 년·월주 (KST 정오 = UTC 03시)',
+    tzA.pillars.year.stem === tzB.pillars.year.stem && tzA.pillars.month.stem === tzB.pillars.month.stem &&
+    tzA.pillars.month.branch === tzB.pillars.month.branch, true);
+  check('tz 오버라이드: 현지 날짜 기준 일주 유지 (뉴욕 2000-01-01)',
+    M.compute({ year: 2000, month: 1, day: 1, hour: 12, minute: 0, gender: 'F', applySolarTime: false, tzOffsetMinutes: -300 }).pillars.day.stem,
+    tzA.pillars.day.stem);
+  check('tz 오버라이드 시 한국 서머타임 경고 없음 (1988)',
+    M.compute({ year: 1988, month: 7, day: 1, hour: 12, minute: 0, gender: 'F', applySolarTime: false, tzOffsetMinutes: -300 }).time.dstEraWarning, false);
+
   /* ---- 17. 토정비결 ---- */
   var TJ = window.Tojeong;
   check('태세수 2026 병오 = 7+9', TJ.taeseSu(2026), 16);

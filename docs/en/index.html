@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saju Calculator — Korean Four Pillars (BaZi) Reading, Free | Sajucheop</title>
+  <meta name="description" content="Free Korean Saju reading: enter your birth date to get your Four Pillars chart, Day Master archetype, Five Elements balance and Ten Gods — calculated to the exact solar-term minute.">
+  <link rel="canonical" href="https://sajucheop.com/en/">
+  <link rel="alternate" hreflang="ko" href="https://sajucheop.com/">
+  <link rel="alternate" hreflang="en" href="https://sajucheop.com/en/">
+  <link rel="alternate" hreflang="x-default" href="https://sajucheop.com/en/">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Sajucheop Saju Calculator","url":"https://sajucheop.com/en/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"inLanguage":"en"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"What is Saju?","acceptedAnswer":{"@type":"Answer","text":"Saju (사주, 'four pillars') is the Korean tradition of Four Pillars of Destiny. Your birth year, month, day and hour are each converted into two Chinese characters — eight characters that map your elemental makeup and life currents."}},
+    {"@type":"Question","name":"Is Saju the same as BaZi?","acceptedAnswer":{"@type":"Answer","text":"They share the same root system, but Korean Saju developed its own interpretive tradition — with heavier emphasis on the Day Master, practical daily use, and Korea-specific calendar corrections. This calculator follows the Korean school."}},
+    {"@type":"Question","name":"What is a Day Master?","acceptedAnswer":{"@type":"Answer","text":"The Day Master (일간) is the heavenly stem of your birth day — the character that represents you in the chart. Everything else in the reading is interpreted in relation to it."}},
+    {"@type":"Question","name":"What if I don't know my birth time?","acceptedAnswer":{"@type":"Answer","text":"You still get a meaningful reading. Six of the eight characters — including your Day Master and element balance — come from the date alone. Only the Hour Pillar is omitted."}}
+  ]}</script>
+  <meta property="og:title" content="Saju — Korean Four Pillars Reading, Free">
+  <meta property="og:description" content="Your Day Master, Five Elements and Ten Gods, calculated to the exact solar-term minute.">
+  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .en-pillars { display: flex; gap: 8px; margin-top: 16px; }
+    .en-pillar {
+      flex: 1;
+      text-align: center;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 10px 2px 8px;
+      background: #FFFDF9;
+    }
+    .en-pillar.day { border-color: var(--seal); background: #FDF6F0; }
+    .en-pillar .ep-name { font-size: 10px; color: var(--faint); letter-spacing: 1px; text-transform: uppercase; }
+    .en-pillar.day .ep-name { color: var(--seal); font-weight: 700; }
+    .en-pillar .ep-han { font-family: 'Noto Serif KR', serif; font-size: 26px; font-weight: 700; line-height: 1.25; margin-top: 4px; }
+    .en-pillar .ep-en { font-size: 9.5px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+    .el-bars { margin-top: 14px; }
+    .el-bar-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+    .el-bar-row .eb-name { flex: none; width: 74px; font-size: 12.5px; }
+    .el-bar-row .eb-track { flex: 1; height: 12px; background: #F0E9DA; border-radius: 999px; overflow: hidden; }
+    .el-bar-row .eb-fill { height: 100%; border-radius: 999px; }
+    .el-bar-row .eb-count { flex: none; width: 16px; text-align: right; font-size: 12px; color: var(--muted); }
+    .tg-row { display: flex; align-items: baseline; gap: 10px; padding: 9px 0; }
+    .tg-row + .tg-row { border-top: 1px solid var(--line-soft); }
+    .tg-row b { flex: none; width: 128px; font-size: 13px; }
+    .tg-row .tg-kor { flex: none; font-size: 11px; color: var(--faint); }
+    .tg-row span.tg-gloss { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header class="doc-header">
+    <a class="brand" href="./">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">Sajucheop</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="../">한국어</a>
+    </nav>
+  </header>
+
+  <div class="daeun-intro" style="margin-top: 26px;">
+    <h2 style="font-size: 24px;">Your Korean Four Pillars</h2>
+    <p>Saju (사주) is Korea's tradition of the Four Pillars of Destiny. Enter your birth date and we'll cast your chart — <b>calculated to the exact minute the solar terms change</b>, the way Korean masters do it.</p>
+  </div>
+
+  <!-- Input -->
+  <div class="card card-pad" style="margin-top: 8px;">
+    <div class="section-head"><h3 class="section-title" style="font-size: 15px;">Birth date</h3></div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1;"><select id="en-month"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="en-day"></select></div>
+      <div class="select-wrap" style="flex: 1.2;"><select id="en-year"></select></div>
+    </div>
+    <label class="nm-row" style="gap: 8px; font-size: 13px; color: #6E6455; cursor: pointer;">
+      <input type="checkbox" id="en-no-time" checked style="width: 16px; height: 16px;"> I don't know my birth time
+    </label>
+    <div id="en-time-wrap" hidden>
+      <div class="nm-row">
+        <div class="select-wrap" style="flex: 1;"><select id="en-hour"></select></div>
+        <div class="select-wrap" style="flex: 1;"><select id="en-min"></select></div>
+      </div>
+      <div class="nm-row">
+        <div class="select-wrap" style="flex: 1;"><select id="en-tz"></select></div>
+      </div>
+      <p class="form-microcopy" style="margin-top: 6px;">Pick the time zone of your birthplace, including daylight saving if it was in effect.</p>
+    </div>
+    <button class="btn-primary" id="en-run" style="margin-top: 16px;">Cast my chart</button>
+  </div>
+
+  <!-- Result -->
+  <div id="en-result" hidden>
+
+    <div class="card card-pad" style="margin-top: 18px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">Your Four Pillars</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;" id="en-birth-line"></span>
+      </div>
+      <div class="en-pillars" id="en-pillars"></div>
+      <p class="form-microcopy" id="en-notice" style="margin-top: 10px;" hidden></p>
+    </div>
+
+    <div class="char-hero" style="margin-top: 14px;">
+      <div class="tj-code">YOUR DAY MASTER</div>
+      <div class="tj-han" id="en-dm-han" style="letter-spacing: 0;"></div>
+      <div class="tj-gloss" id="en-dm-name"></div>
+    </div>
+
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">Who you are</div>
+      <p class="reading-body" id="en-dm-body"></p>
+      <div class="pill-row" id="en-dm-keywords" style="margin-top: 12px;"></div>
+      <p class="reading-body" id="en-dm-strength" style="margin-top: 12px;"></p>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head"><h3 class="section-title" style="font-size: 16px;">Five Elements balance</h3></div>
+      <div class="el-bars" id="en-el-bars"></div>
+      <p class="reading-body" id="en-el-note" style="margin-top: 10px; font-size: 13.5px;"></p>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">Ten Gods in your chart</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">십성</span>
+      </div>
+      <div id="en-tengods" style="margin-top: 6px;"></div>
+    </div>
+
+    <div class="btn-stack" style="margin-top: 16px;">
+      <button class="btn-primary" id="en-share">Share my Day Master</button>
+    </div>
+  </div>
+
+  <!-- SEO copy -->
+  <div class="card reading-card" style="margin-top: 26px;">
+    <div class="reading-overline">About</div>
+    <h3 class="reading-title" style="font-size: 17px;">What is Saju — and how is it different from BaZi?</h3>
+    <p class="reading-body">Saju (사주, "four pillars") converts your birth year, month, day and hour into eight Chinese characters — your <i>palja</i> (팔자). It shares its roots with Chinese BaZi, but Korean Saju grew into its own school: a strong focus on the <b>Day Master</b> as the self, everyday practical use, and precise calendar corrections. The year doesn't change on January 1st or Lunar New Year, but at <b>Ipchun</b> (the "Start of Spring" solar term) — and this calculator computes those term boundaries to the minute.</p>
+    <p class="reading-body" style="margin-top: 10px;">Everything runs in your browser. Your birth data is never sent to a server.</p>
+  </div>
+
+  <div class="card card-pad" style="margin-top: 14px;">
+    <div class="section-head"><h3 class="section-title" style="font-size: 16px;">FAQ</h3></div>
+    <details class="ics-help" open><summary>What can I read without a birth time?</summary><div class="ih-body"><p>Six of your eight characters — including your Day Master, element balance and most Ten Gods — come from the date alone. Only the Hour Pillar is left out, so a date-only reading is still solid.</p></div></details>
+    <details class="ics-help"><summary>Why does the time zone matter?</summary><div class="ih-body"><p>The pillars are anchored to astronomical solar terms, which happen at one absolute moment worldwide. Your local birth time plus its UTC offset tells us where that moment fell in your chart.</p></div></details>
+    <details class="ics-help"><summary>Is this the Korean or Chinese system?</summary><div class="ih-body"><p>Korean. The engine follows the Korean saju convention: solar-term month boundaries, Ipchun year boundary, and the late-night hour rule (야자시).</p></div></details>
+  </div>
+
+  <footer class="site-footer" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© Sajucheop</span>
+      <nav class="footer-links">
+        <a href="../">한국어</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../privacy.html">Privacy</a>
+      </nav>
+    </div>
+    <p class="footer-note">For reflection and entertainment. Important decisions are always yours to make.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="bottom-space"></div>
+
+</div>
+
+<script src="../js/manseryeok.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var M = window.Manseryeok;
+
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+  function track(name, params) {
+    if (window.gtag) { try { window.gtag('event', name, params || {}); } catch (e) { /* ignore */ } }
+  }
+
+  var STEM_EN = [
+    { name: 'Yang Wood', arch: 'The Tall Pine' },
+    { name: 'Yin Wood', arch: 'The Winding Vine' },
+    { name: 'Yang Fire', arch: 'The Midday Sun' },
+    { name: 'Yin Fire', arch: 'The Candle Flame' },
+    { name: 'Yang Earth', arch: 'The Great Mountain' },
+    { name: 'Yin Earth', arch: 'The Fertile Field' },
+    { name: 'Yang Metal', arch: 'The Raw Blade' },
+    { name: 'Yin Metal', arch: 'The Polished Gem' },
+    { name: 'Yang Water', arch: 'The Open Sea' },
+    { name: 'Yin Water', arch: 'The Morning Dew' }
+  ];
+  var DM_TEXT = [
+    { body: 'You grow straight upward like a great pine: principled, direct, and quick to start what others are still weighing. Leadership finds you even when you don\'t seek it. Your pride is your spine — it keeps you upright, but it also makes apologies hard and bending harder. Remember: a tree that only stands rigid catches every storm.', keys: ['Pioneering', 'Principled', 'Direct', 'Proud'], str: 'Strongest when you initiate — first drafts, first moves, first steps.', caution: 'Practice bending before you crack. Softness is not defeat.' },
+    { body: 'You are the vine that climbs the wall others call an obstacle. Flexible, resilient and quietly persistent, you adapt to any environment and get where you\'re going without a single head-on fight. You flourish with the right support — a partner, a team, a trellis. Endings are your weak spot: once entwined, you don\'t let go easily.', keys: ['Adaptable', 'Resilient', 'Persistent', 'Relational'], str: 'Strongest in alliances — you rise highest with something to climb.', caution: 'Know when to release. Not every wall deserves your roots.' },
+    { body: 'You are the sun at noon: impossible to hide, warming everyone in the room without trying. Your feelings show on your face in real time, your anger burns out in minutes, and you hold no grudges. People-energy charges you; solitude drains you fast. The catch — shining on everyone can leave you with no one who has truly seen behind the light.', keys: ['Radiant', 'Candid', 'Generous', 'Forgiving'], str: 'Strongest in the open — visibility, performance, expression.', caution: 'Bank your fire. Burnout comes from lighting every room at once.' },
+    { body: 'You are a candle in a dark room: devoted, perceptive, and warmest at close range. You notice the haircut, the tired eyes, the shifted mood that everyone else misses — and you quietly adjust the temperature of the room. In a crisis you become strangely calm; darkness is where your light matters most. Your one blind spot is your own wick, burning down while you tend to others.', keys: ['Devoted', 'Perceptive', 'Warm', 'Steadfast'], str: 'Strongest one-on-one — depth over reach, always.', caution: 'Tend your own flame too. You cannot light anyone from a burnt wick.' },
+    { body: 'You are the mountain: people bring you their storms because you do not move. Reliable, patient and quietly protective, you verify before you change and you keep what you promise. Your inner world opens slowly — real access takes years — but once someone is inside, you never drop them. The mountain\'s risk is silence: pressure builds where nothing is expressed.', keys: ['Steady', 'Reliable', 'Patient', 'Protective'], str: 'Strongest in turbulence — your stillness is the room\'s anchor.', caution: 'Even mountains need to lean sometimes. Say the heavy thing out loud.' },
+    { body: 'You are fertile ground: accepting, nurturing, and quietly industrious. You remember the small things people mention in passing and tend to them without being asked. Whatever is planted in you grows — which is exactly why saying no is your life\'s homework, and why others sometimes harvest credit from a field you cultivated. Your depth runs further than your gentle surface suggests.', keys: ['Nurturing', 'Accepting', 'Attentive', 'Humble'], str: 'Strongest behind the scenes — you make everything around you grow.', caution: 'Claim your harvest. A field has boundaries for a reason.' },
+    { body: 'You are raw metal — decisive, loyal, and constitutionally incapable of sugarcoating. You cut what needs cutting and stand up for your people at your own expense. Hardship doesn\'t dull you; it tempers you, which is why your best years tend to come later. Beneath the blunt edge sits a soft spot: one sincere "you\'ve worked hard" can undo you completely.', keys: ['Decisive', 'Loyal', 'Honest', 'Tempered'], str: 'Strongest at the hard call — endings, boundaries, justice.', caution: 'Sheathe the blade sometimes. Not every truth needs full force today.' },
+    { body: 'You arrived already polished: refined taste, precise standards, and a keen eye for what everyone else overlooks. You know exactly when to shine and when to withdraw. You forgive but rarely forget — there is a ledger, and it is accurate. Your sensitivity is real even when you perform indifference; "whatever works" is never actually fine with you.', keys: ['Refined', 'Precise', 'Discerning', 'Composed'], str: 'Strongest at finishing — details, quality, the final ten percent.', caution: 'Let small scratches go. Even gems carry inclusions, and they still shine.' },
+    { body: 'You are open water: broad, strategic, and hard to read. You absorb other people\'s troubles without visible effort and flow around obstacles rather than fighting them — you win without collisions. Where you\'re heading is often unclear even to you, yet somehow you arrive. The deeper you get, the quieter you become; the people who truly know you are few and chosen.', keys: ['Broad-minded', 'Strategic', 'Fluid', 'Deep'], str: 'Strongest with the long game — currents, not splashes.', caution: 'Surface occasionally. Even the sea needs to be known by someone.' },
+    { body: 'You are morning dew and spring rain: gentle, intuitive, and quietly pervasive. You seep into hearts before anyone notices you\'ve arrived, and your hunches have an unsettling accuracy — in the fog, water always knows the way. You absorb the moods around you, cry easily, and love deeply. The cost of watering everyone is a dry season of your own; you need rain too.', keys: ['Intuitive', 'Gentle', 'Empathic', 'Quietly deep'], str: 'Strongest in the unseen — timing, intuition, emotional truth.', caution: 'Refill your own well. Sensitivity without boundaries becomes flooding.' }
+  ];
+  var BRANCH_EN = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
+  var EL_EN = { '목': 'Wood', '화': 'Fire', '토': 'Earth', '금': 'Metal', '수': 'Water' };
+  var EL_COLOR = { '목': '#3B9C69', '화': '#BC3E28', '토': '#B98D28', '금': '#6297DC', '수': '#2C69A8' };
+  var EL_MISS = {
+    '목': 'growth and fresh starts may need conscious effort — build them in with morning routines and green spaces',
+    '화': 'expression and visibility may not come naturally — practice taking the stage on purpose',
+    '토': 'grounding and steadiness are your homework — routines and finishing what you start help',
+    '금': 'boundaries and decisions may feel hard — practice clean endings',
+    '수': 'rest and flexibility deserve attention — build in real pauses and let plans bend'
+  };
+  var TEN_GODS = {
+    '비견': ['Friend', 'peers, independence, self-reliance'],
+    '겁재': ['Rob Wealth', 'competition, drive, shared stakes'],
+    '식신': ['Eating God', 'creativity, enjoyment, nourishment'],
+    '상관': ['Hurting Officer', 'brilliant expression, rule-bending talent'],
+    '편재': ['Indirect Wealth', 'opportunity, ventures, money in motion'],
+    '정재': ['Direct Wealth', 'steady income, diligence, what you earn'],
+    '편관': ['Seven Killings', 'pressure, courage, trial by fire'],
+    '정관': ['Direct Officer', 'order, recognition, responsibility'],
+    '편인': ['Indirect Resource', 'unconventional learning, insight'],
+    '정인': ['Direct Resource', 'support, study, credentials, backing']
+  };
+  var STRENGTH_EN = {
+    '신강': ['A strong Day Master', 'you carry your own engine — pushing forward under your own power suits you; learn to share the load on purpose.'],
+    '중화': ['A balanced Day Master', 'your chart holds itself in equilibrium — a versatile foundation that adapts to most seasons of life.'],
+    '신약': ['A gentle Day Master', 'you go furthest with backing — the right people, credentials and environments multiply you.']
+  };
+
+  /* Selects */
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var o = '';
+  for (var m = 1; m <= 12; m++) o += '<option value="' + m + '">' + MONTHS[m - 1] + '</option>';
+  $('#en-month').innerHTML = o;
+  o = '';
+  for (var d = 1; d <= 31; d++) o += '<option value="' + d + '">' + d + '</option>';
+  $('#en-day').innerHTML = o;
+  var nowY = new Date().getFullYear();
+  o = '';
+  for (var y = nowY; y >= 1900; y--) o += '<option value="' + y + '">' + y + '</option>';
+  $('#en-year').innerHTML = o;
+  $('#en-year').value = '1995';
+  o = '';
+  for (var h = 0; h < 24; h++) o += '<option value="' + h + '">' + String(h).padStart(2, '0') + 'h</option>';
+  $('#en-hour').innerHTML = o;
+  $('#en-hour').value = '12';
+  o = '';
+  for (var mi = 0; mi < 60; mi += 5) o += '<option value="' + mi + '">' + String(mi).padStart(2, '0') + 'm</option>';
+  $('#en-min').innerHTML = o;
+
+  var TZ = [
+    [-720, 'UTC−12'], [-660, 'UTC−11'], [-600, 'UTC−10 · Hawaii'], [-540, 'UTC−9 · Alaska'],
+    [-480, 'UTC−8 · Los Angeles'], [-420, 'UTC−7 · Denver'], [-360, 'UTC−6 · Chicago, Mexico City'],
+    [-300, 'UTC−5 · New York, Toronto'], [-240, 'UTC−4 · Santiago, Halifax'], [-210, 'UTC−3:30 · Newfoundland'],
+    [-180, 'UTC−3 · São Paulo, Buenos Aires'], [-120, 'UTC−2'], [-60, 'UTC−1'],
+    [0, 'UTC±0 · London, Lisbon, Accra'], [60, 'UTC+1 · Paris, Berlin, Lagos'], [120, 'UTC+2 · Cairo, Athens, Johannesburg'],
+    [180, 'UTC+3 · Moscow, Istanbul, Riyadh'], [210, 'UTC+3:30 · Tehran'], [240, 'UTC+4 · Dubai'],
+    [270, 'UTC+4:30 · Kabul'], [300, 'UTC+5 · Karachi, Tashkent'], [330, 'UTC+5:30 · India, Sri Lanka'],
+    [345, 'UTC+5:45 · Nepal'], [360, 'UTC+6 · Dhaka, Almaty'], [390, 'UTC+6:30 · Myanmar'],
+    [420, 'UTC+7 · Bangkok, Jakarta, Hanoi'], [480, 'UTC+8 · Beijing, Singapore, Manila'],
+    [540, 'UTC+9 · Seoul, Tokyo'], [570, 'UTC+9:30 · Adelaide'], [600, 'UTC+10 · Sydney, Guam'],
+    [660, 'UTC+11'], [720, 'UTC+12 · Auckland'], [780, 'UTC+13'], [840, 'UTC+14']
+  ];
+  $('#en-tz').innerHTML = TZ.map(function (t) {
+    return '<option value="' + t[0] + '">' + t[1] + '</option>';
+  }).join('');
+  var guess = -new Date().getTimezoneOffset();
+  if (TZ.some(function (t) { return t[0] === guess; })) $('#en-tz').value = String(guess);
+  else $('#en-tz').value = '540';
+
+  $('#en-no-time').addEventListener('change', function () {
+    $('#en-time-wrap').hidden = this.checked;
+  });
+
+  /* ---------- Cast ---------- */
+
+  $('#en-run').addEventListener('click', function () {
+    var y2 = +$('#en-year').value, m2 = +$('#en-month').value, d2 = +$('#en-day').value;
+    var unknown = $('#en-no-time').checked;
+    var r;
+    try {
+      r = M.compute({
+        year: y2, month: m2, day: d2,
+        hour: unknown ? 12 : +$('#en-hour').value,
+        minute: unknown ? 0 : +$('#en-min').value,
+        unknownTime: unknown,
+        gender: 'F',
+        applySolarTime: false,
+        tzOffsetMinutes: +$('#en-tz').value
+      });
+    } catch (e) {
+      toast('Something went wrong — please check the date.');
+      return;
+    }
+    track('en_cast', { unknown_time: unknown ? 1 : 0 });
+    render(r, unknown);
+    $('#en-result').hidden = false;
+    $('#en-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  function pillarHtml(label, p, isDay) {
+    if (!p) {
+      return '<div class="en-pillar"><div class="ep-name">' + label + '</div>' +
+        '<div class="ep-han" style="color: #C9BFAC;">—</div>' +
+        '<div class="ep-en">unknown<br>time</div></div>';
+    }
+    var st = M.STEMS[p.stem], br = M.BRANCHES[p.branch];
+    return '<div class="en-pillar' + (isDay ? ' day' : '') + '">' +
+      '<div class="ep-name">' + label + '</div>' +
+      '<div class="ep-han">' + st.han + '<br>' + br.han + '</div>' +
+      '<div class="ep-en">' + STEM_EN[p.stem].name + '<br>' + BRANCH_EN[p.branch] + ' (' + EL_EN[br.el] + ')</div>' +
+      '</div>';
+  }
+
+  var lastResult = null;
+
+  function render(r, unknown) {
+    lastResult = r;
+    var p = r.pillars;
+    $('#en-pillars').innerHTML =
+      pillarHtml('Year', p.year, false) +
+      pillarHtml('Month', p.month, false) +
+      pillarHtml('Day', p.day, true) +
+      pillarHtml('Hour', p.hour, false);
+    $('#en-birth-line').textContent = MONTHS[r.input.month - 1] + ' ' + r.input.day + ', ' + r.input.year;
+
+    var notice = $('#en-notice');
+    if (r.jeolipWarning) {
+      notice.textContent = 'Note: you were born within hours of a solar-term boundary — your Month Pillar could shift with a small change in birth time.';
+      notice.hidden = false;
+    } else { notice.hidden = true; }
+
+    var dmIdx = p.day.stem;
+    var st = M.STEMS[dmIdx];
+    $('#en-dm-han').textContent = st.han;
+    $('#en-dm-name').textContent = STEM_EN[dmIdx].name + ' — ' + STEM_EN[dmIdx].arch;
+    $('#en-dm-body').textContent = DM_TEXT[dmIdx].body;
+    $('#en-dm-keywords').innerHTML = DM_TEXT[dmIdx].keys.map(function (k) {
+      return '<span class="pill">' + k + '</span>';
+    }).join('');
+    var sEn = STRENGTH_EN[r.strength.label] || STRENGTH_EN['중화'];
+    $('#en-dm-strength').innerHTML = '<b>' + sEn[0] + '</b> — ' + sEn[1] + '<br><span style="color: #9A8F7E; font-size: 12.5px;">' + DM_TEXT[dmIdx].caution + '</span>';
+
+    /* Elements */
+    var els = r.elements;
+    var max = Math.max(1, Math.max(els['목'], els['화'], els['토'], els['금'], els['수']));
+    $('#en-el-bars').innerHTML = ['목', '화', '토', '금', '수'].map(function (k) {
+      return '<div class="el-bar-row"><span class="eb-name">' + EL_EN[k] + '</span>' +
+        '<div class="eb-track"><div class="eb-fill" style="width: ' + Math.round(els[k] / max * 100) + '%; background: ' + EL_COLOR[k] + ';"></div></div>' +
+        '<span class="eb-count">' + els[k] + '</span></div>';
+    }).join('');
+    var missing = ['목', '화', '토', '금', '수'].filter(function (k) { return els[k] === 0; });
+    var domKey = ['목', '화', '토', '금', '수'].reduce(function (a, b) { return els[b] > els[a] ? b : a; });
+    $('#en-el-note').textContent = missing.length
+      ? 'Your chart runs strongest in ' + EL_EN[domKey] + ', and carries no ' + missing.map(function (k) { return EL_EN[k]; }).join(' or ') +
+        ' — ' + EL_MISS[missing[0]] + '. A missing element is a hint, not a flaw.'
+      : 'All five elements are present, led by ' + EL_EN[domKey] + ' — an unusually well-provisioned chart.';
+
+    /* Ten Gods */
+    var counts = r.sipseongCounts || {};
+    var rows = Object.keys(TEN_GODS).filter(function (k) { return counts[k]; })
+      .sort(function (a, b) { return counts[b] - counts[a]; });
+    $('#en-tengods').innerHTML = rows.length
+      ? rows.map(function (k) {
+          return '<div class="tg-row"><b>' + TEN_GODS[k][0] + (counts[k] > 1 ? ' ×' + counts[k] : '') + '</b>' +
+            '<span class="tg-kor">' + k + '</span>' +
+            '<span class="tg-gloss">' + TEN_GODS[k][1] + '</span></div>';
+        }).join('')
+      : '<p class="reading-body" style="font-size: 13px;">Your visible chart shows no Ten Gods besides your own element — a rare, self-contained pattern.</p>';
+  }
+
+  $('#en-share').addEventListener('click', function () {
+    if (!lastResult) return;
+    track('en_share');
+    var dmIdx = lastResult.pillars.day.stem;
+    var text = 'My Saju Day Master is ' + M.STEMS[dmIdx].han + ' ' + STEM_EN[dmIdx].name +
+      ' — ' + STEM_EN[dmIdx].arch + '. Find yours:';
+    var url = 'https://sajucheop.com/en/';
+    if (navigator.share) {
+      navigator.share({ title: 'Sajucheop — Korean Four Pillars', text: text, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + ' ' + url).then(function () { toast('Copied to clipboard.'); });
+    }
+  });
+})();
+</script>
+</body>
+</html>

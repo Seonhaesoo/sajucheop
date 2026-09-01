@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://sajucheop.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
   <url><loc>https://sajucheop.com/2027/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://sajucheop.com/en/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://sajucheop.com/tojeong/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://sajucheop.com/naming/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://sajucheop.com/manse/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>

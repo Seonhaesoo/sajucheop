@@ -304,7 +304,9 @@
     var nowYear = opts.nowYear || new Date().getFullYear();
 
     /* --- 시각 보정 --- */
-    var offsetMin = utcOffsetMinutes(y, mo, d);
+    /* tzOffsetMinutes: 한국 외 출생지용 UTC 오프셋(분) 오버라이드 (영문판 등) */
+    var tzOverride = (typeof opts.tzOffsetMinutes === 'number');
+    var offsetMin = tzOverride ? opts.tzOffsetMinutes : utcOffsetMinutes(y, mo, d);
     var meridian = offsetMin / 4; // 표준자오선 (도)
     var solarCorrMin = applySolar ? Math.round((lon - meridian) * 4) : 0;
 
@@ -462,7 +464,7 @@
         solarCorrectionMin: solarCorrMin,
         corrected: { y: corrCivil.y, m: corrCivil.m, d: corrCivil.d, minOfDay: corrMin },
         yajasi: yajasi,
-        dstEraWarning: isDstEraYear(y)
+        dstEraWarning: tzOverride ? false : isDstEraYear(y)
       },
       pillars: { year: yearP, month: monthP, day: dayP, hour: hourP },
       effYear: effYear,
