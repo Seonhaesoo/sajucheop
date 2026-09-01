@@ -319,21 +319,15 @@
     });
     lines.push('END:VCALENDAR');
     var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
-    var file = null;
-    try { file = new File([blob], '사주첩-음력기념일.ics', { type: blob.type }); } catch (e) { /* 무시 */ }
     track('lunar_ics', { events: count });
-    if (file && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) &&
-        navigator.canShare && navigator.canShare({ files: [file] })) {
-      navigator.share({ files: [file], title: '사주첩 — 음력 기념일' }).catch(function () {});
-      return;
-    }
+    /* 캘린더 파일은 공유창 대신 바로 다운로드 — 받은 파일을 누르면 캘린더가 열림 */
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.download = '사주첩-음력기념일.ics';
     a.href = url;
     a.click();
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-    toast(count + '개 일정을 파일로 받았어요. 파일을 열면 캘린더에 들어갑니다.');
+    toast(count + '개 일정 파일을 받았어요. 다운로드된 파일을 누르면 캘린더가 열립니다.');
   });
 
   render();

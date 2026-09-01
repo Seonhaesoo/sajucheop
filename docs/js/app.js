@@ -1567,12 +1567,14 @@
     return /Instagram|FBAN|FBAV|FB_IAB|KAKAOTALK|NAVER\(inapp|Line\/|DaumApps/i.test(navigator.userAgent);
   }
 
-  /* 반환: 'shared' | 'blocked' | 'downloaded' */
-  function deliverFile(blob, filename, shareTitle) {
+  /* 반환: 'shared' | 'blocked' | 'downloaded'
+   * opts.download: 모바일에서도 공유창 없이 바로 내려받기 (ics — 공유 대상에 캘린더가 없어서) */
+  function deliverFile(blob, filename, shareTitle, opts) {
     var file = null, canShare = false;
     try {
       file = new File([blob], filename, { type: blob.type });
-      canShare = isMobileUA() && !!(navigator.canShare && navigator.canShare({ files: [file] }));
+      canShare = !(opts && opts.download) &&
+        isMobileUA() && !!(navigator.canShare && navigator.canShare({ files: [file] }));
     } catch (e) { canShare = false; }
 
     if (canShare) {
@@ -1664,11 +1666,13 @@
     try {
       var ics = buildIcs();
       var blob = new Blob([ics.text], { type: 'text/calendar;charset=utf-8' });
-      var mode = deliverFile(blob, '사주첩-운세캘린더.ics', '사주첩 — 운세 캘린더');
+      var mode = deliverFile(blob, '사주첩-운세캘린더.ics', '사주첩 — 운세 캘린더', { download: true });
       track('ics_export', { mode: mode });
       var help = $('#ics-help');
       if (mode === 'downloaded') {
-        toast('30일치 ' + ics.count + '개 일정을 파일로 받았어요. 캘린더에 넣는 법은 아래 안내를 보세요.');
+        toast(isMobileUA()
+          ? ics.count + '개 일정 파일을 받았어요. 다운로드된 파일을 누르면 캘린더가 열립니다.'
+          : '30일치 ' + ics.count + '개 일정을 파일로 받았어요. 캘린더에 넣는 법은 아래 안내를 보세요.');
       }
       if (help && mode !== 'shared') help.open = true;
     } catch (e) {
