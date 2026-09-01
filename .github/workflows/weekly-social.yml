@@ -20,6 +20,7 @@ jobs:
       IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
       THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
       THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+      MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -28,7 +29,7 @@ jobs:
         env:
           FORCE: ${{ github.event.inputs.force || 'false' }}
         run: |
-          if [ -n "$IG_ACCESS_TOKEN" ] || [ -n "$THREADS_ACCESS_TOKEN" ] || [ "$FORCE" = "true" ]; then
+          if [ -n "$IG_ACCESS_TOKEN" ] || [ -n "$THREADS_ACCESS_TOKEN" ] || [ -n "$MAKE_WEBHOOK_URL" ] || [ "$FORCE" = "true" ]; then
             echo "go=1" >> "$GITHUB_OUTPUT"
           else
             echo "go=0" >> "$GITHUB_OUTPUT"
@@ -83,3 +84,9 @@ jobs:
       - name: 쓰레드 리스트글 게시
         if: steps.gate.outputs.go == '1' && env.THREADS_ACCESS_TOKEN != ''
         run: node tools/threads-text-publish.mjs
+
+      - name: 웹훅 발행 (Make 등 서드파티)
+        if: steps.gate.outputs.go == '1' && env.MAKE_WEBHOOK_URL != ''
+        env:
+          IMAGE_VER: ${{ github.run_id }}
+        run: node tools/webhook-publish.mjs weekly
