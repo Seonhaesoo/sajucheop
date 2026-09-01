@@ -34,8 +34,12 @@
   var CHUNG_B = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3, 4: 10, 10: 4, 5: 11, 11: 5 };
   var WEEKDAYS = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 
+  /* ?offset=1 이면 내일 기준 (저녁에 다음 날 카드를 미리 만들 때) */
   function kstToday() {
-    var k = new Date(Date.now() + 9 * 3600 * 1000);
+    var off = 0;
+    var m = location.search.match(/[?&]offset=(-?\d+)/);
+    if (m) off = parseInt(m[1], 10) || 0;
+    var k = new Date(Date.now() + 9 * 3600 * 1000 + off * 86400 * 1000);
     return { y: k.getUTCFullYear(), m: k.getUTCMonth() + 1, d: k.getUTCDate(), w: k.getUTCDay() };
   }
 
