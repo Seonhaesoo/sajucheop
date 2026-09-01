@@ -1262,7 +1262,98 @@
     $('#t-hour-note').textContent = '힘이 붙는 시간은 ' + flow.best.branch.kor + '시(' + flow.best.label +
       '), 한 템포 쉴 시간은 ' + flow.worst.branch.kor + '시(' + flow.worst.label + ')예요.';
 
+    renderWeekStrip(r);
+    renderTomorrow(r);
     renderJournal();
+  }
+
+  /* ---------- 이번 주 나의 날씨 (7일 미니 그래프) ---------- */
+
+  var WK_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
+
+  function renderWeekStrip(r) {
+    var strip = $('#wk-strip');
+    if (!strip) return;
+    var t = todayDateParts();
+    var dn0 = M._internals.daysFromCivil(t.y, t.m, t.d);
+    var days = [];
+    for (var i = 0; i < 7; i++) {
+      var cv = M._internals.civilFromDays(dn0 + i);
+      var info = M.todayInfo(r, cv.y, cv.m, cv.d);
+      days.push({
+        i: i, d: cv.d,
+        w: WK_SHORT[new Date(cv.y, cv.m - 1, cv.d).getDay()],
+        score: I.scoreDay(r, info),
+        chung: info.relation === '충'
+      });
+    }
+    var best = days.reduce(function (a, b) { return b.score > a.score ? b : a; });
+    var care = days.filter(function (d) { return d.chung; })[0] ||
+      days.reduce(function (a, b) { return b.score < a.score ? b : a; });
+
+    strip.innerHTML = days.map(function (d) {
+      var h = Math.round(10 + (d.score - 30) / 65 * 34);
+      h = Math.max(8, Math.min(44, h));
+      return '<div class="wk-col' + (d.i === 0 ? ' today' : '') + (d.i === best.i ? ' best' : '') + '">' +
+        '<div class="wk-score">' + d.score + '</div>' +
+        '<div class="wk-bar" style="height: ' + h + 'px;"></div>' +
+        '<div class="wk-label">' + (d.i === 0 ? '오늘' : d.w) + (d.chung ? '<i class="wk-dot"></i>' : '') + '</div>' +
+        '</div>';
+    }).join('');
+    $('#wk-range').textContent = '오늘부터 7일';
+    $('#wk-note').textContent = '가장 트이는 날은 ' + (best.i === 0 ? '바로 오늘' : best.w + '요일') +
+      '(' + best.score + '점), 한 템포 쉬어갈 날은 ' + (care.i === 0 ? '오늘' : care.w + '요일') +
+      (care.chung ? ' — 충이 드는 날이에요.' : '이에요.');
+  }
+
+  /* ---------- 내일 예고 ---------- */
+
+  function renderTomorrow(r) {
+    var title = $('#tmr-title');
+    if (!title) return;
+    var t = todayDateParts();
+    var cv = M._internals.civilFromDays(M._internals.daysFromCivil(t.y, t.m, t.d) + 1);
+    var info = M.todayInfo(r, cv.y, cv.m, cv.d);
+    var g = M.ganjiName(info.pillar.stem, info.pillar.branch);
+    var score = I.scoreDay(r, info);
+    title.textContent = '내일은 ' + g.kor + '(' + g.han + ')일 — 흐름 ' + score + '점';
+    var relLine = info.relation === '충'
+      ? ' 일지와 충이 드니, 중요한 결정은 오늘 마무리해 두는 게 좋아요.'
+      : (info.relation === '육합' || info.relation === '삼합'
+        ? ' 일지와 합이 들어 약속과 만남을 잡기 좋은 날이에요.'
+        : '');
+    $('#tmr-body').textContent = info.stemSipseong + josa(info.stemSipseong, '이', '가') +
+      ' 드는 날입니다.' + relLine;
+  }
+
+  /* ---------- 아침 알림 심기 (매일 반복 캘린더 일정) ---------- */
+
+  function downloadMorningAlarm() {
+    var t = todayDateParts();
+    var cv = M._internals.civilFromDays(M._internals.daysFromCivil(t.y, t.m, t.d) + 1);
+    var pad = function (n) { return String(n).padStart(2, '0'); };
+    var start = '' + cv.y + pad(cv.m) + pad(cv.d);
+    var lines = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//sajucheop//morning-alarm//KO',
+      'CALSCALE:GREGORIAN', 'X-WR-CALNAME:사주첩 아침 알림',
+      'BEGIN:VEVENT',
+      'UID:sj-morning-alarm@sajucheop',
+      'DTSTAMP:' + start + 'T000000Z',
+      'DTSTART:' + start + 'T080000',
+      'DTEND:' + start + 'T081000',
+      'RRULE:FREQ=DAILY',
+      'SUMMARY:☀️ 오늘의 운세 — 사주첩',
+      'DESCRIPTION:오늘의 흐름과 시간대별 운세 확인하기 → https://sajucheop.com',
+      'URL:https://sajucheop.com/?utm_source=calendar&utm_medium=alarm',
+      'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:오늘의 운세 — 사주첩', 'TRIGGER:PT0M', 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR'
+    ];
+    var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    var mode = deliverFile(blob, '사주첩-아침알림.ics', '사주첩 — 아침 알림', { download: true });
+    track('morning_alarm', { mode: mode });
+    if (mode === 'downloaded') {
+      toast('받은 파일을 누르면 매일 아침 8시 알림이 캘린더에 심어져요.');
+    }
   }
 
   /* ---------- 적중 기록 (운세 검증 · 이 기기에만) ---------- */
@@ -1783,6 +1874,64 @@
       '<span class="mini-dot" aria-hidden="true"></span>오늘은 ' + g.kor + '(' + g.han + ')일 · ' +
       t.m + '월 ' + t.d + '일 ' + WEEKDAYS[t.w];
   }
+
+  /* ---------- 재방문 장치: 방문 스트릭 · 오늘의 한 문장 · PWA ---------- */
+
+  var VISIT_KEY = 'sajucheop.visits.v1';
+
+  function touchVisitStreak() {
+    var t = todayDateParts();
+    var todayKey = journalDateKey(t.y, t.m, t.d);
+    var v = { last: null, streak: 0 };
+    try { v = JSON.parse(localStorage.getItem(VISIT_KEY) || '{}') || {}; } catch (e) { /* 무시 */ }
+    if (v.last !== todayKey) {
+      var dn = M._internals.daysFromCivil(t.y, t.m, t.d);
+      var yv = M._internals.civilFromDays(dn - 1);
+      var yesterdayKey = journalDateKey(yv.y, yv.m, yv.d);
+      v.streak = (v.last === yesterdayKey) ? (v.streak || 0) + 1 : 1;
+      v.last = todayKey;
+      try { localStorage.setItem(VISIT_KEY, JSON.stringify(v)); } catch (e) { /* 무시 */ }
+    }
+    return v.streak || 1;
+  }
+
+  function renderDailyBit(streak) {
+    var el = $('#daily-bit');
+    if (!el || !window.DailyQuotes) return;
+    var t = todayDateParts();
+    var dn = M._internals.daysFromCivil(t.y, t.m, t.d);
+    var idx60 = M._internals.dayPillarIndex(dn + M._internals.JDN_EPOCH);
+    var p = M.dayPillarOf(t.y, t.m, t.d);
+    var st = M.STEMS[p.stem];
+    $('#db-text').textContent = window.DailyQuotes.pick(p.stem, idx60);
+    $('#db-tag').textContent = st.kor + st.el + '의 날 · ' + t.m + '월 ' + t.d + '일';
+    var stEl = $('#db-streak');
+    if (streak >= 2) {
+      stEl.textContent = '연속 ' + streak + '일째 만나는 아침';
+      stEl.hidden = false;
+    } else {
+      stEl.hidden = true;
+    }
+    el.hidden = false;
+  }
+
+  /* PWA 설치 제안 — 연속 3일 방문했고, 설치 안 됐고, 닫은 적 없을 때만 */
+  var PWA_DISMISS_KEY = 'sajucheop.pwa.dismissed';
+
+  function maybeShowPwaBanner(streak) {
+    var banner = $('#pwa-banner');
+    if (!banner || !state.deferredInstall) return;
+    var standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+    var dismissed = false;
+    try { dismissed = !!localStorage.getItem(PWA_DISMISS_KEY); } catch (e) { /* 무시 */ }
+    if (streak >= 3 && !standalone && !dismissed) banner.hidden = false;
+  }
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    state.deferredInstall = e;
+    maybeShowPwaBanner(state.visitStreak || 1);
+  });
 
   /* ---------- 세운 (연운) ---------- */
 
@@ -2378,6 +2527,20 @@
     $('#btn-save-card').addEventListener('click', saveCharacterCard);
     $('#btn-share-card').addEventListener('click', shareCharacterCard);
     $('#btn-book-add').addEventListener('click', addToBook);
+    $('#btn-alarm').addEventListener('click', downloadMorningAlarm);
+    $('#pwa-install').addEventListener('click', function () {
+      if (!state.deferredInstall) return;
+      state.deferredInstall.prompt();
+      state.deferredInstall.userChoice.then(function () {
+        $('#pwa-banner').hidden = true;
+        state.deferredInstall = null;
+      });
+      track('pwa_prompt');
+    });
+    $('#pwa-dismiss').addEventListener('click', function () {
+      $('#pwa-banner').hidden = true;
+      try { localStorage.setItem(PWA_DISMISS_KEY, '1'); } catch (e) { /* 무시 */ }
+    });
     document.querySelectorAll('#jr-btns .jr-btn').forEach(function (b) {
       b.addEventListener('click', function () { markJournal(+b.getAttribute('data-jr')); });
     });
@@ -2458,6 +2621,9 @@
   initTaegil();
   initEvents();
   renderHomeToday();
+  state.visitStreak = touchVisitStreak();
+  renderDailyBit(state.visitStreak);
+  maybeShowPwaBanner(state.visitStreak);
   /* 입력 폼 자동 채움 — 첩의 '나' 장 우선, 없으면 마지막 계산 프로필 */
   var savedProfile = bookSelf() || loadProfile();
   if (savedProfile) fillFormFromProfile(savedProfile);

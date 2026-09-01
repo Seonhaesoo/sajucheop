@@ -1184,6 +1184,109 @@ a.feature-card { text-decoration: none; color: inherit; }
 }
 .cd-lunar { color: var(--muted); font-size: 12px; }
 
+/* 오늘의 한 문장 */
+.daily-bit {
+  display: flex;
+  gap: 14px;
+  margin: 18px 20px 0;
+  padding: 16px 16px 14px;
+  background: #FFFDF9;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.daily-bit .db-rule {
+  flex: none;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--seal);
+}
+.daily-bit .db-main { flex: 1; min-width: 0; }
+.daily-bit .db-overline {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--seal);
+  font-weight: 700;
+}
+.daily-bit .db-text {
+  margin-top: 8px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink);
+  word-break: keep-all;
+}
+.daily-bit .db-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+.daily-bit .db-streak { color: var(--seal); font-weight: 700; }
+
+/* PWA 설치 배너 */
+.pwa-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 20px 0;
+  padding: 12px 10px 12px 16px;
+  background: #FFFDF9;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.pwa-banner .pb-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pwa-banner .pb-text b { font-size: 13.5px; }
+.pwa-banner .pb-text span { font-size: 11.5px; color: var(--muted); }
+
+/* 이번 주 나의 날씨 */
+.week-strip {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 0 2px;
+}
+.wk-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.wk-score { font-size: 10px; color: var(--faint); }
+.wk-col.best .wk-score { color: var(--seal); font-weight: 700; }
+.wk-bar {
+  width: 100%;
+  max-width: 26px;
+  border-radius: 5px 5px 2px 2px;
+  background: #E3D9C6;
+}
+.wk-col.today .wk-bar { background: var(--ink); }
+.wk-col.best .wk-bar { background: var(--seal); }
+.wk-label {
+  font-size: 11px;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.wk-col.today .wk-label { font-weight: 700; color: var(--ink); }
+.wk-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #C77F4F;
+}
+
 /* 명식첩 — 홈 보드 */
 .book-strip { margin: 18px 20px 0; }
 .bk-head {
