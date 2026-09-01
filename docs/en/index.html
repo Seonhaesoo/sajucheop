@@ -71,6 +71,8 @@
       <span class="brand-name" style="font-size: 16px;">Sajucheop</span>
     </a>
     <nav class="doc-nav">
+      <a href="today/">Today</a>
+      <a href="match/">Match</a>
       <a href="../">한국어</a>
     </nav>
   </header>
@@ -144,7 +146,9 @@
     </div>
 
     <div class="btn-stack" style="margin-top: 16px;">
-      <button class="btn-primary" id="en-share">Share my Day Master</button>
+      <a class="btn-primary" href="today/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Read my fortune for today</a>
+      <a class="btn-outline" href="match/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Check compatibility with someone</a>
+      <button class="btn-outline" id="en-share">Share my Day Master</button>
     </div>
   </div>
 
@@ -316,6 +320,15 @@
       return;
     }
     track('en_cast', { unknown_time: unknown ? 1 : 0 });
+    /* 오늘의 운세·궁합 페이지에서 재사용할 프로필 저장 (기기에만) */
+    try {
+      localStorage.setItem('sajucheop.en.profile.v1', JSON.stringify({
+        y: y2, m: m2, d: d2, unknown: unknown,
+        hh: unknown ? 12 : +$('#en-hour').value,
+        mi: unknown ? 0 : +$('#en-min').value,
+        tz: +$('#en-tz').value
+      }));
+    } catch (e) { /* ignore */ }
     render(r, unknown);
     $('#en-result').hidden = false;
     $('#en-result').scrollIntoView({ behavior: 'smooth', block: 'start' });

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Today's Saju Reading — Your Daily Korean Fortune | Sajucheop</title>
+  <meta name="description" content="A free daily fortune based on your Korean Four Pillars: today's energy score, theme and the day's relationship to your chart — recalculated every midnight.">
+  <link rel="canonical" href="https://sajucheop.com/en/today/">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Sajucheop Daily Saju Reading","url":"https://sajucheop.com/en/today/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"inLanguage":"en"}</script>
+  <meta property="og:title" content="Today's Saju Reading — Daily Korean Fortune">
+  <meta property="og:description" content="Your daily energy score and theme, from your Four Pillars.">
+  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div class="app">
+
+  <header class="doc-header">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">Sajucheop</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="../">Chart</a>
+      <a href="../match/">Match</a>
+      <a href="../../">한국어</a>
+    </nav>
+  </header>
+
+  <div class="daeun-intro" style="margin-top: 26px;">
+    <h2 style="font-size: 24px;" id="td-head">Today's reading</h2>
+    <p id="td-sub">Every day carries its own pillar of energy. How today's pillar meets <b>your</b> chart is your daily reading — recalculated at midnight.</p>
+  </div>
+
+  <!-- Needs profile -->
+  <div class="card card-pad" id="td-need" hidden style="margin-top: 8px;">
+    <p class="reading-body">First, cast your chart so we know your Day Master — it takes ten seconds.</p>
+    <a class="btn-primary" href="../" style="display: flex; align-items: center; justify-content: center; text-decoration: none; margin-top: 14px;">Cast my chart first</a>
+  </div>
+
+  <div id="td-body" hidden>
+    <div class="current-daeun" id="td-hero" style="margin-top: 8px;"></div>
+
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">Today's theme</div>
+      <h3 class="reading-title" id="td-theme-title" style="font-size: 17px;"></h3>
+      <p class="reading-body" id="td-theme-body"></p>
+      <p class="reading-body" id="td-rel" style="margin-top: 10px;"></p>
+    </div>
+
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">Tomorrow's preview</div>
+      <p class="reading-body" id="td-tomorrow"></p>
+      <p class="form-microcopy" style="margin-top: 8px;">The full reading unlocks at midnight — see you then.</p>
+    </div>
+
+    <div class="btn-stack" style="margin-top: 16px;">
+      <button class="btn-primary" id="td-share">Share today's reading</button>
+      <a class="btn-outline" href="../match/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Check compatibility with someone</a>
+    </div>
+
+    <p class="form-microcopy" style="margin: 14px 24px 0;" id="td-note"></p>
+  </div>
+
+  <footer class="site-footer" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© Sajucheop</span>
+      <nav class="footer-links">
+        <a href="../">Chart</a>
+        <a href="../../terms.html">Terms</a>
+        <a href="../../privacy.html">Privacy</a>
+      </nav>
+    </div>
+    <p class="footer-note">For reflection and entertainment. Important decisions are always yours to make.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="bottom-space"></div>
+
+</div>
+
+<script src="../../js/manseryeok.js"></script>
+<script src="../../js/interpret.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var M = window.Manseryeok, I = window.SajuInterpret || window.Interpret;
+
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+  function track(name, params) {
+    if (window.gtag) { try { window.gtag('event', name, params || {}); } catch (e) { /* ignore */ } }
+  }
+
+  var STEM_EN = ['Yang Wood', 'Yin Wood', 'Yang Fire', 'Yin Fire', 'Yang Earth', 'Yin Earth', 'Yang Metal', 'Yin Metal', 'Yang Water', 'Yin Water'];
+  var BRANCH_EN = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  var WEATHER = function (s) {
+    return s >= 85 ? 'Clear skies' : s >= 70 ? 'Sunny spells' : s >= 55 ? 'Partly cloudy' : s >= 40 ? 'Overcast' : 'A stormy passage';
+  };
+  var THEME_EN = {
+    '비견': ['A day of standing on your own', 'Your own element flows in today — self-reliance works, and peers gather around you. Do things in your own name; just keep money matters clearly divided.'],
+    '겁재': ['A day of friendly rivalry', 'Competitive energy stirs. Guard what is yours — avoid lending or vague splits — and let a worthy rival sharpen you instead of draining you.'],
+    '식신': ['A day of ease and making', 'The nourishing star rises: appetite, creativity and easy output. Cook, write, build, share. Your body wants good fuel and gentle pacing today.'],
+    '상관': ['A day of brilliant expression', 'Words and ideas sparkle — pitch, publish, persuade. The one caution: that same sharp tongue can nick authority figures. Aim it at problems, not people.'],
+    '편재': ['A day money moves fast', 'Opportunity and spending both swell. Great for deals and bold asks; decide in advance what goes out and what must come in, or the day spends itself.'],
+    '정재': ['A day of steady gains', 'The diligent-wealth star shines: routine work pays, small savings compound, promises made today tend to hold. A good day to sign sensible things.'],
+    '편관': ['A day of pressure and proving', 'Weight lands on your shoulders — deadlines, demands, tests. Uncomfortable, but this is exactly how rank is earned. Guard your energy and push through.'],
+    '정관': ['A day order works for you', 'Formality favors you: applications, reviews, meetings with structure. Follow the rules precisely today and the system quietly promotes you.'],
+    '편인': ['A day of deep, odd insight', 'Your mind pulls toward the unconventional — niche study, quiet research, second meanings. Absorb freely; just don\'t postpone the one decision that matters.'],
+    '정인': ['A day of support and green lights', 'The resource star opens doors: approvals, mentors, documents, learning. Ask for help today — it actually arrives.']
+  };
+  var REL_EN = {
+    '육합': 'Today\'s branch forms a harmony with your Day Branch — bonds tie smoothly. A fine day for appointments, reconciliation and asking favors.',
+    '삼합': 'Today\'s branch joins your chart in a three-way harmony — gatherings and teamwork carry extra luck.',
+    '충': 'Today\'s branch clashes with your Day Branch — plans wobble and moods swing. Postpone irreversible signatures; movement itself is fine.',
+    '동일': 'Today\'s branch mirrors your own Day Branch — the day amplifies whatever you already are. Keep your footing.'
+  };
+
+  function savedProfile() {
+    try { return JSON.parse(localStorage.getItem('sajucheop.en.profile.v1') || 'null'); } catch (e) { return null; }
+  }
+
+  var prof = savedProfile();
+  if (!prof || !prof.y) {
+    $('#td-need').hidden = false;
+  } else {
+    var r;
+    try {
+      r = M.compute({
+        year: prof.y, month: prof.m, day: prof.d,
+        hour: prof.unknown ? 12 : prof.hh, minute: prof.unknown ? 0 : prof.mi,
+        unknownTime: !!prof.unknown, gender: 'F',
+        applySolarTime: false, tzOffsetMinutes: (typeof prof.tz === 'number') ? prof.tz : 540
+      });
+    } catch (e) { $('#td-need').hidden = false; }
+    if (r) {
+      render(r);
+      $('#td-body').hidden = false;
+      track('en_today');
+    }
+  }
+
+  var shareText = '';
+
+  function render(r) {
+    var now = new Date();
+    var t = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate(), w: now.getDay() };
+    var info = M.todayInfo(r, t.y, t.m, t.d);
+    var score = I.scoreDay(r, info);
+    var st = M.STEMS[info.pillar.stem], br = M.BRANCHES[info.pillar.branch];
+
+    $('#td-head').textContent = DAYS[t.w] + ', ' + MONTHS[t.m - 1] + ' ' + t.d;
+    $('#td-sub').innerHTML = 'Today is a <b>' + STEM_EN[info.pillar.stem] + ' ' + BRANCH_EN[info.pillar.branch] +
+      '</b> day (' + st.han + br.han + ') — here is how it meets your chart.';
+
+    $('#td-hero').innerHTML =
+      '<div class="ganji-col"><span>' + st.han + '</span><span>' + br.han + '</span></div>' +
+      '<div class="v-div"></div>' +
+      '<div class="cd-info">' +
+      '<div class="cd-range">Today\'s current</div>' +
+      '<div class="cd-title"><span class="t-score">' + score + '</span> · ' + WEATHER(score) + '</div>' +
+      '<div class="cd-body">Energy score out of 100, from today\'s pillar against your Four Pillars.</div>' +
+      '</div>';
+
+    var th = THEME_EN[info.stemSipseong] || ['A quiet day', 'A steady, unremarkable current — which is its own kind of gift.'];
+    $('#td-theme-title').textContent = th[0];
+    $('#td-theme-body').textContent = th[1];
+    $('#td-rel').textContent = REL_EN[info.relation] || 'No major harmony or clash with your Day Branch today — the theme above flows unobstructed.';
+
+    /* Tomorrow */
+    var MI = M._internals;
+    var cv = MI.civilFromDays(MI.daysFromCivil(t.y, t.m, t.d) + 1);
+    var info2 = M.todayInfo(r, cv.y, cv.m, cv.d);
+    var s2 = I.scoreDay(r, info2);
+    var th2 = THEME_EN[info2.stemSipseong] || ['a quiet day', ''];
+    $('#td-tomorrow').innerHTML = 'Tomorrow is a <b>' + STEM_EN[info2.pillar.stem] + ' ' + BRANCH_EN[info2.pillar.branch] +
+      '</b> day — energy around <b>' + s2 + '</b>, with a theme of "' + th2[0].toLowerCase().replace(/^a day (of |that |)/, '').replace(/^money /, 'fast-moving money') + '".' +
+      (info2.relation === '충' ? ' It clashes with your Day Branch, so wrap up big decisions today.' : '');
+
+    $('#td-note').textContent = 'Based on the chart you cast earlier (' + MONTHS[prof.m - 1] + ' ' + prof.d + ', ' + prof.y + '). Recast anytime on the Chart page.';
+    shareText = 'My Saju reading today: ' + score + '/100, "' + th[0] + '" — get yours:';
+  }
+
+  $('#td-share').addEventListener('click', function () {
+    if (!shareText) return;
+    track('en_today_share');
+    var url = 'https://sajucheop.com/en/today/';
+    if (navigator.share) {
+      navigator.share({ title: 'Sajucheop — Today\'s Saju', text: shareText, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText + ' ' + url).then(function () { toast('Copied to clipboard.'); });
+    }
+  });
+})();
+</script>
+</body>
+</html>

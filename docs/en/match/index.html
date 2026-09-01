@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saju Compatibility — Korean Four Pillars Love Match, Free | Sajucheop</title>
+  <meta name="description" content="Free Korean saju compatibility: two birth dates, one reading — Day Master chemistry, what you are to each other (Ten Gods), element complement and a match score.">
+  <link rel="canonical" href="https://sajucheop.com/en/match/">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Sajucheop Saju Compatibility","url":"https://sajucheop.com/en/match/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"inLanguage":"en"}</script>
+  <meta property="og:title" content="Saju Compatibility — Korean Four Pillars Match">
+  <meta property="og:description" content="Two birth dates, one reading: Day Master chemistry, Ten Gods and a match score.">
+  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div class="app">
+
+  <header class="doc-header">
+    <a class="brand" href="../">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">Sajucheop</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="../">Chart</a>
+      <a href="../today/">Today</a>
+      <a href="../../">한국어</a>
+    </nav>
+  </header>
+
+  <div class="daeun-intro" style="margin-top: 26px;">
+    <h2 style="font-size: 24px;">Saju compatibility</h2>
+    <p>Two charts, one chemistry. We compare your Day Masters, read <b>what you are to each other</b> in the Ten Gods, and check whether your elements fill each other's gaps.</p>
+  </div>
+
+  <div class="card card-pad" style="margin-top: 8px;">
+    <div class="section-head"><h3 class="section-title" style="font-size: 15px;">You</h3></div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1;"><select id="ma-month"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="ma-day"></select></div>
+      <div class="select-wrap" style="flex: 1.2;"><select id="ma-year"></select></div>
+    </div>
+    <div class="section-head" style="margin-top: 16px;"><h3 class="section-title" style="font-size: 15px;">Them</h3></div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1;"><select id="mb-month"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="mb-day"></select></div>
+      <div class="select-wrap" style="flex: 1.2;"><select id="mb-year"></select></div>
+    </div>
+    <button class="btn-primary" id="ma-run" style="margin-top: 16px;">Read our chemistry</button>
+    <p class="form-microcopy" style="margin-top: 8px;">Nothing is uploaded — the whole reading happens in your browser.</p>
+  </div>
+
+  <div id="ma-result" hidden>
+    <div class="char-hero" style="margin-top: 16px;">
+      <div class="gh-pair">
+        <div class="gh-person"><span id="mr-emblem-a" class="tj-han" style="font-size: 34px; letter-spacing: 0;"></span><b id="mr-name-a">You</b><span class="gh-ilgan" id="mr-dm-a"></span></div>
+        <div class="gh-x" aria-hidden="true">×</div>
+        <div class="gh-person"><span id="mr-emblem-b" class="tj-han" style="font-size: 34px; letter-spacing: 0;"></span><b id="mr-name-b">Them</b><span class="gh-ilgan" id="mr-dm-b"></span></div>
+      </div>
+      <div class="gh-score"><span class="t-score" id="mr-score"></span></div>
+      <div class="gh-tier" id="mr-tier"></div>
+    </div>
+
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">Day Master chemistry</div>
+      <h3 class="reading-title" id="mr-stem-title" style="font-size: 17px;"></h3>
+      <p class="reading-body" id="mr-stem-body"></p>
+    </div>
+
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">What you are to each other</div>
+      <p class="reading-body" id="mr-ten-a"></p>
+      <p class="reading-body" id="mr-ten-b" style="margin-top: 10px;"></p>
+    </div>
+
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">Elements & daily rhythm</div>
+      <p class="reading-body" id="mr-branch"></p>
+      <p class="reading-body" id="mr-elements" style="margin-top: 10px;"></p>
+    </div>
+
+    <div class="btn-stack" style="margin-top: 16px;">
+      <button class="btn-primary" id="mr-share">Share this match</button>
+      <a class="btn-outline" href="../" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Cast a full chart</a>
+    </div>
+  </div>
+
+  <div class="card reading-card" style="margin-top: 26px;">
+    <div class="reading-overline">How it works</div>
+    <p class="reading-body">Korean matchmakers start from the two <b>Day Masters</b> — the elements of self. Some pairs combine (합), some clash (충), some feed one another. Then they ask what each person <i>is</i> to the other in the Ten Gods: a shelter, a spark, a mirror. Scores are a summary, not a verdict — the reading is in the lines.</p>
+  </div>
+
+  <footer class="site-footer" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© Sajucheop</span>
+      <nav class="footer-links">
+        <a href="../">Chart</a>
+        <a href="../../terms.html">Terms</a>
+        <a href="../../privacy.html">Privacy</a>
+      </nav>
+    </div>
+    <p class="footer-note">For reflection and entertainment. Important decisions are always yours to make.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="bottom-space"></div>
+
+</div>
+
+<script src="../../js/manseryeok.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var M = window.Manseryeok;
+
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+  function track(name, params) {
+    if (window.gtag) { try { window.gtag('event', name, params || {}); } catch (e) { /* ignore */ } }
+  }
+
+  var STEM_EN = ['Yang Wood', 'Yin Wood', 'Yang Fire', 'Yin Fire', 'Yang Earth', 'Yin Earth', 'Yang Metal', 'Yin Metal', 'Yang Water', 'Yin Water'];
+  var EL_EN = { '목': 'Wood', '화': 'Fire', '토': 'Earth', '금': 'Metal', '수': 'Water' };
+  var TEN_PERSON = {
+    '비견': 'a mirror — someone who moves at your rhythm and understands without translation',
+    '겁재': 'a sparring partner — the friendly rival who keeps you sharp (watch shared wallets)',
+    '식신': 'a source of ease — around them, appetite and laughter come back',
+    '상관': 'a spark — they make you say the brilliant thing you\'d normally swallow',
+    '편재': 'an adventure — plans get bigger and the world feels more affordable together',
+    '정재': 'a steady harvest — the practical one who makes life add up',
+    '편관': 'a drill instructor — demanding, but you grow taller around them',
+    '정관': 'a frame — they bring order and make you want to be responsible',
+    '편인': 'a strange library — conversations go places nobody else takes you',
+    '정인': 'a shelter — the one you can lean on without explaining why'
+  };
+  var TIERS = [
+    [90, 'A rare, fated fit'],
+    [80, 'Deeply harmonious'],
+    [70, 'A warm, workable match'],
+    [60, 'Complementary with effort'],
+    [45, 'A study in contrasts'],
+    [0, 'A challenge — and a teacher']
+  ];
+
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function fillSelects(prefix) {
+    var o = '';
+    for (var m = 1; m <= 12; m++) o += '<option value="' + m + '">' + MONTHS[m - 1] + '</option>';
+    $('#' + prefix + '-month').innerHTML = o;
+    o = '';
+    for (var d = 1; d <= 31; d++) o += '<option value="' + d + '">' + d + '</option>';
+    $('#' + prefix + '-day').innerHTML = o;
+    var nowY = new Date().getFullYear();
+    o = '';
+    for (var y = nowY; y >= 1900; y--) o += '<option value="' + y + '">' + y + '</option>';
+    $('#' + prefix + '-year').innerHTML = o;
+    $('#' + prefix + '-year').value = '1995';
+  }
+  fillSelects('ma');
+  fillSelects('mb');
+
+  /* Prefill "You" from saved EN profile */
+  try {
+    var prof = JSON.parse(localStorage.getItem('sajucheop.en.profile.v1') || 'null');
+    if (prof && prof.y) {
+      $('#ma-year').value = String(prof.y);
+      $('#ma-month').value = String(prof.m);
+      $('#ma-day').value = String(prof.d);
+    }
+  } catch (e) { /* ignore */ }
+
+  var HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };   /* 천간합 */
+  var CHUNG = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3 };             /* 천간충 (무기 제외) */
+
+  function stemRelation(a, b) {
+    var sa = M.STEMS[a], sb = M.STEMS[b];
+    if (HAP[a] === b) return { pts: 18, title: 'Your Day Masters combine (합)', body: 'In the classical pairings, ' + STEM_EN[a] + ' and ' + STEM_EN[b] + ' bind into one — a chemistry old texts reserved for partners. You don\'t merely get along; you make a third thing together.' };
+    if (CHUNG[a] === b) return { pts: -12, title: 'Your Day Masters clash (충)', body: STEM_EN[a] + ' and ' + STEM_EN[b] + ' sit opposite each other — sparks are guaranteed, boredom never is. Handled with respect, this clash becomes momentum; handled carelessly, friction.' };
+    if (M.elCycle.gen[sa.el] === sb.el) return { pts: 10, title: 'You feed their fire', body: 'Your ' + EL_EN[sa.el] + ' nourishes their ' + EL_EN[sb.el] + ' — you are the giving side of this pair. Beautiful, as long as the giving flows both ways in other currencies.' };
+    if (M.elCycle.gen[sb.el] === sa.el) return { pts: 10, title: 'They feed your fire', body: 'Their ' + EL_EN[sb.el] + ' nourishes your ' + EL_EN[sa.el] + ' — around them you grow with less effort. Say thank you out loud sometimes.' };
+    if (sa.el === sb.el) return { pts: 4, title: 'Same element, same weather', body: 'Two ' + EL_EN[sa.el] + ' natures: instantly familiar, deeply comfortable, occasionally too similar to balance each other. Bring in outside perspectives when you\'re stuck.' };
+    return { pts: -6, title: 'Your elements check each other', body: EL_EN[sa.el] + ' and ' + EL_EN[sb.el] + ' sit in a controlling relationship — one of you naturally edits the other. As respect, it\'s structure; as habit, it\'s criticism. Choose the former.' };
+  }
+
+  $('#ma-run').addEventListener('click', function () {
+    var ra, rb;
+    try {
+      ra = M.compute({ year: +$('#ma-year').value, month: +$('#ma-month').value, day: +$('#ma-day').value, hour: 12, minute: 0, unknownTime: true, gender: 'F', applySolarTime: false, tzOffsetMinutes: 540 });
+      rb = M.compute({ year: +$('#mb-year').value, month: +$('#mb-month').value, day: +$('#mb-day').value, hour: 12, minute: 0, unknownTime: true, gender: 'F', applySolarTime: false, tzOffsetMinutes: 540 });
+    } catch (e) {
+      toast('Something went wrong — please check the dates.');
+      return;
+    }
+    var a = ra.pillars.day.stem, b = rb.pillars.day.stem;
+    var rel = stemRelation(a, b);
+    var score = 62 + rel.pts;
+
+    /* Day-branch relation */
+    var brel = M.branchRelation(ra.pillars.day.branch, rb.pillars.day.branch);
+    var brelLine, brelPts = 0;
+    if (brel === '육합') { brelPts = 12; brelLine = 'Your Day Branches form a six-harmony — daily rhythms sync with almost no negotiation.'; }
+    else if (brel === '삼합') { brelPts = 10; brelLine = 'Your Day Branches share a trine harmony — you work best as a team with a project.'; }
+    else if (brel === '충') { brelPts = -16; brelLine = 'Your Day Branches clash — living patterns differ (sleep, pace, tidiness). Name the differences early and they stop being fights.'; }
+    else if (brel === '동일') { brelLine = 'Your Day Branches are identical — uncannily similar instincts, for better and for worse.'; }
+    else { brelLine = 'Your Day Branches neither clash nor combine — daily life is a neutral canvas you paint together.'; }
+    score += brelPts;
+
+    /* Element complement */
+    var missA = ['목', '화', '토', '금', '수'].filter(function (k) { return ra.elements[k] === 0; });
+    var fills = missA.filter(function (k) { return rb.elements[k] > 0; });
+    var missB = ['목', '화', '토', '금', '수'].filter(function (k) { return rb.elements[k] === 0; });
+    var fillsB = missB.filter(function (k) { return ra.elements[k] > 0; });
+    var compPts = Math.min(2, fills.length) * 5 + Math.min(2, fillsB.length) * 5;
+    score += Math.min(10, compPts);
+    var compLine = (fills.length || fillsB.length)
+      ? 'Element-wise you patch each other\'s gaps' +
+        (fills.length ? ' — they carry the ' + fills.map(function (k) { return EL_EN[k]; }).join(' and ') + ' your chart lacks' : '') +
+        (fillsB.length ? (fills.length ? ', and you' : ' — you') + ' bring their missing ' + fillsB.map(function (k) { return EL_EN[k]; }).join(' and ') : '') + '.'
+      : 'Neither of you fills the other\'s missing elements — your bond is built on resonance rather than completion.';
+
+    /* Yin-yang */
+    if (M.STEMS[a].yang !== M.STEMS[b].yang) { score += 4; }
+    score = Math.max(30, Math.min(99, score));
+    var tier = TIERS.filter(function (t) { return score >= t[0]; })[0][1];
+
+    $('#mr-emblem-a').textContent = M.STEMS[a].han;
+    $('#mr-emblem-b').textContent = M.STEMS[b].han;
+    $('#mr-dm-a').textContent = STEM_EN[a];
+    $('#mr-dm-b').textContent = STEM_EN[b];
+    $('#mr-score').textContent = score;
+    $('#mr-tier').textContent = tier;
+    $('#mr-stem-title').textContent = rel.title;
+    $('#mr-stem-body').textContent = rel.body;
+
+    var sipAtoB = M.sipseongOf(b, a); /* what A is to B */
+    var sipBtoA = M.sipseongOf(a, b); /* what B is to A */
+    var TEN_EN = { '비견': 'the Friend', '겁재': 'the Rival', '식신': 'the Feast', '상관': 'the Spark', '편재': 'the Venture', '정재': 'the Harvest', '편관': 'the Trial', '정관': 'the Frame', '편인': 'the Oracle', '정인': 'the Shelter' };
+    var glossOf = function (sip) {
+      var t = TEN_PERSON[sip] || '';
+      var i = t.indexOf('— ');
+      return i >= 0 ? t.slice(i + 2) : t;
+    };
+    $('#mr-ten-a').innerHTML = '<b>To you, they are ' + TEN_EN[sipBtoA] + '</b> — ' + glossOf(sipBtoA) + '.';
+    $('#mr-ten-b').innerHTML = '<b>To them, you are ' + TEN_EN[sipAtoB] + '</b> — ' + glossOf(sipAtoB) + '.';
+
+    $('#mr-branch').textContent = brelLine;
+    $('#mr-elements').textContent = compLine;
+    $('#ma-result').hidden = false;
+    $('#ma-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    track('en_match', { score: score });
+    lastShare = 'Our saju match: ' + score + '/100 — "' + tier + '". Read yours:';
+  });
+
+  var lastShare = '';
+  $('#mr-share').addEventListener('click', function () {
+    if (!lastShare) return;
+    track('en_match_share');
+    var url = 'https://sajucheop.com/en/match/';
+    if (navigator.share) {
+      navigator.share({ title: 'Sajucheop — Saju Match', text: lastShare, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(lastShare + ' ' + url).then(function () { toast('Copied to clipboard.'); });
+    }
+  });
+})();
+</script>
+</body>
+</html>
