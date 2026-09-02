@@ -1521,13 +1521,14 @@
       'DTSTART:' + start + 'T080000',
       'DTEND:' + start + 'T081000',
       'RRULE:FREQ=DAILY',
-      'SUMMARY:☀️ 오늘의 운세 — 사주첩',
-      'DESCRIPTION:오늘의 흐름과 시간대별 운세 확인하기 → https://sajucheop.com',
+      /* 반복 일정이라 그날의 점수는 담을 수 없음 — 점수는 링크를 눌러 확인 */
+      'SUMMARY:오늘의 운세 보기 — 사주첩',
+      'DESCRIPTION:오늘의 흐름 점수와 시간대별 운세 확인하기 https://sajucheop.com',
       'URL:https://sajucheop.com/?utm_source=calendar&utm_medium=alarm',
-      'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:오늘의 운세 — 사주첩', 'TRIGGER:PT0M', 'END:VALARM',
+      'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:오늘의 운세 보기 — 사주첩', 'TRIGGER:PT0M', 'END:VALARM',
       'END:VEVENT', 'END:VCALENDAR'
     ];
-    var blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    var blob = new Blob([icsJoin(lines)], { type: 'text/calendar;charset=utf-8' });
     var mode = deliverFile(blob, '사주첩-아침알림.ics', '사주첩 — 아침 알림', { download: true });
     track('morning_alarm', { mode: mode });
     if (mode === 'downloaded') {
@@ -1886,6 +1887,50 @@
     return s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
   }
 
+  /* RFC 5545 — 한 줄 75옥텟 제한. 한글은 3바이트라 대부분의 줄이 넘어가므로 접어 준다.
+   * 이어지는 줄은 맨 앞 공백 1칸을 포함해 75옥텟이 된다. */
+  function utf8Bytes(s) {
+    var n = 0;
+    for (var i = 0; i < s.length; i++) {
+      var c = s.codePointAt(i);
+      if (c > 0xFFFF) i++;
+      n += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
+    }
+    return n;
+  }
+
+  function icsFold(line) {
+    var parts = [], cur = '', bytes = 0;
+    for (var i = 0; i < line.length; i++) {
+      var code = line.codePointAt(i);
+      var ch = line[i];
+      if (code > 0xFFFF) ch += line[++i];
+      var w = code < 0x80 ? 1 : code < 0x800 ? 2 : code < 0x10000 ? 3 : 4;
+      if (bytes + w > (parts.length === 0 ? 75 : 74)) {
+        /* URL이 반으로 갈리지 않도록, 가능하면 마지막 공백 앞에서 접는다.
+         * 접힌 줄 맨 앞의 공백 1칸만 제거되므로 본문 공백은 그대로 남는다. */
+        var sp = cur.lastIndexOf(' ');
+        if (sp > 0 && cur.length - sp <= 30) {
+          parts.push(cur.slice(0, sp));
+          cur = cur.slice(sp);
+          bytes = utf8Bytes(cur);
+        } else {
+          parts.push(cur);
+          cur = '';
+          bytes = 0;
+        }
+      }
+      cur += ch;
+      bytes += w;
+    }
+    parts.push(cur);
+    return parts.join('\r\n ');
+  }
+
+  function icsJoin(lines) {
+    return lines.map(icsFold).join('\r\n');
+  }
+
   function buildIcs() {
     var t = todayDateParts();
     var pad = function (n) { return String(n).padStart(2, '0'); };
@@ -1898,37 +1943,59 @@
       'X-WR-CALNAME:사주첩 — 나의 길일'
     ];
     var dn0 = M._internals.daysFromCivil(t.y, t.m, t.d);
-    var count = 0;
+
+    /* 30일치를 먼저 채점 */
+    var days = [];
     for (var i = 0; i < 30; i++) {
       var cv = M._internals.civilFromDays(dn0 + i);
       var info = M.todayInfo(state.result, cv.y, cv.m, cv.d);
-      var score = I.scoreDay(state.result, info);
-      var isGood = score >= 80;
-      var isChung = info.relation === '충';
-      if (!isGood && !isChung) continue;
-      var g = M.ganjiName(info.pillar.stem, info.pillar.branch);
-      var next = M._internals.civilFromDays(dn0 + i + 1);
-      var summary = isGood
-        ? '○ 길일 · ' + g.kor + '일 (' + score + '점)'
-        : '△ 충 주의 · ' + g.kor + '일';
-      var desc = isGood
-        ? info.stemSipseong + josa(info.stemSipseong, '이', '가') + ' 드는 날 — 사주첩'
-        : '내 일지와 충(沖)이 드는 날. 중요한 결정과 서명은 미루는 게 좋아요 — 사주첩';
+      days.push({
+        cv: cv,
+        next: M._internals.civilFromDays(dn0 + i + 1),
+        info: info,
+        score: I.scoreDay(state.result, info),
+        pick: null
+      });
+    }
+    days.forEach(function (d) {
+      d.pick = d.score >= 80 ? 'good' : (d.info.relation === '충' ? 'chung' : null);
+    });
+
+    /* 80점을 넘는 날이 드문 사주가 3분의 1이라, 좋은 날이 세 개는 담기도록 상위 점수일로 채운다 */
+    var goodCount = days.filter(function (d) { return d.pick === 'good'; }).length;
+    days.slice().sort(function (a, b) { return b.score - a.score; }).forEach(function (d) {
+      if (goodCount >= 3 || d.pick) return;
+      d.pick = 'good';
+      goodCount++;
+    });
+
+    var count = 0;
+    days.forEach(function (d) {
+      if (!d.pick) return;
+      var g = M.ganjiName(d.info.pillar.stem, d.info.pillar.branch);
+      var isGood = d.pick === 'good';
+      var summary = (isGood ? (d.score >= 80 ? '○ 길일 · ' : '○ 좋은 날 · ') : '△ 충 주의 · ') +
+        g.kor + '일 (' + d.score + '점)';
+      var desc = (isGood
+        ? d.info.stemSipseong + josa(d.info.stemSipseong, '이', '가') + ' 드는 날.'
+        : '내 일지와 충(沖)이 드는 날. 중요한 결정과 서명은 미루는 게 좋아요.') +
+        ' 오늘의 흐름 ' + d.score + '점 — 자세히 보기 https://sajucheop.com';
       lines.push(
         'BEGIN:VEVENT',
-        'UID:sjsj-' + cv.y + pad(cv.m) + pad(cv.d) + '@sajucheop',
+        'UID:sjsj-' + d.cv.y + pad(d.cv.m) + pad(d.cv.d) + '@sajucheop',
         'DTSTAMP:' + stamp,
-        'DTSTART;VALUE=DATE:' + cv.y + pad(cv.m) + pad(cv.d),
-        'DTEND;VALUE=DATE:' + next.y + pad(next.m) + pad(next.d),
+        'DTSTART;VALUE=DATE:' + d.cv.y + pad(d.cv.m) + pad(d.cv.d),
+        'DTEND;VALUE=DATE:' + d.next.y + pad(d.next.m) + pad(d.next.d),
         'SUMMARY:' + icsEscape(summary),
         'DESCRIPTION:' + icsEscape(desc),
+        'URL:https://sajucheop.com/?utm_source=calendar&utm_medium=fortune',
         'TRANSP:TRANSPARENT',
         'END:VEVENT'
       );
       count++;
-    }
+    });
     lines.push('END:VCALENDAR');
-    return { text: lines.join('\r\n'), count: count };
+    return { text: icsJoin(lines), count: count };
   }
 
   function downloadIcs() {
