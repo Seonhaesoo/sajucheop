@@ -995,10 +995,20 @@
     } else {
       retCard.hidden = false;
       $('#gh-return-link').value = state.gunghapUrl || '';
+      /* 모바일: 문자앱으로 원탭 회신 보조 버튼 */
+      $('#btn-return-sms').hidden = !isMobileUA();
       make.hidden = false;
       mine.className = 'btn-outline';
       mine.textContent = '내 사주 전체 보기';
     }
+  }
+
+  function returnBySms() {
+    if (!state.gunghapUrl || !state.gunghap) return;
+    track('gunghap_return_sms');
+    var body = '우리 궁합 ' + state.gunghap.score + '점 「' + state.gunghap.tier + '」 — 결과 바로 보기: ' + state.gunghapUrl;
+    var sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?';
+    location.href = 'sms:' + sep + 'body=' + encodeURIComponent(body);
   }
 
   function shareGunghapResultLink() {
@@ -2647,6 +2657,7 @@
     $('#btn-share-gunghap').addEventListener('click', shareGunghap);
     $('#btn-return-gunghap').addEventListener('click', shareGunghapResultLink);
     $('#btn-save-gunghap-card').addEventListener('click', saveGunghapCard);
+    $('#btn-return-sms').addEventListener('click', returnBySms);
     $('#gh-return-link').addEventListener('click', function () { this.select(); });
     $('#btn-my-result').addEventListener('click', function () {
       if (state.pairView) {
