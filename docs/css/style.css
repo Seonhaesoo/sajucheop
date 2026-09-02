@@ -1184,6 +1184,13 @@ a.feature-card { text-decoration: none; color: inherit; }
 }
 .cd-lunar { color: var(--muted); font-size: 12px; }
 
+/* 궁합 초대 집중 모드 — 초대 링크로 들어온 방문자에겐 입력만 보이게 */
+body.invite-mode .daily-bit,
+body.invite-mode .pwa-banner,
+body.invite-mode .book-strip,
+body.invite-mode .feature-row,
+body.invite-mode .resume-chip { display: none !important; }
+
 /* 언어 전환 칩 */
 .menu-wrap { display: flex; align-items: center; gap: 8px; }
 .lang-chip {

@@ -611,6 +611,22 @@
       <div class="gh-tier" id="gh-tier"></div>
     </div>
 
+    <!-- 결과 돌려보내기 (초대받은 사람에게만) -->
+    <div class="card rise reading-card" id="gh-return-card" hidden>
+      <div class="reading-overline">한 걸음 남았어요</div>
+      <p class="reading-body">결과는 지금 <b>나에게만</b> 보여요. 아래 버튼으로 돌려보내면, 궁합을 청한 분도 입력 없이 바로 이 결과를 봅니다.</p>
+      <button class="btn-primary" id="btn-return-gunghap" style="margin-top: 14px; width: 100%;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 14V4" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 7L12 3.5 15.5 7" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 11.5v8h13v-8" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        <span>상대에게 결과 돌려보내기</span>
+      </button>
+      <input type="text" class="text-input" id="gh-return-link" readonly style="margin-top: 10px; font-size: 11px; color: #9A8F7E;" aria-label="결과 링크">
+      <p class="form-microcopy" style="margin-top: 6px;">버튼을 누르면 공유창이 열리거나 링크가 복사돼요 — 카톡에 붙여넣기만 하면 끝.</p>
+    </div>
+
     <div class="card rise reading-card">
       <div class="reading-overline">일간 케미</div>
       <h3 class="reading-title" id="gh-stem-title" style="font-size: 17px;"></h3>
@@ -648,6 +664,7 @@
         </svg>
         <span>상대에게 결과 돌려보내기</span>
       </button>
+      <button class="btn-outline" id="btn-save-gunghap-card">궁합 카드 이미지 저장 — 스토리에 자랑하기</button>
       <button class="btn-primary" id="btn-my-result">내 사주 전체 보기</button>
       <button class="btn-outline" id="btn-make-gunghap3">나도 궁합 링크 만들기</button>
       <p class="form-microcopy">궁합·결과 링크에는 생년월일시가 담겨요 — 아는 사람에게만 보내세요</p>

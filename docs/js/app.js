@@ -762,12 +762,19 @@
     $('#ib-title').textContent = (inv.name ? inv.name + ' 님이' : '친구가') + ' 궁합을 청했어요';
     $('#invite-banner').hidden = false;
     $('#btn-submit-label').textContent = '궁합 열어보기';
+    /* 초대 집중 모드 — 홈의 다른 카드를 걷어내고 입력에 집중 */
+    document.body.classList.add('invite-mode');
+    setTimeout(function () {
+      var banner = $('#invite-banner');
+      if (banner && !banner.hidden) banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
   }
 
   function dismissInvite() {
     state.invite = null;
     $('#invite-banner').hidden = true;
     $('#btn-submit-label').textContent = '내 사주 풀어보기';
+    document.body.classList.remove('invite-mode');
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* 무시 */ }
   }
 
@@ -808,7 +815,96 @@
     $('#gh-complement').innerHTML = compLines;
 
     state.gunghapPair = { a: partnerResult, b: myResult };
+    state.gunghapCard = {
+      aHan: stA.han, aEl: stA.el, aName: partnerName,
+      bHan: stB.han, bEl: stB.el, bName: myName,
+      score: gh.score, tier: gh.tier, title: gh.stemRel.title
+    };
     renderPairDays();
+  }
+
+  /* 궁합 점수 카드 (1080×1920 · 스토리용) — 링크 바이럴의 이미지 짝꿍 */
+  function buildGunghapCard() {
+    var g = state.gunghapCard;
+    var fonts = ['600 190px ' + SERIF_STACK, '600 280px ' + SERIF_STACK, '600 56px ' + SERIF_STACK,
+      '600 44px ' + SERIF_STACK, '400 34px ' + SANS_STACK, '700 32px ' + SANS_STACK];
+    return Promise.all(fonts.map(function (ff) {
+      return document.fonts.load(ff, '사주첩四柱궁합' + g.aHan + g.bHan);
+    })).catch(function () {}).then(function () {
+      var cv = document.createElement('canvas');
+      cv.width = 1080; cv.height = 1920;
+      var ctx = cv.getContext('2d');
+      ctx.fillStyle = '#F6F1E8'; ctx.fillRect(0, 0, 1080, 1920);
+      ctx.strokeStyle = '#211C15'; ctx.lineWidth = 4; ctx.strokeRect(36, 36, 1008, 1848);
+      ctx.strokeStyle = '#D8CDB9'; ctx.lineWidth = 1.5; ctx.strokeRect(56, 56, 968, 1808);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#B8382D';
+      rr(ctx, 498, 110, 84, 84, 14); ctx.fill();
+      ctx.fillStyle = '#F6F1E8';
+      ctx.font = '600 30px ' + SERIF_STACK;
+      ctx.fillText('四', 540, 148); ctx.fillText('柱', 540, 184);
+      ctx.fillStyle = '#B8382D';
+      ctx.font = '700 32px ' + SANS_STACK;
+      try { ctx.letterSpacing = '8px'; } catch (e) { /* 무시 */ }
+      ctx.fillText('두 사람의 궁합', 548, 268);
+      try { ctx.letterSpacing = '0px'; } catch (e) { /* 무시 */ }
+
+      /* 이름 */
+      ctx.fillStyle = '#211C15';
+      ctx.font = '600 56px ' + SERIF_STACK;
+      ctx.fillText(g.bName + '  ×  ' + g.aName, 540, 400);
+
+      /* 두 일간 한자 */
+      ctx.font = '600 190px ' + SERIF_STACK;
+      ctx.fillStyle = CARD_EL_COLOR[g.bEl];
+      ctx.fillText(g.bHan, 330, 660);
+      ctx.fillStyle = '#C9BFAC';
+      ctx.font = '400 90px ' + SANS_STACK;
+      ctx.fillText('×', 540, 630);
+      ctx.font = '600 190px ' + SERIF_STACK;
+      ctx.fillStyle = CARD_EL_COLOR[g.aEl];
+      ctx.fillText(g.aHan, 750, 660);
+
+      /* 점수 */
+      ctx.fillStyle = '#B8382D';
+      ctx.font = '600 280px ' + SERIF_STACK;
+      var sw = ctx.measureText(String(g.score)).width;
+      ctx.fillText(String(g.score), 505, 1070);
+      ctx.fillStyle = '#6E6455';
+      ctx.font = '600 56px ' + SERIF_STACK;
+      ctx.fillText('점', 505 + sw / 2 + 60, 1060);
+      ctx.fillStyle = '#211C15';
+      ctx.font = '600 64px ' + SERIF_STACK;
+      ctx.fillText(g.tier, 540, 1200);
+      ctx.fillStyle = '#6E6455';
+      ctx.font = '400 34px ' + SANS_STACK;
+      ctx.fillText(g.title, 540, 1280);
+
+      ctx.strokeStyle = '#D8CDB9'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(200, 1420); ctx.lineTo(880, 1420); ctx.stroke();
+
+      ctx.fillStyle = '#40372B';
+      ctx.font = '400 36px ' + SANS_STACK;
+      ctx.fillText('생일만 넣으면 우리 궁합도 10초', 540, 1530);
+      ctx.fillStyle = '#B8382D';
+      ctx.font = '700 44px ' + SANS_STACK;
+      ctx.fillText('sajucheop.com', 540, 1610);
+      ctx.fillStyle = '#9A8F7E';
+      ctx.font = '400 30px ' + SANS_STACK;
+      ctx.fillText('@sajucheop', 540, 1680);
+      return cv;
+    });
+  }
+
+  function saveGunghapCard() {
+    if (!state.gunghapCard) return;
+    track('gunghap_card');
+    buildGunghapCard().then(function (cv) {
+      cv.toBlob(function (blob) {
+        var g = state.gunghapCard;
+        deliverFile(blob, '사주첩-궁합-' + g.score + '점.jpg', '사주첩 — 궁합 카드');
+      }, 'image/jpeg', 0.92);
+    });
   }
 
   /* 둘 다 좋은 날 — 앞으로 30일 중 두 사람 모두 흐름이 좋고 충이 없는 날 */
@@ -890,14 +986,15 @@
   }
 
   function updateGunghapButtons(mode) {
-    var ret = $('#btn-return-gunghap'), mine = $('#btn-my-result'), make = $('#btn-make-gunghap3');
+    var retCard = $('#gh-return-card'), mine = $('#btn-my-result'), make = $('#btn-make-gunghap3');
     if (mode === 'pair') {
-      ret.hidden = true;
+      retCard.hidden = true;
       make.hidden = true;
       mine.className = 'btn-primary';
       mine.textContent = '나도 내 사주 풀어보기';
     } else {
-      ret.hidden = false;
+      retCard.hidden = false;
+      $('#gh-return-link').value = state.gunghapUrl || '';
       make.hidden = false;
       mine.className = 'btn-outline';
       mine.textContent = '내 사주 전체 보기';
@@ -913,7 +1010,7 @@
       navigator.share({ title: '사주첩 — 궁합 결과', text: text, url: state.gunghapUrl }).catch(function () {});
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text + '\n' + state.gunghapUrl).then(function () {
-        toast('결과 링크를 복사했어요. 링크를 연 사람은 입력 없이 바로 결과를 봐요.');
+        toast('복사 완료! 카톡 대화방에 붙여넣기만 하면 끝 — 상대는 입력 없이 바로 봐요.');
       });
     }
   }
@@ -2549,6 +2646,8 @@
     $('#btn-make-gunghap3').addEventListener('click', makeGunghapLink);
     $('#btn-share-gunghap').addEventListener('click', shareGunghap);
     $('#btn-return-gunghap').addEventListener('click', shareGunghapResultLink);
+    $('#btn-save-gunghap-card').addEventListener('click', saveGunghapCard);
+    $('#gh-return-link').addEventListener('click', function () { this.select(); });
     $('#btn-my-result').addEventListener('click', function () {
       if (state.pairView) {
         state.pairView = false;
@@ -2668,5 +2767,5 @@
   }
 
   /* 디버그·검증용 최소 노출 */
-  window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, buildMyeongsikCard: buildMyeongsikCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser, _state: state };
+  window.App = { buildIcs: buildIcs, monthData: monthData, purposeTopDays: purposeTopDays, buildCharacterCard: buildCharacterCard, buildMyeongsikCard: buildMyeongsikCard, buildGunghapCard: buildGunghapCard, deliverFile: deliverFile, isInAppBrowser: isInAppBrowser, _state: state };
 })();
