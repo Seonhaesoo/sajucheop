@@ -944,6 +944,78 @@
       : '<p class="purpose-empty">앞으로 30일 안엔 둘 다 트이는 날이 드물어요. 다음 달에 다시 확인해 주세요.</p>';
   }
 
+  /* ---------- 카카오톡 공유 ---------- */
+
+  var KAKAO_KEY = '83f6fa1f5870ca17fb70334a8f67730e';
+  var SHARE_IMAGE = 'https://sajucheop.com/og-image.png';
+
+  /* Kakao.Share 네임스페이스는 init() 이후에 생기므로 초기화가 먼저 */
+  function kakaoReady() {
+    if (!window.Kakao || !Kakao.init) return false;
+    try {
+      if (!Kakao.isInitialized()) Kakao.init(KAKAO_KEY);
+      return !!(Kakao.Share && Kakao.Share.sendDefault);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /* 카카오 콘솔에 등록된 도메인에서만 전송돼요 — 로컬 미리보기에선 실패가 정상 */
+  function kakaoSend(o) {
+    if (!kakaoReady()) return false;
+    var link = { mobileWebUrl: o.url, webUrl: o.url };
+    try {
+      Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: { title: o.title, description: o.desc, imageUrl: SHARE_IMAGE, link: link },
+        buttons: [{ title: o.btn, link: link }]
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function kakaoInvite() {
+    if (!state.lastInput) {
+      toast('먼저 내 사주를 입력해 주세요.');
+      return;
+    }
+    track('gunghap_invite_kakao');
+    var payload = Object.assign({ name: state.name }, state.lastInput);
+    var url = location.origin + location.pathname + '#p=' + G.encodeProfile(payload);
+    var sent = kakaoSend({
+      title: (state.name ? state.name + '님이' : '누군가') + ' 궁합을 청했어요',
+      desc: '생일만 넣으면 10초 — 두 사람의 일간과 오행으로 보는 진짜 궁합.',
+      url: url,
+      btn: '궁합 보러 가기'
+    });
+    if (!sent) makeGunghapLink();
+  }
+
+  function kakaoResult() {
+    var g = state.gunghap;
+    if (!g || !state.gunghapUrl) return;
+    track('gunghap_result_kakao');
+    var sent = kakaoSend({
+      title: '우리 궁합 ' + g.score + '점 — ' + g.tier,
+      desc: (g.myName || state.name || '나') + ' × ' + g.partnerName + ' · 열어보면 입력 없이 결과가 바로 보여요.',
+      url: state.gunghapUrl,
+      btn: '궁합 결과 보기'
+    });
+    if (!sent) shareGunghapResultLink();
+  }
+
+  function initKakao() {
+    var ok = kakaoReady();
+    document.querySelectorAll('.btn-kakao').forEach(function (b) { b.hidden = !ok; });
+    /* 카톡 버튼이 뜨면 같은 자리의 일반 공유 버튼은 감춰 버튼 수를 유지 */
+    document.querySelectorAll('.js-invite-fallback').forEach(function (b) { b.hidden = ok; });
+    document.querySelectorAll('.js-kakao-invite').forEach(function (b) {
+      b.addEventListener('click', kakaoInvite);
+    });
+  }
+
   function makeGunghapLink() {
     if (!state.lastInput) {
       toast('먼저 내 사주를 입력해 주세요.');
@@ -2656,6 +2728,9 @@
     $('#btn-make-gunghap3').addEventListener('click', makeGunghapLink);
     $('#btn-share-gunghap').addEventListener('click', shareGunghap);
     $('#btn-return-gunghap').addEventListener('click', shareGunghapResultLink);
+    $('#btn-kakao-return').addEventListener('click', kakaoResult);
+    $('#btn-kakao-result').addEventListener('click', kakaoResult);
+    initKakao();
     $('#btn-save-gunghap-card').addEventListener('click', saveGunghapCard);
     $('#btn-return-sms').addEventListener('click', returnBySms);
     $('#gh-return-link').addEventListener('click', function () { this.select(); });

@@ -373,7 +373,11 @@
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 8h8M9 4.5L12.5 8 9 11.5" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </button>
       <button class="btn-outline" id="btn-book-add">이 명식, 첩에 끼워두기</button>
-      <button class="btn-outline" id="btn-make-gunghap">친구와 궁합 보기 — 링크 만들기</button>
+      <button class="btn-kakao js-kakao-invite" hidden>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="#191600" aria-hidden="true"><path d="M12 3.2C6.9 3.2 2.8 6.4 2.8 10.4c0 2.5 1.7 4.7 4.2 6l-1 3.6c-.1.4.3.7.6.5l4.4-2.9c.3 0 .7.1 1 .1 5.1 0 9.2-3.2 9.2-7.3S17.1 3.2 12 3.2z"></path></svg>
+        <span>카카오톡으로 궁합 청하기</span>
+      </button>
+      <button class="btn-outline js-invite-fallback" id="btn-make-gunghap">친구와 궁합 보기 — 링크 만들기</button>
       <button class="btn-outline" id="btn-save-myeongsik">명식 이미지로 저장</button>
     </div>
 
@@ -441,7 +445,11 @@
         <span>사주 명함 이미지 저장</span>
       </button>
       <p class="form-microcopy">인스타 스토리 사이즈(1080×1920)로 저장돼요</p>
-      <button class="btn-outline" id="btn-make-gunghap2">친구와 실제 궁합 보기 — 링크 보내기</button>
+      <button class="btn-kakao js-kakao-invite" hidden>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="#191600" aria-hidden="true"><path d="M12 3.2C6.9 3.2 2.8 6.4 2.8 10.4c0 2.5 1.7 4.7 4.2 6l-1 3.6c-.1.4.3.7.6.5l4.4-2.9c.3 0 .7.1 1 .1 5.1 0 9.2-3.2 9.2-7.3S17.1 3.2 12 3.2z"></path></svg>
+        <span>카카오톡으로 궁합 청하기</span>
+      </button>
+      <button class="btn-outline js-invite-fallback" id="btn-make-gunghap2">친구와 실제 궁합 보기 — 링크 보내기</button>
       <button class="btn-outline" id="btn-char-to-today">오늘의 운세 보기</button>
     </div>
 
@@ -615,17 +623,21 @@
     <div class="card rise reading-card" id="gh-return-card" hidden>
       <div class="reading-overline">한 걸음 남았어요</div>
       <p class="reading-body">결과는 지금 <b>나에게만</b> 보여요. 아래 버튼으로 돌려보내면, 궁합을 청한 분도 입력 없이 바로 이 결과를 봅니다.</p>
-      <button class="btn-primary" id="btn-return-gunghap" style="margin-top: 14px; width: 100%;">
+      <button class="btn-kakao" id="btn-kakao-return" hidden style="margin-top: 14px;">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="#191600" aria-hidden="true"><path d="M12 3.2C6.9 3.2 2.8 6.4 2.8 10.4c0 2.5 1.7 4.7 4.2 6l-1 3.6c-.1.4.3.7.6.5l4.4-2.9c.3 0 .7.1 1 .1 5.1 0 9.2-3.2 9.2-7.3S17.1 3.2 12 3.2z"></path></svg>
+        <span>카카오톡으로 결과 보내기</span>
+      </button>
+      <button class="btn-primary" id="btn-return-gunghap" style="margin-top: 10px; width: 100%;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M12 14V4" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round"></path>
           <path d="M8.5 7L12 3.5 15.5 7" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
           <path d="M5.5 11.5v8h13v-8" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
         </svg>
-        <span>상대에게 결과 돌려보내기</span>
+        <span>다른 앱으로 보내기 · 링크 복사</span>
       </button>
       <button class="btn-outline" id="btn-return-sms" hidden style="margin-top: 10px; width: 100%;">문자로 바로 보내기</button>
       <input type="text" class="text-input" id="gh-return-link" readonly style="margin-top: 10px; font-size: 11px; color: #9A8F7E;" aria-label="결과 링크">
-      <p class="form-microcopy" style="margin-top: 6px;">버튼을 누르면 공유창이 열리거나 링크가 복사돼요 — 카톡에 붙여넣기만 하면 끝.</p>
+      <p class="form-microcopy" style="margin-top: 6px;">카카오톡 버튼을 누르면 대화방만 고르면 끝 — 점수 카드가 그대로 전송돼요.</p>
     </div>
 
     <div class="card rise reading-card">
@@ -657,13 +669,9 @@
     </div>
 
     <div class="btn-stack rise">
-      <button class="btn-primary" id="btn-return-gunghap" hidden>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 14V4" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round"></path>
-          <path d="M8.5 7L12 3.5 15.5 7" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-          <path d="M5.5 11.5v8h13v-8" stroke="#F6F1E8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-        </svg>
-        <span>상대에게 결과 돌려보내기</span>
+      <button class="btn-kakao" id="btn-kakao-result" hidden>
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="#191600" aria-hidden="true"><path d="M12 3.2C6.9 3.2 2.8 6.4 2.8 10.4c0 2.5 1.7 4.7 4.2 6l-1 3.6c-.1.4.3.7.6.5l4.4-2.9c.3 0 .7.1 1 .1 5.1 0 9.2-3.2 9.2-7.3S17.1 3.2 12 3.2z"></path></svg>
+        <span>카카오톡으로 이 결과 보내기</span>
       </button>
       <button class="btn-outline" id="btn-save-gunghap-card">궁합 카드 이미지 저장 — 스토리에 자랑하기</button>
       <button class="btn-primary" id="btn-my-result">내 사주 전체 보기</button>
@@ -946,6 +954,7 @@
 <script src="js/gunghap.js"></script>
 <script src="js/daily-quotes.js"></script>
 <script src="js/taegil.js"></script>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.2/kakao.min.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
