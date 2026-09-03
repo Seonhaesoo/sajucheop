@@ -219,6 +219,7 @@
         renderGunghap(partnerResult, result);
         state.gunghapUrl = location.origin + location.pathname + '#g=' +
           G.encodePair(state.invite, Object.assign({ name: state.name }, input));
+        recordGunghap(state.invite);
         updateGunghapButtons('mine');
         showView('gunghap');
       } else {
@@ -1095,6 +1096,125 @@
         toast('복사 완료! 카톡 대화방에 붙여넣기만 하면 끝 — 상대는 입력 없이 바로 봐요.');
       });
     }
+  }
+
+  /* ---------- 궁합 순위 (이 기기에만 저장) ---------- */
+
+  var GLOG_KEY = 'sajucheop.gunghap.log.v1';
+  var GLOG_MAX = 30;
+
+  function loadGlog() {
+    try {
+      var raw = localStorage.getItem(GLOG_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+
+  function saveGlog(list) {
+    try { localStorage.setItem(GLOG_KEY, JSON.stringify(list)); } catch (e) { /* 무시 */ }
+  }
+
+  /* 궁합이 계산될 때마다 상대를 기록 — 같은 사람이면 갱신해 중복을 막는다 */
+  function recordGunghap(partnerInput) {
+    var g = state.gunghap, card = state.gunghapCard;
+    if (!g || !card || !partnerInput) return;
+    var key = bookKeyOf(partnerInput);
+    var list = loadGlog().filter(function (e) { return e.key !== key; });
+    list.push({
+      key: key,
+      name: g.partnerName,
+      score: g.score,
+      tier: g.tier,
+      han: card.aHan,
+      url: state.gunghapUrl || '',
+      ts: new Date().getTime()
+    });
+    list.sort(function (a, b) { return b.score - a.score; });
+    saveGlog(list.slice(0, GLOG_MAX));
+    renderGunghapEntry();
+  }
+
+  function fmtGlogDate(ts) {
+    var d = new Date(ts);
+    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일';
+  }
+
+  /* 홈의 궁합 카드 부제 — 기록이 쌓이면 1위를 미리 보여 준다 */
+  function renderGunghapEntry() {
+    var sub = $('#gh-entry-sub');
+    if (!sub) return;
+    var list = loadGlog();
+    sub.textContent = list.length
+      ? '기록 ' + list.length + '명 · 1위 ' + list[0].name + ' ' + list[0].score + '점'
+      : '링크 하나 보내면 끝 — 10초면 나와요';
+  }
+
+  function renderRanking() {
+    var wrap = $('#rank-list'), head = $('#rank-count');
+    if (!wrap) return;
+    var list = loadGlog();
+    head.textContent = list.length ? '기록된 사람 ' + list.length + '명' : '아직 기록이 없어요';
+    if (!list.length) {
+      wrap.innerHTML = '<p class="purpose-empty">아직 궁합 기록이 없어요. 친구에게 링크를 보내고 결과를 받으면 여기에 점수 순으로 쌓입니다.</p>';
+      return;
+    }
+    wrap.innerHTML = list.map(function (e, i) {
+      return '<div class="rank-row' + (i === 0 ? ' top' : '') + '" data-key="' + G.escapeHtml(e.key) + '" role="button" tabindex="0">' +
+        '<span class="rank-no">' + (i + 1) + '</span>' +
+        '<span class="rank-emblem">' + C.emblemSvg(e.han, 30, 'light') + '</span>' +
+        '<span class="rank-main"><b>' + G.escapeHtml(e.name) + '</b>' +
+        '<span class="rank-line">' + G.escapeHtml(e.tier) + ' · ' + fmtGlogDate(e.ts) + '</span></span>' +
+        '<b class="rank-score">' + e.score + '</b>' +
+        '<button type="button" class="rank-del" data-del="' + G.escapeHtml(e.key) + '" aria-label="기록 지우기">' +
+        '<svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="#9A8F7E" stroke-width="1.5" stroke-linecap="round"></path></svg>' +
+        '</button></div>';
+    }).join('');
+    wrap.querySelectorAll('.rank-row').forEach(function (row) {
+      row.addEventListener('click', function (ev) {
+        var el = ev.target;
+        while (el && el !== row) {
+          if (el.classList && el.classList.contains('rank-del')) return;
+          el = el.parentNode;
+        }
+        var key = row.getAttribute('data-key');
+        var hit = loadGlog().filter(function (x) { return x.key === key; })[0];
+        if (!hit || !hit.url) {
+          toast('이 기록은 결과 링크가 없어 다시 열 수 없어요.');
+          return;
+        }
+        track('rank_open');
+        location.href = hit.url;
+        location.reload();
+      });
+    });
+    wrap.querySelectorAll('.rank-del').forEach(function (btn) {
+      btn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var key = btn.getAttribute('data-del');
+        saveGlog(loadGlog().filter(function (x) { return x.key !== key; }));
+        renderRanking();
+        renderGunghapEntry();
+        toast('기록에서 뺐어요.');
+      });
+    });
+  }
+
+  function openRanking() {
+    renderRanking();
+    showView('ranking');
+  }
+
+  /* 홈의 궁합 카드 — 내 사주가 이미 있으면 바로 초대, 없으면 입력 폼으로 */
+  function startGunghapFromHome() {
+    track('home_gunghap');
+    if (state.lastInput) {
+      kakaoInvite();
+      return;
+    }
+    var form = $('#saju-form');
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    toast('내 사주를 먼저 봐야 궁합 링크를 만들 수 있어요.');
   }
 
   /* ---------- 사주 캐릭터 ---------- */
@@ -2762,6 +2882,18 @@
     $('#btn-share-today').addEventListener('click', shareToday);
     $('#btn-share-today2').addEventListener('click', shareToday);
     $('#btn-to-calendar').addEventListener('click', function () { showView('calendar'); });
+    $('#btn-home-gunghap').addEventListener('click', startGunghapFromHome);
+    $('#btn-rank-invite').addEventListener('click', makeGunghapLink);
+    $('#btn-to-ranking').addEventListener('click', openRanking);
+    $('#menu-ranking').addEventListener('click', function (e) {
+      e.preventDefault();
+      $('#site-menu').hidden = true;
+      openRanking();
+    });
+    /* 해시만 바뀌는 이동(뒤로가기·직접 링크)에서도 순위가 그려지도록 */
+    window.addEventListener('hashchange', function () {
+      if (location.hash === '#ranking') openRanking();
+    });
     $('#btn-to-taegil').addEventListener('click', function () { showView('taegil'); });
     $('#menu-taegil').addEventListener('click', function (e) {
       e.preventDefault();
@@ -2889,6 +3021,7 @@
     } catch (e) { /* 무시 */ }
   }
   renderBook();
+  renderGunghapEntry();
   renderResumeChip();
   var pairData = parsePairFromHash();
   if (pairData) {
@@ -2898,6 +3031,7 @@
       state.gunghapUrl = location.origin + location.pathname + '#g=' + G.encodePair(pairData.a, pairData.b);
       /* 링크를 받은 원 발신자(a) 시점: a가 '나' 자리, b가 상대 자리 */
       renderGunghap(pairB, pairA, pairData.b.name || '상대', pairData.a.name || '상대');
+      recordGunghap(pairData.b);
       updateGunghapButtons('pair');
       track('gunghap_pair_view');
     } catch (e) {
@@ -2915,6 +3049,8 @@
     location.replace('naming/');
   } else if (state.pairView) {
     showView('gunghap');
+  } else if (location.hash === '#ranking') {
+    openRanking();
   } else {
     showView(location.hash === '#taegil' ? 'taegil' : 'home');
   }

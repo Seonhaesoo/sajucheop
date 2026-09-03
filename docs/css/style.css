@@ -1059,45 +1059,6 @@ a.btn-primary { text-decoration: none; }
 
 .btn-outline[disabled] { opacity: .55; cursor: default; }
 
-/* 홈 특별 콘텐츠 바로가기 */
-.feature-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 14px 20px 0;
-}
-.feature-row .feature-card { flex: 0 0 calc(50% - 5px); }
-a.feature-card { text-decoration: none; color: inherit; }
-.feature-card {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
-  padding: 14px 14px 13px;
-  background: #FFFDF9;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  text-align: left;
-  cursor: pointer;
-  min-width: 0;
-}
-.feature-card:active { background: #F6F0E4; }
-.feature-card b { font-size: 14px; }
-.feature-card > span:last-child {
-  font-size: 11.5px;
-  color: var(--muted);
-  line-height: 1.45;
-}
-.feature-card .fc-han {
-  font-family: 'Noto Serif KR', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--seal);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
 /* 세그 토글 (토정비결 연도, 작명 탭) */
 .seg-row { display: flex; gap: 8px; }
 .seg-btn {
@@ -1209,7 +1170,7 @@ a.feature-card { text-decoration: none; color: inherit; }
 body.invite-mode .daily-bit,
 body.invite-mode .pwa-banner,
 body.invite-mode .book-strip,
-body.invite-mode .feature-row,
+body.invite-mode #btn-home-gunghap,
 body.invite-mode .resume-chip { display: none !important; }
 
 /* 언어 전환 칩 */
@@ -2249,4 +2210,70 @@ body.invite-mode .resume-chip { display: none !important; }
   font-size: 13px;
   line-height: 1.65;
   color: var(--muted);
+}
+
+/* ---------- 궁합 순위 ---------- */
+
+.rank-wrap { margin: 18px 20px 0; }
+.rank-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: #FFFDF9;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 10px 12px 12px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  color: var(--ink);
+}
+.rank-row + .rank-row { margin-top: 8px; }
+.rank-row:active { background: #F6F0E4; }
+.rank-no {
+  flex: none;
+  width: 22px;
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--faint);
+  text-align: center;
+}
+.rank-row.top .rank-no { color: var(--seal); }
+.rank-emblem { flex: none; width: 30px; height: 30px; }
+.rank-emblem svg { display: block; }
+.rank-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rank-main b { font-size: 14px; }
+.rank-line {
+  font-size: 11.5px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rank-score {
+  flex: none;
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+}
+.rank-row.top .rank-score { color: var(--seal); }
+.rank-del {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
