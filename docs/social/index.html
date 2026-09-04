@@ -98,6 +98,21 @@
     <p class="hint">캐러셀은 Make가 자동 게시하니 평소엔 쓸 일 없어요. 자동화가 멈췄을 때만 카드 저장 + 이 캡션으로 수동 게시.</p>
   </div>
 
+  <div class="box">
+    <div class="box-head"><b>주간 영문 리스트글 (쓰레드 EN)</b><span>화·금 갱신</span></div>
+    <textarea id="weeklyen" readonly>불러오는 중…</textarea>
+    <button data-copy="weeklyen">복사하기</button>
+    <p class="hint">한글 회차와 같은 순번의 영문 글 — 영문 사이트에 없는 도구를 다루는 회차는 영문권 주제로 바뀌어 있어요.</p>
+  </div>
+
+  <div class="box">
+    <div class="box-head"><b>인스타 영문 캡션 + 영문 카드</b><span>화·금 갱신</span></div>
+    <textarea id="captionen" readonly>불러오는 중…</textarea>
+    <button data-copy="captionen">복사하기</button>
+    <div class="cards" id="cards-en"></div>
+    <p class="hint">영문 계정을 열면 Make 시나리오에서 caption_en · image1_en~image7_en 필드를 그대로 쓰면 됩니다.</p>
+  </div>
+
 <script>
 (function () {
   'use strict';
@@ -111,6 +126,8 @@
   load('dailyen', '../daily/thread-en.txt');
   load('weekly', 'thread.txt');
   load('caption', 'caption.txt');
+  load('weeklyen', 'thread-en.txt');
+  load('captionen', 'caption-en.txt');
 
   /* 데일리 카드 미리보기 (캐시 회피) */
   var dcv = '../daily/story.jpg?v=' + Date.now();
@@ -121,6 +138,12 @@
   for (var i = 1; i <= 7; i++) {
     cardsEl.innerHTML += '<a href="carousel/card-' + i + '.jpg" target="_blank" rel="noopener">' +
       '<img src="carousel/card-' + i + '.jpg" alt="카드 ' + i + '" loading="lazy"></a>';
+  }
+
+  var cardsEn = document.getElementById('cards-en');
+  for (var j = 1; j <= 7; j++) {
+    cardsEn.innerHTML += '<a href="carousel-en/card-' + j + '.jpg" target="_blank" rel="noopener">' +
+      '<img src="carousel-en/card-' + j + '.jpg" alt="EN card ' + j + '" loading="lazy" onerror="this.parentNode.remove()"></a>';
   }
 
   document.querySelectorAll('button[data-copy]').forEach(function (btn) {

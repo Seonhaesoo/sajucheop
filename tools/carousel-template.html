@@ -159,6 +159,15 @@
     line-height: 1.7;
   }
   .cta-handle { font-size: 30px; color: #9A8F7E; margin-top: 72px; }
+
+  /* 영문 카드 — 라틴 문장은 길이가 길어 한 단계씩 줄이고 자간을 좁힌다 */
+  #card.en .overline { letter-spacing: 4px; font-size: 27px; }
+  #card.en .cover-title { font-size: 78px; line-height: 1.22; letter-spacing: -1.5px; }
+  #card.en .cover-sub { font-size: 33px; }
+  #card.en .head { font-size: 54px; line-height: 1.28; }
+  #card.en .body { font-size: 37px; line-height: 1.68; word-break: normal; }
+  #card.en .cta-title { font-size: 62px; }
+  #card.en .cta-feats { font-size: 28px; }
 </style>
 </head>
 <body>
@@ -171,25 +180,40 @@
   }
   function br(s) { return esc(s).replace(/\n/g, '<br>'); }
 
+  /* 언어별 고정 문구 — 카드 본문은 호출자가 언어에 맞춰 넘긴다 */
+  var T = {
+    ko: { overline: '사주첩 서재', handle: '@sajucheop', domain: 'sajucheop.com', swipe: '옆으로 넘기기 →',
+          ctaTitle: '읽는 운세가 아니라<br>매일 쓰는 도구',
+          ctaFeats: '오늘의 운세 · 나만의 길일 캘린더 · 링크 궁합<br>토정비결 · 아기 이름 짓기 — 전부 무료',
+          ctaHandle: '프로필 링크에서 10초 · @sajucheop' },
+    en: { overline: 'SAJUCHEOP · SAJU NOTES', handle: '@sajucheop', domain: 'sajucheop.com/en', swipe: 'Swipe →',
+          ctaTitle: 'Not a horoscope to read.<br>A tool you use daily.',
+          ctaFeats: 'Your chart in English · Today’s energy · Compatibility<br>Korean Four Pillars — free, no account',
+          ctaHandle: 'Link in bio · 10 seconds · @sajucheop' }
+  };
+
   window.renderCard = function (d) {
     var card = document.getElementById('card');
+    var lang = d.lang === 'en' ? 'en' : 'ko';
+    var t = T[lang];
+    card.className = lang === 'en' ? 'en' : '';
     var html = '<div class="frame"></div>';
     if (d.type === 'cover') {
       html += '<div class="inner">' +
-        '<div class="overline">사주첩 서재</div>' +
+        '<div class="overline">' + t.overline + '</div>' +
         '<h1 class="cover-title">' + br(d.title) + '</h1>' +
         '<p class="cover-sub">' + br(d.sub || '') + '</p>' +
         '<div class="cover-hanja">' + esc(d.hanja || '命') + '</div>' +
-        '<div class="brand-line"><div class="seal">四<br>柱</div><b>사주첩</b><span>@sajucheop</span></div>' +
-        '<div class="swipe">옆으로 넘기기 →</div>' +
+        '<div class="brand-line"><div class="seal">四<br>柱</div><b>사주첩</b><span>' + t.handle + '</span></div>' +
+        '<div class="swipe">' + t.swipe + '</div>' +
         '</div>';
     } else if (d.type === 'cta') {
       html += '<div class="inner cta-inner">' +
         '<div class="seal">四<br>柱</div>' +
-        '<div class="cta-title">읽는 운세가 아니라<br>매일 쓰는 도구</div>' +
-        '<div class="cta-domain">sajucheop.com</div>' +
-        '<div class="cta-feats">오늘의 운세 · 나만의 길일 캘린더 · 링크 궁합<br>토정비결 · 아기 이름 짓기 — 전부 무료</div>' +
-        '<div class="cta-handle">프로필 링크에서 10초 · @sajucheop</div>' +
+        '<div class="cta-title">' + t.ctaTitle + '</div>' +
+        '<div class="cta-domain">' + t.domain + '</div>' +
+        '<div class="cta-feats">' + t.ctaFeats + '</div>' +
+        '<div class="cta-handle">' + t.ctaHandle + '</div>' +
         '</div>';
     } else {
       html += '<div class="inner">' +
@@ -197,7 +221,7 @@
         '<h2 class="head">' + br(d.head) + '</h2>' +
         '<div class="rule"></div>' +
         '<p class="body">' + br(d.body) + '</p>' +
-        '<div class="brand-line"><div class="seal">四<br>柱</div><b>사주첩</b><span>sajucheop.com</span></div>' +
+        '<div class="brand-line"><div class="seal">四<br>柱</div><b>사주첩</b><span>' + t.domain + '</span></div>' +
         '</div>';
     }
     card.innerHTML = html;

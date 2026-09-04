@@ -77,6 +77,22 @@ if (kind === 'daily') {
   };
   /* Make 등에서 배열 인덱싱 없이 바로 매핑할 수 있게 평면 필드도 제공 (카드는 항상 7장) */
   urls.forEach((u, i) => { payload['image' + (i + 1)] = u; });
+
+  /* 영문판 — 있을 때만 동봉. 영문 계정 시나리오는 caption_en / image1_en~ 을 쓰면 된다 */
+  const readOpt = (f) => { try { return fs.readFileSync(f, 'utf8').trim(); } catch { return null; } };
+  payload.caption_en = readOpt('docs/social/caption-en.txt');
+  payload.thread_text_en = readOpt('docs/social/thread-en.txt');
+  payload.title_en = meta.en ? meta.en.title : null;
+  let filesEn = [];
+  try {
+    filesEn = fs.readdirSync('docs/social/carousel-en')
+      .filter((f) => /^card-\d+\.jpg$/.test(f))
+      .sort((a, b) => (+a.match(/\d+/)[0]) - (+b.match(/\d+/)[0]));
+  } catch { /* 영문 카드 없음 */ }
+  const urlsEn = filesEn.map((f) => 'https://sajucheop.com/social/carousel-en/' + f + '?v=' + ver);
+  payload.images_en = urlsEn;
+  payload.image_url_en = urlsEn[0] || null;
+  urlsEn.forEach((u, i) => { payload['image' + (i + 1) + '_en'] = u; });
 }
 
 const r = await fetch(HOOK, {
@@ -85,7 +101,7 @@ const r = await fetch(HOOK, {
   body: JSON.stringify(payload)
 });
 console.log('웹훅 전송 완료:', kind, '→ HTTP', r.status,
-  kind === 'weekly' ? '(카드 ' + payload.images.length + '장)' : '(' + payload.ganji + '일)');
+  kind === 'weekly' ? '(카드 ' + payload.images.length + '장' + (payload.images_en.length ? ' + 영문 ' + payload.images_en.length + '장' : '') + ')' : '(' + payload.ganji + '일)');
 if (!r.ok) {
   console.error('웹훅 응답 오류 — Make 시나리오가 켜져 있는지 확인하세요.');
   process.exit(1);
