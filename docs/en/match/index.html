@@ -7,7 +7,7 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Saju Compatibility — Korean Four Pillars Love Match, Free | Sajucheop</title>
-  <meta name="description" content="Free Korean saju compatibility: two birth dates, one reading — Day Master chemistry, what you are to each other (Ten Gods), element complement and a match score.">
+  <meta name="description" content="Free Korean saju compatibility: two birth dates, one reading — Day Master chemistry, what you are to each other (Ten Gods), element complement and a match score. Or send a link and let them enter their own date.">
   <link rel="canonical" href="https://sajucheop.com/en/match/">
   <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +21,18 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .mi-banner { border: 1.5px solid var(--seal); }
+    .mi-banner .reading-overline { color: var(--seal); }
+    .mr-link {
+      width: 100%;
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9A8F7E;
+    }
+    body.invite-mode .mi-hide { display: none !important; }
+    body.pair-mode .mp-hide { display: none !important; }
+  </style>
 </head>
 <body>
 <div class="app">
@@ -41,25 +53,43 @@
     </nav>
   </header>
 
-  <div class="daeun-intro" style="margin-top: 26px;">
+  <div class="daeun-intro mp-hide" style="margin-top: 26px;">
     <h2 style="font-size: 24px;">Saju compatibility</h2>
-    <p>Two charts, one chemistry. We compare your Day Masters, read <b>what you are to each other</b> in the Ten Gods, and check whether your elements fill each other's gaps.</p>
+    <p class="mi-hide">Two charts, one chemistry. We compare your Day Masters, read <b>what you are to each other</b> in the Ten Gods, and check whether your elements fill each other's gaps. Don't know their birthday? <b>Send them a link</b> and let them enter it.</p>
   </div>
 
-  <div class="card card-pad" style="margin-top: 8px;">
-    <div class="section-head"><h3 class="section-title" style="font-size: 15px;">You</h3></div>
-    <div class="nm-row">
-      <div class="select-wrap" style="flex: 1;"><select id="ma-month"></select></div>
-      <div class="select-wrap" style="flex: 1;"><select id="ma-day"></select></div>
-      <div class="select-wrap" style="flex: 1.2;"><select id="ma-year"></select></div>
+  <!-- Invite banner — shown when opened from a #p= link -->
+  <div class="card card-pad mi-banner" id="mi-banner" hidden style="margin-top: 8px;">
+    <div class="reading-overline">Match invitation</div>
+    <p class="reading-body"><b id="mi-from">Someone</b> wants to check your Saju match. Enter your birth date below — nothing is uploaded, the whole reading runs on your phone.</p>
+  </div>
+
+  <!-- Input -->
+  <div class="card card-pad mp-hide" id="ma-form" style="margin-top: 8px;">
+    <div id="ma-sec" class="mi-hide">
+      <div class="section-head"><h3 class="section-title" style="font-size: 15px;">You</h3></div>
+      <div class="nm-row">
+        <div class="select-wrap" style="flex: 1;"><select id="ma-month"></select></div>
+        <div class="select-wrap" style="flex: 1;"><select id="ma-day"></select></div>
+        <div class="select-wrap" style="flex: 1.2;"><select id="ma-year"></select></div>
+      </div>
+      <div class="nm-row">
+        <input type="text" class="text-input" id="ma-name" maxlength="12" placeholder="Your name (optional — shows on the link)" autocomplete="off" style="flex: 1;">
+      </div>
     </div>
-    <div class="section-head" style="margin-top: 16px;"><h3 class="section-title" style="font-size: 15px;">Them</h3></div>
-    <div class="nm-row">
-      <div class="select-wrap" style="flex: 1;"><select id="mb-month"></select></div>
-      <div class="select-wrap" style="flex: 1;"><select id="mb-day"></select></div>
-      <div class="select-wrap" style="flex: 1.2;"><select id="mb-year"></select></div>
+    <div id="mb-sec">
+      <div class="section-head" id="mb-head" style="margin-top: 16px;"><h3 class="section-title" style="font-size: 15px;" id="mb-title">Them</h3></div>
+      <div class="nm-row">
+        <div class="select-wrap" style="flex: 1;"><select id="mb-month"></select></div>
+        <div class="select-wrap" style="flex: 1;"><select id="mb-day"></select></div>
+        <div class="select-wrap" style="flex: 1.2;"><select id="mb-year"></select></div>
+      </div>
+      <div class="nm-row" id="mb-name-row" hidden>
+        <input type="text" class="text-input" id="mb-name" maxlength="12" placeholder="Your name (optional — shows in the reply)" autocomplete="off" style="flex: 1;">
+      </div>
     </div>
     <button class="btn-primary" id="ma-run" style="margin-top: 16px;">Read our chemistry</button>
+    <button class="btn-outline mi-hide" id="ma-link" style="margin-top: 10px;">Don't know their birthday? Send a link</button>
     <p class="form-microcopy" style="margin-top: 8px;">Nothing is uploaded — the whole reading happens in your browser.</p>
   </div>
 
@@ -72,6 +102,15 @@
       </div>
       <div class="gh-score"><span class="t-score" id="mr-score"></span></div>
       <div class="gh-tier" id="mr-tier"></div>
+    </div>
+
+    <!-- Send the result back — shown to the invited person -->
+    <div class="card reading-card mi-banner" id="mr-return-card" hidden style="margin-top: 14px;">
+      <div class="reading-overline">One step left</div>
+      <p class="reading-body">Right now only you can see this. Send it back and <b id="mr-return-to">they</b> will open the same reading — no typing needed.</p>
+      <button class="btn-primary" id="mr-return" style="margin-top: 14px; width: 100%;">Send the result back</button>
+      <input type="text" class="text-input mr-link" id="mr-return-link" readonly aria-label="Result link">
+      <p class="form-microcopy" style="margin-top: 6px;">The button opens your share sheet (Messages, WhatsApp, Instagram…) or copies the link.</p>
     </div>
 
     <div class="card reading-card" style="margin-top: 14px;">
@@ -94,11 +133,13 @@
 
     <div class="btn-stack" style="margin-top: 16px;">
       <button class="btn-primary" id="mr-share">Share this match</button>
-      <a class="btn-outline" href="../" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Cast a full chart</a>
+      <a class="btn-outline" href="../" style="display: flex; align-items: center; justify-content: center; text-decoration: none;" id="mr-cast">Cast a full chart</a>
+      <button class="btn-outline" id="mr-new" hidden>Check a match of my own</button>
+      <p class="form-microcopy">Match links carry birth dates — share them only with people you know.</p>
     </div>
   </div>
 
-  <div class="card reading-card" style="margin-top: 26px;">
+  <div class="card reading-card mi-hide" style="margin-top: 26px;">
     <div class="reading-overline">How it works</div>
     <p class="reading-body">Korean matchmakers start from the two <b>Day Masters</b> — the elements of self. Some pairs combine (합), some clash (충), some feed one another. Then they ask what each person <i>is</i> to the other in the Ten Gods: a shelter, a spark, a mirror. Scores are a summary, not a verdict — the reading is in the lines.</p>
   </div>
@@ -121,11 +162,12 @@
 </div>
 
 <script src="../../js/manseryeok.js"></script>
+<script src="../../js/gunghap.js"></script>
 <script>
 (function () {
   'use strict';
   var $ = function (s) { return document.querySelector(s); };
-  var M = window.Manseryeok;
+  var M = window.Manseryeok, G = window.Gunghap;
 
   function toast(msg) {
     var el = $('#toast');
@@ -152,6 +194,7 @@
     '편인': 'a strange library — conversations go places nobody else takes you',
     '정인': 'a shelter — the one you can lean on without explaining why'
   };
+  var TEN_EN = { '비견': 'the Friend', '겁재': 'the Rival', '식신': 'the Feast', '상관': 'the Spark', '편재': 'the Venture', '정재': 'the Harvest', '편관': 'the Trial', '정관': 'the Frame', '편인': 'the Oracle', '정인': 'the Shelter' };
   var TIERS = [
     [90, 'A rare, fated fit'],
     [80, 'Deeply harmonious'],
@@ -178,7 +221,7 @@
   fillSelects('ma');
   fillSelects('mb');
 
-  /* Prefill "You" from saved EN profile */
+  /* Prefill "You" from the profile saved on the chart page */
   try {
     var prof = JSON.parse(localStorage.getItem('sajucheop.en.profile.v1') || 'null');
     if (prof && prof.y) {
@@ -188,8 +231,18 @@
     }
   } catch (e) { /* ignore */ }
 
-  var HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };   /* 천간합 */
-  var CHUNG = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3 };             /* 천간충 (무기 제외) */
+  /* Link profiles carry name + date only; the reading itself uses noon, no solar-time correction */
+  function profileOf(prefix, name) {
+    return { name: (name || '').trim().slice(0, 12), year: +$('#' + prefix + '-year').value, month: +$('#' + prefix + '-month').value,
+      day: +$('#' + prefix + '-day').value, hour: 12, minute: 0, unknownTime: true, gender: 'F', applySolarTime: false };
+  }
+  function cast(p) {
+    return M.compute({ year: p.year, month: p.month, day: p.day, hour: 12, minute: 0, unknownTime: true, gender: 'F', applySolarTime: false, tzOffsetMinutes: 540 });
+  }
+  var PAGE = location.origin + location.pathname;
+
+  var HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };   /* stem combinations */
+  var CHUNG = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3 };             /* stem clashes (Earth excluded) */
 
   function stemRelation(a, b) {
     var sa = M.STEMS[a], sb = M.STEMS[b];
@@ -201,20 +254,13 @@
     return { pts: -6, title: 'Your elements check each other', body: EL_EN[sa.el] + ' and ' + EL_EN[sb.el] + ' sit in a controlling relationship — one of you naturally edits the other. As respect, it\'s structure; as habit, it\'s criticism. Choose the former.' };
   }
 
-  $('#ma-run').addEventListener('click', function () {
-    var ra, rb;
-    try {
-      ra = M.compute({ year: +$('#ma-year').value, month: +$('#ma-month').value, day: +$('#ma-day').value, hour: 12, minute: 0, unknownTime: true, gender: 'F', applySolarTime: false, tzOffsetMinutes: 540 });
-      rb = M.compute({ year: +$('#mb-year').value, month: +$('#mb-month').value, day: +$('#mb-day').value, hour: 12, minute: 0, unknownTime: true, gender: 'F', applySolarTime: false, tzOffsetMinutes: 540 });
-    } catch (e) {
-      toast('Something went wrong — please check the dates.');
-      return;
-    }
+  /* A is always the person reading the screen; B is the other one */
+  function renderMatch(pa, pb, labelA, labelB) {
+    var ra = cast(pa), rb = cast(pb);
     var a = ra.pillars.day.stem, b = rb.pillars.day.stem;
     var rel = stemRelation(a, b);
     var score = 62 + rel.pts;
 
-    /* Day-branch relation */
     var brel = M.branchRelation(ra.pillars.day.branch, rb.pillars.day.branch);
     var brelLine, brelPts = 0;
     if (brel === '육합') { brelPts = 12; brelLine = 'Your Day Branches form a six-harmony — daily rhythms sync with almost no negotiation.'; }
@@ -224,26 +270,24 @@
     else { brelLine = 'Your Day Branches neither clash nor combine — daily life is a neutral canvas you paint together.'; }
     score += brelPts;
 
-    /* Element complement */
-    var missA = ['목', '화', '토', '금', '수'].filter(function (k) { return ra.elements[k] === 0; });
-    var fills = missA.filter(function (k) { return rb.elements[k] > 0; });
-    var missB = ['목', '화', '토', '금', '수'].filter(function (k) { return rb.elements[k] === 0; });
-    var fillsB = missB.filter(function (k) { return ra.elements[k] > 0; });
-    var compPts = Math.min(2, fills.length) * 5 + Math.min(2, fillsB.length) * 5;
-    score += Math.min(10, compPts);
+    var ELS = ['목', '화', '토', '금', '수'];
+    var fills = ELS.filter(function (k) { return ra.elements[k] === 0 && rb.elements[k] > 0; });
+    var fillsB = ELS.filter(function (k) { return rb.elements[k] === 0 && ra.elements[k] > 0; });
+    score += Math.min(10, Math.min(2, fills.length) * 5 + Math.min(2, fillsB.length) * 5);
     var compLine = (fills.length || fillsB.length)
       ? 'Element-wise you patch each other\'s gaps' +
         (fills.length ? ' — they carry the ' + fills.map(function (k) { return EL_EN[k]; }).join(' and ') + ' your chart lacks' : '') +
         (fillsB.length ? (fills.length ? ', and you' : ' — you') + ' bring their missing ' + fillsB.map(function (k) { return EL_EN[k]; }).join(' and ') : '') + '.'
       : 'Neither of you fills the other\'s missing elements — your bond is built on resonance rather than completion.';
 
-    /* Yin-yang */
-    if (M.STEMS[a].yang !== M.STEMS[b].yang) { score += 4; }
+    if (M.STEMS[a].yang !== M.STEMS[b].yang) score += 4;
     score = Math.max(30, Math.min(99, score));
     var tier = TIERS.filter(function (t) { return score >= t[0]; })[0][1];
 
     $('#mr-emblem-a').textContent = M.STEMS[a].han;
     $('#mr-emblem-b').textContent = M.STEMS[b].han;
+    $('#mr-name-a').textContent = labelA;
+    $('#mr-name-b').textContent = labelB;
     $('#mr-dm-a').textContent = STEM_EN[a];
     $('#mr-dm-b').textContent = STEM_EN[b];
     $('#mr-score').textContent = score;
@@ -251,9 +295,7 @@
     $('#mr-stem-title').textContent = rel.title;
     $('#mr-stem-body').textContent = rel.body;
 
-    var sipAtoB = M.sipseongOf(b, a); /* what A is to B */
-    var sipBtoA = M.sipseongOf(a, b); /* what B is to A */
-    var TEN_EN = { '비견': 'the Friend', '겁재': 'the Rival', '식신': 'the Feast', '상관': 'the Spark', '편재': 'the Venture', '정재': 'the Harvest', '편관': 'the Trial', '정관': 'the Frame', '편인': 'the Oracle', '정인': 'the Shelter' };
+    var sipAtoB = M.sipseongOf(b, a), sipBtoA = M.sipseongOf(a, b);
     var glossOf = function (sip) {
       var t = TEN_PERSON[sip] || '';
       var i = t.indexOf('— ');
@@ -261,25 +303,107 @@
     };
     $('#mr-ten-a').innerHTML = '<b>To you, they are ' + TEN_EN[sipBtoA] + '</b> — ' + glossOf(sipBtoA) + '.';
     $('#mr-ten-b').innerHTML = '<b>To them, you are ' + TEN_EN[sipAtoB] + '</b> — ' + glossOf(sipAtoB) + '.';
-
     $('#mr-branch').textContent = brelLine;
     $('#mr-elements').textContent = compLine;
+
     $('#ma-result').hidden = false;
     $('#ma-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    track('en_match', { score: score });
-    lastShare = 'Our saju match: ' + score + '/100 — "' + tier + '". Read yours:';
+    return { score: score, tier: tier };
+  }
+
+  function shareOut(title, text, url, copiedMsg) {
+    if (navigator.share) {
+      navigator.share({ title: title, text: text, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + ' ' + url).then(function () { toast(copiedMsg); });
+    }
+  }
+
+  /* ---------- modes: normal / invite (#p=) / pair (#g=) ---------- */
+
+  var mode = 'normal', invite = null, last = null;  /* last = { score, tier, url } */
+
+  var mP = location.hash.match(/^#p=([A-Za-z0-9_-]+)$/);
+  var mG = location.hash.match(/^#g=([A-Za-z0-9_-]+)$/);
+
+  if (mG) {
+    var pair = G.decodePair(mG[1]);
+    if (pair) {
+      /* The sender opens the reply: they are A, the person who replied is B */
+      mode = 'pair';
+      document.body.classList.add('pair-mode');
+      $('#mr-new').hidden = false;
+      $('#mr-cast').textContent = 'Cast my own chart';
+      last = renderMatch(pair.a, pair.b, pair.a.name || 'You', pair.b.name || 'Them');
+      last.url = PAGE + '#g=' + mG[1];
+      track('en_match_pair_view');
+    } else {
+      toast('That link didn\'t work — enter two dates below.');
+    }
+  } else if (mP) {
+    invite = G.decodeProfile(mP[1]);
+    if (invite) {
+      mode = 'invite';
+      document.body.classList.add('invite-mode');
+      $('#mi-from').textContent = invite.name || 'Someone';
+      $('#mi-banner').hidden = false;
+      $('#mb-title').textContent = 'You';
+      $('#mb-head').style.marginTop = '0';
+      $('#mb-name-row').hidden = false;
+      $('#mb-year').value = '1995';
+      track('en_match_invite_view');
+    } else {
+      toast('That link didn\'t work — enter two dates below.');
+    }
+  }
+
+  $('#ma-run').addEventListener('click', function () {
+    try {
+      if (mode === 'invite') {
+        var me = profileOf('mb', $('#mb-name').value);
+        last = renderMatch(me, invite, me.name || 'You', invite.name || 'Them');
+        /* Reply link: the sender stays A so they see themselves first */
+        last.url = PAGE + '#g=' + G.encodePair(invite, me);
+        $('#mr-return-to').textContent = invite.name || 'they';
+        $('#mr-return-link').value = last.url;
+        $('#mr-return-card').hidden = false;
+        track('en_match', { score: last.score, via: 'invite' });
+      } else {
+        var pa = profileOf('ma', $('#ma-name').value), pb = profileOf('mb', '');
+        last = renderMatch(pa, pb, pa.name || 'You', 'Them');
+        last.url = PAGE + '#g=' + G.encodePair(pa, pb);
+        track('en_match', { score: last.score });
+      }
+    } catch (e) {
+      toast('Something went wrong — please check the dates.');
+      if (window.console) console.error(e);
+    }
   });
 
-  var lastShare = '';
+  /* Invite link — carries only the sender's name and birth date */
+  $('#ma-link').addEventListener('click', function () {
+    var me = profileOf('ma', $('#ma-name').value);
+    var url = PAGE + '#p=' + G.encodeProfile(me);
+    track('en_match_invite_link');
+    shareOut('Sajucheop — Saju match', (me.name ? me.name + ' wants to check your Saju match. ' : 'Let\'s check our Saju match — ') + 'Just enter your birthday:', url,
+      'Link copied — it carries your birth date, so send it only to people you know.');
+  });
+
+  $('#mr-return').addEventListener('click', function () {
+    if (!last || !last.url) return;
+    track('en_match_return');
+    shareOut('Sajucheop — Saju match', 'Our Saju match: ' + last.score + '/100 — "' + last.tier + '". Open to see the full reading:', last.url,
+      'Copied — paste it into your chat and they\'ll see the reading without typing anything.');
+  });
+
   $('#mr-share').addEventListener('click', function () {
-    if (!lastShare) return;
-    track('en_match_share');
-    var url = 'https://sajucheop.com/en/match/';
-    if (navigator.share) {
-      navigator.share({ title: 'Sajucheop — Saju Match', text: lastShare, url: url }).catch(function () {});
-    } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(lastShare + ' ' + url).then(function () { toast('Copied to clipboard.'); });
-    }
+    if (!last) return;
+    track('en_match_share', { mode: mode });
+    shareOut('Sajucheop — Saju match', 'Our Saju match: ' + last.score + '/100 — "' + last.tier + '". See the reading:', last.url || PAGE, 'Copied to clipboard.');
+  });
+
+  $('#mr-new').addEventListener('click', function () {
+    location.href = PAGE;
   });
 })();
 </script>

@@ -147,6 +147,7 @@
 
     <div class="btn-stack" style="margin-top: 16px;">
       <a class="btn-primary" href="today/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Read my fortune for today</a>
+      <button class="btn-outline" id="en-invite">Send someone a match link</button>
       <a class="btn-outline" href="match/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Check compatibility with someone</a>
       <button class="btn-outline" id="en-share">Share my Day Master</button>
     </div>
@@ -185,6 +186,7 @@
 </div>
 
 <script src="../js/manseryeok.js"></script>
+<script src="../js/gunghap.js"></script>
 <script>
 (function () {
   'use strict';
@@ -329,6 +331,7 @@
         tz: +$('#en-tz').value
       }));
     } catch (e) { /* ignore */ }
+    lastInput = { year: y2, month: m2, day: d2 };
     render(r, unknown);
     $('#en-result').hidden = false;
     $('#en-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -404,6 +407,22 @@
         }).join('')
       : '<p class="reading-body" style="font-size: 13px;">Your visible chart shows no Ten Gods besides your own element — a rare, self-contained pattern.</p>';
   }
+
+  /* Match invite link — the other person opens it and only enters their own birthday */
+  var lastInput = null;
+  $('#en-invite').addEventListener('click', function () {
+    if (!lastInput) return;
+    track('en_match_invite_link', { from: 'chart' });
+    var url = location.origin + '/en/match/#p=' + window.Gunghap.encodeProfile({
+      name: '', year: lastInput.year, month: lastInput.month, day: lastInput.day, unknownTime: true, gender: 'F', applySolarTime: false
+    });
+    var text = 'Let’s check our Saju match — just enter your birthday:';
+    if (navigator.share) {
+      navigator.share({ title: 'Sajucheop — Saju match', text: text, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + ' ' + url).then(function () { toast('Link copied — it carries your birth date, so send it only to people you know.'); });
+    }
+  });
 
   $('#en-share').addEventListener('click', function () {
     if (!lastResult) return;
