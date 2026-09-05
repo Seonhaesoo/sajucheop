@@ -14,17 +14,22 @@ const meta = JSON.parse(fs.readFileSync('docs/daily/meta.json', 'utf8'));
 const ver = process.env.IMAGE_VER || Date.now();
 const imageUrl = 'https://sajucheop.com/daily/story.jpg?v=' + ver;
 
-const lines = [
-  meta.dateKor + ', 오늘은 ' + meta.ganjiKor + '(' + meta.ganjiHan + ')일.',
-  '「 ' + meta.metaphor + ' 」 — ' + meta.stemKor + '의 기운이 흐르는 날입니다.',
-  '',
-  '오늘 유난히 순한 일간은 ' + meta.hapKor +
-    (meta.chungKor ? ', 한 템포 쉬어갈 일간은 ' + meta.chungKor + '.' : '.'),
-  '일지가 ' + meta.chungBranchKor + '인 분은 변동만 조심하세요.',
-  '',
-  '내 일간이 뭔지 모른다면, 생일만 넣으면 10초 → sajucheop.com'
-];
-const text = lines.join('\n');
+/* 글은 daily-story.mjs가 만든 thread.txt를 그대로 (오늘의 한 문장 포함). 없으면 메타로 재구성 */
+let text;
+try {
+  text = fs.readFileSync('docs/daily/thread.txt', 'utf8').trim();
+} catch {
+  text = [
+    meta.dateKor + ', 오늘은 ' + meta.ganjiKor + '(' + meta.ganjiHan + ')일.',
+    '「 ' + meta.metaphor + ' 」 — ' + meta.stemKor + '의 기운이 흐르는 날입니다.',
+    '',
+    '오늘 유난히 순한 일간은 ' + meta.hapKor +
+      (meta.chungKor ? ', 한 템포 쉬어갈 일간은 ' + meta.chungKor + '.' : '.'),
+    '일지가 ' + meta.chungBranchKor + '인 분은 변동만 조심하세요.',
+    '',
+    '내 일간이 뭔지 모른다면, 생일만 넣으면 10초 → sajucheop.com'
+  ].join('\n');
+}
 
 const base = 'https://graph.threads.net/v1.0/' + UID;
 

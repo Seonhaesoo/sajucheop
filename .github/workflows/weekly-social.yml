@@ -2,7 +2,7 @@ name: weekly-social
 
 on:
   schedule:
-    - cron: '0 22 * * 1,4' # 화·금 07:00 KST
+    - cron: '0 22 * * 0,2,4' # 월·수·금 07:00 KST (교육→바이럴→후킹 순환)
   workflow_dispatch:
     inputs:
       force:

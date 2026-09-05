@@ -9,6 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { CAROUSELS, THREADS, CTA_TAGS } from './social-content.mjs';
 import { VIRAL_CAROUSELS, VIRAL_THREADS } from './viral-content.mjs';
 import { CAROUSELS_EN, THREADS_EN, VIRAL_THREADS_EN, CTA_TAGS_EN } from './social-content-en.mjs';
+import { HOOK_CAROUSELS, HOOK_THREADS, HOOK_TAGS } from './hook-content.mjs';
 
 const OUT_DIR = 'docs/social';
 const CARD_DIR = path.join(OUT_DIR, 'carousel');
@@ -21,22 +22,23 @@ try {
   if (Number.isInteger(prev.seq)) seq = prev.seq + 1;
 } catch { /* 첫 실행 */ }
 
-/* 짝수 회차 = 교육(서재) 풀, 홀수 회차 = 바이럴(일간 저격·기능 시연) 풀 */
-const isViral = seq % 2 === 1;
-const cPool = isViral ? VIRAL_CAROUSELS : CAROUSELS;
-const tPool = isViral ? VIRAL_THREADS : THREADS;
-const poolIdx = Math.floor(seq / 2);
+/* 3종 순환: 회차 % 3 → 0 교육(서재) · 1 바이럴(일간 저격·기능 시연) · 2 후킹(유입용) */
+const KIND = ['edu', 'viral', 'hook'][seq % 3];
+const KIND_KO = { edu: '교육', viral: '바이럴', hook: '후킹' }[KIND];
+const cPool = KIND === 'edu' ? CAROUSELS : KIND === 'viral' ? VIRAL_CAROUSELS : HOOK_CAROUSELS;
+const tPool = KIND === 'edu' ? THREADS : KIND === 'viral' ? VIRAL_THREADS : HOOK_THREADS;
+const poolIdx = Math.floor(seq / 3);
 const carousel = cPool[poolIdx % cPool.length];
 const thread = tPool[poolIdx % tPool.length];
 const kstDate = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
 
-/* 영문판 — 캐러셀은 slug로 짝을 찾고, 쓰레드는 같은 회차 인덱스를 쓴다 */
+/* 영문판 — 캐러셀은 slug로 짝을 찾고, 쓰레드는 같은 회차 인덱스를 쓴다 (후킹 풀은 영문 없음) */
 const carouselEn = CAROUSELS_EN[carousel.slug] || null;
-const tPoolEn = isViral ? VIRAL_THREADS_EN : THREADS_EN;
-const threadEn = tPoolEn[poolIdx % tPoolEn.length] || null;
+const tPoolEn = KIND === 'edu' ? THREADS_EN : KIND === 'viral' ? VIRAL_THREADS_EN : null;
+const threadEn = tPoolEn ? (tPoolEn[poolIdx % tPoolEn.length] || null) : null;
 if (!carouselEn) console.warn(`영문 캐러셀 없음: ${carousel.slug} — EN 카드는 건너뜀`);
 
-console.log(`회차 ${seq} (${isViral ? '바이럴' : '교육'}) · ${kstDate} — 캐러셀 "${carousel.slug}", 쓰레드 ${poolIdx % tPool.length + 1}번`);
+console.log(`회차 ${seq} (${KIND_KO}) · ${kstDate} — 캐러셀 "${carousel.slug}", 쓰레드 ${poolIdx % tPool.length + 1}번`);
 
 /* 출력 폴더 초기화 */
 fs.rmSync(CARD_DIR, { recursive: true, force: true });
@@ -79,7 +81,7 @@ if (carouselEn) await shoot(cardsEn, CARD_DIR_EN);
 await browser.close();
 
 /* 캡션 · 쓰레드 · 메타 */
-const tagLine = (carousel.tags ? carousel.tags + ' ' : '') + CTA_TAGS;
+const tagLine = (carousel.tags ? carousel.tags + ' ' : '') + (KIND === 'hook' ? HOOK_TAGS : CTA_TAGS);
 fs.writeFileSync(path.join(OUT_DIR, 'caption.txt'), carousel.caption + '\n\n' + tagLine + '\n');
 fs.writeFileSync(path.join(OUT_DIR, 'thread.txt'), thread + '\n');
 if (carouselEn) {
@@ -88,9 +90,10 @@ if (carouselEn) {
   fs.rmSync(path.join(OUT_DIR, 'caption-en.txt'), { force: true });
 }
 if (threadEn) fs.writeFileSync(path.join(OUT_DIR, 'thread-en.txt'), threadEn + '\n');
+else fs.rmSync(path.join(OUT_DIR, 'thread-en.txt'), { force: true });
 fs.writeFileSync(path.join(OUT_DIR, 'meta.json'), JSON.stringify({
   seq,
-  type: isViral ? 'viral' : 'edu',
+  type: KIND,
   date: kstDate,
   slug: carousel.slug,
   title: carousel.title.replace(/\n/g, ' '),

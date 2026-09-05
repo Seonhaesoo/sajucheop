@@ -21,11 +21,23 @@ if (meta) {
   fs.writeFileSync('docs/daily/meta.json', JSON.stringify(meta, null, 2));
   console.log('docs/daily/meta.json 저장 완료 —', meta.date, meta.ganjiKor + '일');
 
-  /* 수동 게시용 일진 글 텍스트 (쓰레드 복붙용) */
+  /* 오늘의 한 문장 — 사이트 홈과 같은 문장(daily-quotes.js)을 글에 실어 후킹 */
+  let quote = null;
+  try {
+    const { loadEngine } = await import('./engine.mjs');
+    const { M, I, Q } = loadEngine();
+    const [yy, mm, dd] = meta.date.split('-').map(Number);
+    const stemIdx = M.STEMS.findIndex((s) => s.han === meta.ganjiHan[0]);
+    const idx60 = I.dayPillarIndex(I.daysFromCivil(yy, mm, dd) + I.JDN_EPOCH);
+    quote = Q.pick(stemIdx, idx60);
+  } catch (e) { console.warn('오늘의 한 문장 생략:', e.message); }
+
+  /* 일진 글 텍스트 — 쓰레드 게시·웹훅·운영 페이지가 모두 이 파일을 읽는다 */
   const lines = [
     meta.dateKor + ', 오늘은 ' + meta.ganjiKor + '(' + meta.ganjiHan + ')일.',
     '「 ' + meta.metaphor + ' 」 — ' + meta.stemKor + '의 기운이 흐르는 날입니다.',
     '',
+    ...(quote ? ['오늘의 한 문장: ' + quote, ''] : []),
     '오늘 유난히 순한 일간은 ' + meta.hapKor +
       (meta.chungKor ? ', 한 템포 쉬어갈 일간은 ' + meta.chungKor + '.' : '.'),
     '일지가 ' + meta.chungBranchKor + '인 분은 변동만 조심하세요.',
