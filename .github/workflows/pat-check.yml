@@ -1,0 +1,17 @@
+name: pat-check
+
+# GH_PAT 가 저장소 시크릿을 쓸 수 있는지 확인 — 임시 시크릿 하나를 만들었다 지운다
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 시크릿 쓰기·삭제 테스트
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then echo "GH_PAT 없음"; exit 1; fi
+          printf 'ok' | gh secret set PAT_CHECK --repo "${{ github.repository }}" && echo "쓰기 OK"
+          gh secret delete PAT_CHECK --repo "${{ github.repository }}" && echo "삭제 OK — GH_PAT 권한 정상"
