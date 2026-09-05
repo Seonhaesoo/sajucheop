@@ -1,0 +1,46 @@
+name: threads-token-refresh
+
+# 쓰레드 장기 토큰은 60일마다 만료 — 매주 갱신해 시크릿에 다시 쓴다.
+# GITHUB_TOKEN 은 시크릿을 쓸 수 없으므로 저장소 시크릿 쓰기 권한이 있는
+# fine-grained PAT 를 GH_PAT 시크릿으로 넣어 두어야 한다. 없으면 경고만 남긴다.
+on:
+  schedule:
+    - cron: '30 20 * * 0'   # 매주 월요일 05:30 KST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+      GH_PAT: ${{ secrets.GH_PAT }}
+    steps:
+      - name: 토큰 갱신
+        if: env.THREADS_ACCESS_TOKEN != ''
+        id: refresh
+        run: |
+          RES=$(curl -s "https://graph.threads.net/refresh_access_token?grant_type=th_refresh_token&access_token=${THREADS_ACCESS_TOKEN}")
+          NEW=$(echo "$RES" | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
+          if [ -z "$NEW" ]; then
+            echo "갱신 실패: $RES"
+            exit 1
+          fi
+          echo "::add-mask::$NEW"
+          echo "new=$NEW" >> "$GITHUB_OUTPUT"
+          echo "갱신 완료 — 유효기간 60일 연장"
+
+      - name: 시크릿에 저장
+        if: steps.refresh.outputs.new != '' && env.GH_PAT != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          printf '%s' "${{ steps.refresh.outputs.new }}" | gh secret set THREADS_ACCESS_TOKEN --repo "${{ github.repository }}"
+          echo "THREADS_ACCESS_TOKEN 시크릿 갱신 완료"
+
+      - name: PAT 없음 안내
+        if: steps.refresh.outputs.new != '' && env.GH_PAT == ''
+        run: |
+          echo "::warning::갱신은 됐지만 GH_PAT 시크릿이 없어 저장하지 못했습니다. 60일 안에 tools/threads-token.mjs 로 다시 등록하거나 GH_PAT 를 넣어 주세요."
