@@ -1,17 +1,8 @@
 {
   "version": "0.0.1",
   "configurations": [
-    {
-      "name": "sajucheop",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["server.js"],
-      "port": 8321
-    },
-    {
-      "name": "saengil",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["../SAENGIL/server.js"],
-      "port": 8322
-    }
+    { "name": "sajucheop", "runtimeExecutable": "node", "runtimeArgs": ["server.js"], "port": 8321 },
+    { "name": "saengil", "runtimeExecutable": "node", "runtimeArgs": ["../SAENGIL/server.js"], "port": 8322 },
+    { "name": "dream", "runtimeExecutable": "node", "runtimeArgs": ["../DREAM/server.js"], "port": 8323 }
   ]
 }

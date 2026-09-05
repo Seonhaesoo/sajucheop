@@ -2452,4 +2452,4 @@ body.invite-mode .resume-chip { display: none !important; }
 }
 .sis-chip svg { flex: none; }
 .sis-chip:hover { color: var(--ink); border-color: var(--ink); }
-@media (max-width: 340px) { .sis-chip span { display: none; } .sis-chip { padding: 0 6px; } }
+@media (max-width: 480px) { .sis-chip span { display: none; } .sis-chip { padding: 0 6px; } }
