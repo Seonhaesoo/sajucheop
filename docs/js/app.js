@@ -473,6 +473,16 @@
     }
     $('#r-birth').textContent = birthBits.join(' · ');
 
+    /* 생일첩(자매 사이트) — 같은 생년월일의 만 나이·기념일·띠 페이지 (1940년~오늘 범위만) */
+    var rl = $('#r-links');
+    if (rl) {
+      var p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+      var inRange = inp.year >= 1940 && new Date(inp.year, inp.month - 1, inp.day) <= new Date();
+      rl.innerHTML = inRange
+        ? '<a href="https://saengil.sajucheop.com/' + inp.year + '/' + p2(inp.month) + '/' + p2(inp.day) + '/" target="_blank" rel="noopener">생일첩에서 만 나이 · 기념일 · 띠 보기 →</a>'
+        : '';
+    }
+
     $('#r-method').textContent = (inp.applySolarTime ? '진태양시 · ' : '') + '절기력 · 야자시 기준';
 
     /* 알림 */

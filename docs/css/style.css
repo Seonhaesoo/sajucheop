@@ -2379,3 +2379,8 @@ body.invite-mode .resume-chip { display: none !important; }
 .wkr-row .ln b { color: var(--ink); font-weight: 600; }
 .wkr-row .ln i { font-style: normal; font-size: 10.5px; padding: 0 6px; border: 1px solid var(--line); border-radius: 999px; margin-left: 4px; color: var(--faint); }
 .wkr-row.care .ln i { border-color: var(--seal); color: var(--seal); }
+
+/* 결과 화면 — 생일첩 링크 */
+.result-links { margin-top: 6px; font-size: 12.5px; }
+.result-links a { color: var(--seal-deep); text-decoration: none; border-bottom: 1px solid var(--underline); padding-bottom: 1px; }
+.result-links a:hover { color: var(--seal); }

@@ -6,6 +6,12 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["server.js"],
       "port": 8321
+    },
+    {
+      "name": "saengil",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["../SAENGIL/server.js"],
+      "port": 8322
     }
   ]
 }

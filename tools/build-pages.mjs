@@ -204,7 +204,7 @@ function buildDay(info) {
       <h2>일지가 ${chungB.map((b) => b.kor).join('·')}인 분은</h2>
       <p>${branchNote}</p>
 
-      <p class="callout">← <a href="${rel}day/${iso(pv.y, pv.m, pv.d)}/">${pv.m}월 ${pv.d}일 ${pvI.kor}일</a> · <a href="${rel}day/${iso(nx.y, nx.m, nx.d)}/">${nx.m}월 ${nx.d}일 ${nxI.kor}일</a> → · <a href="${rel}son/${y}-${pad(m)}/">${m}월 손없는날</a> · <a href="${rel}jeolgi/${y}/">${y}년 절기</a> · <a href="${rel}manse/">만세력</a></p>
+      <p class="callout">← <a href="${rel}day/${iso(pv.y, pv.m, pv.d)}/">${pv.m}월 ${pv.d}일 ${pvI.kor}일</a> · <a href="${rel}day/${iso(nx.y, nx.m, nx.d)}/">${nx.m}월 ${nx.d}일 ${nxI.kor}일</a> → · <a href="${rel}son/${y}-${pad(m)}/">${m}월 손없는날</a> · <a href="${rel}jeolgi/${y}/">${y}년 절기</a> · <a href="${rel}manse/">만세력</a>${I.daysFromCivil(y, m, d) <= I.daysFromCivil(today.y, today.m, today.d) ? ' · <a href="https://saengil.sajucheop.com/' + y + '/' + pad(m) + '/' + pad(d) + '/">이 날 태어난 아기의 생일첩</a>' : ''}</p>
     </div>
 
     <div class="ga-cta">
