@@ -548,10 +548,18 @@
 
     /* 명식 하단 요약 */
     var me = M.STEMS[p.day.stem];
+    /* 60일주 사전 링크 — 일주 인덱스(0~59)로 slug 조회 */
+    var iljuIdx = -1;
+    for (var k = 0; k < 60; k++) if (k % 10 === p.day.stem && k % 12 === p.day.branch) { iljuIdx = k; break; }
+    var iljuName = M.ganjiName(p.day.stem, p.day.branch);
+    var iljuLink = (window.ILJU_SLUGS && iljuIdx >= 0)
+      ? '<div>일주 <b><a href="ilju/' + window.ILJU_SLUGS[iljuIdx] + '/" style="color: var(--seal);">' + iljuName.kor + '일주 사전 →</a></b></div>'
+      : '';
     $('#r-foot').innerHTML =
       '<div>일간 <b>' + me.kor + me.el + ' ' + me.han + EL_HAN[me.el] + '</b></div>' +
       '<div>강약 <b>' + r.strength.label + '</b></div>' +
-      '<div>계절 <b>' + (r.season ? r.season.name + ' · ' + r.season.wang : '─') + '</b></div>';
+      '<div>계절 <b>' + (r.season ? r.season.name + ' · ' + r.season.wang : '─') + '</b></div>' +
+      iljuLink;
 
     /* 오행 바 */
     var counts = r.elements;
