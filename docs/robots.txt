@@ -4,3 +4,4 @@ Allow: /
 Sitemap: https://sajucheop.com/sitemap.xml
 Sitemap: https://sajucheop.com/sitemap-pages.xml
 Sitemap: https://sajucheop.com/sitemap-ilju.xml
+Sitemap: https://sajucheop.com/sitemap-en.xml

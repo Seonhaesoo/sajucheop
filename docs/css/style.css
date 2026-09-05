@@ -2277,3 +2277,69 @@ body.invite-mode .resume-chip { display: none !important; }
   border: none;
   cursor: pointer;
 }
+
+/* ---------- 60갑자 도장첩 ---------- */
+
+.stamp-card { display: flex; align-items: center; gap: 14px; padding: 14px 16px; }
+.stamp-card .stamp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.stamp-card .stamp-main .reading-overline { margin-bottom: 2px; }
+.stamp-card .stamp-main b { font-size: 14.5px; }
+.stamp-card .stamp-main span { font-size: 12px; color: var(--muted); }
+.stamp-card .btn-outline { width: auto; height: 38px; padding: 0 14px; font-size: 13px; flex: none; }
+.stamp-seal {
+  flex: none;
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  background: var(--seal);
+  color: var(--paper);
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.05;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: inset 0 0 0 2px rgba(246, 241, 232, 0.35);
+  transform: rotate(-4deg);
+}
+.stamp-seal.empty { background: transparent; border: 1.5px dashed var(--line); color: #C9BFAE; box-shadow: none; transform: none; }
+.stamp-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.stamp-cell {
+  aspect-ratio: 1;
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+}
+.stamp-cell.got {
+  background: var(--seal);
+  color: var(--paper);
+  box-shadow: inset 0 0 0 2px rgba(246, 241, 232, 0.35);
+  transform: rotate(-3deg);
+}
+.stamp-cell.got:nth-child(2n) { transform: rotate(2.5deg); }
+.stamp-cell.got:nth-child(5n) { transform: rotate(-1deg); }
+.stamp-cell.miss { border: 1.5px dashed var(--line); color: #C9BFAE; }
+.stamp-cell.today { outline: 2px solid var(--ink); outline-offset: 2px; }
+.stamp-cell small { font-family: 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 9px; margin-top: 3px; opacity: 0.85; letter-spacing: 0; }
+.db-stamps {
+  display: block;
+  margin-top: 8px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--seal);
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}

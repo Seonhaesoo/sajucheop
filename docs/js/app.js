@@ -68,6 +68,8 @@
     var el = $('#view-' + name);
     el.classList.add('active');
     track('page_view', { page_path: '/#' + name, page_title: '사주첩 — ' + name });
+    /* 오늘의 운세를 열면 그날 도장 */
+    if (name === 'today') { renderStampCard(); earnStamp(); }
     // 화면이 실제로 보일 때만 등장 애니메이션 — 숨겨진 상태에서 멈춰
     // 콘텐츠가 투명하게 고정되는 일을 막는다. 안전 타임아웃으로 항상 해제.
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1223,6 +1225,92 @@
     var form = $('#saju-form');
     form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     toast('내 사주를 먼저 봐야 궁합 링크를 만들 수 있어요.');
+  }
+
+  /* ---------- 60갑자 도장첩 (이 기기에만 저장) ---------- */
+
+  var STAMP_KEY = 'sajucheop.stamps.v1';
+
+  function loadStamps() {
+    try {
+      var o = JSON.parse(localStorage.getItem(STAMP_KEY) || '{}');
+      return (o && typeof o === 'object') ? o : {};
+    } catch (e) { return {}; }
+  }
+  function saveStamps(o) {
+    try { localStorage.setItem(STAMP_KEY, JSON.stringify(o)); } catch (e) { /* 무시 */ }
+  }
+  function todayIdx60() {
+    var t = todayDateParts();
+    return M._internals.dayPillarIndex(M._internals.daysFromCivil(t.y, t.m, t.d) + M._internals.JDN_EPOCH);
+  }
+  function ganjiOfIdx(k) { return M.ganjiName(k % 10, k % 12); }
+
+  /* 오늘의 운세를 여는 순간 그날 일진 도장 — 하루 한 번 */
+  function earnStamp() {
+    var k = todayIdx60(), s = loadStamps(), t = todayDateParts();
+    if (s[k]) return false;
+    s[k] = journalDateKey(t.y, t.m, t.d);
+    saveStamps(s);
+    var n = Object.keys(s).length;
+    toast(ganjiOfIdx(k).kor + '일 도장을 첩에 찍었어요 — ' + n + '/60' + (n >= 60 ? ' 완주!' : ''));
+    track('stamp_earn', { n: n });
+    renderStampCard();
+    renderDailyStamps();
+    return true;
+  }
+
+  /* 오늘의 운세 화면의 도장 카드 */
+  function renderStampCard() {
+    var seal = $('#stamp-today-seal');
+    if (!seal) return;
+    var k = todayIdx60(), s = loadStamps(), g = ganjiOfIdx(k), n = Object.keys(s).length;
+    seal.className = 'stamp-seal' + (s[k] ? '' : ' empty');
+    seal.innerHTML = g.han.charAt(0) + '<br>' + g.han.charAt(1);
+    $('#stamp-today-line').textContent = s[k] ? g.kor + '일 도장, 오늘 받았어요' : g.kor + '일 도장이 지금 찍혔어요';
+    $('#stamp-count-line').textContent = '60갑자 중 ' + n + '개 모음' + (n < 60 ? ' · ' + (60 - n) + '개 남음' : ' · 완주!');
+  }
+
+  /* 홈 '오늘의 한 문장' 아래 한 줄 */
+  function renderDailyStamps() {
+    var el = $('#db-stamps');
+    if (!el) return;
+    var s = loadStamps(), n = Object.keys(s).length;
+    if (!n) { el.hidden = true; return; }
+    var k = todayIdx60();
+    el.textContent = '도장첩 ' + n + '/60' + (s[k] ? ' · 오늘 ' + ganjiOfIdx(k).kor + ' 도장 받음' : ' · 오늘 도장은 오늘의 운세에서') + ' →';
+    el.hidden = false;
+  }
+
+  function renderStamps() {
+    var s = loadStamps(), k = todayIdx60(), n = Object.keys(s).length;
+    $('#stamp-head').textContent = n ? '모은 도장 ' + n + '/60' : '아직 도장이 없어요';
+    var html = '';
+    for (var i = 0; i < 60; i++) {
+      var g = ganjiOfIdx(i), got = !!s[i];
+      html += '<div class="stamp-cell ' + (got ? 'got' : 'miss') + (i === k ? ' today' : '') +
+        '" title="' + g.kor + (got ? ' · ' + s[i] : '') + '">' + g.han + (got ? '<small>' + g.kor + '</small>' : '') + '</div>';
+    }
+    $('#stamp-grid').innerHTML = html;
+    var gt = ganjiOfIdx(k), nk = (k + 1) % 60, gn = ganjiOfIdx(nk);
+    $('#stamp-next').textContent = (s[k] ? '오늘 ' + gt.kor + ' 도장은 받았어요. ' : '오늘 ' + gt.kor + ' 도장은 오늘의 운세를 열면 찍혀요. ') +
+      '내일은 ' + gn.kor + '일' + (s[nk] ? ' — 이미 있는 도장이에요.' : ' — 새 도장이 기다려요.');
+  }
+
+  function openStamps() {
+    renderStamps();
+    showView('stamps');
+  }
+
+  function shareStamps() {
+    var n = Object.keys(loadStamps()).length;
+    var text = '60갑자 도장첩 ' + n + '/60 — 매일 오늘의 운세를 열면 그날 일진 도장이 찍혀요. 사주첩 sajucheop.com';
+    track('stamp_share', { n: n });
+    if (navigator.share) {
+      navigator.share({ title: '사주첩 — 도장첩', text: text }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () { toast('복사했어요.'); });
+    }
   }
 
   /* ---------- 사주 캐릭터 ---------- */
@@ -2901,6 +2989,21 @@
     /* 해시만 바뀌는 이동(뒤로가기·직접 링크)에서도 순위가 그려지도록 */
     window.addEventListener('hashchange', function () {
       if (location.hash === '#ranking') openRanking();
+      if (location.hash === '#stamps') openStamps();
+    });
+    $('#menu-stamps').addEventListener('click', function (e) {
+      e.preventDefault();
+      $('#site-menu').hidden = true;
+      openStamps();
+    });
+    $('#btn-open-stamps').addEventListener('click', openStamps);
+    $('#db-stamps').addEventListener('click', openStamps);
+    $('#btn-stamp-share').addEventListener('click', shareStamps);
+    $('#btn-stamp-today').addEventListener('click', function () {
+      if (state.result) { showView('today'); return; }
+      showView('home');
+      $('#saju-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      toast('내 사주를 먼저 봐야 오늘의 운세와 도장을 받을 수 있어요.');
     });
     $('#btn-to-taegil').addEventListener('click', function () { showView('taegil'); });
     $('#menu-taegil').addEventListener('click', function (e) {
@@ -3030,6 +3133,7 @@
   }
   renderBook();
   renderGunghapEntry();
+  renderDailyStamps();
   renderResumeChip();
   var pairData = parsePairFromHash();
   if (pairData) {
@@ -3059,6 +3163,8 @@
     showView('gunghap');
   } else if (location.hash === '#ranking') {
     openRanking();
+  } else if (location.hash === '#stamps') {
+    openStamps();
   } else {
     showView(location.hash === '#taegil' ? 'taegil' : 'home');
   }

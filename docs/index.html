@@ -59,6 +59,7 @@
         <nav class="menu-pop" id="site-menu" hidden>
           <a href="guide/">서재 — 사주 이야기</a>
           <a href="#ranking" id="menu-ranking">궁합 순위 — 내 친구들</a>
+          <a href="#stamps" id="menu-stamps">도장첩 — 60갑자 모으기</a>
           <a href="2027/">2027 정미년 운세</a>
           <a href="tojeong/">토정비결 신수</a>
           <a href="naming/">이름 짓기 <span style="font-size: 10px; color: #B8382D;">베타</span></a>
@@ -97,6 +98,7 @@
           <span id="db-tag"></span>
           <span class="db-streak" id="db-streak" hidden></span>
         </div>
+        <button type="button" class="db-stamps" id="db-stamps" hidden></button>
       </div>
     </div>
 
@@ -702,6 +704,41 @@
 
   </section>
 
+  <!-- ================= 도장첩 ================= -->
+  <section id="view-stamps" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="home" aria-label="처음으로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">도장첩</div>
+      <span style="width: 38px;"></span>
+    </header>
+
+    <div class="daeun-intro rise">
+      <h2 style="font-size: 23px;">60갑자 도장첩</h2>
+      <p>오늘의 운세를 여는 날마다 그날 일진의 도장이 첩에 찍힙니다. 일진은 60일에 한 바퀴 — 다 모으려면 적어도 두 달을 매일 만나야 해요.</p>
+    </div>
+
+    <div class="rank-wrap rise">
+      <div class="bk-head">
+        <b id="stamp-head"></b>
+        <span class="bk-note">이 기기에만 저장돼요</span>
+      </div>
+      <div class="stamp-grid" id="stamp-grid"></div>
+      <p class="purpose-hint" id="stamp-next" style="margin-top: 12px;"></p>
+    </div>
+
+    <div class="btn-stack rise">
+      <button class="btn-primary" id="btn-stamp-today">오늘의 운세 열고 도장 받기</button>
+      <button class="btn-outline" id="btn-stamp-share">도장첩 자랑하기</button>
+      <button class="btn-outline" data-back="home">처음으로</button>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
   <!-- ================= 오늘의 운세 ================= -->
   <section id="view-today" class="view">
 
@@ -727,6 +764,17 @@
     <div class="current-daeun rise" id="t-hero"></div>
 
     <div id="t-relation" class="rise"></div>
+
+    <!-- 오늘의 도장 — 60갑자 도장첩 -->
+    <div class="card rise stamp-card" id="stamp-card">
+      <div class="stamp-seal" id="stamp-today-seal" aria-hidden="true"></div>
+      <div class="stamp-main">
+        <div class="reading-overline">오늘의 도장</div>
+        <b id="stamp-today-line"></b>
+        <span id="stamp-count-line"></span>
+      </div>
+      <button type="button" class="btn-outline" id="btn-open-stamps">첩 열기</button>
+    </div>
 
     <div class="card rise reading-card">
       <div class="reading-overline">총운</div>
