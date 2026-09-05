@@ -1308,7 +1308,7 @@
     var s = loadStamps(), n = Object.keys(s).length;
     if (!n) { el.hidden = true; return; }
     var k = todayIdx60();
-    el.textContent = '도장첩 ' + n + '/60' + (s[k] ? ' · 오늘 ' + ganjiOfIdx(k).kor + ' 도장 받음' : ' · 오늘 도장은 오늘의 운세에서') + ' →';
+    el.textContent = '도장첩 ' + n + '/60' + (s[k] ? ' · 오늘 받음 ✓' : ' · 오늘 도장 받기') + ' →';
     el.hidden = false;
   }
 
@@ -1500,8 +1500,8 @@
     var el = $('#btn-home-persona'), p = weekPersona();
     if (!el || !p) return;
     $('#hp-han').textContent = p.han;
-    $('#hp-title').textContent = '이번 주 궁합 상대 — 「' + p.alias + '」';
-    $('#hp-sub').textContent = p.kor + '일주 · 나와 몇 점일까? 생일만 넣으면 10초';
+    $('#hp-title').textContent = '이번 주 상대 「' + p.alias + '」';
+    $('#hp-sub').textContent = p.kor + '일주 · 나와 몇 점일까? 10초면 나와요';
     el.hidden = false;
   }
 
