@@ -221,8 +221,8 @@
         renderGunghap(partnerResult, result);
         state.gunghapUrl = location.origin + location.pathname + '#g=' +
           G.encodePair(state.invite, Object.assign({ name: state.name }, input));
-        recordGunghap(state.invite);
-        updateGunghapButtons('mine');
+        if (!state.invite.persona) recordGunghap(state.invite);
+        updateGunghapButtons(state.invite.persona ? 'persona' : 'mine');
         showView('gunghap');
       } else {
         showView('result');
@@ -770,7 +770,13 @@
   function showInviteBanner() {
     var inv = state.invite;
     if (!inv) return;
-    $('#ib-title').textContent = (inv.name ? inv.name + ' 님이' : '친구가') + ' 궁합을 청했어요';
+    if (inv.persona) {
+      $('#ib-title').textContent = '이번 주 궁합 상대 「' + inv.name + '」와 나는 몇 점?';
+      $('#invite-banner .ib-text span').textContent = '생일만 넣으면 점수와 궁합 풀이가 열려요 — 실제 인물이 아닌 이번 주의 캐릭터예요';
+    } else {
+      $('#ib-title').textContent = (inv.name ? inv.name + ' 님이' : '친구가') + ' 궁합을 청했어요';
+      $('#invite-banner .ib-text span').textContent = '아래에 내 정보를 입력하면 두 사람의 궁합이 열립니다';
+    }
     $('#invite-banner').hidden = false;
     $('#btn-submit-label').textContent = '궁합 열어보기';
     /* 초대 집중 모드 — 홈의 다른 카드를 걷어내고 입력에 집중 */
@@ -1074,11 +1080,21 @@
 
   function updateGunghapButtons(mode) {
     var retCard = $('#gh-return-card'), mine = $('#btn-my-result'), make = $('#btn-make-gunghap3');
+    var note = $('#gh-persona-note');
+    if (note) note.hidden = mode !== 'persona';
     if (mode === 'pair') {
       retCard.hidden = true;
       make.hidden = true;
       mine.className = 'btn-primary';
       mine.textContent = '나도 내 사주 풀어보기';
+    } else if (mode === 'persona') {
+      /* 가상의 이번 주 상대 — 돌려보낼 사람이 없으니 회신 카드 대신 '내 링크 만들기'로 유도 */
+      retCard.hidden = true;
+      make.hidden = false;
+      make.className = 'btn-primary';
+      make.textContent = '친구와 진짜 궁합 보기 — 내 링크 만들기';
+      mine.className = 'btn-outline';
+      mine.textContent = '내 사주 전체 보기';
     } else {
       retCard.hidden = false;
       $('#gh-return-link').value = state.gunghapUrl || '';
@@ -1449,6 +1465,42 @@
     if (!el) return;
     var has = !!(bookSelf() || loadProfile());
     el.hidden = !(has && !weeklySeen());
+  }
+
+  /* ---------- 이번 주 궁합 상대 (참여형 — tools/persona.mjs 와 같은 규칙) ---------- */
+
+  var PERSONA_EPOCH_DN = M._internals.daysFromCivil(2026, 9, 7);
+
+  function weekPersona() {
+    if (!window.ILJU_ALIAS) return null;
+    var In = M._internals;
+    var mon = weekMondayDn(todayDateParts());
+    var idx = ((Math.floor((mon - PERSONA_EPOCH_DN) / 7) % 60) + 60) % 60;
+    var year = 1990 + (idx % 8);
+    var baseDn = In.daysFromCivil(year, 1, 1);
+    var k0 = In.dayPillarIndex(baseDn + In.JDN_EPOCH);
+    var cv = In.civilFromDays(baseDn + (((idx - k0) % 60) + 60) % 60);
+    var g = M.ganjiName(idx % 10, idx % 12);
+    var alias = window.ILJU_ALIAS[idx];
+    return { idx: idx, alias: alias, kor: g.kor, han: g.han,
+      input: { name: alias.slice(0, 12), year: cv.y, month: cv.m, day: cv.d, unknownTime: true, gender: idx % 2 ? 'F' : 'M', applySolarTime: true, persona: true } };
+  }
+
+  function renderPersonaCard() {
+    var el = $('#btn-home-persona'), p = weekPersona();
+    if (!el || !p) return;
+    $('#hp-han').textContent = p.han;
+    $('#hp-title').textContent = '이번 주 궁합 상대 — 「' + p.alias + '」';
+    $('#hp-sub').textContent = p.kor + '일주 · 나와 몇 점일까? 생일만 넣으면 10초';
+    el.hidden = false;
+  }
+
+  function openPersona() {
+    var p = weekPersona();
+    if (!p) return;
+    track('persona_open', { idx: p.idx });
+    location.href = location.origin + location.pathname + '#p=' + G.encodeProfile(p.input);
+    location.reload();
   }
 
   /* ---------- 사주 캐릭터 ---------- */
@@ -3117,6 +3169,7 @@
     $('#btn-share-today2').addEventListener('click', shareToday);
     $('#btn-to-calendar').addEventListener('click', function () { showView('calendar'); });
     $('#btn-home-gunghap').addEventListener('click', startGunghapFromHome);
+    $('#btn-home-persona').addEventListener('click', openPersona);
     $('#btn-rank-invite').addEventListener('click', makeGunghapLink);
     $('#btn-to-ranking').addEventListener('click', openRanking);
     $('#menu-ranking').addEventListener('click', function (e) {
@@ -3285,6 +3338,7 @@
   }
   renderBook();
   renderGunghapEntry();
+  renderPersonaCard();
   renderDailyStamps();
   renderWeeklyNudge();
   renderResumeChip();

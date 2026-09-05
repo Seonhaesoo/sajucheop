@@ -26,15 +26,7 @@
   }
 
   function encodeProfile(p) {
-    return b64urlEncode(JSON.stringify({
-      n: (p.name || '').slice(0, 12),
-      y: p.year, m: p.month, d: p.day,
-      h: p.unknownTime ? null : p.hour,
-      i: p.unknownTime ? null : p.minute,
-      u: p.unknownTime ? 1 : 0,
-      g: p.gender === 'M' ? 'M' : 'F',
-      s: p.applySolarTime === false ? 0 : 1
-    }));
+    return b64urlEncode(JSON.stringify(packProfile(p)));
   }
 
   function unpackProfile(o) {
@@ -51,12 +43,13 @@
       hour: h, minute: mi,
       unknownTime: unknown,
       gender: o.g === 'M' ? 'M' : 'F',
-      applySolarTime: o.s !== 0
+      applySolarTime: o.s !== 0,
+      persona: o.p === 1            /* 가상의 '이번 주 궁합 상대' — 회신·순위 기록 대상이 아님 */
     };
   }
 
   function packProfile(p) {
-    return {
+    var o = {
       n: (p.name || '').slice(0, 12),
       y: p.year, m: p.month, d: p.day,
       h: p.unknownTime ? null : p.hour,
@@ -65,6 +58,8 @@
       g: p.gender === 'M' ? 'M' : 'F',
       s: p.applySolarTime === false ? 0 : 1
     };
+    if (p.persona) o.p = 1;
+    return o;
   }
 
   function decodeProfile(str) {

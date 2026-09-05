@@ -84,6 +84,13 @@
   </div>
 
   <div class="box">
+    <div class="box-head"><b>참여형 궁합 링크글 (쓰레드)</b><span>화·목·토 갱신</span></div>
+    <textarea id="engage" readonly>불러오는 중…</textarea>
+    <button data-copy="engage">복사하기</button>
+    <p class="hint">"이번 주 궁합 상대"와 몇 점인지 링크로 바로 참여하는 글 — 한글 + 영문 링크. 봇이 쓰레드에 자동 게시하고, 인스타에선 프로필 링크 → 홈 카드로 같은 참여가 됩니다.</p>
+  </div>
+
+  <div class="box">
     <div class="box-head"><b>주간 리스트글 (쓰레드)</b><span>월·수·금 갱신</span></div>
     <textarea id="weekly" readonly>불러오는 중…</textarea>
     <button data-copy="weekly">복사하기</button>
@@ -125,6 +132,7 @@
   load('daily', '../daily/thread.txt');
   load('dailyen', '../daily/thread-en.txt');
   load('weekly', 'thread.txt');
+  load('engage', 'engage.txt');
   load('caption', 'caption.txt');
   load('weeklyen', 'thread-en.txt');
   load('captionen', 'caption-en.txt');

@@ -1171,6 +1171,7 @@ body.invite-mode .daily-bit,
 body.invite-mode .pwa-banner,
 body.invite-mode .book-strip,
 body.invite-mode #btn-home-gunghap,
+body.invite-mode #btn-home-persona,
 body.invite-mode .resume-chip { display: none !important; }
 
 /* 언어 전환 칩 */

@@ -204,5 +204,5 @@ let robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-ilju.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-ilju.xml\n');
 
 /* 앱에서 쓸 slug 표 (일주 인덱스 순) */
-fs.writeFileSync(path.join(DOCS, 'js', 'ilju-slugs.js'), '/* 60일주 사전 URL slug — tools/build-ilju.mjs 가 생성 */\nwindow.ILJU_SLUGS = ' + JSON.stringify(list.map((x) => x.slug)) + ';\n');
+fs.writeFileSync(path.join(DOCS, 'js', 'ilju-slugs.js'), '/* 60일주 사전 URL slug·별칭 — tools/build-ilju.mjs 가 생성 */\nwindow.ILJU_SLUGS = ' + JSON.stringify(list.map((x) => x.slug)) + ';\nwindow.ILJU_ALIAS = ' + JSON.stringify(list.map((x) => x.alias)) + ';\n');
 console.log(`60일주 사전 생성 — ${urls.length - 1}장 + 인덱스, sitemap-ilju.xml, js/ilju-slugs.js`);

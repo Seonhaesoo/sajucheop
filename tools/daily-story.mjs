@@ -67,4 +67,7 @@ if (meta) {
   ];
   fs.writeFileSync('docs/daily/thread-en.txt', enLines.join('\n') + '\n');
   console.log('docs/daily/thread-en.txt 저장 완료');
+
+  /* 한글 글 끝에 영문 한 줄 — 외국인 유입용 (쓰레드 게시·웹훅이 thread.txt를 그대로 씀) */
+  fs.appendFileSync('docs/daily/thread.txt', '\n🌏 ' + enLines[0] + ' Your Day Master in 10 seconds → sajucheop.com/en/\n');
 }
