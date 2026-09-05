@@ -807,7 +807,11 @@
     $('#gh-tier').textContent = gh.tier;
 
     $('#gh-stem-title').textContent = gh.stemRel.title;
-    $('#gh-stem-body').innerHTML = gh.stemRel.body;
+    /* 일간 궁합 100페이지 — 내(b) 시점에서 상대(a) 일간 조합 글 */
+    var ILGAN_SLUG = ['gapmok', 'eulmok', 'byeonghwa', 'jeonghwa', 'muto', 'gito', 'gyeonggeum', 'singeum', 'imsu', 'gyesu'];
+    $('#gh-stem-body').innerHTML = gh.stemRel.body +
+      ' <a href="gunghap/' + ILGAN_SLUG[pb] + '-' + ILGAN_SLUG[pa] + '/" style="color: var(--seal); white-space: nowrap;">' +
+      stB.kor + stB.el + ' × ' + stA.kor + stA.el + ' 궁합 자세히 →</a>';
     $('#gh-sip').innerHTML =
       '<div class="fortune-row" style="padding: 12px 0 6px;"><span class="f-label" style="width: 52px;">상대는</span>' +
       '<span class="f-text">나에게 <b>' + gh.sipseong.aboutA.name + '</b> — ' + gh.sipseong.aboutA.line + '</span></div>' +
@@ -1311,6 +1315,140 @@
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text).then(function () { toast('복사했어요.'); });
     }
+  }
+
+  /* ---------- 주간 운세 리포트 (월요일마다 새로) ---------- */
+
+  var WEEKLY_SEEN_KEY = 'sajucheop.weekly.seen.v1';
+  var WK_FULL = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+  var WK_GROUP = { '비견': '비겁', '겁재': '비겁', '식신': '식상', '상관': '식상', '편재': '재성', '정재': '재성', '편관': '관성', '정관': '관성', '편인': '인성', '정인': '인성' };
+  var WK_GROUP_LINE = {
+    '비겁': '내 힘으로 밀어붙이는 주 — 협업보다 주도, 남의 페이스보다 내 페이스가 맞습니다.',
+    '식상': '표현과 재능이 앞서는 주 — 말과 결과물로 승부하고, 만들고 내놓는 일에 운이 있어요.',
+    '재성': '돈과 실속이 도는 주 — 거래·계약·정산에 밝고, 씀씀이도 함께 커지니 계산은 두 번.',
+    '관성': '책임과 규율의 주 — 조직·서류·시험·공식 자리에 유리하고, 압박은 관리하면 됩니다.',
+    '인성': '배움과 정리의 주 — 공부·문서·어른의 도움이 잘 풀리고, 결정은 천천히 해도 좋아요.'
+  };
+  var WK_SIP_LINE = {
+    '비견': '내 페이스대로 밀어붙이기 좋은 날', '겁재': '추진력은 오르지만 지출은 미루는 날',
+    '식신': '말과 손에서 좋은 것이 나오는 날', '상관': '아이디어가 앞서니 말은 한 박자 늦게',
+    '편재': '기회와 씀씀이가 함께 오는 날', '정재': '숫자와 계획이 맞아떨어지는 날',
+    '편관': '할 일이 몰리는 날, 단단히 그러나 무리 없이', '정관': '공식적인 자리와 문서에 유리한 날',
+    '편인': '혼자 생각하고 공부하기 좋은 날', '정인': '배우고 정리하고 기대기 좋은 날'
+  };
+
+  function weekMondayDn(t) {
+    var dn = M._internals.daysFromCivil(t.y, t.m, t.d);
+    var wd = ((dn + 4) % 7 + 7) % 7;          /* 0=일 */
+    return dn - ((wd + 6) % 7);               /* 이번 주 월요일 */
+  }
+  function weekKeyOf(t) {
+    var cv = M._internals.civilFromDays(weekMondayDn(t));
+    return journalDateKey(cv.y, cv.m, cv.d);
+  }
+  function weeklySeen() {
+    try { return localStorage.getItem(WEEKLY_SEEN_KEY) === weekKeyOf(todayDateParts()); } catch (e) { return true; }
+  }
+
+  function computeWeek(r, mondayDn) {
+    var days = [];
+    for (var i = 0; i < 7; i++) {
+      var cv = M._internals.civilFromDays(mondayDn + i);
+      var info = M.todayInfo(r, cv.y, cv.m, cv.d);
+      var g = M.ganjiName(info.pillar.stem, info.pillar.branch);
+      days.push({ i: i, y: cv.y, m: cv.m, d: cv.d, w: (i + 1) % 7, ganji: g.kor, score: I.scoreDay(r, info),
+        sip: info.stemSipseong, group: WK_GROUP[info.stemSipseong], rel: info.relation });
+    }
+    return days;
+  }
+
+  function renderWeekly(r) {
+    var t = todayDateParts();
+    var mon = weekMondayDn(t);
+    var days = computeWeek(r, mon);
+    var todayDn = M._internals.daysFromCivil(t.y, t.m, t.d);
+    var avg = Math.round(days.reduce(function (s, d) { return s + d.score; }, 0) / 7);
+    var best = days.reduce(function (a, b) { return b.score > a.score ? b : a; });
+    var care = days.filter(function (d) { return d.rel === '충'; })[0] || days.reduce(function (a, b) { return b.score < a.score ? b : a; });
+    var counts = {};
+    days.forEach(function (d) { counts[d.group] = (counts[d.group] || 0) + 1; });
+    var dominant = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; })[0];
+    var headline = avg >= 75 ? '트이는 주' : avg >= 60 ? '무난히 흐르는 주' : avg >= 45 ? '고르지 않은 주' : '숨 고르는 주';
+    var first = days[0], last = days[6];
+
+    $('#wkr-title').textContent = (state.name ? state.name + ' 님의 ' : '') + '이번 주는 ' + headline;
+    $('#wkr-range').textContent = first.m + '월 ' + first.d + '일(월) ~ ' + last.m + '월 ' + last.d + '일(일) · ' + first.ganji + '일부터 ' + last.ganji + '일까지';
+    $('#wkr-hero').innerHTML =
+      '<div class="wh-label">이번 주 흐름</div>' +
+      '<div class="wh-main"><b>' + avg + '</b><span>점 평균 · ' + headline + '</span></div>' +
+      '<div class="wh-sub">가장 트이는 날은 <b>' + WK_FULL[best.w] + '</b>(' + best.score + '점 · ' + best.sip + '), ' +
+      '쉬어갈 날은 <b>' + WK_FULL[care.w] + '</b>' + (care.rel === '충' ? ' — 충이 드는 날' : '(' + care.score + '점)') + '</div>';
+
+    $('#wkr-summary').innerHTML =
+      '한 주의 결은 <b>' + dominant + '</b>이 이끕니다. ' + WK_GROUP_LINE[dominant] + ' ' +
+      WK_FULL[best.w] + '에 ' + best.sip + '이 들어 가장 밝으니 중요한 약속과 결정은 이날에, ' +
+      (care.rel === '충'
+        ? WK_FULL[care.w] + '은 내 일지와 충이 드는 날이라 이동과 변경이 잦아요 — 서명과 큰 결정은 피하세요.'
+        : WK_FULL[care.w] + '은 흐름이 낮아 큰 결정을 미루는 편이 좋아요.') +
+      (days.filter(function (d) { return d.rel === '육합' || d.rel === '삼합'; }).length
+        ? ' ' + days.filter(function (d) { return d.rel === '육합' || d.rel === '삼합'; }).map(function (d) { return WK_FULL[d.w]; }).join('·') + '엔 합이 들어 만남과 부탁이 순하게 풀립니다.'
+        : '');
+
+    $('#wkr-dominant').textContent = dominant + ' ' + counts[dominant] + '일 · 평균 ' + avg + '점';
+    $('#wkr-days').innerHTML = days.map(function (d) {
+      var dn = mon + d.i;
+      var cls = 'wkr-row' + (dn === todayDn ? ' today' : '') + (d.i === best.i ? ' best' : '') + (d.i === care.i ? ' care' : '');
+      var tag = d.rel === '충' ? '<i>충</i>' : (d.rel === '육합' || d.rel === '삼합') ? '<i>합</i>' : '';
+      return '<div class="' + cls + '"><span class="wd">' + WK_SHORT[d.w] + '</span><span class="gj">' + d.ganji + '</span>' +
+        '<span class="sc">' + d.score + '</span><span class="ln"><b>' + d.sip + '</b> · ' + WK_SIP_LINE[d.sip] + tag + '</span></div>';
+    }).join('');
+
+    var sat = days[5], sun = days[6];
+    var wkAvg = Math.round((sat.score + sun.score) / 2);
+    $('#wkr-weekend').textContent = '주말은 ' + (wkAvg >= 70 ? '흐름이 밝아요 — 미뤄둔 만남과 나들이에 좋습니다.' : wkAvg >= 55 ? '무난해요 — 쉬면서 다음 주를 준비하기 좋습니다.' : '조용히 쉬는 편이 좋아요 — 약속을 줄이고 체력을 아끼세요.') +
+      ' 토요일 ' + sat.score + '점(' + sat.sip + '), 일요일 ' + sun.score + '점(' + sun.sip + ').';
+    var nx = computeWeek(r, mon + 7);
+    var nxAvg = Math.round(nx.reduce(function (s, d) { return s + d.score; }, 0) / 7);
+    var nxBest = nx.reduce(function (a, b) { return b.score > a.score ? b : a; });
+    $('#wkr-next').textContent = '다음 주 미리보기 — ' + nx[0].m + '월 ' + nx[0].d + '일 월요일은 ' + nx[0].ganji + '일(' + nx[0].sip + ', ' + nx[0].score + '점). ' +
+      '평균 ' + nxAvg + '점으로 ' + (nxAvg > avg + 4 ? '이번 주보다 트입니다' : nxAvg < avg - 4 ? '이번 주보다 차분합니다' : '이번 주와 비슷합니다') + '. 가장 밝은 날은 ' + WK_FULL[nxBest.w] + '.';
+
+    try { localStorage.setItem(WEEKLY_SEEN_KEY, weekKeyOf(t)); } catch (e) { /* 무시 */ }
+    renderWeeklyNudge();
+    state.weekly = { avg: avg, headline: headline, best: best, care: care, first: first, last: last };
+  }
+
+  function openWeekly() {
+    if (!state.result) {
+      showView('home');
+      $('#saju-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      toast('내 사주를 먼저 봐야 이번 주 리포트가 나와요.');
+      return;
+    }
+    renderWeekly(state.result);
+    track('weekly_view');
+    showView('weekly');
+  }
+
+  function shareWeekly() {
+    var w = state.weekly;
+    if (!w) return;
+    track('weekly_share');
+    var text = (state.name ? state.name + ' 님의 ' : '') + w.first.m + '월 ' + w.first.d + '일 주 운세 — ' + w.headline + ', 평균 ' + w.avg + '점. ' +
+      '가장 트이는 날 ' + WK_FULL[w.best.w] + '(' + w.best.score + '점), 쉬어갈 날 ' + WK_FULL[w.care.w] + '. 사주첩 sajucheop.com';
+    if (navigator.share) {
+      navigator.share({ title: '사주첩 — 이번 주 운세', text: text }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () { toast('복사했어요.'); });
+    }
+  }
+
+  /* 홈 월요일 알림 — 저장된 사주가 있고 이번 주 리포트를 아직 안 봤을 때 */
+  function renderWeeklyNudge() {
+    var el = $('#db-weekly');
+    if (!el) return;
+    var has = !!(bookSelf() || loadProfile());
+    el.hidden = !(has && !weeklySeen());
   }
 
   /* ---------- 사주 캐릭터 ---------- */
@@ -2990,6 +3128,20 @@
     window.addEventListener('hashchange', function () {
       if (location.hash === '#ranking') openRanking();
       if (location.hash === '#stamps') openStamps();
+      if (location.hash === '#weekly') openWeekly();
+    });
+    $('#menu-weekly').addEventListener('click', function (e) {
+      e.preventDefault();
+      $('#site-menu').hidden = true;
+      openWeekly();
+    });
+    $('#btn-to-weekly').addEventListener('click', openWeekly);
+    $('#btn-weekly-share').addEventListener('click', shareWeekly);
+    $('#btn-weekly-share-top').addEventListener('click', shareWeekly);
+    $('#btn-weekly-cal').addEventListener('click', function () { showView('calendar'); });
+    $('#db-weekly').addEventListener('click', function () {
+      if (!state.result) $('#saju-form').requestSubmit();
+      if (state.result) openWeekly();
     });
     $('#menu-stamps').addEventListener('click', function (e) {
       e.preventDefault();
@@ -3134,6 +3286,7 @@
   renderBook();
   renderGunghapEntry();
   renderDailyStamps();
+  renderWeeklyNudge();
   renderResumeChip();
   var pairData = parsePairFromHash();
   if (pairData) {
@@ -3165,6 +3318,8 @@
     openRanking();
   } else if (location.hash === '#stamps') {
     openStamps();
+  } else if (location.hash === '#weekly') {
+    openWeekly();
   } else {
     showView(location.hash === '#taegil' ? 'taegil' : 'home');
   }

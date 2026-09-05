@@ -2343,3 +2343,38 @@ body.invite-mode .resume-chip { display: none !important; }
   cursor: pointer;
   text-align: left;
 }
+
+/* ---------- 주간 운세 리포트 ---------- */
+
+.wkr-hero {
+  margin: 14px 20px 0;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 14px;
+  padding: 18px 20px 16px;
+}
+.wkr-hero .wh-label { font-size: 11px; letter-spacing: 2px; color: #B5AA97; }
+.wkr-hero .wh-main { display: flex; align-items: baseline; gap: 10px; margin-top: 6px; }
+.wkr-hero .wh-main b { font-family: var(--serif); font-size: 40px; font-weight: 600; line-height: 1; color: var(--paper); }
+.wkr-hero .wh-main span { font-size: 15px; color: #E8DFCF; }
+.wkr-hero .wh-sub { font-size: 12.5px; color: #B5AA97; margin-top: 10px; line-height: 1.6; }
+.wkr-hero .wh-sub b { color: var(--paper); font-weight: 600; }
+.wkr-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13.5px;
+}
+.wkr-row:last-child { border-bottom: none; }
+.wkr-row .wd { flex: none; width: 22px; font-weight: 700; color: var(--muted); }
+.wkr-row.today .wd { color: var(--seal); }
+.wkr-row .gj { flex: none; width: 40px; font-family: var(--serif); font-size: 13px; }
+.wkr-row .sc { flex: none; width: 30px; font-family: var(--serif); font-weight: 600; font-size: 15px; text-align: right; }
+.wkr-row.best .sc { color: var(--seal); }
+.wkr-row.care .sc { color: var(--faint); }
+.wkr-row .ln { flex: 1; min-width: 0; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.wkr-row .ln b { color: var(--ink); font-weight: 600; }
+.wkr-row .ln i { font-style: normal; font-size: 10.5px; padding: 0 6px; border: 1px solid var(--line); border-radius: 999px; margin-left: 4px; color: var(--faint); }
+.wkr-row.care .ln i { border-color: var(--seal); color: var(--seal); }

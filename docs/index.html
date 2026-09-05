@@ -60,6 +60,7 @@
           <a href="guide/">서재 — 사주 이야기</a>
           <a href="#ranking" id="menu-ranking">궁합 순위 — 내 친구들</a>
           <a href="#stamps" id="menu-stamps">도장첩 — 60갑자 모으기</a>
+          <a href="#weekly" id="menu-weekly">주간 운세 리포트</a>
           <a href="2027/">2027 정미년 운세</a>
           <a href="tojeong/">토정비결 신수</a>
           <a href="naming/">이름 짓기 <span style="font-size: 10px; color: #B8382D;">베타</span></a>
@@ -99,6 +100,7 @@
           <span class="db-streak" id="db-streak" hidden></span>
         </div>
         <button type="button" class="db-stamps" id="db-stamps" hidden></button>
+        <button type="button" class="db-stamps" id="db-weekly" hidden>이번 주 운세 리포트가 나왔어요 →</button>
       </div>
     </div>
 
@@ -262,6 +264,7 @@
         <nav class="footer-links">
           <a href="guide/">서재</a>
           <a href="ilju/">일주 사전</a>
+          <a href="gunghap/">일간 궁합</a>
           <a href="day/">오늘의 일진</a>
           <a href="son/">손없는날</a>
           <a href="jeolgi/">절기</a>
@@ -739,6 +742,60 @@
 
   </section>
 
+  <!-- ================= 주간 운세 리포트 ================= -->
+  <section id="view-weekly" class="view">
+
+    <header class="sub-header rise">
+      <button class="icon-btn" data-back="today" aria-label="오늘의 운세로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5l-7 7 7 7" stroke="#211C15" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div class="page-title">이번 주 운세</div>
+      <button class="icon-btn" id="btn-weekly-share-top" aria-label="주간 리포트 공유">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 14V4" stroke="#211C15" stroke-width="1.6" stroke-linecap="round"></path>
+          <path d="M8.5 7L12 3.5 15.5 7" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="M5.5 11.5v8h13v-8" stroke="#211C15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="daeun-intro rise" style="margin-top: 18px;">
+      <h2 id="wkr-title" style="font-size: 23px;"></h2>
+      <p id="wkr-range"></p>
+    </div>
+
+    <div class="wkr-hero rise" id="wkr-hero"></div>
+
+    <div class="card rise reading-card">
+      <div class="reading-overline">이번 주 한눈에</div>
+      <p class="reading-body" id="wkr-summary"></p>
+    </div>
+
+    <div class="card rise card-pad">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">요일별 흐름</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;" id="wkr-dominant"></span>
+      </div>
+      <div id="wkr-days"></div>
+    </div>
+
+    <div class="card rise reading-card">
+      <div class="reading-overline">주말, 그리고 다음 주</div>
+      <p class="reading-body" id="wkr-weekend"></p>
+      <p class="reading-body" id="wkr-next" style="margin-top: 10px;"></p>
+      <p class="form-microcopy" style="margin-top: 10px;">다음 리포트는 월요일 자정에 새로 나와요</p>
+    </div>
+
+    <div class="btn-stack rise">
+      <button class="btn-primary" id="btn-weekly-share">이번 주 리포트 공유</button>
+      <button class="btn-outline" id="btn-weekly-cal">운세 캘린더에서 날짜 고르기</button>
+      <button class="btn-outline" data-back="today">오늘의 운세로</button>
+    </div>
+
+    <div class="bottom-space"></div>
+
+  </section>
+
   <!-- ================= 오늘의 운세 ================= -->
   <section id="view-today" class="view">
 
@@ -809,6 +866,7 @@
       </div>
       <div class="week-strip" id="wk-strip"></div>
       <p class="graph-caption" id="wk-note"></p>
+      <button type="button" class="btn-outline" id="btn-to-weekly" style="width: 100%; margin-top: 12px;">이번 주 리포트 읽기 — 월요일마다 새로</button>
     </div>
 
     <!-- 내일 예고 -->
