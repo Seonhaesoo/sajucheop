@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="../css/style.css">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"2027년 정미년 운세 — 붉은 양의 해","datePublished":"2026-09-02","dateModified":"2026-09-02","author":{"@type":"Organization","name":"사주첩"},"publisher":{"@type":"Organization","name":"사주첩"},"mainEntityOfPage":"https://sajucheop.com/2027/","inLanguage":"ko"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"2027년 정미년 운세 — 붉은 양의 해","datePublished":"2026-09-02","dateModified":"2026-09-06","author":{"@type":"Organization","name":"사주첩"},"publisher":{"@type":"Organization","name":"사주첩"},"mainEntityOfPage":"https://sajucheop.com/2027/","inLanguage":"ko"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
     {"@type":"Question","name":"2027년은 무슨 해인가요?","acceptedAnswer":{"@type":"Answer","text":"2027년은 정미년(丁未年), 육십갑자의 44번째 해입니다. 천간 정(丁)은 붉은색·불, 지지 미(未)는 양을 뜻해 '붉은 양의 해'라고 부릅니다."}},
     {"@type":"Question","name":"2027년 정미년은 언제 시작되나요?","acceptedAnswer":{"@type":"Answer","text":"사주에서 해의 경계는 1월 1일이나 설날이 아니라 입춘입니다. 정미년은 2027년 2월 4일 입춘 시각부터 시작됩니다."}},
@@ -46,6 +46,11 @@
     .y-hero .yh-sub { font-size: 13px; color: #CFC5B4; }
     .y-hero .yh-overline { font-size: 12px; letter-spacing: 4px; color: #E0B04A; }
     .y-hero .yh-start { margin-top: 14px; font-size: 12.5px; color: #B7AC99; }
+    .ny-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .ny-grid a { display: block; padding: 10px 6px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; text-align: center; }
+    .ny-grid a b { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; }
+    .ny-grid a small { display: block; font-size: 11px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
+    @media (max-width: 480px) { .ny-grid { grid-template-columns: repeat(3, 1fr); } }
     .zo-row {
       display: flex;
       align-items: baseline;
@@ -122,6 +127,26 @@
   </div>
 
   <!-- 오픈 전 안내 (11월 1일 자동 해제) -->
+  <div class="card card-pad" id="y-pages" style="margin-top: 18px;">
+    <h3 class="section-title" style="font-size: 16px;">띠별 · 출생연도별 · 일주별로 보는 2027</h3>
+    <p class="reading-body" style="margin-top: 6px;">정미년 열두 달의 흐름을 띠와 태어난 해, 그리고 태어난 날의 두 글자(일주)로 각각 풀었습니다. 내 띠를 고르면 총운·재물·애정·직장·건강과 월별 흐름, 출생연도별 운세로 이어집니다.</p>
+    <div class="ny-grid four" style="margin-top: 12px;">
+        <a href="ddi/rat/"><b>子</b><small>쥐띠<br>해(害)</small></a>
+        <a href="ddi/ox/"><b>丑</b><small>소띠<br>충(沖)</small></a>
+        <a href="ddi/tiger/"><b>寅</b><small>호랑이띠<br>무난</small></a>
+        <a href="ddi/rabbit/"><b>卯</b><small>토끼띠<br>삼합·날삼재</small></a>
+        <a href="ddi/dragon/"><b>辰</b><small>용띠<br>무난</small></a>
+        <a href="ddi/snake/"><b>巳</b><small>뱀띠<br>방합</small></a>
+        <a href="ddi/horse/"><b>午</b><small>말띠<br>육합</small></a>
+        <a href="ddi/goat/"><b>未</b><small>양띠<br>본명년·날삼재</small></a>
+        <a href="ddi/monkey/"><b>申</b><small>원숭이띠<br>무난</small></a>
+        <a href="ddi/rooster/"><b>酉</b><small>닭띠<br>무난</small></a>
+        <a href="ddi/dog/"><b>戌</b><small>개띠<br>형(刑)</small></a>
+        <a href="ddi/pig/"><b>亥</b><small>돼지띠<br>삼합·날삼재</small></a>
+    </div>
+    <p class="reading-body" style="margin-top: 6px; font-size: 13px;"><a href="ddi/">12띠 전체 · 출생연도표</a> · <a href="ilju/">60일주별 2027 운세</a> · <a href="../samjae/">삼재 계산</a> · <a href="../tojeong/">토정비결</a></p>
+  </div>
+
   <div class="card reading-card y-preopen-only" id="y-gate" hidden style="margin-top: 18px;">
     <div class="reading-overline">오픈 준비 중</div>
     <h3 class="reading-title" style="font-size: 18px;" id="y-gate-title">정미년 운세는 11월 1일에 열립니다</h3>
@@ -260,6 +285,7 @@
 
   /* ---------- 띠별 ---------- */
   var ZODIAC = ['쥐', '소', '호랑이', '토끼', '용', '뱀', '말', '양', '원숭이', '닭', '개', '돼지'];
+  var ZO_SLUG = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig'];
   var ZO_2027 = [
     { b: 0, badge: '해(害)', warn: true, text: '미(未)와 해가 드는 해 — 관계의 오해가 생기기 쉬워요. 중요한 말은 글로 남기고, 서운함은 오래 두지 마세요.' },
     { b: 1, badge: '충(沖)', warn: true, text: '축미충 — 12띠 중 변동이 가장 큰 해. 이사·이직·정리 같은 전환에는 오히려 힘이 실립니다. 큰 서명만 신중히.' },
@@ -277,7 +303,7 @@
 
   $('#zo-list').innerHTML = ZO_2027.map(function (z) {
     return '<div class="zo-row">' +
-      '<span class="zo-name">' + ZODIAC[z.b] + '띠</span>' +
+      '<a class="zo-name" href="ddi/' + ZO_SLUG[z.b] + '/" style="text-decoration: none; color: inherit;">' + ZODIAC[z.b] + '띠</a>' +
       '<span class="zo-badge' + (z.good ? ' good' : '') + (z.warn ? ' warn' : '') + '">' + z.badge + '</span>' +
       '<span class="zo-text">' + z.text + '</span>' +
       '</div>';
