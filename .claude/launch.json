@@ -1,8 +1,37 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "sajucheop", "runtimeExecutable": "node", "runtimeArgs": ["server.js"], "port": 8321 },
-    { "name": "saengil", "runtimeExecutable": "node", "runtimeArgs": ["../SAENGIL/server.js"], "port": 8322 },
-    { "name": "dream", "runtimeExecutable": "node", "runtimeArgs": ["../DREAM/server.js"], "port": 8323 }
+    {
+      "name": "sajucheop",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "server.js"
+      ],
+      "port": 8321
+    },
+    {
+      "name": "saengil",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "../SAENGIL/server.js"
+      ],
+      "port": 8322
+    },
+    {
+      "name": "dream",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "../DREAM/server.js"
+      ],
+      "port": 8323
+    },
+    {
+      "name": "tarot",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "../TAROT/server.js"
+      ],
+      "port": 8324
+    }
   ]
 }
