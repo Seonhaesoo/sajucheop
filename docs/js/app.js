@@ -479,7 +479,7 @@
       var p2 = function (n) { return (n < 10 ? '0' : '') + n; };
       var inRange = inp.year >= 1940 && new Date(inp.year, inp.month - 1, inp.day) <= new Date();
       rl.innerHTML = inRange
-        ? '<a href="https://saengil.sajucheop.com/' + inp.year + '/' + p2(inp.month) + '/' + p2(inp.day) + '/" target="_blank" rel="noopener">생일첩에서 만 나이 · 기념일 · 띠 보기 →</a>'
+        ? '<a href="http://saengil.sajucheop.com/' + inp.year + '/' + p2(inp.month) + '/' + p2(inp.day) + '/" target="_blank" rel="noopener">생일첩에서 만 나이 · 기념일 · 띠 보기 →</a>'
         : '';
     }
 

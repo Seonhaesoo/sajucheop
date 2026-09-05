@@ -21,11 +21,11 @@ export function brandSvg() {
 export function shell(o) {
   const lang = o.lang || 'ko';
   const brand = lang === 'en' ? 'Sajucheop' : '사주첩';
-  const nav = (o.nav || []).concat(lang === 'en' ? [] : [{ href: 'https://saengil.sajucheop.com/', label: '생일첩' }, { href: 'https://dream.sajucheop.com/', label: '꿈첩' }]).map((n) => `<a href="${esc(n.href)}">${n.label}</a>`).join('\n      ');
+  const nav = (o.nav || []).concat(lang === 'en' ? [] : [{ href: 'http://saengil.sajucheop.com/', label: '생일첩' }, { href: 'https://dream.sajucheop.com/', label: '꿈첩' }]).map((n) => `<a href="${esc(n.href)}">${n.label}</a>`).join('\n      ');
   const ld = o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld)}</script>` : '';
   const footerLinks = lang === 'en'
     ? `<a href="${o.rel}en/">Chart</a><a href="${o.rel}terms.html">Terms</a><a href="${o.rel}privacy.html">Privacy</a>`
-    : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="https://saengil.sajucheop.com/">생일첩</a><a href="https://dream.sajucheop.com/">꿈첩</a>`;
+    : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일첩</a><a href="https://dream.sajucheop.com/">꿈첩</a>`;
   const footerNote = o.footerNote || (lang === 'en'
     ? 'For reflection and entertainment. Important decisions are always yours to make.'
     : '본 콘텐츠는 전통 명리학 이론을 바탕으로 한 참고용입니다.');
