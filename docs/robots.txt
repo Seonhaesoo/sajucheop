@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://sajucheop.com/sitemap.xml
+Sitemap: https://sajucheop.com/sitemap-pages.xml

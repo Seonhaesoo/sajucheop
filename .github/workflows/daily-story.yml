@@ -57,12 +57,16 @@ jobs:
           CARD_URL: https://sajucheop.com/daily-card.html?bot=1&offset=${{ github.event.inputs.offset || '0' }}
         run: node tools/daily-story.mjs
 
+      - name: 날짜별 일진·손없는날·절기 페이지 갱신
+        if: steps.gate.outputs.go == '1'
+        run: node tools/build-pages.mjs
+
       - name: 커밋 및 배포
         if: steps.gate.outputs.go == '1'
         run: |
           git config user.name 'sajucheop-bot'
           git config user.email 'bot@users.noreply.github.com'
-          git add docs/daily/
+          git add docs/daily/ docs/day/ docs/son/ docs/jeolgi/ docs/sitemap-pages.xml docs/robots.txt
           git commit -m "데일리 일진 카드 $(TZ=Asia/Seoul date +%F)" || echo '변경 없음'
           git pull --rebase
           git push
