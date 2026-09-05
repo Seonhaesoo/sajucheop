@@ -21,7 +21,7 @@ export function brandSvg() {
 export function shell(o) {
   const lang = o.lang || 'ko';
   const brand = lang === 'en' ? 'Sajucheop' : '사주첩';
-  const nav = (o.nav || []).map((n) => `<a href="${esc(n.href)}">${n.label}</a>`).join('\n      ');
+  const nav = (o.nav || []).concat(lang === 'en' ? [] : [{ href: 'https://saengil.sajucheop.com/', label: '생일첩' }]).map((n) => `<a href="${esc(n.href)}">${n.label}</a>`).join('\n      ');
   const ld = o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld)}</script>` : '';
   const footerLinks = lang === 'en'
     ? `<a href="${o.rel}en/">Chart</a><a href="${o.rel}terms.html">Terms</a><a href="${o.rel}privacy.html">Privacy</a>`

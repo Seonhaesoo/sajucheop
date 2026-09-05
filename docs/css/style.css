@@ -2384,3 +2384,17 @@ body.invite-mode .resume-chip { display: none !important; }
 .result-links { margin-top: 6px; font-size: 12.5px; }
 .result-links a { color: var(--seal-deep); text-decoration: none; border-bottom: 1px solid var(--underline); padding-bottom: 1px; }
 .result-links a:hover { color: var(--seal); }
+
+/* 자매 사이트 칩 — 헤더 브랜드 옆 */
+.brand-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.sis-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 11px 0 6px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+  font-family: var(--serif); font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em;
+  color: var(--muted); text-decoration: none; white-space: nowrap;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.sis-chip svg { flex: none; }
+.sis-chip:hover { color: var(--ink); border-color: var(--ink); }
+@media (max-width: 340px) { .sis-chip span { display: none; } .sis-chip { padding: 0 6px; } }
