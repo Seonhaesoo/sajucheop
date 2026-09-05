@@ -1,0 +1,21 @@
+name: threads-check
+
+# 쓰레드 토큰이 실제로 동작하는지 읽기 전용으로 확인 (게시 없음)
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+    steps:
+      - name: /me 조회
+        run: |
+          if [ -z "$THREADS_ACCESS_TOKEN" ]; then echo "THREADS_ACCESS_TOKEN 없음"; exit 1; fi
+          RES=$(curl -s "https://graph.threads.net/v1.0/me?fields=id,username,threads_profile_picture_url&access_token=${THREADS_ACCESS_TOKEN}")
+          echo "응답: $(echo "$RES" | sed 's/"threads_profile_picture_url":"[^"]*"/"threads_profile_picture_url":"(생략)"/')"
+          ID=$(echo "$RES" | sed -n 's/.*"id":"\([0-9]*\)".*/\1/p')
+          if [ -z "$ID" ]; then echo "토큰이 유효하지 않습니다"; exit 1; fi
+          if [ "$ID" = "$THREADS_USER_ID" ]; then echo "OK — 사용자 ID 일치 ($ID)"; else echo "경고 — 시크릿 THREADS_USER_ID($THREADS_USER_ID)와 토큰의 사용자($ID)가 다릅니다"; exit 1; fi
