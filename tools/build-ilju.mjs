@@ -148,7 +148,7 @@ list.forEach((e, i) => {
         ${siblings.map((x) => `<a href="${rel}ilju/${x.slug}/"${x === e ? ' class="cur"' : ''}><b>${x.han}</b><small>${x.kor}일주<br>${esc(x.alias)}</small></a>`).join('\n        ')}
       </div>
 
-      <p class="callout">← <a href="${rel}ilju/${prev.slug}/">${prev.kor}일주</a> · <a href="${rel}ilju/${next.slug}/">${next.kor}일주</a> → · <a href="${rel}ilju/">60일주 전체</a> · <a href="${rel}guide/${GUIDE[e.s]}.html">${st.kor}${st.el} 일간 사전</a></p>
+      <p class="callout">← <a href="${rel}ilju/${prev.slug}/">${prev.kor}일주</a> · <a href="${rel}ilju/${next.slug}/">${next.kor}일주</a> → · <a href="${rel}ilju/">60일주 전체</a> · <a href="${rel}guide/${GUIDE[e.s]}.html">${st.kor}${st.el} 일간 사전</a> · <a href="${rel}2027/ilju/${e.slug}/"><b>${e.kor}일주 2027년 운세</b></a></p>
     </div>
 
     <div class="ga-cta">

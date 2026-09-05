@@ -565,7 +565,7 @@
     for (var k = 0; k < 60; k++) if (k % 10 === p.day.stem && k % 12 === p.day.branch) { iljuIdx = k; break; }
     var iljuName = M.ganjiName(p.day.stem, p.day.branch);
     var iljuLink = (window.ILJU_SLUGS && iljuIdx >= 0)
-      ? '<div>일주 <b><a href="ilju/' + window.ILJU_SLUGS[iljuIdx] + '/" style="color: var(--seal);">' + iljuName.kor + '일주 사전 →</a></b></div>'
+      ? '<div>일주 <b><a href="ilju/' + window.ILJU_SLUGS[iljuIdx] + '/" style="color: var(--seal);">' + iljuName.kor + '일주 사전 →</a></b> · <b><a href="2027/ilju/' + window.ILJU_SLUGS[iljuIdx] + '/" style="color: var(--seal);">2027년 운세 →</a></b></div>'
       : '';
     $('#r-foot').innerHTML =
       '<div>일간 <b>' + me.kor + me.el + ' ' + me.han + EL_HAN[me.el] + '</b></div>' +
