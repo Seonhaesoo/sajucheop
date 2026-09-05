@@ -294,7 +294,9 @@
     $('#mr-score').textContent = score;
     $('#mr-tier').textContent = tier;
     $('#mr-stem-title').textContent = rel.title;
+    var DM_SLUG = ['yang-wood', 'yin-wood', 'yang-fire', 'yin-fire', 'yang-earth', 'yin-earth', 'yang-metal', 'yin-metal', 'yang-water', 'yin-water'];
     $('#mr-stem-body').textContent = rel.body;
+    $('#mr-stem-body').innerHTML += ' <a href="../guide/compatibility/' + DM_SLUG[a] + '-' + DM_SLUG[b] + '/" style="color: var(--seal); white-space: nowrap;">' + STEM_EN[a] + ' × ' + STEM_EN[b] + ' in depth →</a>';
 
     var sipAtoB = M.sipseongOf(b, a), sipBtoA = M.sipseongOf(a, b);
     var glossOf = function (sip) {

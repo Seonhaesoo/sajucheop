@@ -116,6 +116,7 @@
         <span class="section-tag" style="color: #9A8F7E; font-weight: 400;" id="en-birth-line"></span>
       </div>
       <div class="en-pillars" id="en-pillars"></div>
+      <p class="form-microcopy" id="en-pillar-link" style="margin-top: 12px; text-align: left; font-size: 13px;" hidden></p>
       <p class="form-microcopy" id="en-notice" style="margin-top: 10px;" hidden></p>
     </div>
 
@@ -188,6 +189,7 @@
 
 <script src="../js/manseryeok.js"></script>
 <script src="../js/gunghap.js"></script>
+<script src="../js/en-pillar-slugs.js"></script>
 <script>
 (function () {
   'use strict';
@@ -363,6 +365,20 @@
       pillarHtml('Day', p.day, true) +
       pillarHtml('Hour', p.hour, false);
     $('#en-birth-line').textContent = MONTHS[r.input.month - 1] + ' ' + r.input.day + ', ' + r.input.year;
+
+    /* Day Pillar article — 60 pages under /en/guide/day-pillar/ */
+    var pl = $('#en-pillar-link');
+    if (pl && window.EN_PILLAR_SLUGS) {
+      var dk = -1;
+      for (var k = 0; k < 60; k++) if (k % 10 === p.day.stem && k % 12 === p.day.branch) { dk = k; break; }
+      if (dk >= 0) {
+        var slug = window.EN_PILLAR_SLUGS[dk];
+        var py = slug.split('-').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+        pl.innerHTML = 'Your Day Pillar is <b>' + py + ' (' + M.STEMS[p.day.stem].han + M.BRANCHES[p.day.branch].han + ')</b> — “' + window.EN_PILLAR_ALIAS[dk] + '”. ' +
+          '<a href="guide/day-pillar/' + slug + '/" style="color: var(--seal);">Read what it means →</a>';
+        pl.hidden = false;
+      }
+    }
 
     var notice = $('#en-notice');
     if (r.jeolipWarning) {

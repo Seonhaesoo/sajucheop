@@ -6,6 +6,7 @@ import { kstToday, loadEngine } from './engine.mjs';
 import { DAY_MASTERS } from './en-daymaster-data.mjs';
 
 const STEM_KOR = ['갑목', '을목', '병화', '정화', '무토', '기토', '경금', '신금', '임수', '계수'];
+const STEM_PINYIN_EN = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'];
 const STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
 
 const p = personaForWeek();
@@ -51,16 +52,21 @@ fs.writeFileSync('docs/social/engage.json', JSON.stringify({ date: `${t.y}-${Str
 console.log('참여형 글(' + kind + ') — 상대 ' + p.kor + '일주 ' + p.alias);
 console.log(text);
 
-const UID = process.env.THREADS_USER_ID, TOKEN = process.env.THREADS_ACCESS_TOKEN;
-if (!UID || !TOKEN) { console.log('THREADS 시크릿이 없어 게시는 건너뜁니다.'); process.exit(0); }
-const base = 'https://graph.threads.net/v1.0/' + UID;
-async function post(url, params) {
-  const r = await fetch(url, { method: 'POST', body: new URLSearchParams({ ...params, access_token: TOKEN }) });
-  return r.json();
+/* 영문 전용 글 — 영문 계정이 있으면 따로 게시 */
+const enOnly = {
+  intro: ['This week\'s match: "' + dm.arch + '" (' + dm.name + ', ' + STEM_PINYIN_EN[p.stem] + ').', 'What\'s your score with them? Birthday in, ten seconds out → ' + enUrl, '', 'Drop your score in the replies — 90+ is fate 🔥'],
+  hap: ['This week\'s match "' + dm.arch + '" combines with ' + DAY_MASTERS[STEM_HAP[p.stem]].name + ' Day Masters.', 'What\'s yours? What\'s your score? → ' + enUrl, '', 'Beat my score in the replies.'],
+  weekend: ['Weekend challenge 🔥 "' + dm.arch + '" vs. you — and your partner.', 'Both of you enter, see who scores higher → ' + enUrl, '', 'Screenshot the result and tag @sajucheop.']
+}[kind].join('\n');
+fs.writeFileSync('docs/social/engage-en.txt', enOnly + '\n');
+
+const { creds, publish } = await import('./threads-api.mjs');
+const ko = creds(false), enC = creds(true);
+if (!ko && !enC) { console.log('THREADS 시크릿이 없어 게시는 건너뜁니다.'); process.exit(0); }
+try {
+  if (ko) await publish(ko, { text });
+  if (enC) await publish(enC, { text: enOnly });
+} catch (e) {
+  console.error(e.message);
+  process.exit(1);
 }
-const j1 = await post(base + '/threads', { media_type: 'TEXT', text });
-if (!j1.id) { console.error('컨테이너 생성 실패:', JSON.stringify(j1)); process.exit(1); }
-await new Promise((r) => setTimeout(r, 5000));
-const j2 = await post(base + '/threads_publish', { creation_id: j1.id });
-if (!j2.id) { console.error('게시 실패:', JSON.stringify(j2)); process.exit(1); }
-console.log('쓰레드 게시 완료:', j2.id);

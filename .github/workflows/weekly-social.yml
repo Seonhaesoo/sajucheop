@@ -20,6 +20,8 @@ jobs:
       IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
       THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
       THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+      THREADS_EN_USER_ID: ${{ secrets.THREADS_EN_USER_ID }}
+      THREADS_EN_ACCESS_TOKEN: ${{ secrets.THREADS_EN_ACCESS_TOKEN }}
       MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v4
@@ -84,6 +86,10 @@ jobs:
       - name: 쓰레드 리스트글 게시
         if: steps.gate.outputs.go == '1' && env.THREADS_ACCESS_TOKEN != ''
         run: node tools/threads-text-publish.mjs
+
+      - name: 쓰레드 영문 계정 리스트글 게시
+        if: steps.gate.outputs.go == '1' && env.THREADS_EN_ACCESS_TOKEN != ''
+        run: node tools/threads-text-publish.mjs --en
 
       - name: 웹훅 발행 (Make 등 서드파티)
         if: steps.gate.outputs.go == '1' && env.MAKE_WEBHOOK_URL != ''

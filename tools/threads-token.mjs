@@ -12,6 +12,10 @@ import { execSync } from 'node:child_process';
 const SECRET = process.env.THREADS_APP_SECRET;
 const SHORT = process.env.THREADS_SHORT_TOKEN;
 const doSet = process.argv.includes('--set');
+/* --en : 영문 계정용 시크릿(THREADS_EN_USER_ID / THREADS_EN_ACCESS_TOKEN)에 등록 */
+const isEn = process.argv.includes('--en');
+const NAME_UID = isEn ? 'THREADS_EN_USER_ID' : 'THREADS_USER_ID';
+const NAME_TOKEN = isEn ? 'THREADS_EN_ACCESS_TOKEN' : 'THREADS_ACCESS_TOKEN';
 
 if (!SHORT) {
   console.error('THREADS_SHORT_TOKEN 이 없습니다. 위 사용법대로 환경변수를 먼저 넣어 주세요.');
@@ -51,9 +55,9 @@ console.log('쓰레드 계정: @' + me.username + ' (ID ' + me.id + ')');
 
 /* 3) GitHub 시크릿 등록 */
 if (doSet) {
-  execSync('gh secret set THREADS_USER_ID --body "' + me.id + '"', { stdio: 'inherit' });
-  execSync('gh secret set THREADS_ACCESS_TOKEN', { input: token, stdio: ['pipe', 'inherit', 'inherit'] });
-  console.log('GitHub 시크릿 등록 완료: THREADS_USER_ID, THREADS_ACCESS_TOKEN — 다음 봇 실행부터 쓰레드에 게시됩니다.');
+  execSync('gh secret set ' + NAME_UID + ' --body "' + me.id + '"', { stdio: 'inherit' });
+  execSync('gh secret set ' + NAME_TOKEN, { input: token, stdio: ['pipe', 'inherit', 'inherit'] });
+  console.log('GitHub 시크릿 등록 완료: ' + NAME_UID + ', ' + NAME_TOKEN + ' — 다음 봇 실행부터 ' + (isEn ? '영문 계정' : '쓰레드') + '에 게시됩니다.');
   console.log('토큰은 60일마다 만료됩니다. 자동 갱신은 .github/workflows/threads-token-refresh.yml 참고 (GH_PAT 시크릿 필요).');
 } else {
   console.log('\n--set 을 붙여 다시 실행하면 GitHub 시크릿에 등록됩니다.');

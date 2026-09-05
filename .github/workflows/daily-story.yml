@@ -23,6 +23,8 @@ jobs:
       IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
       THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
       THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+      THREADS_EN_USER_ID: ${{ secrets.THREADS_EN_USER_ID }}
+      THREADS_EN_ACCESS_TOKEN: ${{ secrets.THREADS_EN_ACCESS_TOKEN }}
       MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v4
@@ -61,12 +63,16 @@ jobs:
         if: steps.gate.outputs.go == '1'
         run: node tools/build-pages.mjs
 
+      - name: 영문 날짜별 일진 페이지 갱신
+        if: steps.gate.outputs.go == '1'
+        run: node tools/build-en-pages.mjs
+
       - name: 커밋 및 배포
         if: steps.gate.outputs.go == '1'
         run: |
           git config user.name 'sajucheop-bot'
           git config user.email 'bot@users.noreply.github.com'
-          git add docs/daily/ docs/day/ docs/son/ docs/jeolgi/ docs/sitemap-pages.xml docs/robots.txt
+          git add docs/daily/ docs/day/ docs/son/ docs/jeolgi/ docs/en/day/ docs/sitemap-pages.xml docs/sitemap-pages-en.xml docs/robots.txt
           git commit -m "데일리 일진 카드 $(TZ=Asia/Seoul date +%F)" || echo '변경 없음'
           git pull --rebase
           git push
@@ -95,6 +101,10 @@ jobs:
         env:
           IMAGE_VER: ${{ github.run_id }}
         run: node tools/threads-publish.mjs
+
+      - name: 쓰레드 영문 계정 게시
+        if: steps.gate.outputs.go == '1' && env.THREADS_EN_ACCESS_TOKEN != ''
+        run: node tools/threads-publish.mjs --en
 
       - name: 웹훅 발행 (Make 등 서드파티)
         if: steps.gate.outputs.go == '1' && env.MAKE_WEBHOOK_URL != ''

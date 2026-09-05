@@ -158,8 +158,11 @@ list.forEach((e, i) => {
   </article>`;
 
   const url = `/ilju/${e.slug}/`;
+  const PY_S = ['jia', 'yi', 'bing', 'ding', 'wu', 'ji', 'geng', 'xin', 'ren', 'gui'], PY_B = ['zi', 'chou', 'yin', 'mao', 'chen', 'si', 'wu', 'wei', 'shen', 'you', 'xu', 'hai'];
+  const enUrl = `${SITE}/en/guide/day-pillar/${PY_S[e.s]}-${PY_B[e.b]}/`;
   write(url.slice(1), shell({
-    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${e.kor}일주(${e.han}) — ${e.alias}`,
+    rel, title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${e.kor}일주(${e.han}) — ${e.alias}`,
+    extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${enUrl}">`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '60일주 사전', url: SITE + '/ilju/' }, { name: `${e.kor}일주`, url: SITE + url }]),
       { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
     body
