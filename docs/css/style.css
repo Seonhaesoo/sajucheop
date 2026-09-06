@@ -1172,6 +1172,7 @@ body.invite-mode .daily-bit,
 body.invite-mode .pwa-banner,
 body.invite-mode .book-strip,
 body.invite-mode .gh-home,
+body.invite-mode .family-bar,
 body.invite-mode .resume-chip { display: none !important; }
 
 /* 언어 전환 칩 */
@@ -2440,16 +2441,45 @@ body.invite-mode .resume-chip { display: none !important; }
 .result-links a { color: var(--seal-deep); text-decoration: none; border-bottom: 1px solid var(--underline); padding-bottom: 1px; }
 .result-links a:hover { color: var(--seal); }
 
-/* 자매 사이트 칩 — 헤더 브랜드 옆 */
-.brand-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.sis-chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  height: 28px; padding: 0 11px 0 6px;
-  border: 1px solid var(--line); border-radius: 999px; background: var(--card);
-  font-family: var(--serif); font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em;
-  color: var(--muted); text-decoration: none; white-space: nowrap;
-  transition: border-color 0.15s ease, color 0.15s ease;
+/* 첩 시리즈 메뉴바 — 헤더 위 한 줄(자매 사이트). 칩을 헤더에 늘어놓으면 375px에서 넘쳐서 바로 뺐음 */
+.family-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 0 10px;
+  height: 38px;
+  background: #EEE6D6;
+  border-bottom: 1px solid var(--hairline);
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.sis-chip svg { flex: none; }
-.sis-chip:hover { color: var(--ink); border-color: var(--ink); }
-@media (max-width: 480px) { .sis-chip span { display: none; } .sis-chip { padding: 0 6px; } }
+.family-bar::-webkit-scrollbar { display: none; }
+.fb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  font-family: var(--serif);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+}
+.fb-item i {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  border-radius: 4px;
+  background: #C9BFAE;
+  color: #FFFDF9;
+}
+.fb-item:hover { color: var(--ink); }
+.fb-item.on { color: var(--ink); font-weight: 700; border-bottom-color: var(--seal); }
+.fb-item.on i { background: var(--seal); }
