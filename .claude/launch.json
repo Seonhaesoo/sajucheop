@@ -32,6 +32,26 @@
         "../TAROT/server.js"
       ],
       "port": 8324
+    },
+    {
+      "name": "money",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8325",
+        "--directory",
+        "../MONEY/design"
+      ],
+      "port": 8325
+    },
+    {
+      "name": "donpyo",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "../MONEY/server.js"
+      ],
+      "port": 8326
     }
   ]
 }
