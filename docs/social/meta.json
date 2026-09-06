@@ -1,8 +1,9 @@
 {
-  "seq": 1,
-  "type": "viral",
-  "date": "2026-09-04",
-  "slug": "teuk-gapmok",
-  "title": "갑목 특",
-  "cards": 7
+  "seq": 2,
+  "type": "hook",
+  "date": "2026-09-07",
+  "slug": "hook-love-style",
+  "title": "일간별 연애 스타일, 내 얘기 맞음?",
+  "cards": 7,
+  "en": null
 }
