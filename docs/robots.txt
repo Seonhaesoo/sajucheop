@@ -10,3 +10,5 @@ Sitemap: https://sajucheop.com/sitemap-en-pillars.xml
 Sitemap: https://sajucheop.com/sitemap-en-compat.xml
 Sitemap: https://sajucheop.com/sitemap-pages-en.xml
 Sitemap: https://sajucheop.com/sitemap-2027.xml
+Sitemap: https://sajucheop.com/sitemap-ddi-gunghap.xml
+Sitemap: https://sajucheop.com/sitemap-ddi-daily.xml

@@ -67,12 +67,16 @@ jobs:
         if: steps.gate.outputs.go == '1'
         run: node tools/build-en-pages.mjs
 
+      - name: 오늘·내일 띠별 운세 갱신
+        if: steps.gate.outputs.go == '1'
+        run: node tools/build-ddi-daily.mjs
+
       - name: 커밋 및 배포
         if: steps.gate.outputs.go == '1'
         run: |
           git config user.name 'sajucheop-bot'
           git config user.email 'bot@users.noreply.github.com'
-          git add docs/daily/ docs/day/ docs/son/ docs/jeolgi/ docs/en/day/ docs/sitemap-pages.xml docs/sitemap-pages-en.xml docs/robots.txt
+          git add docs/daily/ docs/day/ docs/son/ docs/jeolgi/ docs/en/day/ docs/today/ docs/tomorrow/ docs/sitemap-pages.xml docs/sitemap-pages-en.xml docs/sitemap-ddi-daily.xml docs/robots.txt
           git commit -m "데일리 일진 카드 $(TZ=Asia/Seoul date +%F)" || echo '변경 없음'
           git pull --rebase
           git push
