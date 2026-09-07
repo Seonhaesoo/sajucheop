@@ -52,6 +52,14 @@
         "../MONEY/server.js"
       ],
       "port": 8326
+    },
+    {
+      "name": "momja",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "../MOMJA/server.js"
+      ],
+      "port": 8327
     }
   ]
 }
