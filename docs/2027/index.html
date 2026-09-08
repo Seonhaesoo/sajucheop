@@ -51,6 +51,21 @@
     .ny-grid a b { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; }
     .ny-grid a small { display: block; font-size: 11px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
     @media (max-width: 480px) { .ny-grid { grid-template-columns: repeat(3, 1fr); } }
+    .ny-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .ny-card { display: flex; flex-direction: column; align-items: center; padding: 12px 8px 10px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; text-align: center; }
+    .ny-card b { font-family: 'Noto Serif KR', serif; font-size: 22px; line-height: 1.1; }
+    .ny-card .nc-name { font-size: 13px; font-weight: 700; margin-top: 4px; }
+    .ny-card .nc-score { font-family: 'Noto Serif KR', serif; font-size: 20px; font-weight: 700; color: var(--seal); line-height: 1.2; margin-top: 2px; }
+    .ny-card .nc-score i { font-style: normal; font-size: 11px; margin-left: 1px; }
+    .ny-card small { font-size: 11px; color: var(--muted); line-height: 1.45; margin-top: 5px; }
+    @media (max-width: 480px) { .ny-cards { grid-template-columns: repeat(2, 1fr); } }
+    .ny-ilju-row { padding: 10px 0; border-top: 1px solid var(--line-soft); }
+    .ny-ilju-row:first-child { border-top: none; padding-top: 0; }
+    .nir-head { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+    .nir-cells { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .nir-cells a { display: block; padding: 7px 2px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 8px; text-decoration: none; color: inherit; text-align: center; }
+    .nir-cells a b { display: block; font-family: 'Noto Serif KR', serif; font-size: 15px; }
+    .nir-cells a small { display: block; font-size: 10.5px; color: var(--faint); margin-top: 1px; }
     .zo-row {
       display: flex;
       align-items: baseline;
@@ -130,21 +145,44 @@
   <div class="card card-pad" id="y-pages" style="margin-top: 18px;">
     <h3 class="section-title" style="font-size: 16px;">띠별 · 출생연도별 · 일주별로 보는 2027</h3>
     <p class="reading-body" style="margin-top: 6px;">정미년 열두 달의 흐름을 띠와 태어난 해, 그리고 태어난 날의 두 글자(일주)로 각각 풀었습니다. 내 띠를 고르면 총운·재물·애정·직장·건강과 월별 흐름, 출생연도별 운세로 이어집니다.</p>
-    <div class="ny-grid four" style="margin-top: 12px;">
-        <a href="ddi/rat/"><b>子</b><small>쥐띠<br>해(害)</small></a>
-        <a href="ddi/ox/"><b>丑</b><small>소띠<br>충(沖)</small></a>
-        <a href="ddi/tiger/"><b>寅</b><small>호랑이띠<br>무난</small></a>
-        <a href="ddi/rabbit/"><b>卯</b><small>토끼띠<br>삼합·날삼재</small></a>
-        <a href="ddi/dragon/"><b>辰</b><small>용띠<br>무난</small></a>
-        <a href="ddi/snake/"><b>巳</b><small>뱀띠<br>방합</small></a>
-        <a href="ddi/horse/"><b>午</b><small>말띠<br>육합</small></a>
-        <a href="ddi/goat/"><b>未</b><small>양띠<br>본명년·날삼재</small></a>
-        <a href="ddi/monkey/"><b>申</b><small>원숭이띠<br>무난</small></a>
-        <a href="ddi/rooster/"><b>酉</b><small>닭띠<br>무난</small></a>
-        <a href="ddi/dog/"><b>戌</b><small>개띠<br>형(刑)</small></a>
-        <a href="ddi/pig/"><b>亥</b><small>돼지띠<br>삼합·날삼재</small></a>
+    <div class="ny-cards" style="margin-top: 12px;">
+        <!-- ny:ddi-cards -->
+        <a class="ny-card" href="ddi/rat/"><b>子</b><span class="nc-name">쥐띠</span><span class="nc-score">66<i>점</i></span><small>오해를 줄이면 맑아지는 해 — 중요한 말은 글로</small></a>
+        <a class="ny-card" href="ddi/ox/"><b>丑</b><span class="nc-name">소띠</span><span class="nc-score">60<i>점</i></span><small>변동의 해 — 이사·이직·정리에는 힘, 큰 서명은 신중히</small></a>
+        <a class="ny-card" href="ddi/tiger/"><b>寅</b><span class="nc-name">호랑이띠</span><span class="nc-score">80<i>점</i></span><small>조용히 실력이 쌓이는 해 — 활동과 지출의 균형</small></a>
+        <a class="ny-card" href="ddi/rabbit/"><b>卯</b><span class="nc-name">토끼띠</span><span class="nc-score">91<i>점</i></span><small>사람이 모이고 결실이 나는 해 — 날삼재 마무리를 겸해서</small></a>
+        <a class="ny-card" href="ddi/dragon/"><b>辰</b><span class="nc-name">용띠</span><span class="nc-score">81<i>점</i></span><small>기반이 두꺼워지는 해 — 터전·문서 정리에 좋음</small></a>
+        <a class="ny-card" href="ddi/snake/"><b>巳</b><span class="nc-name">뱀띠</span><span class="nc-score">87<i>점</i></span><small>온기가 도는 해 — 표현하고 알리는 일에 순풍</small></a>
+        <a class="ny-card" href="ddi/horse/"><b>午</b><span class="nc-name">말띠</span><span class="nc-score">95<i>점</i></span><small>열두 띠 중 가장 잘 맞는 해 — 인연·계약·동업에 순풍</small></a>
+        <a class="ny-card" href="ddi/goat/"><b>未</b><span class="nc-name">양띠</span><span class="nc-score">75<i>점</i></span><small>본명년 — 책임과 이름이 함께 오르는 해</small></a>
+        <a class="ny-card" href="ddi/monkey/"><b>申</b><span class="nc-name">원숭이띠</span><span class="nc-score">76<i>점</i></span><small>실속의 해 — 저축·기술·자격처럼 남는 것을</small></a>
+        <a class="ny-card" href="ddi/rooster/"><b>酉</b><span class="nc-name">닭띠</span><span class="nc-score">76<i>점</i></span><small>성실이 평가로 돌아오는 해 — 꾸준함이 통함</small></a>
+        <a class="ny-card" href="ddi/dog/"><b>戌</b><span class="nc-name">개띠</span><span class="nc-score">66<i>점</i></span><small>마찰을 다듬는 해 — 문서와 약속을 꼼꼼히</small></a>
+        <a class="ny-card" href="ddi/pig/"><b>亥</b><span class="nc-name">돼지띠</span><span class="nc-score">93<i>점</i></span><small>확장과 결실의 해 — 미뤄 둔 결정을 실행으로</small></a>
+        <!-- /ny:ddi-cards -->
     </div>
-    <p class="reading-body" style="margin-top: 6px; font-size: 13px;"><a href="ddi/">12띠 전체 · 출생연도표</a> · <a href="ilju/">60일주별 2027 운세</a> · <a href="../samjae/">삼재 계산</a> · <a href="../tojeong/">토정비결</a></p>
+    <p class="form-microcopy" style="margin-top: 10px; text-align: left;">점수는 미(未)와의 지지 관계(육합·삼합·방합은 더하고 충·형·해·원진·파는 빼고)에 띠 오행이 정화(丁火)에게 받는 십성 보정과 날삼재를 더해 60~95점으로 맞춘 참고값입니다.</p>
+    <p class="reading-body" style="margin-top: 6px; font-size: 13px;"><a href="ddi/">12띠 전체 · 점수 순위 · 출생연도표</a> · <a href="ilju/">60일주별 2027 운세</a> · <a href="../today/ddi/">오늘의 띠별 운세</a> · <a href="../ddi-gunghap/">띠 궁합</a> · <a href="../samjae/">삼재 계산</a> · <a href="../tojeong/">토정비결</a></p>
+  </div>
+
+  <!-- 60일주 -->
+  <div class="card card-pad" id="y-ilju" style="margin-top: 18px;">
+    <h3 class="section-title" style="font-size: 16px;">일주별로 보는 2027 — 60일주</h3>
+    <p class="reading-body" style="margin-top: 6px;">띠는 태어난 해의 한 글자지만 사주의 주인공은 태어난 날의 천간, 일간입니다. 같은 정미년도 갑목에게는 상관의 해, 경금에게는 정관의 해, 임수에게는 정재의 해로 다르게 옵니다. 내 일주를 모르면 아래 "내 사주로 보는 2027"에 생일을 넣어 보세요.</p>
+    <div class="ny-ilju" style="margin-top: 12px;">
+        <!-- ny:ilju-grid -->
+        <div class="ny-ilju-row"><div class="nir-head">갑목(甲) 일간 — 정화 상관</div><div class="nir-cells"><a href="ilju/gapja/"><b>甲子</b><small>갑자</small></a><a href="ilju/gapsul/"><b>甲戌</b><small>갑술</small></a><a href="ilju/gapsin/"><b>甲申</b><small>갑신</small></a><a href="ilju/gabo/"><b>甲午</b><small>갑오</small></a><a href="ilju/gapjin/"><b>甲辰</b><small>갑진</small></a><a href="ilju/gabin/"><b>甲寅</b><small>갑인</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">을목(乙) 일간 — 정화 식신</div><div class="nir-cells"><a href="ilju/eulchuk/"><b>乙丑</b><small>을축</small></a><a href="ilju/eulhae/"><b>乙亥</b><small>을해</small></a><a href="ilju/euryu/"><b>乙酉</b><small>을유</small></a><a href="ilju/eulmi/"><b>乙未</b><small>을미</small></a><a href="ilju/eulsa/"><b>乙巳</b><small>을사</small></a><a href="ilju/eulmyo/"><b>乙卯</b><small>을묘</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">병화(丙) 일간 — 정화 겁재</div><div class="nir-cells"><a href="ilju/byeongin/"><b>丙寅</b><small>병인</small></a><a href="ilju/byeongja/"><b>丙子</b><small>병자</small></a><a href="ilju/byeongsul/"><b>丙戌</b><small>병술</small></a><a href="ilju/byeongsin/"><b>丙申</b><small>병신</small></a><a href="ilju/byeongo/"><b>丙午</b><small>병오</small></a><a href="ilju/byeongjin/"><b>丙辰</b><small>병진</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">정화(丁) 일간 — 정화 비견</div><div class="nir-cells"><a href="ilju/jeongmyo/"><b>丁卯</b><small>정묘</small></a><a href="ilju/jeongchuk/"><b>丁丑</b><small>정축</small></a><a href="ilju/jeonghae/"><b>丁亥</b><small>정해</small></a><a href="ilju/jeongyu/"><b>丁酉</b><small>정유</small></a><a href="ilju/jeongmi/"><b>丁未</b><small>정미</small></a><a href="ilju/jeongsa/"><b>丁巳</b><small>정사</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">무토(戊) 일간 — 정화 정인</div><div class="nir-cells"><a href="ilju/mujin/"><b>戊辰</b><small>무진</small></a><a href="ilju/muin/"><b>戊寅</b><small>무인</small></a><a href="ilju/muja/"><b>戊子</b><small>무자</small></a><a href="ilju/musul/"><b>戊戌</b><small>무술</small></a><a href="ilju/musin/"><b>戊申</b><small>무신</small></a><a href="ilju/muo/"><b>戊午</b><small>무오</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">기토(己) 일간 — 정화 편인</div><div class="nir-cells"><a href="ilju/gisa/"><b>己巳</b><small>기사</small></a><a href="ilju/gimyo/"><b>己卯</b><small>기묘</small></a><a href="ilju/gichuk/"><b>己丑</b><small>기축</small></a><a href="ilju/gihae/"><b>己亥</b><small>기해</small></a><a href="ilju/giyu/"><b>己酉</b><small>기유</small></a><a href="ilju/gimi/"><b>己未</b><small>기미</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">경금(庚) 일간 — 정화 정관</div><div class="nir-cells"><a href="ilju/gyeongo/"><b>庚午</b><small>경오</small></a><a href="ilju/gyeongjin/"><b>庚辰</b><small>경진</small></a><a href="ilju/gyeongin/"><b>庚寅</b><small>경인</small></a><a href="ilju/gyeongja/"><b>庚子</b><small>경자</small></a><a href="ilju/gyeongsul/"><b>庚戌</b><small>경술</small></a><a href="ilju/gyeongsin/"><b>庚申</b><small>경신</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">신금(辛) 일간 — 정화 편관</div><div class="nir-cells"><a href="ilju/sinmi/"><b>辛未</b><small>신미</small></a><a href="ilju/sinsa/"><b>辛巳</b><small>신사</small></a><a href="ilju/sinmyo/"><b>辛卯</b><small>신묘</small></a><a href="ilju/sinchuk/"><b>辛丑</b><small>신축</small></a><a href="ilju/sinhae/"><b>辛亥</b><small>신해</small></a><a href="ilju/sinyu/"><b>辛酉</b><small>신유</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">임수(壬) 일간 — 정화 정재</div><div class="nir-cells"><a href="ilju/imsin/"><b>壬申</b><small>임신</small></a><a href="ilju/imo/"><b>壬午</b><small>임오</small></a><a href="ilju/imjin/"><b>壬辰</b><small>임진</small></a><a href="ilju/imin/"><b>壬寅</b><small>임인</small></a><a href="ilju/imja/"><b>壬子</b><small>임자</small></a><a href="ilju/imsul/"><b>壬戌</b><small>임술</small></a></div></div>
+        <div class="ny-ilju-row"><div class="nir-head">계수(癸) 일간 — 정화 편재</div><div class="nir-cells"><a href="ilju/gyeyu/"><b>癸酉</b><small>계유</small></a><a href="ilju/gyemi/"><b>癸未</b><small>계미</small></a><a href="ilju/gyesa/"><b>癸巳</b><small>계사</small></a><a href="ilju/gyemyo/"><b>癸卯</b><small>계묘</small></a><a href="ilju/gyechuk/"><b>癸丑</b><small>계축</small></a><a href="ilju/gyehae/"><b>癸亥</b><small>계해</small></a></div></div>
+        <!-- /ny:ilju-grid -->
+    </div>
   </div>
 
   <div class="card reading-card y-preopen-only" id="y-gate" hidden style="margin-top: 18px;">

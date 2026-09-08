@@ -2433,3 +2433,27 @@ body.invite-mode .resume-chip { display: none !important; }
 .fb-item:hover { color: var(--ink); }
 .fb-item.on { color: var(--ink); font-weight: 700; border-bottom-color: var(--seal); }
 .fb-item.on i { background: var(--seal); }
+
+/* ---------- 오늘의 띠별 운세 카드 — 캔버스로 그려 저장·공유 (docs/js/fortune-card.js) ---------- */
+.fcard {
+  margin: 8px 0 4px;
+  padding: 16px 16px 14px;
+  background: #FFFDF9;
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  text-align: center;
+}
+.fcard img {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  margin: 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(33, 28, 21, 0.16);
+  background: var(--paper);
+}
+.fcard-btns { display: flex; gap: 8px; max-width: 320px; margin: 14px auto 0; }
+.fcard-btns > button { flex: 1; width: auto; height: 46px; font-size: 14px; }
+.fcard p.fcard-hint { margin: 8px 0 0; font-size: 12px; line-height: 1.5; color: var(--faint); }

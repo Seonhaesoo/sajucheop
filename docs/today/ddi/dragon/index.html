@@ -44,6 +44,7 @@
     .td-chips a { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: inherit; background: #FFFDF9; }
     .td-chips a.on { border-color: var(--seal); color: var(--seal); font-weight: 700; }
   </style>
+  <script defer src="../../../js/fortune-card.js"></script>
 </head>
 <body>
 <div class="app doc">
@@ -98,6 +99,17 @@
         <div><small>숫자</small>5·10</div>
       </div>
       <p style="font-size: 12.5px; color: var(--muted);">시간은 辰와 육합하는 지지의 시각, 색은 오늘 천간 을목(乙)의 오행, 숫자는 용띠 토(土)의 수. 방향은 동쪽.</p>
+
+      <h2>카드로 저장·공유</h2>
+      <div class="fcard" data-kind="오늘" data-ddi="용띠" data-han="辰" data-date="2026년 9월 8일 (화)" data-iso="2026-09-08" data-ganji="을유(乙酉)" data-score="78" data-grade="길" data-grade-han="吉" data-line="손을 잡아 주는 날" data-sum="유(酉)일은 용띠에게 합이 드는 날입니다. 굳이 애쓰지 않아도 주변이 도와주니 혼자 끙끙대던 일을 꺼내 보세요." data-color="초록·청록" data-num="5·10" data-hour="17~19시" data-url="sajucheop.com/today/ddi/dragon/">
+        <img id="fcard-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="1080" height="1350" alt="오늘의 용띠 운세 카드 — 9월 8일 78점, 손을 잡아 주는 날">
+        <canvas id="fcard-canvas" hidden aria-hidden="true"></canvas>
+        <div class="fcard-btns">
+          <button type="button" class="btn-outline" id="fcard-save">이미지 저장</button>
+          <button type="button" class="btn-primary" id="fcard-share" hidden>바로 공유</button>
+        </div>
+        <p class="fcard-hint">1080×1350 카드 — 이미지를 길게 눌러 저장하거나, 버튼으로 저장·공유하세요. 모든 처리는 이 화면 안에서만 이루어집니다.</p>
+      </div>
 
       <h2>출생연도별 용띠</h2>
       <p>같은 띠라도 태어난 해의 천간이 달라 오늘 천간 을(乙)이 드는 십성이 다릅니다.</p>

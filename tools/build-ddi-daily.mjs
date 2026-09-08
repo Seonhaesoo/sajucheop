@@ -12,6 +12,22 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const SAENGIL = 'http://saengil.sajucheop.com';
 const WD = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+const WD_SHORT = ['일', '월', '화', '수', '목', '금', '토'];
+/* 카드용 등급 — 점수 구간 */
+function dayGrade(score) {
+  if (score >= 88) return { label: '대길', han: '大吉' };
+  if (score >= 75) return { label: '길', han: '吉' };
+  if (score >= 60) return { label: '평', han: '平' };
+  return { label: '조심', han: '注意' };
+}
+/* 카드용 요약 — 문장 단위로 이어 붙이되 max 자를 넘기지 않는다 (카드에서 두 줄 안에 들어가는 길이) */
+function summarize(s, max = 70) {
+  const parts = s.split(/(?<=[.!?다요])\s/);
+  let out = '';
+  for (const p of parts) { if (out && (out + ' ' + p).length > max) break; out = out ? out + ' ' + p : p; }
+  return out;
+}
+const BLANK_GIF = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 const pad = (n) => String(n).padStart(2, '0');
 const iso = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
 const weekday = (y, m, d) => ((I.daysFromCivil(y, m, d) + 4) % 7 + 7) % 7;
@@ -85,7 +101,7 @@ const years = (a, y) => { const out = []; for (let yy = y - 6; yy >= 1930; yy -=
 const yearStem = (yy) => ((yy - 4) % 10 + 10) % 10;
 
 function ddiPage(day, a, kind) {
-  const D = DDI[a], f = fortune(day, a), rel = '../../../';
+  const D = DDI[a], f = fortune(day, a), rel = '../../../', grade = dayGrade(f.score);
   const base = kind === 'today' ? '/today/ddi/' : '/tomorrow/ddi/';
   const url = `${base}${D.slug}/`;
   const label = kind === 'today' ? '오늘' : '내일';
@@ -126,6 +142,17 @@ function ddiPage(day, a, kind) {
       </div>
       <p style="font-size: 12.5px; color: var(--muted);">시간은 ${D.han}와 육합하는 지지의 시각, 색은 ${label} 천간 ${day.st.kor}${day.st.el}(${day.st.han})의 오행, 숫자는 ${D.animal}띠 ${D.el}(${EL_HAN[D.el]})의 수. 방향은 ${f.lucky.dir}.</p>
 
+      <h2>카드로 저장·공유</h2>
+      <div class="fcard" data-kind="${label}" data-ddi="${D.animal}띠" data-han="${D.han}" data-date="${day.y}년 ${day.m}월 ${day.d}일 (${WD_SHORT[day.w]})" data-iso="${iso(day.y, day.m, day.d)}" data-ganji="${day.g.kor}(${day.g.han})" data-score="${f.score}" data-grade="${grade.label}" data-grade-han="${grade.han}" data-line="${esc(f.one)}" data-sum="${esc(summarize(f.total))}" data-color="${esc(f.lucky.color)}" data-num="${esc(f.lucky.num)}" data-hour="${esc(f.lucky.hour)}" data-url="sajucheop.com${url}">
+        <img id="fcard-img" src="${BLANK_GIF}" width="1080" height="1350" alt="${label}의 ${D.animal}띠 운세 카드 — ${day.m}월 ${day.d}일 ${f.score}점, ${f.one}">
+        <canvas id="fcard-canvas" hidden aria-hidden="true"></canvas>
+        <div class="fcard-btns">
+          <button type="button" class="btn-outline" id="fcard-save">이미지 저장</button>
+          <button type="button" class="btn-primary" id="fcard-share" hidden>바로 공유</button>
+        </div>
+        <p class="fcard-hint">1080×1350 카드 — 이미지를 길게 눌러 저장하거나, 버튼으로 저장·공유하세요. 모든 처리는 이 화면 안에서만 이루어집니다.</p>
+      </div>
+
       <h2>출생연도별 ${D.animal}띠</h2>
       <p>같은 띠라도 태어난 해의 천간이 달라 ${label} 천간 ${day.st.kor}(${day.st.han})이 드는 십성이 다릅니다.</p>
       <ul class="td-list">
@@ -144,7 +171,7 @@ function ddiPage(day, a, kind) {
     </div>
   </article>`;
   write(url.slice(1), shell({
-    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${label}의 ${D.animal}띠 운세 ${f.score}점`,
+    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `\n  <script defer src="${rel}js/fortune-card.js"></script>`, ogTitle: `${label}의 ${D.animal}띠 운세 ${f.score}점`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: `${label}의 띠별 운세`, url: SITE + base }, { name: `${D.animal}띠`, url: SITE + url }]),
       { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: iso(day.y, day.m, day.d), dateModified: iso(day.y, day.m, day.d), inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
     body
