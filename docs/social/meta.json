@@ -1,9 +1,12 @@
 {
-  "seq": 2,
-  "type": "hook",
-  "date": "2026-09-07",
-  "slug": "hook-love-style",
-  "title": "일간별 연애 스타일, 내 얘기 맞음?",
+  "seq": 3,
+  "type": "edu",
+  "date": "2026-09-09",
+  "slug": "yang-ilgan",
+  "title": "양간 5형제, 당신은 어느 쪽?",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "The five Yang Day Masters",
+    "cards": 7
+  }
 }
