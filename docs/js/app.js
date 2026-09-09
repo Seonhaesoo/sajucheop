@@ -1324,7 +1324,7 @@
 
     $('#wkr-summary').innerHTML =
       '한 주의 결은 <b>' + dominant + '</b>이 이끕니다. ' + WK_GROUP_LINE[dominant] + ' ' +
-      WK_FULL[best.w] + '에 ' + best.sip + '이 들어 가장 밝으니 중요한 약속과 결정은 이날에, ' +
+      WK_FULL[best.w] + '에 ' + best.sip + josa(best.sip, '이', '가') + ' 들어 가장 밝으니 중요한 약속과 결정은 이날에, ' +
       (care.rel === '충'
         ? WK_FULL[care.w] + '은 내 일지와 충이 드는 날이라 이동과 변경이 잦아요 — 서명과 큰 결정은 피하세요.'
         : WK_FULL[care.w] + '은 흐름이 낮아 큰 결정을 미루는 편이 좋아요.') +

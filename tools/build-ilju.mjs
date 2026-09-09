@@ -6,6 +6,7 @@ import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { ILJU, UN_LINE, SPOUSE_LINE } from './ilju-data.mjs';
+import { josa } from './ddi-data.mjs';
 
 const { M, C } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -116,9 +117,9 @@ list.forEach((e, i) => {
     <div class="ga-body">
       <h2>어떤 사람인가</h2>
       <p>${esc(e.core)}</p>
-      <p>${st.kor}${st.el} 일간의 결은 <a href="${rel}guide/${GUIDE[e.s]}.html">${esc(ch.metaphor)}</a> — ${esc(ch.essence)}. 여기에 일지 ${br.kor}(${br.han})가 어떤 방을 내어주는지가 ${e.kor}일주만의 색을 만듭니다.</p>
+      <p>${st.kor}${st.el} 일간의 결은 <a href="${rel}guide/${GUIDE[e.s]}.html">${esc(ch.metaphor)}</a> — ${esc(ch.essence)}. ${josa(`여기에 일지 ${br.kor}(${br.han})가`)} 어떤 방을 내어주는지가 ${e.kor}일주만의 색을 만듭니다.</p>
 
-      <h2>일지 ${br.kor}(${br.han})가 말하는 것</h2>
+      <h2>${josa(`일지 ${br.kor}(${br.han})가`)} 말하는 것</h2>
       <p>일지는 나의 안방이자 배우자 자리입니다. ${br.kor} 안에는 하늘 글자가 ${hidden.length}개 숨어 있어요(지장간):</p>
       <p>${hiddenHtml}</p>
       <p>${SPOUSE_LINE[mainSip]}</p>

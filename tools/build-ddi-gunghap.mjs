@@ -77,7 +77,7 @@ function pairPage(a, b) {
   const elText = josa(fill(GH_EL[er], map));
   const extra = rels.filter((r) => r !== p && r !== 'same').map((r) => `여기에 ${REL[r].label}(${REL[r].han})까지 겹쳐 ${REL[r].tone === 'good' ? '끌림이 더해집니다' : '마찰의 결도 함께 있습니다'}.`).join(' ');
   const title = a === b ? `${name(a)}끼리 궁합 — ${score}점 ${g.label}` : `${name(a)}와 ${name(b)} 궁합 — ${score}점 ${g.label} (${name(b)} ${name(a)} 궁합)`;
-  const desc = `${name(a)}(${A.han})와 ${name(b)}(${B.han})의 띠 궁합은 ${score}점, ${g.label}. ${rels.length ? rels.map((r) => REL[r].label).join('·') + '의 관계에 ' : ''}${A.el}과 ${B.el}의 ${er === 'same' ? '같은 오행' : (er === 'gen' || er === 'gen_by') ? '상생' : '상극'} 흐름. 연애·결혼·친구·가족으로 만났을 때와 잘 지내는 법.`;
+  const desc = `${name(a)}(${A.han})와 ${name(b)}(${B.han})의 띠 궁합은 ${score}점, ${g.label}. ${rels.length ? rels.map((r) => REL[r].label).join('·') + '의 관계에 ' : ''}${A.el}·${B.el} ${er === 'same' ? '같은 오행의' : (er === 'gen' || er === 'gen_by') ? '두 오행의 상생' : '두 오행의 상극'} 흐름. 연애·결혼·친구·가족으로 만났을 때와 잘 지내는 법.`;
   const partnersA = DDI.map((_, i) => ({ i, s: pairScore(a, i).score })).filter((x) => x.i !== b).sort((x, y) => y.s - x.s);
   const partnersB = DDI.map((_, i) => ({ i, s: pairScore(b, i).score })).filter((x) => x.i !== a).sort((x, y) => y.s - x.s);
   const badges = rels.map((r) => `<span class="gh-badge ${REL[r].tone}">${REL[r].label}(${REL[r].han})</span>`).join('') + `<span class="gh-badge">${A.el}(${EL_HAN[A.el]}) · ${B.el}(${EL_HAN[B.el]}) ${er === 'same' ? '같은 오행' : (er === 'gen' || er === 'gen_by') ? '상생' : '상극'}</span>`;
@@ -85,7 +85,7 @@ function pairPage(a, b) {
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}ddi-gunghap/" style="color: inherit; text-decoration: none;">띠 궁합</a> · <a href="${rel}ddi-gunghap/${A.slug}/" style="color: inherit; text-decoration: none;">${name(a)}</a>${a !== b ? ` · <a href="${rel}ddi-gunghap/${B.slug}/" style="color: inherit; text-decoration: none;">${name(b)}</a>` : ''}</div>
     <h1 class="ga-title">${a === b ? `${name(a)}끼리 궁합` : `${name(a)}와 ${name(b)} 궁합`} —<br>${R.title}</h1>
-    <p class="ga-meta">태어난 해의 지지 ${A.han}(${A.el})와 ${B.han}(${B.el}) · 사주첩</p>
+    <p class="ga-meta">태어난 해의 지지 ${A.han}(${A.el}), ${B.han}(${B.el}) · 사주첩</p>
     <div class="gh-hero">
       <div class="gh-pair">${A.han} · ${B.han}</div>
       <div class="gh-score">${score}<span style="font-size: 20px;">점</span></div>

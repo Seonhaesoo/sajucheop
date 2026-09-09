@@ -140,7 +140,7 @@ function ddiPage(day, a, kind) {
         <div><small>색</small>${f.lucky.color}</div>
         <div><small>숫자</small>${f.lucky.num}</div>
       </div>
-      <p style="font-size: 12.5px; color: var(--muted);">시간은 ${D.han}와 육합하는 지지의 시각, 색은 ${label} 천간 ${day.st.kor}${day.st.el}(${day.st.han})의 오행, 숫자는 ${D.animal}띠 ${D.el}(${EL_HAN[D.el]})의 수. 방향은 ${f.lucky.dir}.</p>
+      <p style="font-size: 12.5px; color: var(--muted);">시간은 ${D.animal}띠(${D.han})와 육합하는 지지의 시각, 색은 ${label} 천간 ${day.st.kor}${day.st.el}(${day.st.han})의 오행, 숫자는 ${D.animal}띠 ${D.el}(${EL_HAN[D.el]})의 수. 방향은 ${f.lucky.dir}.</p>
 
       <h2>카드로 저장·공유</h2>
       <div class="fcard" data-kind="${label}" data-ddi="${D.animal}띠" data-han="${D.han}" data-date="${day.y}년 ${day.m}월 ${day.d}일 (${WD_SHORT[day.w]})" data-iso="${iso(day.y, day.m, day.d)}" data-ganji="${day.g.kor}(${day.g.han})" data-score="${f.score}" data-grade="${grade.label}" data-grade-han="${grade.han}" data-line="${esc(f.one)}" data-sum="${esc(summarize(f.total))}" data-color="${esc(f.lucky.color)}" data-num="${esc(f.lucky.num)}" data-hour="${esc(f.lucky.hour)}" data-url="sajucheop.com${url}">
@@ -150,11 +150,11 @@ function ddiPage(day, a, kind) {
           <button type="button" class="btn-outline" id="fcard-save">이미지 저장</button>
           <button type="button" class="btn-primary" id="fcard-share" hidden>바로 공유</button>
         </div>
-        <p class="fcard-hint">1080×1350 카드 — 이미지를 길게 눌러 저장하거나, 버튼으로 저장·공유하세요. 모든 처리는 이 화면 안에서만 이루어집니다.</p>
+        <p class="fcard-hint">1080×1350 카드 — 이미지를 길게 눌러 저장하거나, 버튼으로 저장·공유하세요. 모든 처리는 이 화면 안에서 끝납니다.</p>
       </div>
 
       <h2>출생연도별 ${D.animal}띠</h2>
-      <p>같은 띠라도 태어난 해의 천간이 달라 ${label} 천간 ${day.st.kor}(${day.st.han})이 드는 십성이 다릅니다.</p>
+      <p>${josa(`같은 띠라도 태어난 해의 천간이 달라 ${label} 천간 ${day.st.kor}(${day.st.han})이`)} 드는 십성이 다릅니다.</p>
       <ul class="td-list">
         ${yrRows}
       </ul>

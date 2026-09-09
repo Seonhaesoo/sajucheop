@@ -214,10 +214,10 @@
     var sumRel = rels.reduce(function (a, b) { return a + b; }, 0);
     var soundScore = minRel === 0 ? 0 : (sumRel >= rels.length * 2 ? 14 : (sumRel > rels.length ? 10 : 6));
     var soundLine = minRel === 0
-      ? '초성 오행(' + els.join('·') + ')에 상극이 끼어 소리 흐름이 부딪혀요.'
-      : (soundScore >= 14 ? '초성 오행(' + els.join('·') + ')이 서로를 살리는 상생의 소리예요.'
-        : (soundScore >= 10 ? '초성 오행(' + els.join('·') + ')이 무난하게 이어지는 소리예요.'
-          : '초성 오행(' + els.join('·') + ')이 같은 기운으로 나란한 소리예요.'));
+      ? '초성 오행이 ' + els.join('·') + ' — 상극이 끼어 소리 흐름이 부딪혀요.'
+      : (soundScore >= 14 ? '초성 오행이 ' + els.join('·') + ' — 서로를 살리는 상생의 소리예요.'
+        : (soundScore >= 10 ? '초성 오행이 ' + els.join('·') + ' — 무난하게 이어지는 소리예요.'
+          : '초성 오행이 ' + els.join('·') + ' — 같은 기운으로 나란한 소리예요.'));
 
     /* 자원오행 — 사주 보완 */
     var jawonScore = 0, jawonLine = null;

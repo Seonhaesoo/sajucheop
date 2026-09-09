@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, kstToday, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
+import { josa } from './ddi-data.mjs';
 
 const { M, I, C, Q, Lunar } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -170,12 +171,12 @@ function buildDay(info) {
   /* 일지 관계 */
   const chungB = M.BRANCHES.map((b, i) => i).filter((i) => M.branchRelation(info.branch, i) === '충').map((i) => M.BRANCHES[i]);
   const hapB = M.BRANCHES.map((b, i) => i).filter((i) => M.branchRelation(info.branch, i) === '육합').map((i) => M.BRANCHES[i]);
-  const branchNote = `일지(태어난 날의 지지)가 <b>${chungB.map((b) => b.kor + '(' + b.han + ')').join('·')}</b>인 분은 오늘 ${br.kor}(${br.han})와 충(沖)이 듭니다 — 이동과 계획 변경이 잦은 날이니 중요한 서명은 미루세요. 반대로 일지가 <b>${hapB.map((b) => b.kor + '(' + b.han + ')').join('·')}</b>인 분은 합(合)이 드는 날, 만남과 부탁이 순하게 풀립니다.`;
+  const branchNote = josa(`일지(태어난 날의 지지)가 <b>${chungB.map((b) => b.kor + '(' + b.han + ')').join('·')}</b>인 분은 오늘 ${br.kor}(${br.han})와 충(沖)이 듭니다 — 이동과 계획 변경이 잦은 날이니 중요한 서명은 미루세요. 반대로 일지가 <b>${hapB.map((b) => b.kor + '(' + b.han + ')').join('·')}</b>인 분은 합(合)이 드는 날, 만남과 부탁이 순하게 풀립니다.`);
 
   /* 절기 */
   let termHtml;
   if (info.terms.length) {
-    termHtml = info.terms.map((t) => `오늘 <b>${pad(t.hh)}:${pad(t.mm)}</b>에 <a href="${rel}jeolgi/${t.y}/${t.slug}/">${t.name}(${t.han})</a>이 듭니다${t.kind === '절' ? ` — 이 시각부터 월주가 ${MONTH_BRANCH[t.month]}월로 바뀝니다${t.slug === 'ipchun' ? ' (년주도 함께 바뀌는 사주의 새해)' : ''}` : ''}.`).join(' ');
+    termHtml = info.terms.map((t) => `오늘 <b>${pad(t.hh)}:${pad(t.mm)}</b>에 <a href="${rel}jeolgi/${t.y}/${t.slug}/">${t.name}(${t.han})</a> 절기가 듭니다${t.kind === '절' ? ` — 이 시각부터 월주가 ${MONTH_BRANCH[t.month]}월로 바뀝니다${t.slug === 'ipchun' ? ' (년주도 함께 바뀌는 사주의 새해)' : ''}` : ''}.`).join(' ');
   } else {
     const nt = nextTermAfter(y, m, d);
     termHtml = nt ? `다음 절기는 <a href="${rel}jeolgi/${nt.y}/${nt.slug}/">${nt.name}(${nt.han})</a>, ${nt.m}월 ${nt.d}일 ${pad(nt.hh)}:${pad(nt.mm)}.` : '';
@@ -196,7 +197,7 @@ function buildDay(info) {
       <p>${termHtml} ${info.lun && info.lun.son ? `오늘은 음력 ${info.lun.d}일, 손(損)이 하늘로 올라가 쉬는 <b>손없는날</b>입니다 — 이사·개업·계약을 잡기 좋은 날로 전해집니다. <a href="${rel}son/${y}-${pad(m)}/">이 달의 손없는날 전체 보기</a>` : ''}</p>
 
       <h2>일간별 오늘의 흐름</h2>
-      <p>오늘의 천간 ${st.kor}${st.el}이 내 일간에게 어떤 십성으로 드는지에 따라 하루의 결이 달라집니다. 내 일간을 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나와요.</p>
+      <p>오늘의 천간 ${st.kor}${st.el}의 기운이 내 일간에게 어떤 십성으로 드는지에 따라 하루의 결이 달라집니다. 내 일간을 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나와요.</p>
       <ul class="dp-list">
         ${rows}
       </ul>
@@ -292,11 +293,11 @@ function buildTerm(y, t, list) {
   const pv = k > 0 ? list[k - 1] : null, nx = k < list.length - 1 ? list[k + 1] : null;
   const dayI = M.ganjiName(M.dayPillarOf(t.y, t.m, t.d).stem, M.dayPillarOf(t.y, t.m, t.d).branch);
   const title = `${y}년 ${t.name}(${t.han}) — ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)} 시각과 뜻`;
-  const desc = `${y}년 ${t.name}은 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]} ${pad(t.hh)}:${pad(t.mm)}(한국 시간)에 듭니다. ${t.desc} ${t.kind === '절' ? '이 시각부터 사주의 월주가 바뀝니다.' : ''}`;
+  const desc = `${y}년 ${t.name} 절기는 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]} ${pad(t.hh)}:${pad(t.mm)}(한국 시간)에 듭니다. ${t.desc} ${t.kind === '절' ? '이 시각부터 사주의 월주가 바뀝니다.' : ''}`;
   const roleHtml = t.kind === '절'
-    ? `<p>${t.name}은 열두 절(節) 중 하나입니다. 사주에서 달은 1일이 아니라 절이 드는 <b>시각</b>에 바뀌므로, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}을 기점으로 월주(月柱)의 지지가 <b class="dp-han">${MONTH_BRANCH[t.month]}</b>로 넘어갑니다.${t.slug === 'ipchun' ? ' 입춘은 특별히 <b>년주(年柱)까지 바뀌는 사주의 새해</b>입니다 — 띠도 이 시각을 기준으로 바뀝니다.' : ''}</p>
+    ? `<p>${t.name} 절기는 열두 절(節) 중 하나입니다. 사주에서 달은 1일이 아니라 절이 드는 <b>시각</b>에 바뀌므로, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}을 기점으로 월주(月柱)의 지지가 <b class="dp-han">${MONTH_BRANCH[t.month]}</b>로 넘어갑니다.${t.slug === 'ipchun' ? ' 입춘은 특별히 <b>년주(年柱)까지 바뀌는 사주의 새해</b>입니다 — 띠도 이 시각을 기준으로 바뀝니다.' : ''}</p>
       <p>이 시각 앞뒤로 두 시간 안에 태어났다면 월주가 경계에 걸립니다. 출생 시각이 확실하면 <a href="${rel}manse/">절기 시각까지 계산하는 만세력</a>으로 확인하세요.</p>`
-    : `<p>${t.name}은 열두 중기(中氣) 중 하나로, 계절의 한가운데를 알리는 절기입니다. 중기에는 사주의 기둥이 바뀌지 않습니다 — 월주가 바뀌는 것은 절(節)이 드는 시각이에요.</p>`;
+    : `<p>${t.name} 절기는 열두 중기(中氣) 중 하나로, 계절의 한가운데를 알리는 절기입니다. 중기에는 사주의 기둥이 바뀌지 않습니다 — 월주가 바뀌는 것은 절(節)이 드는 시각이에요.</p>`;
 
   const body = `
   <article class="guide-article">
@@ -306,7 +307,7 @@ function buildTerm(y, t, list) {
     <p class="ga-lead">${t.desc}</p>
 
     <div class="ga-body">
-      <h2>사주에서 ${t.name}이 하는 일</h2>
+      <h2>${t.name} 절기가 사주에서 하는 일</h2>
       ${roleHtml}
 
       <h2>이 절기의 결</h2>

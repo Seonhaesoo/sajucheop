@@ -155,7 +155,7 @@
       stemRel = {
         type: 'hap',
         title: '천간의 합(合) — 서로에게 끌리는 조합',
-        body: stA.kor + stA.el + '와 ' + stB.kor + stB.el + '는 열 개의 천간 중 서로 맞물리는 단 하나의 짝입니다. 두 기운이 만나 ' +
+        body: stA.kor + stA.el + '·' + stB.kor + stB.el + ' 두 천간은 열 개 가운데 서로 맞물리는 단 하나의 짝입니다. 두 기운이 만나 ' +
           hwa + '(' + EL_HAN[hwa] + ')의 기운으로 화(化)해, 함께 있을 때 없던 힘이 생겨요.'
       };
     } else if (STEM_CHUNG[sa] === sb) {
@@ -163,7 +163,7 @@
       stemRel = {
         type: 'chung',
         title: '천간의 충(沖) — 강하게 부딪히는 조합',
-        body: stA.kor + stA.el + '와 ' + stB.kor + stB.el + '는 정면으로 마주 서는 기운입니다. 밀어내는 만큼 서로를 성장시키는 자극이 되기도 해요. 거리와 예의가 이 관계의 기술입니다.'
+        body: stA.kor + stA.el + '·' + stB.kor + stB.el + ' 두 천간은 정면으로 마주 서는 기운입니다. 밀어내는 만큼 서로를 성장시키는 자극이 되기도 해요. 거리와 예의가 이 관계의 기술입니다.'
       };
     } else if (stA.el === stB.el) {
       score += 4;

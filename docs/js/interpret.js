@@ -156,7 +156,7 @@
     var seasonName = result.season ? result.season.name : '';
     var HAN = { '목': '木', '화': '火', '토': '土', '금': '金', '수': '水' };
     if (els[top] >= 3 && els[second] >= 3) {
-      return HAN[top] + '·' + HAN[second] + '가 왕성한 ' + seasonName + '의 명식';
+      return HAN[top] + '·' + HAN[second] + ' 두 기운이 왕성한 ' + seasonName + '의 명식';
     }
     if (els[top] >= 3) {
       return HAN[top] + ' 기운이 왕성한 ' + seasonName + '의 명식';

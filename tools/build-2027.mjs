@@ -295,7 +295,7 @@ DDI.forEach((d, b) => {
     <div class="ga-body">
       <h2>총운 — ${R.label}의 해, ${score}점</h2>
       <p>${esc(T.overall)}</p>
-      <p>${esc(DDI_EL_LINE[d.el])} ${d.animal}띠는 ${esc(TR.key)} — ${esc(TR.short)} 조심할 결은 이것입니다 — ${esc(TR.weak)}</p>
+      <p>${esc(DDI_EL_LINE[d.el])} ${d.animal}띠는 ${esc(TR.key)} — ${esc(TR.short)} 조심할 결도 있습니다 — ${esc(TR.weak)}</p>
       ${samjae ? `<p class="callout"><b>${d.samjae}</b> — ${esc(samjae)} <a href="${rel}samjae/">내 삼재 기간 계산하기</a></p>` : ''}
       <h2>재물운</h2>
       <p>${esc(T.money)}</p>
@@ -370,10 +370,10 @@ DDI.forEach((d, b) => {
     <h1 class="ga-title">${y}년생 ${d.animal}띠 2027년 운세 —<br>${S.name}</h1>
     <div class="ny-meta"><span>연주 <b>${ganjiKor}(${st.han}${br.han})</b></span><span>연간 <b>${st.kor}${st.el}</b></span><span>2027년 <b>세는나이 ${age}세 · 만 ${age - 2}~${age - 1}세</b></span><span>띠 관계 <b>${R.label} · ${score}점</b></span></div>
     <p class="ga-meta">사주첩 · 2027 신년운세 · ${d.animal}띠 ${y}년생</p>
-    <p class="ga-lead">${y}년에 태어난 ${d.animal}띠는 연주가 ${ganjiKor}(${st.han}${br.han}), 오행 색으로는 ${COLOR[g.s]} ${d.animal}입니다. 태어난 해의 천간 ${st.kor}${st.el}(${st.han})이 2027년의 정화(丁火)를 어떻게 맞는지가 같은 띠 안에서 이 해를 다르게 만듭니다.</p>
+    <p class="ga-lead">${y}년에 태어난 ${d.animal}띠는 연주가 ${ganjiKor}(${st.han}${br.han}), 오행 색으로는 ${COLOR[g.s]} ${d.animal}입니다. ${josa(`태어난 해의 천간 ${st.kor}${st.el}(${st.han})이`)} 2027년의 정화(丁火)를 어떻게 맞는지가 같은 띠 안에서 이 해를 다르게 만듭니다.</p>
 
     <div class="ga-body">
-      <h2>${S.name} — ${st.kor}${st.el}과 정화(丁火)</h2>
+      <h2>${S.name} — ${josa(`${st.kor}${st.el}(${st.han})과`)} 정화(丁火)</h2>
       <p>${esc(S.overall)}</p>
       <h2>${d.animal}띠로 보는 정미년 — ${R.label}, ${score}점</h2>
       <p>${esc(d.opener)}</p>
@@ -410,7 +410,7 @@ DDI.forEach((d, b) => {
       jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: `${d.animal}띠`, url: SITE + url }, { name: `${y}년생`, url: SITE + url2 }]), article({ title: title2, desc: desc2, url: url2 }),
         faq([
           [`${y}년생은 2027년에 몇 살인가요?`, `세는나이 ${age}세, 만나이는 생일 전 ${age - 2}세·생일 후 ${age - 1}세입니다. ${y}년생은 ${ganjiKor}년(${st.han}${br.han}) ${COLOR[g.s]} ${d.animal}띠입니다.`],
-          [`${y}년생 ${d.animal}띠의 2027년 운세는?`, `연간 ${st.kor}${st.el}이 정화(丁火)와 만나는 ${S.name}이고, 띠로는 미(未)와 ${R.label} 관계(${score}점)입니다. ${firstSentence(S.overall)}`]
+          [`${y}년생 ${d.animal}띠의 2027년 운세는?`, `연간 ${st.kor}${st.el}의 기운이 정화(丁火)와 만나는 ${S.name}이고, 띠로는 미(未)와 ${R.label} 관계(${score}점)입니다. ${firstSentence(S.overall)}`]
         ])],
       body: body2
     }));
@@ -437,7 +437,7 @@ iljuList.forEach((e, i) => {
   const mp = monthPickDesc(e.b);
   const url = `/2027/ilju/${e.slug}/`;
   const title = `2027년 ${e.kor} 일주 운세 — 정미년 ${G.sip}의 해`;
-  const desc = checkDesc(url, josa(`${e.kor}일주(${e.han})의 2027 정미년 운세. 정화(丁)는 ${G.sip}, 미토(未)는 ${G.bsip}로 오는 ${G.pattern}의 해. 일지 ${br.kor}(${br.han})와 미(未)는 ${REL_KO[relKey]}, 키워드 ${kws.join('·')}, 좋은 달 ${mp.good}·조심할 달 ${mp.bad}, 월별 흐름.`));
+  const desc = checkDesc(url, josa(`${e.kor}일주(${e.han})의 2027 정미년 운세. 정화(丁)는 ${G.sip}, 미토(未)는 ${G.bsip}인 ${G.pattern}의 해. 일지 ${br.kor}(${br.han})와 미(未)는 ${REL_KO[relKey]}, 키워드 ${kws.join('·')}, 좋은 달 ${mp.good}·조심할 달 ${mp.bad}, 월별 흐름.`));
   const siblings = iljuList.filter((x) => x.s === e.s).map((x) => `<a href="${rel}2027/ilju/${x.slug}/"${x === e ? ' class="cur"' : ''}><b>${x.han}</b><small>${x.kor}일주</small></a>`).join('\n        ');
   const prev = iljuList[(i + 59) % 60], next = iljuList[(i + 1) % 60];
   const iljiHead = josa(`일지 ${br.kor}(${br.han})와 미(未)`);
@@ -448,7 +448,7 @@ iljuList.forEach((e, i) => {
     <h1 class="ga-title">${e.kor}일주 2027년 운세 —<br>${G.pattern}의 해</h1>
     <div class="ny-meta"><span>일간 <b>${st.kor}${st.el}</b></span><span>일지 <b>${br.kor}${br.el}</b></span><span>세운 천간 丁 <b>${G.sip}</b></span><span>세운 지지 未 <b>${G.bsip}</b></span><span>12운성 <b>${un}</b></span></div>
     <p class="ga-meta">사주첩 · 2027 신년운세 · <a href="${rel}ilju/${e.slug}/">${e.kor}일주 사전</a></p>
-    <p class="ga-lead">${esc(e.core.split('. ')[0])}. 그런 ${e.kor}일주에게 2027년은 정화(丁)가 ${G.sip}, 미토(未)가 ${G.bsip}로 오는 해입니다.</p>
+    <p class="ga-lead">${esc(e.core.split('. ')[0])}. 그런 ${e.kor}일주에게 2027년은 정화(丁)가 ${G.sip}, 미토(未)가 ${G.bsip}인 해입니다.</p>
     ${kwChips(kws)}
 
     <div class="ga-body">
@@ -464,18 +464,18 @@ iljuList.forEach((e, i) => {
       <p>${esc(G.work)}</p>
       <p>${esc(UN_WORK[e.un])}</p>
       <h2>${iljiHead} — 배우자·가정·터전</h2>
-      <p>${esc(ilji)}${rels.length > 1 ? ` (${rels.map((k) => REL_KO[k]).join('·')}이 함께 듭니다.)` : ''}</p>
+      <p>${esc(ilji)}${rels.length > 1 ? ` (${rels.map((k) => REL_KO[k]).join('·')} 관계가 함께 듭니다.)` : ''}</p>
       <p>${esc(UN_TEXT[un])}</p>
 
       <h2>월별 흐름 — 열두 달의 결</h2>
-      <p>정미년 열두 달의 월건(月建)을 ${e.kor}일주 기준으로 읽었습니다. 월간은 일간 ${st.kor}${st.el} 기준 십성, 월지는 일지 ${br.kor}(${br.han})와의 관계입니다. 달의 경계는 절기라 날짜를 함께 적었어요.</p>
+      <p>정미년 열두 달의 월건(月建)을 ${e.kor}일주 기준으로 읽었습니다. ${josa(`월간은 일간 ${st.kor}${st.el} 기준 십성이고, 월지는 그달의 지지가 일지 ${br.kor}(${br.han})와 맺는 관계입니다.`)} 달의 경계는 절기라 날짜를 함께 적었어요.</p>
       <ul class="ny-months">
         ${monthRows(e.b, e.s)}
       </ul>
 
       <h2>좋은 달·조심할 달</h2>
       ${monthPickHtml(e.b, `일지 ${br.kor}(${br.han})`)}
-      <p class="callout">일지 ${br.kor}(${br.han})와 월지의 관계는 지지가 같은 <a href="${rel}2027/ddi/${branchDdi.slug}/">${branchDdi.animal}띠 2027년 운세</a>의 월별 흐름과 같은 기준입니다. 내 띠(태어난 해)의 흐름은 <a href="${rel}2027/ddi/">12띠 2027 운세</a>에서, 하루하루는 <a href="${rel}today/ddi/">오늘의 띠별 운세</a>에서 보세요.</p>
+      <p class="callout">${josa(`일지 ${br.kor}(${br.han})와`)} 월지의 관계는 지지가 같은 <a href="${rel}2027/ddi/${branchDdi.slug}/">${branchDdi.animal}띠 2027년 운세</a>의 월별 흐름과 같은 기준입니다. 내 띠(태어난 해)의 흐름은 <a href="${rel}2027/ddi/">12띠 2027 운세</a>에서, 하루하루는 <a href="${rel}today/ddi/">오늘의 띠별 운세</a>에서 보세요.</p>
 
       <h2>같은 ${st.kor}${st.el} 일간의 여섯 일주</h2>
       <p>일간이 같으면 정화(丁)를 맞는 별은 같고(${G.sip}), 일지에 따라 미(未)와의 관계와 12운성이 달라집니다.</p>
@@ -494,7 +494,7 @@ iljuList.forEach((e, i) => {
     rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${e.kor}일주 2027년 운세 — ${G.sip}의 해, ${G.pattern}`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '60일주별', url: SITE + '/2027/ilju/' }, { name: `${e.kor}일주`, url: SITE + url }]), article({ title, desc, url }),
       faq([
-        [`${e.kor}일주의 2027년 운세는 어떤가요?`, `정화(丁)가 ${G.sip}, 미토(未)가 ${G.bsip}로 오는 ${G.pattern}의 해입니다. 키워드는 ${kws.join('·')}. ${firstSentence(core)}`],
+        [`${e.kor}일주의 2027년 운세는 어떤가요?`, `정화(丁)가 ${G.sip}, 미토(未)가 ${G.bsip}인 ${G.pattern}의 해입니다. 키워드는 ${kws.join('·')}. ${firstSentence(core)}`],
         [`${e.kor}일주의 일지와 2027년 미(未)의 관계는?`, `${josa(`일지 ${br.kor}(${br.han})와`)} 미(未)는 ${REL_KO[relKey]} 관계이고, 일간 ${st.kor}${st.el}의 12운성으로 미(未)는 ${un}의 자리입니다.`],
         [`${e.kor}일주에게 2027년 좋은 달과 조심할 달은?`, josa(`일지 ${br.kor}(${br.han})와 월지의 관계로 보면 좋은 달은 ${mp.good}, 조심할 달은 ${mp.bad}입니다. 달의 경계는 절기 시각입니다.`)]
       ])],
