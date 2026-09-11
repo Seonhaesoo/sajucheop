@@ -124,7 +124,7 @@ function pairPage(a, b) {
       ${a !== b ? `<h2>${name(b)}의 다른 궁합</h2>
       <div class="gh-chips">${partnersB.map((x) => `<a href="${rel}ddi-gunghap/${pairUrl(b, x.i).split('/')[2]}/">${name(x.i)} ${x.s}점</a>`).join('')}</div>` : ''}
 
-      <p class="callout">띠 궁합은 태어난 해의 지지 한 글자로 보는 약식입니다. 두 사람의 생년월일을 다 넣으면 일간·일지·오행 균형까지 본 <a href="${rel}gunghap/">일간 궁합</a>이 나오고, 각자의 오늘은 <a href="${rel}today/ddi/${A.slug}/">${name(a)}</a>·<a href="${rel}today/ddi/${B.slug}/">${name(b)} 오늘의 운세</a>에서, 내년 흐름은 <a href="${rel}2027/ddi/${A.slug}/">${name(a)} 2027년 운세</a>에서 볼 수 있습니다. 띠의 경계(입춘 전후 출생)는 <a href="${SAENGIL}/ddi/${A.slug}/">생일 사전</a>에서 확인하세요.</p>
+      <p class="callout">띠 궁합은 태어난 해의 지지 한 글자로 보는 약식입니다. 두 사람의 생년월일을 다 넣으면 일간·일지·오행 균형까지 본 <a href="${rel}gunghap/">일간 궁합</a>이 나오고, 각자의 오늘은 <a href="${rel}today/ddi/${A.slug}/">${name(a)}</a>·<a href="${rel}today/ddi/${B.slug}/">${name(b)} 오늘의 운세</a>에서, 내년 흐름은 <a href="${rel}2027/ddi/${A.slug}/">${name(a)} 2027년 운세</a>에서 볼 수 있습니다. 띠의 경계(입춘 전후 출생)는 <a href="${SAENGIL}/ddi/${A.slug}/">생일 사전</a>에서 확인하세요. <a href="${rel}en/zodiac/compatibility/${url.split('/')[2]}/" hreflang="en">English</a></p>
     </div>
 
     <div class="ga-cta">
@@ -132,7 +132,7 @@ function pairPage(a, b) {
     </div>
   </article>`;
   write(url.slice(1), shell({
-    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${name(a)} ${name(b)} 궁합 ${score}점`,
+    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/zodiac/compatibility/${url.split('/')[2]}/">`, ogTitle: `${name(a)} ${name(b)} 궁합 ${score}점`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }, { name: `${name(a)} ${name(b)}`, url: SITE + url }]),
       { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
     body
@@ -208,13 +208,13 @@ function indexPage() {
         <li><b>형(刑)</b> 인사신·축술미·자묘, 자형 진오유해 — 서로를 다듬고 찌르는 자리.</li>
         <li><b>해(害)·파(破)·원진(怨嗔)</b> — 작은 손해, 마무리의 틈, 이유 없는 서운함. 큰 흉은 아니지만 밀도를 조절할 관계.</li>
       </ul>
-      <p class="callout">띠는 입춘(2월 4일 전후)을 기준으로 바뀝니다. 1월이나 2월 초에 태어났다면 앞 해의 띠일 수 있으니 <a href="${SAENGIL}/">생일 사전</a>에서 확인하세요. 두 사람의 생년월일을 모두 알면 <a href="${rel}gunghap/">일간 궁합</a>이 훨씬 정확합니다.</p>
+      <p class="callout">띠는 입춘(2월 4일 전후)을 기준으로 바뀝니다. 1월이나 2월 초에 태어났다면 앞 해의 띠일 수 있으니 <a href="${SAENGIL}/">생일 사전</a>에서 확인하세요. 두 사람의 생년월일을 모두 알면 <a href="${rel}gunghap/">일간 궁합</a>이 훨씬 정확합니다. <a href="${rel}en/zodiac/compatibility/" hreflang="en">English chart</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}gunghap/"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 정확한 궁합 보기</span></a>
     </div>
   </article>`;
-  write('ddi-gunghap', shell({ rel, title, desc, canonical: SITE + '/ddi-gunghap/', nav: NAV(rel), extraHead: STYLE, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }]), body }));
+  write('ddi-gunghap', shell({ rel, title, desc, canonical: SITE + '/ddi-gunghap/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/ddi-gunghap/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/zodiac/compatibility/">`, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }]), body }));
   urls.push('/ddi-gunghap/');
 }
 

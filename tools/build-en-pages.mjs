@@ -81,7 +81,7 @@ const STYLE = `<style>
     .dp-grid a.today { border-color: var(--seal); background: #FBF3E6; }
     .dp-grid .wd { background: transparent; border: none; color: var(--faint); font-size: 11px; padding: 0; }
   </style>`;
-const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/today/', label: 'Today' }, { href: rel + 'en/guide/', label: 'Library' }, { href: rel, label: '한국어' }];
+const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/today/', label: 'Today' }, { href: rel + 'en/zodiac/', label: 'Zodiac' }, { href: rel + 'en/guide/', label: 'Library' }, { href: rel, label: '한국어' }];
 function write(relPath, html) {
   const file = path.join(DOCS, relPath, 'index.html');
   fs.mkdirSync(path.dirname(file), { recursive: true });

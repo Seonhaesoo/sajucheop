@@ -63,7 +63,7 @@ const STYLE = `<style>
     .dp-group { margin-top: 22px; }
     .dp-group h2 a { text-decoration: none; }
   </style>`;
-const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/guide/', label: 'Library' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel, label: '한국어' }];
+const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/zodiac/', label: 'Zodiac' }, { href: rel + 'en/guide/', label: 'Library' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel, label: '한국어' }];
 
 function write(relPath, html) {
   const file = path.join(DOCS, relPath, 'index.html');

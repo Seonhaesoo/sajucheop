@@ -10,7 +10,7 @@ import { DAY_MASTERS } from './en-daymaster-data.mjs';
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-05';
-const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/today/', label: 'Today' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel, label: '한국어' }];
+const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/today/', label: 'Today' }, { href: rel + 'en/zodiac/', label: 'Zodiac' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel, label: '한국어' }];
 const STYLE = `<style>
     .dm-han { font-family: 'Noto Serif KR', serif; font-size: 56px; font-weight: 700; color: var(--seal); line-height: 1; margin: 6px 0 12px; }
     .dm-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 6px; }
@@ -121,7 +121,7 @@ DAY_MASTERS.forEach((d, i) => {
       <p>Each article describes the pure nature first, then how it behaves in love and at work, who it combines with (합) and clashes with (충), and how the reading shifts when the Day Master is strongly or weakly supported by the rest of the chart. Treat it as a mirror, not a verdict — the chart describes weather, and what you do in it has always been yours.</p>
       <h2>Go one level deeper</h2>
       <p>Your Day Master sits on one of twelve branches, and that seat changes everything. The <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a> — Jia Zi to Gui Hai — read each combination: hidden stems, spouse seat, twelve-stage, and the pillars you match best with. The <a href="${rel}en/guide/compatibility/">Day Master compatibility table</a> covers all 100 pairings.</p>
-      <p class="callout"><a href="${rel}en/today/">Today\'s energy</a> · <a href="${rel}en/match/">Compatibility</a> · <a href="${rel}guide/" hreflang="ko">한국어 서재</a></p>
+      <p class="callout"><a href="${rel}en/today/">Today\'s energy</a> · <a href="${rel}en/match/">Compatibility</a> · <a href="${rel}en/zodiac/">Chinese zodiac</a> · <a href="${rel}guide/" hreflang="ko">한국어 서재</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Find my Day Master</span></a>

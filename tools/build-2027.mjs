@@ -337,7 +337,7 @@ DDI.forEach((d, b) => {
     </div>
   </article>`;
   write(url.slice(1), shell({
-    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `2027년 ${d.animal}띠 운세 ${score}점 — ${R.label}의 해`,
+    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/2027/${d.slug}/">`, ogTitle: `2027년 ${d.animal}띠 운세 ${score}점 — ${R.label}의 해`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: `${d.animal}띠`, url: SITE + url }]), article({ title, desc, url }),
       faq([
         [`2027년 ${d.animal}띠 운세는 어떤가요?`, `${d.animal}띠(${d.han})는 정미년의 미(未)와 ${R.label} 관계로 ${score}점, ${grade.label}입니다. ${one}. ${firstSentence(T.overall)}`],

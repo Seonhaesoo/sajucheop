@@ -125,7 +125,7 @@ const STYLE = `<style>
     .gp-table td a.bihwa { background: #F3EEE4; }
     .gp-table td a.geuk { color: var(--faint); }
   </style>`;
-const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/guide/', label: 'Library' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel, label: '한국어' }];
+const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/zodiac/', label: 'Zodiac' }, { href: rel + 'en/guide/', label: 'Library' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel, label: '한국어' }];
 
 function write(relPath, html) {
   const file = path.join(DOCS, relPath, 'index.html');
@@ -186,7 +186,7 @@ for (let a = 0; a < 10; a++) {
         ${others}
       </div>
 
-      <p class="callout"><a href="${rel}en/guide/compatibility/${slugOf(b, a)}/">From ${B.name}\'s side →</a> · <a href="${rel}en/guide/day-master/${A.slug}/">${esc(A.arch)}</a> · <a href="${rel}en/guide/day-master/${B.slug}/">${esc(B.arch)}</a> · <a href="${rel}gunghap/${KO_SLUG[a]}-${KO_SLUG[b]}/" hreflang="ko">한국어</a></p>
+      <p class="callout"><a href="${rel}en/guide/compatibility/${slugOf(b, a)}/">From ${B.name}\'s side →</a> · <a href="${rel}en/guide/day-master/${A.slug}/">${esc(A.arch)}</a> · <a href="${rel}en/guide/day-master/${B.slug}/">${esc(B.arch)}</a> · <a href="${rel}en/zodiac/compatibility/">Birth-year animal compatibility</a> · <a href="${rel}gunghap/${KO_SLUG[a]}-${KO_SLUG[b]}/" hreflang="ko">한국어</a></p>
     </div>
 
     <div class="ga-cta">
@@ -228,7 +228,7 @@ for (let a = 0; a < 10; a++) {
       </table>
       </div>
       <p>Tap a cell for first impression, love, work and advice. The same pairing reads differently from <b>your</b> side and <b>theirs</b> — read both pages side by side.</p>
-      <p class="callout"><a href="${rel}en/guide/">The ten Day Masters</a> · <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a> · <a href="${rel}gunghap/" hreflang="ko">한국어 궁합표</a></p>
+      <p class="callout"><a href="${rel}en/guide/">The ten Day Masters</a> · <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a> · <a href="${rel}en/zodiac/compatibility/">Birth-year animal compatibility (12 × 12)</a> · <a href="${rel}gunghap/" hreflang="ko">한국어 궁합표</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/match/"><span class="seal-dot" aria-hidden="true"></span><span>Get your real match score</span></a>
