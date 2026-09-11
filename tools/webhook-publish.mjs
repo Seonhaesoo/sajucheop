@@ -6,6 +6,7 @@
  *   IMAGE_VER                 이미지 캐시버스터 (기본: 현재 시각)
  *   IG_ACCESS_TOKEN 등        직접 API 키가 있으면 해당 채널은 웹훅에서 제외 (중복 게시 방지) */
 import fs from 'node:fs';
+import { hookPost } from './meta-fetch.mjs';
 
 const HOOK = process.env.MAKE_WEBHOOK_URL;
 const kind = process.argv[2];
@@ -96,11 +97,8 @@ if (kind === 'daily') {
   urlsEn.forEach((u, i) => { payload['image' + (i + 1) + '_en'] = u; });
 }
 
-const r = await fetch(HOOK, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(payload)
-});
+/* 네트워크 끊김·5xx·429면 meta-fetch 가 기다렸다 다시 보낸다 */
+const r = await hookPost(HOOK, payload, { label: '웹훅' }).catch((e) => ({ status: 0, ok: false, text: String(e.message || e) }));
 console.log('웹훅 전송 완료:', kind, '→ HTTP', r.status,
   kind === 'weekly' ? '(카드 ' + payload.images.length + '장' + (payload.images_en.length ? ' + 영문 ' + payload.images_en.length + '장' : '') + ')' : '(' + payload.ganji + '일)');
 if (!r.ok) {

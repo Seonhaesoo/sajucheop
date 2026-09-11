@@ -63,10 +63,10 @@ fs.writeFileSync('docs/social/engage-en.txt', enOnly + '\n');
 const { creds, publish } = await import('./threads-api.mjs');
 const ko = creds(false), enC = creds(true);
 if (!ko && !enC) { console.log('THREADS 시크릿이 없어 게시는 건너뜁니다.'); process.exit(0); }
-try {
-  if (ko) await publish(ko, { text });
-  if (enC) await publish(enC, { text: enOnly });
-} catch (e) {
-  console.error(e.message);
-  process.exit(1);
+/* 계정마다 따로 — 한 계정이 끝내 실패해도 다른 계정은 게시하고, 실패가 있었으면 마지막에 실패로 끝낸다 */
+let failed = false;
+for (const [c, t] of [[ko, text], [enC, enOnly]]) {
+  if (!c) continue;
+  try { await publish(c, { text: t }); } catch (e) { console.error(e.message); failed = true; }
 }
+if (failed) process.exit(1);

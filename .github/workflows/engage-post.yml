@@ -30,7 +30,8 @@ jobs:
       - name: 글 생성 + 쓰레드 게시
         run: node tools/engage-post.mjs
 
-      - name: 커밋 (운영 페이지용 engage.txt)
+      - name: 커밋 (운영 페이지용 engage.txt) — 게시가 실패해도 글은 남긴다
+        if: ${{ !cancelled() }}
         run: |
           git config user.name 'sajucheop-bot'
           git config user.email 'bot@users.noreply.github.com'

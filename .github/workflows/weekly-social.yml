@@ -55,6 +55,7 @@ jobs:
         run: node tools/weekly-social.mjs
 
       - name: 커밋 및 배포
+        id: commit
         if: steps.gate.outputs.go == '1'
         run: |
           git config user.name 'sajucheop-bot'
@@ -77,22 +78,23 @@ jobs:
           done
           echo '배포 확인 실패 — 게시는 이전 이미지로 진행될 수 있음'
 
+      # 게시 단계는 서로 독립 — 앞 채널이 끝내 실패해도 다음 채널은 게시한다(작업 결과는 실패로 남음). 일시 오류 재시도는 tools/meta-fetch.mjs
       - name: 인스타 캐러셀 게시
-        if: steps.gate.outputs.go == '1' && env.IG_ACCESS_TOKEN != ''
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' && env.IG_ACCESS_TOKEN != '' }}
         env:
           IMAGE_VER: ${{ github.run_id }}
         run: node tools/ig-carousel-publish.mjs
 
       - name: 쓰레드 리스트글 게시
-        if: steps.gate.outputs.go == '1' && env.THREADS_ACCESS_TOKEN != ''
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' && env.THREADS_ACCESS_TOKEN != '' }}
         run: node tools/threads-text-publish.mjs
 
       - name: 쓰레드 영문 계정 리스트글 게시
-        if: steps.gate.outputs.go == '1' && env.THREADS_EN_ACCESS_TOKEN != ''
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' && env.THREADS_EN_ACCESS_TOKEN != '' }}
         run: node tools/threads-text-publish.mjs --en
 
       - name: 웹훅 발행 (Make 등 서드파티)
-        if: steps.gate.outputs.go == '1' && env.MAKE_WEBHOOK_URL != ''
+        if: ${{ !cancelled() && steps.commit.outcome == 'success' && env.MAKE_WEBHOOK_URL != '' }}
         env:
           IMAGE_VER: ${{ github.run_id }}
         run: node tools/webhook-publish.mjs weekly

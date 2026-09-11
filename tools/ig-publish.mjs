@@ -1,5 +1,8 @@
 /* 인스타그램 스토리 자동 게시 (Meta Graph API · 비즈니스 계정 전용)
- * 필요 환경변수: IG_USER_ID, IG_ACCESS_TOKEN, IMAGE_URL */
+ * 필요 환경변수: IG_USER_ID, IG_ACCESS_TOKEN, IMAGE_URL
+ * 메타 쪽 일시 오류는 meta-fetch.mjs 가 기다렸다 다시 시도한다. */
+import { metaPost } from './meta-fetch.mjs';
+
 const IG_USER_ID = process.env.IG_USER_ID;
 const TOKEN = process.env.IG_ACCESS_TOKEN;
 const IMAGE_URL = process.env.IMAGE_URL;
@@ -16,9 +19,7 @@ const HOST = TOKEN.startsWith('IG') ? 'graph.instagram.com' : 'graph.facebook.co
 console.log('API 호스트:', HOST);
 const base = 'https://' + HOST + '/v21.0/' + IG_USER_ID;
 
-const r1 = await fetch(base + '/media?media_type=STORIES&image_url=' +
-  encodeURIComponent(IMAGE_URL) + '&access_token=' + TOKEN, { method: 'POST' });
-const j1 = await r1.json();
+const j1 = await metaPost(base + '/media', { media_type: 'STORIES', image_url: IMAGE_URL, access_token: TOKEN }, { label: '스토리 컨테이너' });
 if (!j1.id) {
   console.error('미디어 컨테이너 생성 실패:', JSON.stringify(j1));
   process.exit(1);
@@ -27,9 +28,7 @@ console.log('컨테이너 생성:', j1.id);
 
 await new Promise((r) => setTimeout(r, 8000));
 
-const r2 = await fetch(base + '/media_publish?creation_id=' + j1.id +
-  '&access_token=' + TOKEN, { method: 'POST' });
-const j2 = await r2.json();
+const j2 = await metaPost(base + '/media_publish', { creation_id: j1.id, access_token: TOKEN }, { label: '스토리 게시' });
 if (!j2.id) {
   console.error('스토리 게시 실패:', JSON.stringify(j2));
   process.exit(1);

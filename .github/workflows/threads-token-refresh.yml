@@ -23,7 +23,8 @@ jobs:
         if: env.THREADS_ACCESS_TOKEN != ''
         id: refresh
         run: |
-          RES=$(curl -s "https://graph.threads.net/refresh_access_token?grant_type=th_refresh_token&access_token=${THREADS_ACCESS_TOKEN}")
+          # 408·429·5xx·접속 실패는 20초 간격으로 3번까지 다시 시도 (잘못된 토큰 같은 4xx 는 그대로 실패)
+          RES=$(curl -s --retry 3 --retry-delay 20 --retry-connrefused "https://graph.threads.net/refresh_access_token?grant_type=th_refresh_token&access_token=${THREADS_ACCESS_TOKEN}")
           NEW=$(echo "$RES" | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
           if [ -z "$NEW" ]; then
             echo "갱신 실패: $RES"
@@ -50,7 +51,7 @@ jobs:
         if: env.THREADS_EN_ACCESS_TOKEN != ''
         id: refresh_en
         run: |
-          RES=$(curl -s "https://graph.threads.net/refresh_access_token?grant_type=th_refresh_token&access_token=${THREADS_EN_ACCESS_TOKEN}")
+          RES=$(curl -s --retry 3 --retry-delay 20 --retry-connrefused "https://graph.threads.net/refresh_access_token?grant_type=th_refresh_token&access_token=${THREADS_EN_ACCESS_TOKEN}")
           NEW=$(echo "$RES" | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
           if [ -z "$NEW" ]; then echo "EN 갱신 실패: $RES"; exit 1; fi
           echo "::add-mask::$NEW"
