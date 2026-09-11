@@ -1,0 +1,46 @@
+name: threads-post-now
+
+# 쓰레드 수동 게시 — 이미 만들어 둔 주간 리스트글(docs/social/thread.txt, 영문은 thread-en.txt)을 지금 올린다.
+# 글을 새로 만들거나 회차를 넘기지 않으므로, 게시가 실패했던 회차를 다시 올릴 때 쓴다. 일시 오류 재시도는 tools/meta-fetch.mjs
+on:
+  workflow_dispatch:
+    inputs:
+      account:
+        description: '계정 (ko = 한글, en = 영문)'
+        type: choice
+        options:
+          - ko
+          - en
+        default: ko
+
+permissions:
+  contents: read
+
+concurrency:
+  group: social-bot
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    env:
+      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+      THREADS_EN_USER_ID: ${{ secrets.THREADS_EN_USER_ID }}
+      THREADS_EN_ACCESS_TOKEN: ${{ secrets.THREADS_EN_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 올릴 글 확인
+        run: |
+          f=docs/social/thread.txt
+          if [ "${{ inputs.account }}" = "en" ]; then f=docs/social/thread-en.txt; fi
+          echo "파일: $f"
+          cat "$f"
+
+      - name: 쓰레드 게시
+        run: node tools/threads-text-publish.mjs ${{ inputs.account == 'en' && '--en' || '' }}
