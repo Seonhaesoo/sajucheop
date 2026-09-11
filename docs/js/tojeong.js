@@ -190,6 +190,7 @@
     monthly: monthly,
     taeseSu: taeseSu,
     wolgeonSu: wolgeonSu,
+    parts: { SANG: SANG, JUNG: JUNG, HA: HA },   /* 정적 페이지 생성(tools/build-tojeong.mjs)용 */
     _mod1: mod1
   };
 })();

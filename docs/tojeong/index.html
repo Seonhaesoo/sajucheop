@@ -6,8 +6,8 @@
   <script>if(location.hostname.indexOf('localhost')<0&&location.hostname.indexOf('127.0.0.1')<0&&location.protocol!=='file:'){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>무료 토정비결 — 144괘로 보는 한 해 신수 | 사주첩</title>
-  <meta name="description" content="생년월일만 넣으면 전통 산출법(태세수·월건수·일진수)으로 144괘 중 나의 괘를 뽑아드립니다. 올해와 신년 신수, 음력 달별 흐름까지 무료 토정비결.">
+  <title>무료 토정비결 2026·2027 — 144괘로 보는 올해·내년 신수 | 사주첩</title>
+  <meta name="description" content="생년월일만 넣으면 전통 산출법(태세수·월건수·일진수)으로 144괘 중 나의 괘를 뽑아드립니다. 올해와 2027년 정미년 신수, 음력 달별 흐름까지 무료 토정비결. 연도별 괘 찾기표와 144괘 풀이도 함께.">
   <link rel="canonical" href="https://sajucheop.com/tojeong/">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="../css/style.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"사주첩 토정비결","url":"https://sajucheop.com/tojeong/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"inLanguage":"ko"}</script>
-  <meta property="og:title" content="무료 토정비결 — 144괘로 보는 한 해 신수">
+  <meta property="og:title" content="무료 토정비결 2026·2027 — 144괘로 보는 올해·내년 신수">
   <meta property="og:description" content="전통 산출법 그대로, 생년월일만 넣으면 나의 괘와 음력 달별 흐름까지.">
   <meta property="og:image" content="https://sajucheop.com/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -46,6 +46,7 @@
   <div class="daeun-intro" style="margin-top: 26px;">
     <h2 style="font-size: 24px;">토정비결 신수</h2>
     <p>토정비결의 전통 산출법 — 나이와 <b>태세수</b>, 생월과 <b>월건수</b>, 생일과 <b>일진수</b> — 로 <b>144괘</b> 중 나의 괘를 뽑습니다. 풀이 글은 사주첩이 오늘의 언어로 새로 썼습니다.</p>
+    <p style="margin-top: 8px;">표로 직접 찾으려면 <a href="2027/">2027 토정비결 괘 찾기표</a>, 괘 번호의 뜻은 <a href="gwae/">144괘 풀이</a>에서 볼 수 있습니다.</p>
   </div>
 
   <!-- 저장된 명식 바로 보기 -->
@@ -88,6 +89,7 @@
       <h3 class="reading-title" id="tjp-title" style="font-size: 17px;"></h3>
       <p class="reading-body" id="tjp-overview"></p>
       <p class="reading-body" id="tjp-half" style="margin-top: 8px; color: #6E6455;"></p>
+      <p class="reading-body" style="margin-top: 8px;"><a id="tjp-gwae-link" href="gwae/" style="color: var(--seal);">144괘 풀이에서 자세히 보기 →</a></p>
     </div>
 
     <div class="card reading-card" style="margin-top: 14px;">
@@ -248,6 +250,7 @@
     $('#tjp-overview').textContent = tx.overview;
     $('#tjp-half').textContent = tx.half + ' 한 해의 맺음은 「' + tx.ending + '」의 상입니다.';
     $('#tjp-caution').textContent = tx.caution;
+    var gl = $('#tjp-gwae-link'); gl.href = 'gwae/#g' + r.code; gl.textContent = '제' + r.code + '괘 — 144괘 풀이에서 바탕·전개·끝맺음 자세히 보기 →';
 
     var dayStem = M.dayPillarOf(current.sy, current.sm, current.sd).stem;
     $('#tjp-months').innerHTML = TJ.monthly(fy, dayStem).map(function (mo) {

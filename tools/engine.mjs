@@ -8,7 +8,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-export function loadEngine() {
+/* extra: 더 불러올 docs/js 파일 이름(예: ['tojeong']). W 는 window 객체 — extra 가 노출한 전역을 꺼낼 때 쓴다 */
+export function loadEngine(extra = []) {
   const w = {};
   const ctx = {
     window: w, self: w, globalThis: w,
@@ -17,7 +18,7 @@ export function loadEngine() {
     atob: (s) => Buffer.from(s, 'base64').toString('binary')
   };
   vm.createContext(ctx);
-  for (const f of ['vendor-korean-lunar', 'manseryeok', 'interpret', 'characters', 'gunghap', 'daily-quotes']) {
+  for (const f of ['vendor-korean-lunar', 'manseryeok', 'interpret', 'characters', 'gunghap', 'daily-quotes', ...extra]) {
     vm.runInContext(fs.readFileSync(path.join(ROOT, 'docs/js', f + '.js'), 'utf8'), ctx, { filename: f + '.js' });
   }
   const M = w.Manseryeok;
@@ -28,7 +29,8 @@ export function loadEngine() {
     C: w.SajuCharacters,
     G: w.Gunghap,
     Q: w.DailyQuotes,
-    Lunar: w.KoreanLunarCalendar ? new w.KoreanLunarCalendar() : null
+    Lunar: w.KoreanLunarCalendar ? new w.KoreanLunarCalendar() : null,
+    W: w
   };
 }
 

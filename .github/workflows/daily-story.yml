@@ -27,7 +27,7 @@ jobs:
       THREADS_EN_ACCESS_TOKEN: ${{ secrets.THREADS_EN_ACCESS_TOKEN }}
       MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: 키 확인 — 없으면 이번 회차 전체 건너뜀
         id: gate
@@ -41,10 +41,10 @@ jobs:
             echo "API 키가 아직 없어 생성·게시를 건너뜁니다. 키 등록 후 다음 자정 실행부터 자동 재개됩니다."
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.gate.outputs.go == '1'
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Playwright 설치
         if: steps.gate.outputs.go == '1'
