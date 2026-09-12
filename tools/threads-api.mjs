@@ -9,10 +9,24 @@ export function creds(en) {
   return uid && token ? { uid, token, label: en ? 'EN' : 'KO' } : null;
 }
 
+/* 쓰레드 글은 500자까지 — 넘으면 뒤 줄부터 빼고(링크는 대개 앞쪽), 한 줄이 너무 길면 말줄임.
+ * 길이는 UTF-16 단위로 재서 이모지를 넉넉히 센다. 넘긴 채 보내면 코드 100 으로 거절된다(2026-09-12). */
+export const THREADS_MAX = 500;
+export function fitText(text, max = THREADS_MAX) {
+  const s = String(text || '').trim();
+  if (s.length <= max) return s;
+  const lines = s.split('\n');
+  while (lines.length > 1 && lines.join('\n').trim().length > max) lines.pop();
+  const out = lines.join('\n').trim();
+  return out.length <= max ? out : out.slice(0, max - 1) + '…';
+}
+
 /* 이미지가 있으면 IMAGE 컨테이너를 먼저 시도하고, 그래도 안 되면 TEXT 로 */
-export async function publish({ uid, token, label }, { text, imageUrl }) {
+export async function publish({ uid, token, label }, { text: raw, imageUrl }) {
   const base = 'https://graph.threads.net/v1.0/' + uid;
   const tag = '[' + label + ']';
+  const text = fitText(raw);
+  if (text !== String(raw || '').trim()) console.warn(`${tag} 글이 ${String(raw).length}자라 ${THREADS_MAX}자에 맞춰 줄였습니다.`);
   const call = (path, params, what) => metaPost(base + path, { ...params, access_token: token }, { label: tag + ' ' + what });
   let j1 = null;
   if (imageUrl) {

@@ -141,7 +141,7 @@ function buildDay(x) {
       <h2>If your Day Branch is the ${clashB.join(' or ')}</h2>
       <p>Your Day Branch clashes with today\'s ${BRANCH_ANIMAL[b]} — plans change and people move; keep signatures and big decisions for another day. If your Day Branch is the <b>${harmB.join(' or ')}</b>, today harmonizes with you: meetings and requests go smoothly.</p>
 
-      <p class="callout">← <a href="${rel}en/day/${iso(pv.y, pv.m, pv.d)}/">${MON[pv.m - 1]} ${pv.d} · ${pinyin(pvP.stem, pvP.branch)}</a> · <a href="${rel}en/day/${iso(nx.y, nx.m, nx.d)}/">${MON[nx.m - 1]} ${nx.d} · ${pinyin(nxP.stem, nxP.branch)}</a> → · <a href="${rel}day/${iso(y, m, d)}/" hreflang="ko">한국어</a></p>
+      <p class="callout">${pv.y >= Y0 ? `← <a href="${rel}en/day/${iso(pv.y, pv.m, pv.d)}/">${MON[pv.m - 1]} ${pv.d} · ${pinyin(pvP.stem, pvP.branch)}</a> · ` : ''}${nx.y <= Y1 ? `<a href="${rel}en/day/${iso(nx.y, nx.m, nx.d)}/">${MON[nx.m - 1]} ${nx.d} · ${pinyin(nxP.stem, nxP.branch)}</a> → · ` : ''}<a href="${rel}day/${iso(y, m, d)}/" hreflang="ko">한국어</a></p>
     </div>
 
     <div class="ga-cta">

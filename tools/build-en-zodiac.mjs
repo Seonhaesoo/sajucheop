@@ -362,7 +362,7 @@ function yearPage(y) {
     <p class="ga-lead">People born between ${fmtD(x.span.start)} and ${fmtD(x.span.end)} are ${/^[AEIOU]/.test(x.name) ? 'an' : 'a'} ${x.name}. ${esc(A.el[x.elE])}</p>
     <div class="ga-body">
       <h2>Born in January or early February ${y}?</h2>
-      <p>The ${y} ${A.name} year began at Chinese New Year on <b>${fmtD(x.span.start)}</b>. If you were born from January 1 to ${fmtMD(startPrev)}, ${y}, your sign is the <a href="${rel}${yUrl(y - 1).slice(1)}">${prev.name}</a> of ${y - 1}. The year ended on ${fmtD(x.span.end)}, so birthdays in early ${y + 1} up to that date still count as ${A.name}s.</p>
+      <p>The ${y} ${A.name} year began at Chinese New Year on <b>${fmtD(x.span.start)}</b>. If you were born from January 1 to ${fmtMD(startPrev)}, ${y}, your sign is the ${y > Y0 ? `<a href="${rel}${yUrl(y - 1).slice(1)}">${prev.name}</a>` : prev.name} of ${y - 1}. The year ended on ${fmtD(x.span.end)}, so birthdays in early ${y + 1} up to that date still count as ${A.name}s.</p>
       <h2>The Korean saju year starts at Ipchun</h2>
       <p>In Korean saju (the Four Pillars), the year pillar changes at <b>Ipchun</b>, the start of spring — ${fmtD(x.ip)} at ${hhmm(x.ip)} Korea time — not at Lunar New Year. ${sajuNote}${seollalDiff ? ` In Korea, Seollal (Lunar New Year) fell on ${fmtD(x.seollal)}, one day after the Chinese date, because the new moon arrived just before midnight in China and just after it in Korea.` : ''}</p>
       <h2>The ${x.name} personality</h2>

@@ -44,7 +44,10 @@ const variants = {
   ]
 };
 const kind = wd === 6 ? 'weekend' : wd === 4 ? 'hap' : 'intro';
-const text = variants[kind].concat(enTail).join('\n');
+/* 쓰레드 500자 제한 — 영문 꼬리까지 붙여 넘으면 꼬리를 뺀다(영문 계정 글은 따로 있다). 2026-09-12 주말 회차가 512자로 거절됐다 */
+const { THREADS_MAX, fitText } = await import('./threads-api.mjs');
+const full = variants[kind].concat(enTail).join('\n');
+const text = full.length <= THREADS_MAX ? full : fitText(variants[kind].join('\n'));
 
 fs.mkdirSync('docs/social', { recursive: true });
 fs.writeFileSync('docs/social/engage.txt', text + '\n');

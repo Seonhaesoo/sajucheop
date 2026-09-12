@@ -179,7 +179,8 @@ function buildDay(info) {
     termHtml = info.terms.map((t) => `오늘 <b>${pad(t.hh)}:${pad(t.mm)}</b>에 <a href="${rel}jeolgi/${t.y}/${t.slug}/">${t.name}(${t.han})</a> 절기가 듭니다${t.kind === '절' ? ` — 이 시각부터 월주가 ${MONTH_BRANCH[t.month]}월로 바뀝니다${t.slug === 'ipchun' ? ' (년주도 함께 바뀌는 사주의 새해)' : ''}` : ''}.`).join(' ');
   } else {
     const nt = nextTermAfter(y, m, d);
-    termHtml = nt ? `다음 절기는 <a href="${rel}jeolgi/${nt.y}/${nt.slug}/">${nt.name}(${nt.han})</a>, ${nt.m}월 ${nt.d}일 ${pad(nt.hh)}:${pad(nt.mm)}.` : '';
+    /* 범위(Y0~Y1) 밖 해의 절기 페이지는 없다 — 12월 말엔 다음 해 소한이라 글자만 */
+    termHtml = nt ? `다음 절기는 ${nt.y <= Y1 ? `<a href="${rel}jeolgi/${nt.y}/${nt.slug}/">${nt.name}(${nt.han})</a>` : `${nt.name}(${nt.han})`}, ${nt.m}월 ${nt.d}일 ${pad(nt.hh)}:${pad(nt.mm)}.` : '';
   }
 
   const body = `
@@ -205,7 +206,7 @@ function buildDay(info) {
       <h2>일지가 ${chungB.map((b) => b.kor).join('·')}인 분은</h2>
       <p>${branchNote}</p>
 
-      <p class="callout">← <a href="${rel}day/${iso(pv.y, pv.m, pv.d)}/">${pv.m}월 ${pv.d}일 ${pvI.kor}일</a> · <a href="${rel}day/${iso(nx.y, nx.m, nx.d)}/">${nx.m}월 ${nx.d}일 ${nxI.kor}일</a> → · <a href="${rel}son/${y}-${pad(m)}/">${m}월 손없는날</a> · <a href="${rel}jeolgi/${y}/">${y}년 절기</a> · <a href="${rel}manse/">만세력</a> · <a href="${rel}today/ddi/">띠별 운세</a>${I.daysFromCivil(y, m, d) <= I.daysFromCivil(today.y, today.m, today.d) ? ' · <a href="http://saengil.sajucheop.com/' + y + '/' + pad(m) + '/' + pad(d) + '/">이 날 태어난 아기의 생일첩</a>' : ''}</p>
+      <p class="callout">${pv.y >= Y0 ? `← <a href="${rel}day/${iso(pv.y, pv.m, pv.d)}/">${pv.m}월 ${pv.d}일 ${pvI.kor}일</a> · ` : ''}${nx.y <= Y1 ? `<a href="${rel}day/${iso(nx.y, nx.m, nx.d)}/">${nx.m}월 ${nx.d}일 ${nxI.kor}일</a> → · ` : ''}<a href="${rel}son/${y}-${pad(m)}/">${m}월 손없는날</a> · <a href="${rel}jeolgi/${y}/">${y}년 절기</a> · <a href="${rel}manse/">만세력</a> · <a href="${rel}today/ddi/">띠별 운세</a>${I.daysFromCivil(y, m, d) <= I.daysFromCivil(today.y, today.m, today.d) ? ' · <a href="http://saengil.sajucheop.com/' + y + '/' + pad(m) + '/' + pad(d) + '/">이 날 태어난 아기의 생일첩</a>' : ''}</p>
     </div>
 
     <div class="ga-cta">
@@ -267,7 +268,7 @@ function buildMonth(y, m, days) {
       </ul>
       <p>절(節)이 드는 시각부터 사주의 월주가 바뀝니다. 그 시각 앞뒤 두 시간 안에 태어났다면 <a href="${rel}manse/">절기 시각까지 계산하는 만세력</a>으로 월주를 확인하세요.</p>` : ''}
 
-      <p class="callout">← <a href="${rel}son/${pv.y}-${pad(pv.m)}/">${pv.y}년 ${pv.m}월</a> · <a href="${rel}son/${nx.y}-${pad(nx.m)}/">${nx.y}년 ${nx.m}월</a> → · <a href="${rel}jeolgi/${y}/">${y}년 절기 전체</a> · <a href="${rel}lunar/">음력 기념일 변환</a></p>
+      <p class="callout">${pv.y >= Y0 ? `← <a href="${rel}son/${pv.y}-${pad(pv.m)}/">${pv.y}년 ${pv.m}월</a> · ` : ''}${nx.y <= Y1 ? `<a href="${rel}son/${nx.y}-${pad(nx.m)}/">${nx.y}년 ${nx.m}월</a> → · ` : ''}<a href="${rel}jeolgi/${y}/">${y}년 절기 전체</a> · <a href="${rel}lunar/">음력 기념일 변환</a></p>
     </div>
 
     <div class="ga-cta">
@@ -348,7 +349,7 @@ function buildTermYear(y, list) {
         <tr><th>절기</th><th>날짜</th><th>시각</th><th>구분</th></tr>
         ${rows}
       </table>
-      <p class="callout"><a href="${rel}jeolgi/${y - 1}/">${y - 1}년</a> · <a href="${rel}jeolgi/${y + 1}/">${y + 1}년</a> · <a href="${rel}guide/jeolgi.html">절기력이란</a> · <a href="${rel}manse/">만세력</a></p>
+      <p class="callout">${y - 1 >= Y0 ? `<a href="${rel}jeolgi/${y - 1}/">${y - 1}년</a> · ` : ''}${y + 1 <= Y1 ? `<a href="${rel}jeolgi/${y + 1}/">${y + 1}년</a> · ` : ''}<a href="${rel}guide/jeolgi.html">절기력이란</a> · <a href="${rel}manse/">만세력</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>절기 시각 기준으로 내 사주 세우기</span></a>

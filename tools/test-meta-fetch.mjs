@@ -26,6 +26,14 @@ const OK = res(200, { id: '123' });
 { const r = await run([res(429, { error: { message: 'Too many calls', code: 4 } }), OK]); ok(r.out.id === '123' && r.n === 2, '호출 한도(429·4)는 기다렸다 다시'); }
 { const r = await run([res(400, { error: { message: 'Media ID is not available', code: 9007, error_subcode: 2207027 } }), OK]); ok(r.out.id === '123' && r.n === 2, '미디어 처리 중(9007)은 기다렸다 게시'); }
 { let msg = ''; try { await run(['net']); } catch (e) { msg = e.message; } ok(msg === 'fetch failed', '네트워크가 끝까지 안 되면 예외'); }
+{ const r = await run([res(500, { error: { message: 'Param text must be at most 500 characters long.', type: 'THApiException', code: 100 } }), OK]); ok(r.out.error && r.n === 1 && !r.waits.length, 'HTTP 500이어도 잘못된 값(100)은 다시 시도하지 않음 — 쓰레드 500자 초과', JSON.stringify(r)); }
+
+/* 쓰레드 500자 맞추기 */
+{ const { fitText, THREADS_MAX } = await import('./threads-api.mjs');
+  const long = ['첫 줄 → https://sajucheop.com/', '둘째 줄', '', 'x'.repeat(480)].join('\n');
+  const f = fitText(long);
+  ok(f.length <= THREADS_MAX && f.startsWith('첫 줄') && f.includes('https://sajucheop.com/') && !f.includes('xxx'), '500자 넘으면 뒤 줄부터 빼서 맞춤', f.length);
+  ok(fitText('짧은 글') === '짧은 글' && fitText('가'.repeat(600)).length === THREADS_MAX, '짧으면 그대로 · 한 줄이 길면 말줄임'); }
 
 /* 웹훅 */
 { let n = 0; const waits = []; const r = await MF.hookPost('https://hook.test/x', { a: 1 }, { waits: [20, 60, 120], sleep: async (s) => { waits.push(s); }, fetch: async () => (n++ === 0 ? res(503, 'busy') : res(200, 'Accepted')) });
