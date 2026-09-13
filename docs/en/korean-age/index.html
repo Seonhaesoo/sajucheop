@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>if(location.hostname.indexOf('localhost')<0&&location.hostname.indexOf('127.0.0.1')<0&&location.protocol!=='file:'){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');}</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Korean Age Calculator — How Old Am I in Korea?</title>
+  <meta name="description" content="Find your Korean age, international age and year age in one step, and see what changed when Korea switched to international age in June 2023.">
+  <link rel="canonical" href="https://sajucheop.com/en/korean-age/">
+  
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Sajucheop","item":"https://sajucheop.com/en/"},{"@type":"ListItem","position":2,"name":"Korean age calculator","item":"https://sajucheop.com/en/korean-age/"}]},{"@context":"https://schema.org","@type":"WebApplication","name":"Korean age calculator","url":"https://sajucheop.com/en/korean-age/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I work out my Korean age?","acceptedAnswer":{"@type":"Answer","text":"Take the current year, subtract your birth year and add one. Someone born in 2000 is 27 in Korean age throughout 2026, and 25 or 26 in international age depending on whether their birthday has passed."}},{"@type":"Question","name":"Is Korean age still used?","acceptedAnswer":{"@type":"Answer","text":"Not legally: since June 28, 2023, international age is the standard in Korean law and official documents. Socially it lingers, especially among older people and whenever people work out who is older, and a few laws still use year age."}},{"@type":"Question","name":"Why are Korean babies one year old at birth?","acceptedAnswer":{"@type":"Answer","text":"The traditional East Asian count starts at one: from the day you are born, you are in your first year. China, Japan and Vietnam once counted the same way; Korea kept the habit in daily life the longest."}},{"@type":"Question","name":"Does Korean age go up at Lunar New Year?","acceptedAnswer":{"@type":"Answer","text":"In the old tradition everyone added a year at the New Year, and a bowl of tteokguk (rice-cake soup) on Seollal is still said to make you a year older. In modern practice the count changes on January 1."}},{"@type":"Question","name":"What does 만 (man) mean?","acceptedAnswer":{"@type":"Answer","text":"만 나이 means age in full years, the same as international age. If a Korean form or sign says 만 19세, it means 19 in international age."}}]}]</script>
+  <meta property="og:title" content="Korean Age Calculator — How Old Am I in Korea?">
+  <meta property="og:description" content="Find your Korean age, international age and year age in one step, and see what changed when Korea switched to international age in June 2023.">
+  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .tl-calc { margin: 6px 0 18px; padding: 16px; background: #FFFDF9; border: 1px solid var(--line); border-radius: 12px; }
+    .tl-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tl-row label { flex: 1 1 130px; display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+    .tl-row input, .tl-row select { display: block; width: 100%; margin-top: 6px; font: inherit; font-size: 16px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+    .tl-check { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: var(--muted); cursor: pointer; }
+    .tl-calc button { margin-top: 12px; width: 100%; font: inherit; font-weight: 700; padding: 11px 16px; border: 0; border-radius: 8px; background: var(--seal); color: #F6F1E8; cursor: pointer; }
+    .tl-out { margin-top: 14px; font-size: 14px; line-height: 1.7; }
+    .tl-out p + p { margin-top: 8px; }
+    .tl-nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .tl-nums div { text-align: center; padding: 12px 4px; border: 1px solid var(--line-soft); border-radius: 10px; background: #fff; }
+    .tl-nums b { display: block; font-family: 'Noto Serif KR', serif; font-size: 30px; color: var(--seal); line-height: 1.1; }
+    .tl-nums span { display: block; font-size: 12.5px; font-weight: 700; margin-top: 4px; }
+    .tl-nums small { display: block; font-size: 11px; color: var(--faint); margin-top: 2px; line-height: 1.4; }
+    .tl-big { font-family: 'Noto Serif KR', serif; font-size: 19px; color: var(--seal); display: block; margin-bottom: 4px; }
+    .tl-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 10px; }
+    .tl-table th, .tl-table td { padding: 7px 6px; border-bottom: 1px solid var(--line-soft); text-align: left; }
+    .tl-table th { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .tl-table tr.next td { background: #FBF3E6; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="app doc">
+
+  <header class="doc-header">
+    <a class="brand" href="../../en/">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">Sajucheop</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="../../en/">Chart</a>
+      <a href="../../en/today/">Today</a>
+      <a href="../../en/match/">Match</a>
+      <a href="../../en/zodiac/">Zodiac</a>
+      <a href="../../en/guide/">Library</a>
+      <a href="../../">한국어</a>
+    </nav>
+  </header>
+
+
+  <article class="guide-article">
+    <div class="ga-overline">Tools</div>
+    <h1 class="ga-title">Korean age calculator</h1>
+    <p class="ga-lead">Korea has three ways of counting age, and until 2023 all three were in everyday use. Enter your birth date to see each one and what it is used for.</p>
+    <div class="tl-calc">
+      <div class="tl-row">
+        <label for="ka-birth">Birth date<input id="ka-birth" type="date" min="1900-01-01" max="2100-12-31" value="2000-06-15"></label>
+        <label for="ka-on">Age on<input id="ka-on" type="date" min="1900-01-01" max="2100-12-31"></label>
+      </div>
+      <button type="button" id="ka-go">Calculate</button>
+      <div class="tl-out" id="ka-out" aria-live="polite"></div>
+    </div>
+    <div class="ga-body">
+      <h2>Three ways to count age in Korea</h2>
+      <table>
+        <tr><th></th><th>How it counts</th><th>Where it is used</th></tr>
+        <tr><td><b>International age</b><br>만 나이 (man nai)</td><td>0 at birth, one more on each birthday</td><td>Laws, contracts, hospitals and official forms. The legal standard since June 28, 2023.</td></tr>
+        <tr><td><b>Korean age</b><br>세는 나이 (seneun nai)</td><td>1 at birth, one more every January 1</td><td>Everyday conversation, especially among older people.</td></tr>
+        <tr><td><b>Year age</b><br>연 나이 (yeon nai)</td><td>This year minus your birth year</td><td>A few laws that group people by birth year, such as military service and the age for buying alcohol and tobacco.</td></tr>
+      </table>
+      <p>Korean age is always one or two years ahead of international age: two before your birthday in a given year, one after it. A baby born on December 31 is one year old in Korean age that day and two the next morning, on January 1.</p>
+
+      <h2>What changed in June 2023</h2>
+      <p>On June 28, 2023, amendments to Korea’s Civil Act and to its basic law on public administration took effect, making international age the standard for laws, contracts and official documents unless a law says otherwise. Overnight, most people in Korea became a year or two younger on paper. The aim was to end the confusion three systems caused in contracts, medical instructions and eligibility rules, where the same person could be 25, 26 or 27 depending on who was counting.</p>
+      <p>A few laws still count by birth year. Buying alcohol and tobacco is allowed from January 1 of the year you turn 19, and military service obligations are also set by year of birth. That is the year age in the table above.</p>
+
+      <h2>Why Korean age is still around</h2>
+      <p>In Korea an age is more than a number: it decides how you speak to someone. People born in the same year are 친구 (chingu, friends) and can talk casually; a year older and they become 형 (hyung), 누나 (noona), 오빠 (oppa) or 언니 (unni), with polite speech going the other way. Because that hierarchy runs on birth years, “What year were you born?” is still an everyday question, and plenty of people give their Korean age in conversation even though every form now asks for the international one.</p>
+      <p>School keeps it alive too. Korean school years group children by birth year, January to December, so classmates share a Korean age all year. Before 2009 the cut-off was March, and children born in January or February started school with the year above them: the 빠른 년생 (“early birthdays”), whose friends are all a year older on paper.</p>
+
+      <h2>Korean age, the zodiac and saju</h2>
+      <p>Korean age changes on January 1, the zodiac animal changes at Lunar New Year, and a saju chart starts its year at Ipchun, the start of spring around February 4. If you were born in January or early February, the three can disagree, so the calculator shows your animal by the Lunar New Year boundary and your saju year by Ipchun. <a href="../guide/ipchun-year-boundary/">Why saju uses Ipchun</a> · <a href="../zodiac/">Chinese zodiac calculator</a></p>
+      <h2>FAQ</h2>
+      <details class="ics-help" open><summary>How do I work out my Korean age?</summary><div class="ih-body"><p>Take the current year, subtract your birth year and add one. Someone born in 2000 is 27 in Korean age throughout 2026, and 25 or 26 in international age depending on whether their birthday has passed.</p></div></details>
+      <details class="ics-help"><summary>Is Korean age still used?</summary><div class="ih-body"><p>Not legally: since June 28, 2023, international age is the standard in Korean law and official documents. Socially it lingers, especially among older people and whenever people work out who is older, and a few laws still use year age.</p></div></details>
+      <details class="ics-help"><summary>Why are Korean babies one year old at birth?</summary><div class="ih-body"><p>The traditional East Asian count starts at one: from the day you are born, you are in your first year. China, Japan and Vietnam once counted the same way; Korea kept the habit in daily life the longest.</p></div></details>
+      <details class="ics-help"><summary>Does Korean age go up at Lunar New Year?</summary><div class="ih-body"><p>In the old tradition everyone added a year at the New Year, and a bowl of tteokguk (rice-cake soup) on Seollal is still said to make you a year older. In modern practice the count changes on January 1.</p></div></details>
+      <details class="ics-help"><summary>What does 만 (man) mean?</summary><div class="ih-body"><p>만 나이 means age in full years, the same as international age. If a Korean form or sign says 만 19세, it means 19 in international age.</p></div></details>
+      <p class="callout"><a href="../../en/korean-age/">Korean age calculator</a> · <a href="../../en/lunar-birthday/">Lunar birthday calculator</a> · <a href="../../en/zodiac/">Chinese zodiac calculator</a> · <a href="../../en/lunar-new-year/">Lunar New Year dates</a> · <a href="../../en/day/">Day pillar calendar</a></p>
+    </div>
+    <div class="ga-cta">
+      <a class="btn-primary" href="../../en/"><span class="seal-dot" aria-hidden="true"></span><span>Read my Four Pillars chart</span></a>
+    </div>
+  </article>
+  <script>
+  (function () {
+    var Z = [[1924,"1924-02-05","1924-02-05","10:52"],[1925,"1925-01-24","1925-02-04","16:44"],[1926,"1926-02-13","1926-02-04","22:34"],[1927,"1927-02-02","1927-02-05","04:24"],[1928,"1928-01-23","1928-02-05","10:14"],[1929,"1929-02-10","1929-02-04","16:02"],[1930,"1930-01-30","1930-02-04","21:50"],[1931,"1931-02-17","1931-02-05","03:38"],[1932,"1932-02-06","1932-02-05","09:25"],[1933,"1933-01-26","1933-02-04","15:12"],[1934,"1934-02-14","1934-02-04","21:00"],[1935,"1935-02-04","1935-02-05","02:48"],[1936,"1936-01-24","1936-02-05","08:37"],[1937,"1937-02-11","1937-02-04","14:26"],[1938,"1938-01-31","1938-02-04","20:16"],[1939,"1939-02-19","1939-02-05","02:07"],[1940,"1940-02-08","1940-02-05","07:58"],[1941,"1941-01-27","1941-02-04","13:50"],[1942,"1942-02-15","1942-02-04","19:42"],[1943,"1943-02-05","1943-02-05","01:33"],[1944,"1944-01-25","1944-02-05","07:25"],[1945,"1945-02-13","1945-02-04","13:15"],[1946,"1946-02-02","1946-02-04","19:05"],[1947,"1947-01-22","1947-02-05","00:54"],[1948,"1948-02-10","1948-02-05","06:42"],[1949,"1949-01-29","1949-02-04","12:30"],[1950,"1950-02-17","1950-02-04","18:17"],[1951,"1951-02-06","1951-02-05","00:04"],[1952,"1952-01-27","1952-02-05","05:52"],[1953,"1953-02-14","1953-02-04","11:39"],[1954,"1954-02-03","1954-02-04","17:28"],[1955,"1955-01-24","1955-02-04","23:17"],[1956,"1956-02-12","1956-02-05","05:06"],[1957,"1957-01-31","1957-02-04","10:57"],[1958,"1958-02-18","1958-02-04","16:48"],[1959,"1959-02-08","1959-02-04","22:40"],[1960,"1960-01-28","1960-02-05","04:31"],[1961,"1961-02-15","1961-02-04","10:23"],[1962,"1962-02-05","1962-02-04","16:14"],[1963,"1963-01-25","1963-02-04","22:05"],[1964,"1964-02-13","1964-02-05","03:56"],[1965,"1965-02-02","1965-02-04","09:45"],[1966,"1966-01-21","1966-02-04","15:34"],[1967,"1967-02-09","1967-02-04","21:22"],[1968,"1968-01-30","1968-02-05","03:09"],[1969,"1969-02-17","1969-02-04","08:57"],[1970,"1970-02-06","1970-02-04","14:44"],[1971,"1971-01-27","1971-02-04","20:31"],[1972,"1972-02-15","1972-02-05","02:19"],[1973,"1973-02-03","1973-02-04","08:08"],[1974,"1974-01-23","1974-02-04","13:57"],[1975,"1975-02-11","1975-02-04","19:47"],[1976,"1976-01-31","1976-02-05","01:38"],[1977,"1977-02-18","1977-02-04","07:29"],[1978,"1978-02-07","1978-02-04","13:21"],[1979,"1979-01-28","1979-02-04","19:12"],[1980,"1980-02-16","1980-02-05","01:04"],[1981,"1981-02-05","1981-02-04","06:55"],[1982,"1982-01-25","1982-02-04","12:46"],[1983,"1983-02-13","1983-02-04","18:36"],[1984,"1984-02-02","1984-02-05","00:25"],[1985,"1985-02-20","1985-02-04","06:13"],[1986,"1986-02-09","1986-02-04","12:01"],[1987,"1987-01-29","1987-02-04","17:49"],[1988,"1988-02-17","1988-02-04","23:36"],[1989,"1989-02-06","1989-02-04","05:23"],[1990,"1990-01-27","1990-02-04","11:11"],[1991,"1991-02-15","1991-02-04","16:59"],[1992,"1992-02-04","1992-02-04","22:48"],[1993,"1993-01-23","1993-02-04","04:37"],[1994,"1994-02-10","1994-02-04","10:27"],[1995,"1995-01-31","1995-02-04","16:18"],[1996,"1996-02-19","1996-02-04","22:10"],[1997,"1997-02-07","1997-02-04","04:02"],[1998,"1998-01-28","1998-02-04","09:53"],[1999,"1999-02-16","1999-02-04","15:45"],[2000,"2000-02-05","2000-02-04","21:36"],[2001,"2001-01-24","2001-02-04","03:26"],[2002,"2002-02-12","2002-02-04","09:16"],[2003,"2003-02-01","2003-02-04","15:05"],[2004,"2004-01-22","2004-02-04","20:53"],[2005,"2005-02-09","2005-02-04","02:41"],[2006,"2006-01-29","2006-02-04","08:28"],[2007,"2007-02-18","2007-02-04","14:15"],[2008,"2008-02-07","2008-02-04","20:03"],[2009,"2009-01-26","2009-02-04","01:50"],[2010,"2010-02-14","2010-02-04","07:39"],[2011,"2011-02-03","2011-02-04","13:28"],[2012,"2012-01-23","2012-02-04","19:18"],[2013,"2013-02-10","2013-02-04","01:08"],[2014,"2014-01-31","2014-02-04","06:59"],[2015,"2015-02-19","2015-02-04","12:51"],[2016,"2016-02-08","2016-02-04","18:43"],[2017,"2017-01-28","2017-02-04","00:35"],[2018,"2018-02-16","2018-02-04","06:26"],[2019,"2019-02-05","2019-02-04","12:17"],[2020,"2020-01-25","2020-02-04","18:07"],[2021,"2021-02-12","2021-02-03","23:56"],[2022,"2022-02-01","2022-02-04","05:45"],[2023,"2023-01-22","2023-02-04","11:33"],[2024,"2024-02-10","2024-02-04","17:20"],[2025,"2025-01-29","2025-02-03","23:07"],[2026,"2026-02-17","2026-02-04","04:55"],[2027,"2027-02-06","2027-02-04","10:42"],[2028,"2028-01-26","2028-02-04","16:30"],[2029,"2029-02-13","2029-02-03","22:19"],[2030,"2030-02-03","2030-02-04","04:08"],[2031,"2031-01-23","2031-02-04","09:58"],[2032,"2032-02-11","2032-02-04","15:49"]];
+    var AN = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
+    var SL = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig'];
+    var EL = ['Wood', 'Wood', 'Fire', 'Fire', 'Earth', 'Earth', 'Metal', 'Metal', 'Water', 'Water'], HAN = '甲乙丙丁戊己庚辛壬癸', BR = '子丑寅卯辰巳午未申酉戌亥';
+    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var $ = function (s) { return document.querySelector(s); };
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function parse(v) { var p = v.split('-'); return { y: +p[0], m: +p[1], d: +p[2] }; }
+    function fmt(v) { var p = parse(v); return MONTHS[p.m - 1] + ' ' + p.d + ', ' + p.y; }
+    function gz(y) { var s = ((y - 4) % 10 + 10) % 10, b = ((y - 4) % 12 + 12) % 12; return { han: HAN[s] + BR[b], name: EL[s] + ' ' + AN[b], b: b }; }
+    var now = new Date(), today = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+    $('#ka-on').value = today;
+    function go() {
+      var bv = $('#ka-birth').value, ov = $('#ka-on').value || today, out = $('#ka-out');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(bv)) { out.textContent = 'Enter your birth date.'; return; }
+      if (ov < bv) { out.textContent = 'The “age on” date is before the birth date.'; return; }
+      var b = parse(bv), o = parse(ov);
+      var intl = o.y - b.y - ((o.m < b.m || (o.m === b.m && o.d < b.d)) ? 1 : 0), kor = o.y - b.y + 1, yr = o.y - b.y;
+      var html = '<div class="tl-nums"><div><b>' + intl + '</b><span>International age</span><small>만 나이 · legal age</small></div>' +
+        '<div><b>' + kor + '</b><span>Korean age</span><small>세는 나이 · everyday</small></div>' +
+        '<div><b>' + yr + '</b><span>Year age</span><small>연 나이 · a few laws</small></div></div>';
+      var next = new Date(o.y, b.m - 1, b.d), onD = new Date(o.y, o.m - 1, o.d);
+      if (next < onD) next = new Date(o.y + 1, b.m - 1, b.d);
+      var days = Math.round((next - onD) / 86400000);
+      html += '<p>' + (days === 0 ? 'Happy birthday — you turn ' + intl + ' today in international age.' : 'Your international age goes up to ' + (intl + 1) + ' on your next birthday, in ' + days + ' day' + (days === 1 ? '' : 's') + '. Your Korean age goes up every January 1.') + '</p>';
+      var row = null;
+      for (var i = 0; i < Z.length; i++) if (Z[i][0] === b.y) row = Z[i];
+      if (row) {
+        var zy = bv >= row[1] ? b.y : b.y - 1, z = gz(zy);
+        html += '<p>By the Lunar New Year boundary you were born in the Year of the <a href="../zodiac/' + SL[z.b] + '/">' + z.name + '</a> (' + z.han + ').';
+        if (bv === row[2]) html += ' Your birthday is Ipchun itself, when the saju year turns at about ' + row[3] + ' Korea time, so your saju year depends on your birth hour.';
+        else { var sy = bv > row[2] ? b.y : b.y - 1, s = gz(sy); html += ' In a saju chart your year pillar is <b>' + s.han + '</b> (' + s.name + ')' + (sy !== zy ? ', a different year, because saju starts the year at Ipchun (' + fmt(row[2]) + ').' : '.'); }
+        html += '</p>';
+      }
+      out.innerHTML = html;
+    }
+    $('#ka-go').addEventListener('click', go);
+    $('#ka-birth').addEventListener('change', go);
+    $('#ka-on').addEventListener('change', go);
+    go();
+  })();
+  </script>
+
+  <footer class="site-footer" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© Sajucheop</span>
+      <nav class="footer-links">
+        <a href="../../en/">Chart</a><a href="../../en/guide/">Library</a><a href="../../en/about/">About</a><a href="../../en/privacy/">Privacy</a><a href="../../en/terms/">Terms</a>
+      </nav>
+    </div>
+    <p class="footer-note">For reflection and entertainment. Important decisions are always yours to make.</p>
+  </footer>
+
+</div>
+</body>
+</html>

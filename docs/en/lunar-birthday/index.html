@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>if(location.hostname.indexOf('localhost')<0&&location.hostname.indexOf('127.0.0.1')<0&&location.protocol!=='file:'){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');}</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lunar Birthday Calculator: When Is My Lunar Birthday?</title>
+  <meta name="description" content="Convert a birth date to the Korean lunar calendar and see the solar date of the lunar birthday for each coming year, leap months included.">
+  <link rel="canonical" href="https://sajucheop.com/en/lunar-birthday/">
+  
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Sajucheop","item":"https://sajucheop.com/en/"},{"@type":"ListItem","position":2,"name":"Lunar birthday calculator","item":"https://sajucheop.com/en/lunar-birthday/"}]},{"@context":"https://schema.org","@type":"WebApplication","name":"Lunar birthday calculator","url":"https://sajucheop.com/en/lunar-birthday/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a lunar birthday?","acceptedAnswer":{"@type":"Answer","text":"The day of the lunar calendar you were born on, such as the 15th day of the 8th month. Its solar date changes every year, which is why families look it up each year."}},{"@type":"Question","name":"How do I find my lunar birthday?","acceptedAnswer":{"@type":"Answer","text":"Enter your solar birth date in the calculator above. It converts the date to the Korean lunar calendar and lists the solar date of your lunar birthday for the coming years. If you already know your lunar birth date, switch the first box to Lunar."}},{"@type":"Question","name":"What if I was born in a leap month?","acceptedAnswer":{"@type":"Answer","text":"Most years have no leap month with the same number, so Korean families celebrate in the ordinary month instead. In the rare years that repeat your leap month, the calculator uses it."}},{"@type":"Question","name":"Is the Korean lunar calendar the same as the Chinese one?","acceptedAnswer":{"@type":"Answer","text":"Almost always. Because Korea’s calendar is calculated for UTC+9 and China’s for UTC+8, a month occasionally starts a day apart, as Lunar New Year does in 2027."}},{"@type":"Question","name":"Do Koreans still celebrate lunar birthdays?","acceptedAnswer":{"@type":"Answer","text":"Many do, especially older people, and families often keep a grandparent’s birthday on its lunar date. Holidays such as Seollal and Chuseok follow the lunar calendar too. Younger Koreans mostly use their solar birthday."}}]}]</script>
+  <meta property="og:title" content="Lunar Birthday Calculator: When Is My Lunar Birthday?">
+  <meta property="og:description" content="Convert a birth date to the Korean lunar calendar and see the solar date of the lunar birthday for each coming year, leap months included.">
+  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .tl-calc { margin: 6px 0 18px; padding: 16px; background: #FFFDF9; border: 1px solid var(--line); border-radius: 12px; }
+    .tl-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tl-row label { flex: 1 1 130px; display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+    .tl-row input, .tl-row select { display: block; width: 100%; margin-top: 6px; font: inherit; font-size: 16px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+    .tl-check { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: var(--muted); cursor: pointer; }
+    .tl-calc button { margin-top: 12px; width: 100%; font: inherit; font-weight: 700; padding: 11px 16px; border: 0; border-radius: 8px; background: var(--seal); color: #F6F1E8; cursor: pointer; }
+    .tl-out { margin-top: 14px; font-size: 14px; line-height: 1.7; }
+    .tl-out p + p { margin-top: 8px; }
+    .tl-nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .tl-nums div { text-align: center; padding: 12px 4px; border: 1px solid var(--line-soft); border-radius: 10px; background: #fff; }
+    .tl-nums b { display: block; font-family: 'Noto Serif KR', serif; font-size: 30px; color: var(--seal); line-height: 1.1; }
+    .tl-nums span { display: block; font-size: 12.5px; font-weight: 700; margin-top: 4px; }
+    .tl-nums small { display: block; font-size: 11px; color: var(--faint); margin-top: 2px; line-height: 1.4; }
+    .tl-big { font-family: 'Noto Serif KR', serif; font-size: 19px; color: var(--seal); display: block; margin-bottom: 4px; }
+    .tl-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 10px; }
+    .tl-table th, .tl-table td { padding: 7px 6px; border-bottom: 1px solid var(--line-soft); text-align: left; }
+    .tl-table th { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .tl-table tr.next td { background: #FBF3E6; font-weight: 600; }
+  </style>
+  <link rel="alternate" hreflang="en" href="https://sajucheop.com/en/lunar-birthday/">
+  <link rel="alternate" hreflang="ko" href="https://sajucheop.com/lunar/">
+</head>
+<body>
+<div class="app doc">
+
+  <header class="doc-header">
+    <a class="brand" href="../../en/">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">Sajucheop</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="../../en/">Chart</a>
+      <a href="../../en/today/">Today</a>
+      <a href="../../en/match/">Match</a>
+      <a href="../../en/zodiac/">Zodiac</a>
+      <a href="../../en/guide/">Library</a>
+      <a href="../../">한국어</a>
+    </nav>
+  </header>
+
+
+  <article class="guide-article">
+    <div class="ga-overline">Tools</div>
+    <h1 class="ga-title">Lunar birthday calculator</h1>
+    <p class="ga-lead">Many Korean families still celebrate birthdays by the lunar calendar, especially a grandparent’s. Enter a birth date to find its lunar date and the day it falls on in each coming year.</p>
+    <div class="tl-calc">
+      <div class="tl-row">
+        <label for="lb-cal">The date is<select id="lb-cal"><option value="solar">Solar (Gregorian)</option><option value="lunar">Lunar (Korean)</option></select></label>
+        <label for="lb-y">Year<select id="lb-y"></select></label>
+      </div>
+      <div class="tl-row" style="margin-top: 10px;">
+        <label for="lb-m">Month<select id="lb-m"></select></label>
+        <label for="lb-d">Day<select id="lb-d"></select></label>
+      </div>
+      <label class="tl-check" id="lb-leap-row" hidden><input type="checkbox" id="lb-leap"> Leap month (윤달)</label>
+      <button type="button" id="lb-go">Find my lunar birthdays</button>
+      <div class="tl-out" id="lb-out" aria-live="polite"></div>
+    </div>
+    <div class="ga-body">
+      <h2>Why a lunar birthday moves around</h2>
+      <p>A lunar month runs from one new moon to the next, about 29.5 days, so twelve lunar months come to about 354 days, eleven short of a solar year. A lunar birthday therefore arrives about eleven days earlier each year, until a leap month is added and it jumps about nineteen days later. Nineteen solar years are almost exactly 235 lunar months, so the two calendars nearly line up again every nineteen years: around ages 19, 38, 57 and 76, the lunar and solar birthdays fall on or close to the same day.</p>
+
+      <h2>Leap months</h2>
+      <p>To keep the lunar year in step with the seasons, seven leap months are added in every nineteen years. A leap month repeats the number of the month before it, so a year can have two sixth months, and the second is the leap one: 윤달, yundal. If you were born in a leap month, most years have no such month, and Korean families then celebrate in the ordinary month with the same number. If you were born on the 30th and the month has only 29 days that year, the 29th stands in. The calculator follows both customs.</p>
+      <table>
+        <tr><th>Year</th><th>Leap month</th><th>Solar dates</th></tr>
+        <tr><td>2020</td><td>Leap 4th month (윤4월)</td><td>May 23 – Jun 20</td></tr>
+        <tr><td>2023</td><td>Leap 2nd month (윤2월)</td><td>Mar 22 – Apr 19</td></tr>
+        <tr><td>2025</td><td>Leap 6th month (윤6월)</td><td>Jul 25 – Aug 22</td></tr>
+        <tr><td>2028</td><td>Leap 5th month (윤5월)</td><td>Jun 23 – Jul 21</td></tr>
+        <tr><td>2031</td><td>Leap 3rd month (윤3월)</td><td>Apr 22 – May 20</td></tr>
+        <tr><td>2033</td><td>Leap 11th month (윤11월)</td><td>Dec 22 – Jan 19, 2034</td></tr>
+        <tr><td>2036</td><td>Leap 6th month (윤6월)</td><td>Jul 23 – Aug 21</td></tr>
+        <tr><td>2039</td><td>Leap 5th month (윤5월)</td><td>Jun 22 – Jul 20</td></tr>
+      </table>
+
+      <h2>Korean and Chinese lunar calendars</h2>
+      <p>The two calendars follow the same rules but count days in different time zones: the Korean lunar calendar uses Korea’s time (UTC+9), the Chinese one uses UTC+8. When a new moon falls in the hour before midnight in China, it is already past midnight in Korea, and the month starts a day later there. Lunar New Year 2027 is an example: February 6 in China, February 7 in Korea. This calculator uses the Korean calendar published by the Korea Astronomy and Space Science Institute, so an occasional date may differ by a day from a Chinese almanac.</p>
+
+      <h2>Lunar birthdays and saju</h2>
+      <p>A saju chart does not use lunar months. Its months change at solar terms and its year at Ipchun, around February 4, so a lunar birth date is converted to a solar date first. That is why the <a href="../">chart calculator</a> asks for the solar date, and why two people with the same lunar birthday can have different month pillars. <a href="../guide/ipchun-year-boundary/">Why saju uses Ipchun</a></p>
+      <h2>FAQ</h2>
+      <details class="ics-help" open><summary>What is a lunar birthday?</summary><div class="ih-body"><p>The day of the lunar calendar you were born on, such as the 15th day of the 8th month. Its solar date changes every year, which is why families look it up each year.</p></div></details>
+      <details class="ics-help"><summary>How do I find my lunar birthday?</summary><div class="ih-body"><p>Enter your solar birth date in the calculator above. It converts the date to the Korean lunar calendar and lists the solar date of your lunar birthday for the coming years. If you already know your lunar birth date, switch the first box to Lunar.</p></div></details>
+      <details class="ics-help"><summary>What if I was born in a leap month?</summary><div class="ih-body"><p>Most years have no leap month with the same number, so Korean families celebrate in the ordinary month instead. In the rare years that repeat your leap month, the calculator uses it.</p></div></details>
+      <details class="ics-help"><summary>Is the Korean lunar calendar the same as the Chinese one?</summary><div class="ih-body"><p>Almost always. Because Korea’s calendar is calculated for UTC+9 and China’s for UTC+8, a month occasionally starts a day apart, as Lunar New Year does in 2027.</p></div></details>
+      <details class="ics-help"><summary>Do Koreans still celebrate lunar birthdays?</summary><div class="ih-body"><p>Many do, especially older people, and families often keep a grandparent’s birthday on its lunar date. Holidays such as Seollal and Chuseok follow the lunar calendar too. Younger Koreans mostly use their solar birthday.</p></div></details>
+      <p class="callout"><a href="../../en/korean-age/">Korean age calculator</a> · <a href="../../en/lunar-birthday/">Lunar birthday calculator</a> · <a href="../../en/zodiac/">Chinese zodiac calculator</a> · <a href="../../en/lunar-new-year/">Lunar New Year dates</a> · <a href="../../en/day/">Day pillar calendar</a></p>
+    </div>
+    <div class="ga-cta">
+      <a class="btn-primary" href="../../en/"><span class="seal-dot" aria-hidden="true"></span><span>Read my Four Pillars chart</span></a>
+    </div>
+  </article>
+  <script src="../../js/vendor-korean-lunar.js"></script>
+  <script>
+  (function () {
+    var $ = function (s) { return document.querySelector(s); };
+    var cal = window.KoreanLunarCalendar ? new window.KoreanLunarCalendar() : null;
+    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var HAN = '甲乙丙丁戊己庚辛壬癸', BR = '子丑寅卯辰巳午未申酉戌亥', AN = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
+    function ord(n) { var s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+    function fmt(s) { return WD[new Date(s.y, s.m - 1, s.d).getDay()] + ', ' + MONTHS[s.m - 1] + ' ' + s.d + ', ' + s.y; }
+    var o = '', nowY = new Date().getFullYear();
+    for (var y = 2049; y >= 1900; y--) o += '<option value="' + y + '">' + y + '</option>';
+    $('#lb-y').innerHTML = o; $('#lb-y').value = '1990';
+    o = ''; for (var m = 1; m <= 12; m++) o += '<option value="' + m + '">' + m + '</option>';
+    $('#lb-m').innerHTML = o; $('#lb-m').value = '6';
+    o = ''; for (var d = 1; d <= 31; d++) o += '<option value="' + d + '">' + d + '</option>';
+    $('#lb-d').innerHTML = o; $('#lb-d').value = '15';
+    $('#lb-cal').addEventListener('change', function () { $('#lb-leap-row').hidden = this.value !== 'lunar'; });
+
+    function lunarOf(y, m, d) { if (!cal.setSolarDate(y, m, d)) return null; var l = cal.getLunarCalendar(); return { y: l.year, m: l.month, d: l.day, leap: !!l.intercalation }; }
+    function solarOf(y, lm, ld, leap) {
+      var tries = [];
+      if (leap) tries.push([ld, true], [Math.min(ld, 29), true]);
+      tries.push([ld, false]);
+      if (ld === 30) tries.push([29, false]);
+      for (var i = 0; i < tries.length; i++) {
+        if (cal.setLunarDate(y, lm, tries[i][0], tries[i][1])) { var s = cal.getSolarCalendar(); return { y: s.year, m: s.month, d: s.day, day: tries[i][0], leap: tries[i][1] }; }
+      }
+      return null;
+    }
+    function go() {
+      var out = $('#lb-out');
+      if (!cal) { out.textContent = 'The lunar calendar did not load — please reload the page.'; return; }
+      var y = +$('#lb-y').value, m = +$('#lb-m').value, d = +$('#lb-d').value, lunarIn = $('#lb-cal').value === 'lunar', leapIn = lunarIn && $('#lb-leap').checked;
+      var L, S;
+      if (lunarIn) {
+        S = solarOf(y, m, d, leapIn);
+        if (!S || S.day !== d || S.leap !== leapIn) { out.textContent = 'That lunar date does not exist' + (leapIn ? ' — ' + y + ' has no leap ' + ord(m) + ' month, or the month has only 29 days.' : ' — this month has only 29 days in ' + y + '.'); return; }
+        L = { y: y, m: m, d: d, leap: leapIn };
+      } else {
+        if (new Date(y, m - 1, d).getDate() !== d) { out.textContent = 'That date does not exist.'; return; }
+        L = lunarOf(y, m, d); S = { y: y, m: m, d: d };
+        if (!L) { out.textContent = 'This calculator covers 1900 to 2049.'; return; }
+      }
+      var s = ((L.y - 4) % 10 + 10) % 10, b = ((L.y - 4) % 12 + 12) % 12;
+      var html = '<span class="tl-big">' + ord(L.d) + ' day of the ' + (L.leap ? 'leap ' : '') + ord(L.m) + ' lunar month</span>' +
+        '<p>' + (lunarIn ? 'On the solar calendar that is <b>' + fmt(S) + '</b>.' : 'That is the lunar birth date of <b>' + fmt(S) + '</b>.') +
+        ' The lunar year is ' + L.y + ', ' + HAN[s] + BR[b] + ' (' + AN[b] + ') on the Korean calendar.</p>';
+      var today = new Date(), t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      var rows = '', nextDone = false, notes = {};
+      for (var ly = Math.max(L.y + 1, nowY - 1); ly <= Math.min(nowY + 10, 2049); ly++) {
+        var r = solarOf(ly, L.m, L.d, L.leap);
+        if (!r) continue;
+        var dt = new Date(r.y, r.m - 1, r.d), isNext = !nextDone && dt >= t0;
+        if (isNext) nextDone = true;
+        var note = '';
+        if (L.leap && !r.leap) { note = ' *'; notes.leap = 1; }
+        if (r.day !== L.d) { note += ' †'; notes.day = 1; }
+        rows += '<tr' + (isNext ? ' class="next"' : '') + '><td>' + ly + '</td><td>' + fmt(r) + note + (isNext ? ' · next' : '') + '</td></tr>';
+      }
+      html += '<table class="tl-table"><tr><th>Lunar year</th><th>Your lunar birthday falls on</th></tr>' + rows + '</table>';
+      if (notes.leap) html += '<p style="font-size: 12.5px; color: var(--muted);">* No leap ' + ord(L.m) + ' month that year, so the ordinary ' + ord(L.m) + ' month is used.</p>';
+      if (notes.day) html += '<p style="font-size: 12.5px; color: var(--muted);">† The month has 29 days that year, so the 29th is used.</p>';
+      out.innerHTML = html;
+    }
+    $('#lb-go').addEventListener('click', go);
+    go();
+  })();
+  </script>
+
+  <footer class="site-footer" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© Sajucheop</span>
+      <nav class="footer-links">
+        <a href="../../en/">Chart</a><a href="../../en/guide/">Library</a><a href="../../en/about/">About</a><a href="../../en/privacy/">Privacy</a><a href="../../en/terms/">Terms</a>
+      </nav>
+    </div>
+    <p class="footer-note">For reflection and entertainment. Important decisions are always yours to make.</p>
+  </footer>
+
+</div>
+</body>
+</html>

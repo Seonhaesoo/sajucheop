@@ -121,7 +121,7 @@ function buildDay(x) {
   const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}en/day/" style="color: inherit; text-decoration: none;">Day pillar calendar</a> · ${MON[m - 1]} ${y}</div>
-    <h1 class="ga-title">${WD[x.w]}, ${dateEn} —<br><span class="dp-han">${han(s, b)}</span> ${pinyin(s, b)} Day</h1>
+    <h1 class="ga-title">${WD[x.w]}, ${dateEn} — <br><span class="dp-han">${han(s, b)}</span> ${pinyin(s, b)} Day</h1>
     <p class="ga-meta">${enName(s, b)}${x.lun ? ' · Korean lunar ' + (x.lun.leap ? 'leap ' : '') + x.lun.m + '/' + x.lun.d : ''} · Korean ${STEM_PINYIN[s]}·${BRANCH_PINYIN[b]}</p>
     <p class="ga-lead">The sky character of the day is <b>${STEM_EN[s]}</b> — ${esc(dm.arch)} — and the earth character is the <b>${BRANCH_ANIMAL[b]}</b>. In Korean Saju every day carries two characters, and how they meet your own Day Master sets the texture of the day.</p>
 
@@ -184,12 +184,13 @@ for (const y of [Y0, Y1]) {
   const at = Math.max(0, keys.indexOf(`${today.y}-${pad(today.m)}`));
   const grids = keys.slice(at, at + 3).map((k) => { const [y, m] = k.split('-').map(Number); return monthGrid(y, m, byMonth[k], rel); }).join('\n');
   const t = byMonth[`${today.y}-${pad(today.m)}`].find((x) => x.d === today.d);
-  const title = 'Day Pillar Calendar — what day is it in the Four Pillars today?';
-  const desc = `Today, ${MON[today.m - 1]} ${today.d}, is a ${pinyin(t.s, t.b)} (${han(t.s, t.b)}) day — ${enName(t.s, t.b)}. Tap any date for its day pillar, the Korean lunar date, solar terms and what the day means for each of the ten Day Masters.`;
+  const title = 'Day Pillar Calendar — What Day Is It in the Four Pillars?';
+  const descBase = `Today, ${MON[today.m - 1]} ${today.d}, is a ${pinyin(t.s, t.b)} (${han(t.s, t.b)}) day, ${enName(t.s, t.b)}.`;
+  const desc = [' Tap any date for its day pillar, lunar date, solar terms and meaning for each Day Master.', ' Tap any date for its day pillar, lunar date and solar terms.', ''].map((x) => descBase + x).find((s) => s.length <= 155) || descBase;
   const body = `
   <article class="guide-article">
     <div class="ga-overline">Day pillar calendar</div>
-    <h1 class="ga-title">Today\'s day pillar —<br><span class="dp-han">${han(t.s, t.b)}</span> ${pinyin(t.s, t.b)}</h1>
+    <h1 class="ga-title">Today\'s day pillar — <br><span class="dp-han">${han(t.s, t.b)}</span> ${pinyin(t.s, t.b)}</h1>
     <p class="ga-meta">${WD[t.w]}, ${MON[today.m - 1]} ${today.d}, ${today.y} · ${enName(t.s, t.b)}</p>
     <p class="ga-lead">The sixty-day cycle never stops: every day has two characters of its own. Tap a date for its day pillar, the Korean lunar date, solar terms and what the day means for each of the ten Day Masters. <a href="${rel}en/day/${iso(today.y, today.m, today.d)}/">Read today in full →</a></p>
     <div class="ga-body">

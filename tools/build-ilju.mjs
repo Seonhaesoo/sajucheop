@@ -195,7 +195,7 @@ list.forEach((e, i) => {
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 일주 확인하기</span></a>
     </div>
   </article>`;
-  write('ilju', shell({ rel, title, desc, canonical: SITE + '/ilju/', nav: NAV(rel), extraHead: STYLE, ogTitle: '60일주 사전',
+  write('ilju', shell({ rel, title, desc, canonical: SITE + '/ilju/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/ilju/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/day-pillar/">`, ogTitle: '60일주 사전',
     jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '60일주 사전', url: SITE + '/ilju/' }]), body }));
   urls.unshift(SITE + '/ilju/');
 }

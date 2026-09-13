@@ -24,7 +24,7 @@ export function shell(o) {
   const nav = (o.nav || []).concat(lang === 'en' ? [] : [{ href: 'http://saengil.sajucheop.com/', label: '생일 사전' }, { href: 'https://dream.sajucheop.com/', label: '꿈해몽' }, { href: 'https://tarot.sajucheop.com/', label: '타로' }]).map((n) => `<a href="${esc(n.href)}">${n.label}</a>`).join('\n      ');
   const ld = o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld)}</script>` : '';
   const footerLinks = lang === 'en'
-    ? `<a href="${o.rel}en/">Chart</a><a href="${o.rel}terms.html">Terms</a><a href="${o.rel}privacy.html">Privacy</a>`
+    ? `<a href="${o.rel}en/">Chart</a><a href="${o.rel}en/guide/">Library</a><a href="${o.rel}en/about/">About</a><a href="${o.rel}en/privacy/">Privacy</a><a href="${o.rel}en/terms/">Terms</a>`
     : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}about/">소개</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a><a href="https://donpyo.com/">돈표</a><a href="https://bodyzip.com/">바디집</a>`;
   const footerNote = o.footerNote || (lang === 'en'
     ? 'For reflection and entertainment. Important decisions are always yours to make.'

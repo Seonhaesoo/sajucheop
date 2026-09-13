@@ -11,7 +11,7 @@ import { TEN_GOD_EN, STEM_PINYIN } from './en-ilju-data.mjs';
 const { M } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
-const PUBLISHED = '2026-09-06';
+const PUBLISHED = '2026-09-06', MODIFIED = '2026-09-13';
 const KO_SLUG = ['gapmok', 'eulmok', 'byeonghwa', 'jeonghwa', 'muto', 'gito', 'gyeonggeum', 'singeum', 'imsu', 'gyesu'];
 const STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
 const HAPHWA = { '05': 'Earth', '16': 'Metal', '27': 'Water', '38': 'Wood', '49': 'Fire' };
@@ -144,15 +144,16 @@ for (let a = 0; a < 10; a++) {
     const T = REL[r.key];
     const recv = M.sipseongOf(a, b), give = M.sipseongOf(b, a);
     const yy = sa.yang !== sb.yang;
-    const title = `${A.name} and ${B.name} Compatibility — when a ${A.name} Day Master meets ${B.name} (${T.label})`;
-    const desc = `${A.name} (${sa.han}, ${STEM_PINYIN[a]}) with ${B.name} (${sb.han}, ${STEM_PINYIN[b]}) in Korean Saju / BaZi: ${r.title.replace(/ —.*/, '')}. They are ${TEN_GOD_EN[recv].name} to you; you are ${TEN_GOD_EN[give].name} to them. First impression, love, work and how to make it last.`;
+    const title = `${A.name} and ${B.name} Day Master Compatibility`;
+    const descBase = `${A.name} (${sa.han}) with ${B.name} (${sb.han}) in Korean saju: ${r.title.replace(/ —.*/, '')}. They are ${TEN_GOD_EN[recv].name} to you; you are ${TEN_GOD_EN[give].name} to them.`;
+    const desc = [' Love, work and how to make it last.', ' Love and work.', ''].map((t) => descBase + t).find((s) => s.length <= 155) || descBase;
     const others = M.STEMS.map((s, k) => `<a href="${rel}en/guide/compatibility/${slugOf(a, k)}/"${k === b ? ' class="cur"' : ''}><b>${s.han}</b>${DAY_MASTERS[k].name}<small>${REL[relOf(a, k).key].label}</small></a>`).join('\n        ');
 
     const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}en/guide/compatibility/" style="color: inherit; text-decoration: none;">Day Master compatibility</a> · from ${A.name}\'s side</div>
     <div class="gp-pair"><i>${sa.han}<small>${A.name} · you</small></i><b>×</b><i>${sb.han}<small>${B.name} · them</small></i></div>
-    <h1 class="ga-title">${A.name} × ${B.name} —<br>${esc(T.label)}</h1>
+    <h1 class="ga-title">${A.name} × ${B.name} — <br>${esc(T.label)}</h1>
     <div class="gp-meta">
       <span class="lab">${esc(T.tag)}</span><span>they are <b>${TEN_GOD_EN[recv].name}</b> to you</span><span>you are <b>${TEN_GOD_EN[give].name}</b> to them</span><span>${yy ? 'opposite polarity' : 'same polarity'}</span>
     </div>
@@ -179,7 +180,7 @@ for (let a = 0; a < 10; a++) {
       <p><b>${esc(T.advice)}</b></p>
 
       <h2>The Day Branch changes the reading</h2>
-      <p>Day Master compatibility is the first line of the reading. Whether your Day Branches harmonize or clash, and whether you fill each other\'s missing elements, can move the same ${A.name}–${B.name} pairing a long way. Two birth dates on the <a href="${rel}en/match/">match page</a> add the score, the Ten Gods between you and your best shared days. The six ${A.name} pillars are in the <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a>.</p>
+      <p>Day Master compatibility is the first line of the reading (see <a href="${rel}en/guide/gunghap/">how Korean gunghap works</a>). Whether your Day Branches harmonize or clash, and whether you fill each other\'s missing elements, can move the same ${A.name}–${B.name} pairing a long way. Two birth dates on the <a href="${rel}en/match/">match page</a> add the score, the Ten Gods between you and your best shared days. The six ${A.name} pillars are in the <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a>.</p>
 
       <h2>${A.name} with each of the ten</h2>
       <div class="gp-grid">
@@ -199,7 +200,7 @@ for (let a = 0; a < 10; a++) {
       rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${A.name} × ${B.name} — ${T.label}`,
       extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/gunghap/${KO_SLUG[a]}-${KO_SLUG[b]}/">`,
       jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Library', url: SITE + '/en/guide/' }, { name: 'Compatibility', url: SITE + '/en/guide/compatibility/' }, { name: `${A.name} × ${B.name}`, url: SITE + url }]),
-        { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop' }, publisher: { '@type': 'Organization', name: 'Sajucheop' }, mainEntityOfPage: SITE + url }],
+        { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop' }, publisher: { '@type': 'Organization', name: 'Sajucheop' }, mainEntityOfPage: SITE + url }],
       body
     }));
     urls.push(SITE + url);
@@ -212,12 +213,12 @@ for (let a = 0; a < 10; a++) {
   const head = M.STEMS.map((s, k) => `<th>${s.han}<br><span style="font-size: 9px; font-weight: 400;">${DAY_MASTERS[k].name.replace(' ', '<br>')}</span></th>`).join('');
   const rows = M.STEMS.map((sa, a) => `<tr><th>${sa.han}<br><span style="font-size: 9px; font-weight: 400;">${DAY_MASTERS[a].name.replace(' ', '<br>')}</span></th>` +
     M.STEMS.map((sb, b) => { const k = relOf(a, b).key; const cls = k === 'hap' ? 'hap' : k === 'chung' ? 'chung' : k === 'bihwa' ? 'bihwa' : k.startsWith('saeng') ? 'saeng' : 'geuk'; const w = { hap: '합', chung: '충', bihwa: '=', saeng: '+', geuk: '−' }[cls]; return `<td><a class="${cls}" href="${rel}en/guide/compatibility/${slugOf(a, b)}/" title="${DAY_MASTERS[a].name} × ${DAY_MASTERS[b].name}">${w}</a></td>`; }).join('') + '</tr>').join('\n        ');
-  const title = 'Day Master Compatibility Table — all 100 pairings of the ten stems (Saju / BaZi)';
-  const desc = 'Yang Wood with Yin Earth, Yang Fire with Yang Water… every pairing of the ten Day Masters, read from your side: combine, clash, same element, nourish or shape — plus what you are to each other in the Ten Gods, in love and at work.';
+  const title = 'Day Master Compatibility Table — All 100 Saju Pairings';
+  const desc = 'Every pairing of the ten Day Masters, read from your side: combine, clash, same element, nourish or shape, plus what you are to each other in the Ten Gods.';
   const body = `
   <article class="guide-article">
     <div class="ga-overline">Compatibility</div>
-    <h1 class="ga-title">Day Master compatibility —<br>ten natures, one hundred meetings</h1>
+    <h1 class="ga-title">Day Master compatibility — <br>ten natures, one hundred meetings</h1>
     <p class="ga-meta">Rows are you, columns are them · 합 combine (red) · 충 clash (dark) · + nourish · = same · − shape</p>
     <p class="ga-lead">The first line of any Saju compatibility reading is the relationship between two Day Masters. Combine and you are drawn together; clash and you collide; nourish and one feeds the other; shape and one edits the other. Don\'t know your Day Master? <a href="${rel}en/">Your birth date is enough</a>.</p>
     <div class="ga-body">
@@ -241,7 +242,7 @@ for (let a = 0; a < 10; a++) {
 }
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-compat.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-compat.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-compat.xml\n');

@@ -398,7 +398,7 @@ function buildDayIndex(byMonth) {
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주로 오늘 점수 보기</span></a>
     </div>
   </article>`;
-  write('day', shell({ rel, title, desc, canonical: SITE + '/day/', nav: NAV(rel), extraHead: STYLE, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '날짜별 일진', url: SITE + '/day/' }]), body }));
+  write('day', shell({ rel, title, desc, canonical: SITE + '/day/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/day/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/day/">`, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '날짜별 일진', url: SITE + '/day/' }]), body }));
   addUrl('/day/', iso(today.y, today.m, today.d));
 }
 

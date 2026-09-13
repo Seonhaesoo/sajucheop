@@ -12,7 +12,7 @@ import { DAY_MASTERS } from './en-daymaster-data.mjs';
 const { M } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
-const PUBLISHED = '2026-09-06';
+const PUBLISHED = '2026-09-06', MODIFIED = '2026-09-13';
 const STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
 const STEM_CHUNG = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3 };
 const GEN = M.elCycle.gen;
@@ -90,14 +90,16 @@ list.forEach((e) => {
   const stage = STAGE_EN[e.un];
   const g = tg(mainSip);
 
-  const title = `${pinyin(e)} Day Pillar (${han(e)}, ${korRR(e)}) — ${e.alias}: personality, love, work, compatibility`;
-  const desc = `${pinyin(e)} (${han(e)}) is ${nature(e)} — a ${STEM_EN[e.s]} Day Master sitting on the ${BRANCH_ANIMAL[e.b]}. Day Branch: ${g.name} (${g.alt}). Twelve-stage: ${stage.name}. ${e.core.split('. ')[0]}. Best and worst matching pillars.`;
+  const title = [`${pinyin(e)} Day Pillar (${han(e)}) — ${e.alias}`, `${pinyin(e)} Day Pillar (${han(e)}): Personality and Love`].find((t) => t.length <= 60) || `${pinyin(e)} Day Pillar (${han(e)})`;
+  const lead = e.core.split('. ')[0];
+  const descBase = `${pinyin(e)} (${han(e)}) is ${STEM_EN[e.s]} on the ${BRANCH_ANIMAL[e.b]}.`;
+  const desc = [` ${lead}. Love, work and best matches.`, ` ${lead}.`, ' Personality, love, work, hidden stems and the best-matching pillars.'].map((t) => descBase + t).find((s) => s.length <= 155) || descBase;
 
   const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}en/guide/day-pillar/" style="color: inherit; text-decoration: none;">60 Day Pillars</a> · ${e.i + 1} / 60</div>
     <div class="dp-han">${han(e)}</div>
-    <h1 class="ga-title">${pinyin(e)} Day Pillar —<br>${esc(e.alias)}</h1>
+    <h1 class="ga-title">${pinyin(e)} Day Pillar — <br>${esc(e.alias)}</h1>
     <div class="dp-meta">
       <span>Korean <b>${korRR(e)}</b> (${e.ko.kor})</span><span><b>${nature(e)}</b></span><span>Day Branch <b>${g.name}</b></span><span>Stage <b>${stage.name}</b></span>
     </div>
@@ -110,7 +112,7 @@ list.forEach((e) => {
       <p>The Day Master is the "you" of the chart — here, <a href="${rel}en/guide/day-master/${dm.slug}/">${dm.arch}</a>: ${esc(dm.essence)} What gives ${pinyin(e)} its own color is the room the ${BRANCH_ANIMAL[e.b]} beneath it offers.</p>
 
       <h2>What the ${BRANCH_ANIMAL[e.b]} branch says</h2>
-      <p>The Day Branch is your inner room and your spouse seat. The ${BRANCH_ANIMAL[e.b]} (${M.BRANCHES[e.b].han}, ${BRANCH_PINYIN[e.b]}) carries ${hidden.length} hidden stems:</p>
+      <p>The Day Branch is your inner room and your spouse seat. The ${BRANCH_ANIMAL[e.b]} (${M.BRANCHES[e.b].han}, ${BRANCH_PINYIN[e.b]}) carries ${hidden.length} <a href="${rel}en/guide/hidden-stems/">hidden stems</a>:</p>
       <p>${hiddenHtml}</p>
       <p>${esc(SPOUSE_EN[mainSip])}</p>
       <p>${esc(stage.line)}</p>
@@ -153,7 +155,7 @@ list.forEach((e) => {
     rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${pinyin(e)} Day Pillar (${han(e)}) — ${e.alias}`,
     extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/ilju/${e.ko.slug}/">`,
     jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Library', url: SITE + '/en/guide/' }, { name: '60 Day Pillars', url: SITE + '/en/guide/day-pillar/' }, { name: pinyin(e), url: SITE + url }]),
-      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop' }, publisher: { '@type': 'Organization', name: 'Sajucheop' }, mainEntityOfPage: SITE + url }],
+      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop' }, publisher: { '@type': 'Organization', name: 'Sajucheop' }, mainEntityOfPage: SITE + url }],
     body
   }));
   urls.push(SITE + url);
@@ -167,12 +169,12 @@ list.forEach((e) => {
     const cells = list.filter((x) => x.s === s).map((x) => `<a href="${rel}en/guide/day-pillar/${x.slug}/"><b>${han(x)}</b><small>${pinyin(x)}<br>${esc(x.alias)}</small></a>`).join('\n        ');
     return `<div class="dp-group"><h2><a href="${rel}en/guide/day-master/${dm.slug}/">${STEM_EN[s]} (${st.han}, ${STEM_PINYIN[s]})</a> <span class="dp-tag">${esc(dm.arch)}</span></h2><div class="dp-grid">\n        ${cells}\n      </div></div>`;
   }).join('\n');
-  const title = 'The 60 Day Pillars — Jia Zi to Gui Hai: personality, love and compatibility';
-  const desc = 'All sixty day pillars of the Four Pillars (BaZi / Saju), one page each: the Day Master\'s nature, the hidden stems and Ten God of the Day Branch, the twelve life stage, love, work, and the best and worst matching pillars. With Chinese pinyin and Korean names.';
+  const title = 'The 60 Day Pillars — Jia Zi to Gui Hai | Saju & BaZi';
+  const desc = 'All sixty day pillars of the Four Pillars, one page each: the Day Master\'s nature, hidden stems, twelve life stage, love, work and best-matching pillars.';
   const body = `
   <article class="guide-article">
     <div class="ga-overline">60 Day Pillars</div>
-    <h1 class="ga-title">The sixty Day Pillars —<br>the two characters of your birth day</h1>
+    <h1 class="ga-title">The sixty Day Pillars — <br>the two characters of your birth day</h1>
     <p class="ga-meta">Sajucheop library · 10 Day Masters × 12 branches · pinyin, hanja and Korean names</p>
     <p class="ga-lead">The Day Master is the main character of your chart, but the seat it sits on decides its character. The same Yang Wood becomes a different tree over a spring (Jia Zi) and on a rocky peak (Jia Shen). Sixty pillars, grouped by Day Master — don\'t know yours? <a href="${rel}en/">Enter your birth date</a> and the chart tells you in ten seconds.</p>
     <div class="ga-body">
@@ -190,7 +192,7 @@ list.forEach((e) => {
 }
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-pillars.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-pillars.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-pillars.xml\n');

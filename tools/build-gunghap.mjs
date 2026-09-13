@@ -6,6 +6,7 @@ import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { josa } from './ddi-data.mjs';
+import { DAY_MASTERS } from './en-daymaster-data.mjs';
 
 const { M, C } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -198,7 +199,8 @@ for (let a = 0; a < 10; a++) {
   </article>`;
     const url = `/gunghap/${SLUG[a]}-${SLUG[b]}/`;
     write(url.slice(1), shell({
-      rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${A} × ${B} 궁합 — ${T.label}`,
+      rel, title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${A} × ${B} 궁합 — ${T.label}`,
+      extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/compatibility/${DAY_MASTERS[a].slug}-${DAY_MASTERS[b].slug}/">`,
       jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '일간 궁합', url: SITE + '/gunghap/' }, { name: `${A} × ${B}`, url: SITE + url }]),
         { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
       body
@@ -235,7 +237,7 @@ for (let a = 0; a < 10; a++) {
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 실제 궁합 보기</span></a>
     </div>
   </article>`;
-  write('gunghap', shell({ rel, title, desc, canonical: SITE + '/gunghap/', nav: NAV(rel), extraHead: STYLE, ogTitle: '일간 궁합표 100',
+  write('gunghap', shell({ rel, title, desc, canonical: SITE + '/gunghap/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/gunghap/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/compatibility/">`, ogTitle: '일간 궁합표 100',
     jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '일간 궁합', url: SITE + '/gunghap/' }]), body }));
   urls.unshift(SITE + '/gunghap/');
 }
