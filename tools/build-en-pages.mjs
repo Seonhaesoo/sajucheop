@@ -153,11 +153,12 @@ function buildDay(x) {
   write(url.slice(1), shell({
     rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/day/${iso(y, m, d)}/">`,
     ogTitle: `${MON[m - 1]} ${d} — ${pinyin(s, b)} Day`,
+    /* 같은 틀의 날짜 730장은 검색에서 뺀다(애드센스 '가치가 별로 없는 콘텐츠' 대응, 2026-09-13) — 사이트맵에도 /en/day/ 허브만 */
+    noindex: true,
     jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Day pillar calendar', url: SITE + '/en/day/' }, { name: dateEn, url: SITE + url }]),
       { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: iso(y, m, d), dateModified: iso(y, m, d), inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop' }, publisher: { '@type': 'Organization', name: 'Sajucheop' }, mainEntityOfPage: SITE + url }],
     body
   }));
-  urls.push({ loc: SITE + url });
 }
 
 function monthGrid(y, m, days, rel) {

@@ -959,6 +959,14 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   vertical-align: top;
 }
 .ga-body th { background: var(--paper); font-weight: 700; white-space: nowrap; }
+/* 본문 표: 한글이 글자 단위로 쪼개지지 않게. 좁은 화면에서 넘치면 표 안에서만 가로로 밀어 본다 */
+.ga-body table:not([class]) th, .ga-body table:not([class]) td { word-break: keep-all; }
+@media (max-width: 560px) {
+  .ga-body table:not([class]) { display: block; overflow-x: auto; font-size: 12px; }
+  .ga-body table:not([class]) > tbody:only-child { display: table; width: 100%; }
+  .ga-body table:not([class]) th, .ga-body table:not([class]) td { padding: 6px 8px; }
+  .ga-body table:not([class]) th { white-space: normal; }
+}
 .ga-body .callout { margin: 16px 0; }
 
 a.btn-primary { text-decoration: none; }
@@ -1175,7 +1183,22 @@ body.invite-mode .pwa-banner,
 body.invite-mode .book-strip,
 body.invite-mode .gh-home,
 body.invite-mode .family-bar,
+body.invite-mode .home-intro,
 body.invite-mode .resume-chip { display: none !important; }
+
+/* 홈 소개 — 입력 폼 아래 조용한 글 한 묶음. 카드·칩 없이 글과 링크만 */
+.home-intro { margin: 30px 2px 0; padding-top: 22px; border-top: 1px solid var(--line); }
+.home-intro h2 { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+.home-intro h3 { margin-top: 22px; font-size: 14px; font-weight: 700; color: var(--ink); }
+.home-intro p { margin-top: 10px; font-size: 14px; line-height: 1.8; color: var(--ink-body); }
+.home-intro a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--underline); text-underline-offset: 3px; }
+.home-intro a:hover { color: var(--seal); }
+.hi-links { margin: 8px 0 0; padding-left: 18px; }
+.hi-links li { margin-top: 6px; font-size: 14px; line-height: 1.6; color: var(--ink-body); }
+.hi-faq { margin: 4px 0 0; }
+.hi-faq dt { margin-top: 12px; font-size: 14px; font-weight: 700; color: var(--ink); }
+.hi-faq dd { margin: 4px 0 0; font-size: 14px; line-height: 1.75; color: var(--ink-body); }
+.home-intro .hi-about { margin-top: 18px; font-size: 13px; }
 
 /* 언어 전환 칩 */
 .menu-wrap { display: flex; align-items: center; gap: 8px; }
