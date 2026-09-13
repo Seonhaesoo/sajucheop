@@ -750,7 +750,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 /* ---------- 대운 ---------- */
 
 .daeun-intro { padding: 14px 20px 4px; }
-.daeun-intro h2 {
+.daeun-intro h1, .daeun-intro h2 {
   font-family: var(--serif);
   font-size: 23px;
   font-weight: 600;
