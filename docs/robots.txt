@@ -16,3 +16,4 @@ Sitemap: https://sajucheop.com/sitemap-en-zodiac.xml
 Sitemap: https://sajucheop.com/sitemap-tojeong.xml
 Sitemap: https://sajucheop.com/sitemap-en-tools.xml
 Sitemap: https://sajucheop.com/sitemap-en-learn.xml
+Sitemap: https://sajucheop.com/sitemap-en-terms.xml

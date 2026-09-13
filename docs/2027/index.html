@@ -292,17 +292,10 @@
 
   /* 11/1 시즌 게이트는 2026-09-13 걷어냄 — 지금부터 전체 공개(애드센스 '준비 중' 감점 대응) */
 
-  /* ---------- 입춘 시각 (정미년 시작) ---------- */
+  /* ---------- 입춘 시각 (정미년 시작) ----------
+   * 천문연 발표 시각(tools/solar-terms-data.mjs 2027 입춘 02-04 10:46). 엔진 계산(10:42)은 몇 분 이르므로 표시는 발표값으로 */
   try {
-    var I = M._internals;
-    var jd = I.ipchunJd(2027);
-    var t = jd - I.JDN_EPOCH + 0.5 + 9 / 24;
-    var dayN = Math.floor(t);
-    var frac = t - dayN;
-    var cv = I.civilFromDays(dayN);
-    var hh = Math.floor(frac * 24);
-    var mm = Math.round((frac * 24 - hh) * 60);
-    if (mm === 60) { hh += 1; mm = 0; }
+    var cv = { y: 2027, m: 2, d: 4 }, hh = 10, mm = 46;
     $('#y-start').textContent = '정미년의 시작 — ' + cv.y + '년 ' + cv.m + '월 ' + cv.d + '일 ' +
       String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0') + ' 입춘부터';
   } catch (e) { /* 기본 문구 유지 */ }

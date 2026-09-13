@@ -10,6 +10,7 @@ import { DDI, REL, relations, elRelation, SAMHAP_G, BANGHAP_G } from './ddi-data
 import { YEAR_REL_SCORE, YEAR_EL_ADJ, SAMJAE_ADJ } from './newyear-2027-data.mjs';
 import { ANIMALS, EL, GEN_METAPHOR, CTL_METAPHOR, SAMHAP_EN, BANGHAP_EN, REL_EN, EL_REL_EN, gradeEn, Y27_OPENER, Y27_REL, Y27_EL, SAMJAE_EN, Y27_MONTH } from './en-zodiac-data.mjs';
 import { SIGNS27 } from './en-2027-signs.mjs';
+import { publishedTime } from './solar-terms-data.mjs';
 import { STEM_PINYIN, BRANCH_PINYIN } from './en-ilju-data.mjs';
 import { zodiacSpan, lunarNewYear, koreaTz } from './cny.mjs';
 
@@ -46,11 +47,12 @@ function jdToKst(jd) {
   return { y: cv.y, m: cv.m, d: cv.d, hh, mm };
 }
 const hhmm = (c) => `${String(c.hh).padStart(2, '0')}:${String(c.mm).padStart(2, '0')}`;
+const ipTime = (c) => (c.published ? '' : 'about ') + hhmm(c);   /* 엔진 계산값은 몇 분 이를 수 있어 'about' */
 function yearInfo(y) {
   const s = stemOf(y), b = branchOf(y), A = ANIMALS[b], st = M.STEMS[s], br = M.BRANCHES[b];
   const elE = EL[st.el].en, span = zodiacSpan(y), kr = lunarNewYear(y, koreaTz(y));
   return { y, s, b, A, elK: st.el, elE, name: `${elE} ${A.name}`, han: st.han + br.han, pinyin: `${STEM_PINYIN[s]} ${BRANCH_PINYIN[b]}`, kor: st.kor + br.kor, yang: st.yang,
-    doubled: st.el === DDI[b].el, span, seollal: { y: kr.y, m: kr.m, d: kr.d }, ip: jdToKst(I.ipchunJd(y)) };
+    doubled: st.el === DDI[b].el, span, seollal: { y: kr.y, m: kr.m, d: kr.d }, ip: publishedTime(y, 21) || jdToKst(I.ipchunJd(y)) };   /* 발표 시각이 있는 해(2026~2028)는 그 값 */
 }
 const YI = {};
 for (let y = Y0 - 1; y <= Y1 + 1; y++) YI[y] = yearInfo(y);
@@ -398,7 +400,7 @@ function yearPage(y) {
       <h2>Born in January or early February ${y}?</h2>
       <p>The ${y} ${A.name} year began at Chinese New Year on <b>${fmtD(x.span.start)}</b>. If you were born from January 1 to ${fmtMD(startPrev)}, ${y}, your sign is the ${y > Y0 ? `<a href="${rel}${yUrl(y - 1).slice(1)}">${prev.name}</a>` : prev.name} of ${y - 1}. The year ended on ${fmtD(x.span.end)}, so birthdays in early ${y + 1} up to that date still count as ${pl(A.name)}.</p>
       <h2>The Korean saju year starts at Ipchun</h2>
-      <p>In Korean saju (the Four Pillars), the year pillar changes at <b>Ipchun</b>, the start of spring — ${fmtD(x.ip)} at about ${hhmm(x.ip)} Korea time — not at Lunar New Year. ${sajuNote}${seollalDiff ? ` In Korea, Seollal (Lunar New Year) ${y <= NOW ? 'fell' : 'falls'} on ${fmtD(x.seollal)}, one day after the Chinese date, because the new moon ${y <= NOW ? 'arrived' : 'arrives'} just before midnight in China and just after it in Korea (<a href="${rel}en/lunar-new-year/">why the dates differ</a>).` : ''} <a href="${rel}en/guide/ipchun-year-boundary/">Why saju starts the year at Ipchun →</a></p>
+      <p>In Korean saju (the Four Pillars), the year pillar changes at <b>Ipchun</b>, the start of spring — ${fmtD(x.ip)} at ${ipTime(x.ip)} Korea time — not at Lunar New Year. ${sajuNote}${seollalDiff ? ` In Korea, Seollal (Lunar New Year) ${y <= NOW ? 'fell' : 'falls'} on ${fmtD(x.seollal)}, one day after the Chinese date, because the new moon ${y <= NOW ? 'arrived' : 'arrives'} just before midnight in China and just after it in Korea (<a href="${rel}en/lunar-new-year/">why the dates differ</a>).` : ''} <a href="${rel}en/guide/ipchun-year-boundary/">Why saju starts the year at Ipchun →</a></p>
       <h2>The ${x.name} personality</h2>
       <p>${esc(A.el[x.elE])}${x.doubled ? ` Both the year stem and the ${A.name}’s own branch are ${el.en}, so the ${el.en} character is doubled this year.` : ''} ${el.en} brings ${el.traits}.</p>
       <p>${esc(A.short)} <b>Strengths:</b> ${A.strengths.map(esc).join('; ')}. <b>Watch for:</b> ${A.challenges.map(esc).join('; ')}.</p>
@@ -629,7 +631,7 @@ function year27Hub() {
     <p class="ga-lead">2027 pairs the stem 丁 — yin fire, the fire of a candle or a lamp — with the branch 未, the Goat, the warm, dry earth of late summer. Fire feeds earth, so the top of the year nourishes the bottom: a gentle, cultivating year that favors care, creativity, home and slow building, with heat and short tempers as its weak spot.</p>
     <div class="ga-body">
       <h2>When the Fire Goat year begins</h2>
-      <p><b>Chinese New Year:</b> ${fmtD(CNY27.start)} — the Goat year runs to ${fmtD(CNY27.end)}. <b>Korean Seollal:</b> ${fmtD(SEOLLAL27)}, a day later, because the new moon arrives just before midnight in China and just after it in Korea. <b>Korean saju:</b> the year pillar turns at Ipchun, ${fmtD(IPCHUN27)} at about ${hhmm(IPCHUN27)} Korea time. <a href="${rel}en/guide/ipchun-year-boundary/">Why Ipchun, not New Year →</a></p>
+      <p><b>Chinese New Year:</b> ${fmtD(CNY27.start)} — the Goat year runs to ${fmtD(CNY27.end)}. <b>Korean Seollal:</b> ${fmtD(SEOLLAL27)}, a day later, because the new moon arrives just before midnight in China and just after it in Korea. <b>Korean saju:</b> the year pillar turns at Ipchun, ${fmtD(IPCHUN27)} at ${ipTime(IPCHUN27)} Korea time. <a href="${rel}en/guide/ipchun-year-boundary/">Why Ipchun, not New Year →</a> · <a href="${rel}en/solar-terms/2027/">All 24 solar terms of 2027</a></p>
       <h2>The twelve signs in 2027</h2>
       <div class="zd-grid">${cells}</div>
       <div class="zd-wrap"><table class="zd-table"><tr><th>Sign</th><th>Score</th><th>With the Goat</th></tr>${order.map((b) => { const g = grade27(S27[b]); return `<tr><td><a href="${rel}${y27Url(b).slice(1)}">${ANIMALS[b].name}</a> <small>${han(b)}</small></td><td class="${g.tone === 'good' ? 'good' : g.tone === 'warn' ? 'bad' : ''}">${S27[b]}</td><td>${g.label}<br><small>${Y27_REL[DDI[b].rel].short}${DDI[b].samjae ? ' · samjae ends' : ''}</small></td></tr>`; }).join('')}</table></div>

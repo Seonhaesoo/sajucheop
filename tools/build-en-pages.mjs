@@ -7,6 +7,7 @@ import { loadEngine, kstToday, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { STEM_PINYIN, STEM_EN, BRANCH_PINYIN, BRANCH_ANIMAL, TEN_GOD_EN } from './en-ilju-data.mjs';
 import { DAY_MASTERS } from './en-daymaster-data.mjs';
+import { publishedTime } from './solar-terms-data.mjs';
 
 const { M, I, Lunar } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -48,6 +49,13 @@ function yearTerms(y) {
     const dn = Math.floor(tk), cv = I.civilFromDays(dn);
     let hh = Math.floor((tk - dn) * 24), mm = Math.round(((tk - dn) * 24 - hh) * 60);
     if (mm === 60) { hh += 1; mm = 0; }
+    /* published KASI times where we have them (solar-terms-data.mjs) — the engine runs a few minutes early */
+    const pub = publishedTime(y, i);
+    if (pub) {
+      const jdPub = midnightJd(pub.y, pub.m, pub.d) + (pub.hh * 60 + pub.mm) / 1440;
+      if (Math.abs(jdPub - jd) * 1440 > 20) throw new Error(`published vs engine > 20 min: ${y} ${TERM_EN[i]}`);
+      return { i, name: TERM_EN[i], han: TERM_KO[i], y: pub.y, m: pub.m, d: pub.d, hh: pub.hh, mm: pub.mm, jd: jdPub, jie: IS_JIE.has(i), published: true };
+    }
     return { i, name: TERM_EN[i], han: TERM_KO[i], y: cv.y, m: cv.m, d: cv.d, hh, mm, jd, jie: IS_JIE.has(i) };
   });
   return termCache[y];
@@ -195,7 +203,7 @@ for (const y of [Y0, Y1]) {
     <p class="ga-lead">The sixty-day cycle never stops: every day has two characters of its own. Tap a date for its day pillar, the Korean lunar date, solar terms and what the day means for each of the ten Day Masters. <a href="${rel}en/day/${iso(today.y, today.m, today.d)}/">Read today in full →</a></p>
     <div class="ga-body">
       ${grids}
-      <p class="callout"><a href="${rel}en/today/">Today\'s energy for your chart</a> · <a href="${rel}en/guide/day-pillar/">The 60 Day Pillars</a> · <a href="${rel}day/" hreflang="ko">한국어</a></p>
+      <p class="callout"><a href="${rel}en/today/">Today\'s energy for your chart</a> · <a href="${rel}en/guide/day-pillar/">The 60 Day Pillars</a> · <a href="${rel}en/solar-terms/${today.y}/">24 solar terms of ${today.y}</a> · <a href="${rel}day/" hreflang="ko">한국어</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/today/"><span class="seal-dot" aria-hidden="true"></span><span>See today for my own chart</span></a>

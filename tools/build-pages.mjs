@@ -7,6 +7,7 @@ import path from 'node:path';
 import { loadEngine, kstToday, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { josa } from './ddi-data.mjs';
+import { publishedTime, PUBLISHED } from './solar-terms-data.mjs';
 
 const { M, I, C, Q, Lunar } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -80,11 +81,19 @@ function yearTerms(y) {
     const cv = I.civilFromDays(dn);
     let hh = Math.floor((tk - dn) * 24), mm = Math.round(((tk - dn) * 24 - hh) * 60);
     if (mm === 60) { hh += 1; mm = 0; }
+    /* 발표 시각(천문연)이 있는 해는 그 값을 쓴다 — 엔진 계산은 몇 분 이르다(solar-terms-data.mjs). 20분 넘게 다르면 표의 오타로 보고 멈춘다 */
+    const pub = publishedTime(y, t.i);
+    if (pub) {
+      const jdPub = midnightJd(pub.y, pub.m, pub.d) + (pub.hh * 60 + pub.mm) / 1440;
+      if (Math.abs(jdPub - jd) * 1440 > 20) throw new Error(`절기 발표값과 엔진값이 20분 넘게 다름: ${y} ${t.name} 발표 ${pub.m}/${pub.d} ${pub.hh}:${pub.mm} vs 엔진 ${cv.m}/${cv.d} ${hh}:${mm}`);
+      return Object.assign({}, t, { y: pub.y, m: pub.m, d: pub.d, hh: pub.hh, mm: pub.mm, jd: jdPub, published: true });
+    }
     return Object.assign({}, t, { y: cv.y, m: cv.m, d: cv.d, hh, mm, jd });
   });
   termCache[y] = out;
   return out;
 }
+const termSource = (list) => (list.every((t) => t.published) ? '한국천문연구원 발표 시각' : '태양 황경으로 직접 계산');
 function termsOn(y, m, d) { return yearTerms(y).filter((t) => t.m === m && t.d === d); }
 function nextTermAfter(y, m, d) {
   const dn = I.daysFromCivil(y, m, d);
@@ -344,21 +353,22 @@ function buildTermYear(y, list) {
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}jeolgi/" style="color: inherit; text-decoration: none;">절기</a></div>
     <h1 class="ga-title">${y}년 24절기 —<br>날짜와 시각</h1>
-    <p class="ga-meta">한국 시간(KST) 기준 · 태양 황경으로 직접 계산 · 사주의 새해는 입춘 ${ipchun.m}월 ${ipchun.d}일 ${pad(ipchun.hh)}:${pad(ipchun.mm)}</p>
+    <p class="ga-meta">한국 시간(KST) 기준 · ${termSource(list)} · 사주의 새해는 입춘 ${ipchun.m}월 ${ipchun.d}일 ${pad(ipchun.hh)}:${pad(ipchun.mm)}</p>
     <p class="ga-lead">사주는 달력의 달이 아니라 절기로 달을 셉니다. 아래 절(節)이 드는 시각마다 월주가 바뀌고, 입춘에는 년주까지 바뀝니다.</p>
     <div class="ga-body">
       <table class="dp-table">
         <tr><th>절기</th><th>날짜</th><th>시각</th><th>구분</th></tr>
         ${rows}
       </table>
-      <p class="callout">${y - 1 >= Y0 ? `<a href="${rel}jeolgi/${y - 1}/">${y - 1}년</a> · ` : ''}${y + 1 <= Y1 ? `<a href="${rel}jeolgi/${y + 1}/">${y + 1}년</a> · ` : ''}<a href="${rel}guide/jeolgi.html">절기력이란</a> · <a href="${rel}manse/">만세력</a></p>
+      <p class="callout">${y - 1 >= Y0 ? `<a href="${rel}jeolgi/${y - 1}/">${y - 1}년</a> · ` : ''}${y + 1 <= Y1 ? `<a href="${rel}jeolgi/${y + 1}/">${y + 1}년</a> · ` : ''}<a href="${rel}guide/jeolgi.html">절기력이란</a> · <a href="${rel}manse/">만세력</a>${PUBLISHED[y] ? ` · <a href="${rel}en/solar-terms/${y}/" hreflang="en">English</a>` : ''}</p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>절기 시각 기준으로 내 사주 세우기</span></a>
     </div>
   </article>`;
   const url = `/jeolgi/${y}/`;
-  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${y}년 24절기 시각`,
+  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${y}년 24절기 시각`,
+    extraHead: STYLE + (PUBLISHED[y] ? `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/solar-terms/${y}/">` : ''),
     jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '절기', url: SITE + '/jeolgi/' }, { name: `${y}년`, url: SITE + url }]), body }));
   addUrl(url, iso(today.y, today.m, today.d));
 }
@@ -445,7 +455,7 @@ function buildTermIndex() {
   <article class="guide-article">
     <div class="ga-overline">절기</div>
     <h1 class="ga-title">24절기 —<br>날짜와 시각</h1>
-    <p class="ga-meta">태양 황경으로 직접 계산 · 한국 시간</p>
+    <p class="ga-meta">${termSource(yearTerms(Y0).concat(yearTerms(Y1)))} · 한국 시간</p>
     <p class="ga-lead">사주는 음력도 양력도 아닌 절기력을 씁니다. 열두 절(節)이 드는 시각에 월주가 바뀌고, 입춘에는 년주까지 바뀌어요. 연도를 누르면 24절기 전체 표가 열립니다.</p>
     <div class="ga-body">
       <ul class="dp-list">
@@ -457,7 +467,7 @@ function buildTermIndex() {
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>절기 시각 기준으로 내 사주 세우기</span></a>
     </div>
   </article>`;
-  write('jeolgi', shell({ rel, title, desc, canonical: SITE + '/jeolgi/', nav: NAV(rel), extraHead: STYLE, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '절기', url: SITE + '/jeolgi/' }]), body }));
+  write('jeolgi', shell({ rel, title, desc, canonical: SITE + '/jeolgi/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/jeolgi/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/solar-terms/">`, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '절기', url: SITE + '/jeolgi/' }]), body }));
   addUrl('/jeolgi/', iso(today.y, today.m, today.d));
 }
 

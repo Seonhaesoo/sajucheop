@@ -9,6 +9,7 @@ import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, breadcrumb } from './page-shell.mjs';
 import { zodiacSpan, lunarNewYear } from './cny.mjs';
+import { publishedTime } from './solar-terms-data.mjs';
 
 const { I } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -91,7 +92,7 @@ ${script}`
 
 /* ---------- Korean age ---------- */
 const Z = [];
-for (let y = 1924; y <= 2032; y++) { const ip = jdToKst(I.ipchunJd(y)); Z.push([y, iso(zodiacSpan(y).start), iso(ip), `${String(ip.hh).padStart(2, '0')}:${String(ip.mm).padStart(2, '0')}`]); }
+for (let y = 1924; y <= 2032; y++) { const ip = publishedTime(y, 21) || jdToKst(I.ipchunJd(y)); Z.push([y, iso(zodiacSpan(y).start), iso(ip), `${ip.published ? '' : 'about '}${String(ip.hh).padStart(2, '0')}:${String(ip.mm).padStart(2, '0')}`]); }
 
 page('korean-age', {
   title: 'Korean Age Calculator — How Old Am I in Korea?',
@@ -164,7 +165,7 @@ page('korean-age', {
       if (row) {
         var zy = bv >= row[1] ? b.y : b.y - 1, z = gz(zy);
         html += '<p>By the Lunar New Year boundary you were born in the Year of the <a href="../zodiac/' + SL[z.b] + '/">' + z.name + '</a> (' + z.han + ').';
-        if (bv === row[2]) html += ' Your birthday is Ipchun itself, when the saju year turns at about ' + row[3] + ' Korea time, so your saju year depends on your birth hour.';
+        if (bv === row[2]) html += ' Your birthday is Ipchun itself, when the saju year turns at ' + row[3] + ' Korea time, so your saju year depends on your birth hour.';
         else { var sy = bv > row[2] ? b.y : b.y - 1, s = gz(sy); html += ' In a saju chart your year pillar is <b>' + s.han + '</b> (' + s.name + ')' + (sy !== zy ? ', a different year, because saju starts the year at Ipchun (' + fmt(row[2]) + ').' : '.'); }
         html += '</p>';
       }
@@ -322,9 +323,9 @@ const LNY = [];
 for (let y = 2024; y <= 2033; y++) { const cn = lunarNewYear(y, 8), kr = koreaNY(y); LNY.push({ y, cn, kr, differ: !sameDay(cn, kr) }); }
 const L27 = LNY.find((x) => x.y === 2027), L28 = LNY.find((x) => x.y === 2028);
 if (!L27.differ || !L28.differ || LNY.filter((x) => x.differ).length !== 2) throw new Error('China/Korea New Year differences are not the expected 2027 and 2028');
-/* 2027년 입춘은 발표 시각(베이징 09:46 = 한국 10:46)을 쓴다 — 엔진 계산(10:42)은 몇 분 빠르다. 엔진 정밀도를 올리면 계산값으로 되돌린다 */
-const IP27 = { y: 2027, m: 2, d: 4, hh: 10, mm: 46 };
-{ const e = jdToKst(I.ipchunJd(2027)); if (e.d !== IP27.d || Math.abs(e.hh * 60 + e.mm - (IP27.hh * 60 + IP27.mm)) > 15) throw new Error('Ipchun 2027: engine and published time are more than 15 minutes apart'); }
+/* 2027년 입춘은 천문연 발표 시각(solar-terms-data.mjs, 10:46) — 엔진 계산(10:42)은 몇 분 빠르다 */
+const IP27 = publishedTime(2027, 21);
+if (!IP27) throw new Error('solar-terms-data: 2027 입춘 없음');
 const utcOf = (c) => `${String((c.hh + 16) % 24).padStart(2, '0')}:${String(c.mm).padStart(2, '0')}`;
 const lnyRows = LNY.map((x) => `<tr><td>${x.y <= 2031 ? `<a href="../zodiac/year/${x.y}/">${x.y}</a>` : x.y}</td><td>${wd(x.cn).slice(0, 3)}, ${MON[x.cn.m - 1]} ${x.cn.d}</td><td>${x.differ ? '<b>' : ''}${wd(x.kr).slice(0, 3)}, ${MON[x.kr.m - 1]} ${x.kr.d}${x.differ ? '</b>' : ''}</td><td>${signOf(x.y)}</td></tr>`).join('\n        ');
 
@@ -348,7 +349,7 @@ page('lunar-new-year', {
         <tr><th>Boundary</th><th>2027</th><th>Used for</th></tr>
         <tr><td>Chinese New Year</td><td>${longD(L27.cn)}</td><td>The Chinese zodiac sign in most English sources</td></tr>
         <tr><td>Korean Seollal</td><td>${longD(L27.kr)}</td><td>The Korean folk zodiac, 띠 (tti)</td></tr>
-        <tr><td>Ipchun, the start of spring</td><td>${longD(IP27)}, ${ampm(IP27.hh, IP27.mm)} Korea time</td><td>The year pillar of a saju chart</td></tr>
+        <tr><td><a href="../solar-terms/2027/">Ipchun, the start of spring</a></td><td>${longD(IP27)}, ${ampm(IP27.hh, IP27.mm)} Korea time</td><td>The year pillar of a saju chart</td></tr>
       </table>
       <p>So a baby born on February 5, 2027 is already a Goat in a saju chart but still a Horse by Lunar New Year. <a href="../guide/fire-goat-baby-2027/">What a Fire Goat birth means</a> · <a href="../guide/ipchun-year-boundary/">Why saju starts the year at Ipchun</a> · <a href="../zodiac/year/2027/">The 2027 Fire Goat year</a></p>
 
