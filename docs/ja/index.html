@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
+  <script>if(location.hostname.indexOf('localhost')<0&&location.hostname.indexOf('127.0.0.1')<0&&location.protocol!=='file:'){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');}</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>四柱推命 命式計算 — 無料で生年月日から日干・通変星・大運</title>
+  <meta name="description" content="無料の四柱推命 命式計算。生年月日（出生時刻なしでも可）から年柱・月柱・日柱・時柱、日干、五行バランス、通変星、大運を自動で算出。節入りは太陽黄経から計算し、入力データはブラウザの外に送信しません。">
+  <link rel="canonical" href="https://sajucheop.com/ja/">
+  <link rel="alternate" hreflang="ko" href="https://sajucheop.com/">
+  <link rel="alternate" hreflang="en" href="https://sajucheop.com/en/">
+  <link rel="alternate" hreflang="ja" href="https://sajucheop.com/ja/">
+  <link rel="alternate" hreflang="x-default" href="https://sajucheop.com/en/">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <!-- 日本語版: かなを日本語フォントで描く（style.css の :root を後から上書き） -->
+  <style>:root{--serif:'Noto Serif JP','Noto Serif KR',serif;--sans:'Noto Sans JP','Noto Sans KR',sans-serif}</style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"サジュチョプ 四柱推命 命式計算","description":"生年月日から年柱・月柱・日柱・時柱、日干、五行バランス、通変星、大運を無料で算出する四柱推命の命式計算ツール。節入りは太陽の位置から計算します。","url":"https://sajucheop.com/ja/","applicationCategory":"LifestyleApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"inLanguage":"ja"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"サジュ（韓国の四柱推命）とは何ですか？","acceptedAnswer":{"@type":"Answer","text":"サジュ（사주・四柱）は韓国に伝わる四柱推命です。生まれた年・月・日・時をそれぞれ干支二文字に置き換えた八つの文字（八字）から、五行の構成と人生の流れを読み解きます。"}},
+    {"@type":"Question","name":"韓国のサジュと中国の八字（BaZi）は同じですか？","acceptedAnswer":{"@type":"Answer","text":"根は同じ命理学ですが、韓国のサジュは独自の解釈の伝統を育ててきました。日干をより重視し、日常的・実用的に使われ、韓国独自の暦の補正を行います。この計算機は韓国式に従います。"}},
+    {"@type":"Question","name":"日干とは何ですか？","acceptedAnswer":{"@type":"Answer","text":"日干（韓国では일간）は生まれた日の天干で、命式の中であなた自身を表す文字です。命式のほかの要素はすべて、この日干との関係で読み解かれます。"}},
+    {"@type":"Question","name":"出生時刻がわからない場合は？","acceptedAnswer":{"@type":"Answer","text":"それでも十分に意味のある命式が得られます。八字のうち六字——日干と五行バランスを含む——は日付だけで決まります。抜けるのは時柱だけです。"}},
+    {"@type":"Question","name":"日本の四柱推命と韓国の四柱（サジュ）は同じですか？","acceptedAnswer":{"@type":"Answer","text":"同じ干支暦（節入りで月が変わる）と同じ十干・十二支を使い、命式は一致します。違いは用語（日主→日干、十神→通変星）と解釈の流派です。時差はなく、日本時間と韓国時間はどちらもUTC+9です。"}}
+  ]}</script>
+  <meta property="og:title" content="四柱推命 命式計算 — 無料で日干・通変星・大運まで">
+  <meta property="og:description" content="生年月日から命式を作成。日干、五行バランス、通変星、大運まで無料。節入りの時刻は太陽の位置から計算します。">
+  <meta property="og:url" content="https://sajucheop.com/ja/">
+  <meta property="og:image" content="https://sajucheop.com/og-image-en.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .en-pillars { display: flex; gap: 8px; margin-top: 16px; }
+    .en-pillar {
+      flex: 1;
+      text-align: center;
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 10px 2px 8px;
+      background: #FFFDF9;
+    }
+    .en-pillar.day { border-color: var(--seal); background: #FDF6F0; }
+    .en-pillar .ep-name { font-size: 10px; color: var(--faint); letter-spacing: 1px; text-transform: uppercase; }
+    .en-pillar.day .ep-name { color: var(--seal); font-weight: 700; }
+    .en-pillar .ep-han { font-family: 'Noto Serif KR', serif; font-size: 26px; font-weight: 700; line-height: 1.25; margin-top: 4px; }
+    .en-pillar .ep-en { font-size: 9.5px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+    .el-bars { margin-top: 14px; }
+    .el-bar-row { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+    .el-bar-row .eb-name { flex: none; width: 74px; font-size: 12.5px; }
+    .el-bar-row .eb-track { flex: 1; height: 12px; background: #F0E9DA; border-radius: 999px; overflow: hidden; }
+    .el-bar-row .eb-fill { height: 100%; border-radius: 999px; }
+    .el-bar-row .eb-count { flex: none; width: 16px; text-align: right; font-size: 12px; color: var(--muted); }
+    .tg-row { display: flex; align-items: baseline; gap: 10px; padding: 9px 0; }
+    .tg-row + .tg-row { border-top: 1px solid var(--line-soft); }
+    .tg-row b { flex: none; width: 128px; font-size: 13px; }
+    .tg-row .tg-kor { flex: none; font-size: 11px; color: var(--faint); }
+    .tg-row span.tg-gloss { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .en-pillar .ep-hidden { font-size: 10px; color: var(--faint); margin-top: 5px; font-family: 'Noto Serif KR', serif; letter-spacing: 1px; }
+    .en-pillar .ep-hidden span { display: block; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 0; font-size: 8.5px; text-transform: uppercase; }
+    .dl-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line-soft); }
+    .dl-row:first-child { border-top: 0; }
+    .dl-row.current { background: rgba(184, 56, 45, .06); margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 8px; }
+    .dl-age { flex: none; width: 78px; font-size: 12px; color: var(--faint); line-height: 1.3; }
+    .dl-row.current .dl-age { color: var(--ink); font-weight: 700; }
+    .dl-han { flex: none; font-family: 'Noto Serif KR', serif; font-size: 20px; font-weight: 700; width: 46px; }
+    .dl-info { flex: 1; min-width: 0; }
+    .dl-info b { font-size: 13px; }
+    .dl-info small { display: block; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+    .dl-bar { flex: none; width: 50px; height: 6px; background: #F0E9DA; border-radius: 999px; overflow: hidden; }
+    .dl-bar i { display: block; height: 100%; background: var(--seal); }
+    #en-print-head { display: none; }
+    @media print {
+      .no-print { display: none !important; }
+      #en-result { display: block !important; }
+      #en-print-head { display: block; font-size: 12px; color: #6E6455; margin: 8px 0 12px; }
+      .card { break-inside: avoid; }
+    }
+    .en-learn { list-style: none; padding: 0; margin: 6px 0 0; }
+    .en-learn li { padding: 9px 0; border-bottom: 1px solid var(--line-soft); font-size: 14px; line-height: 1.5; }
+    .en-learn li:last-child { border-bottom: 0; }
+    .en-learn a { font-weight: 600; }
+    .en-learn span { display: block; font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header class="doc-header no-print">
+    <a class="brand" href="./">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
+        <text x="15" y="13.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">四</text>
+        <text x="15" y="25" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="10" font-weight="600" fill="#F6F1E8">柱</text>
+      </svg>
+      <span class="brand-name" style="font-size: 16px;">Sajucheop</span>
+    </a>
+    <nav class="doc-nav">
+      <a href="/en/">English</a>
+      <a href="/">한국어</a>
+    </nav>
+  </header>
+
+  <div class="daeun-intro no-print" style="margin-top: 26px;">
+    <h1 style="font-size: 24px;">四柱推命 命式計算</h1>
+    <p>サジュチョプ (Sajucheop) は韓国生まれの四柱推命（サジュ）サイトです。生年月日を入力すると命式を作成し、日干・五行・通変星・大運まで読み解きます。<b>二十四節気の節入り時刻は太陽の位置から計算</b>し、韓国の命理家と同じ方式で四柱を立てます。</p>
+  </div>
+
+  <!-- Input -->
+  <div class="card card-pad no-print" style="margin-top: 8px;">
+    <div class="section-head"><h3 class="section-title" style="font-size: 15px;">生年月日</h3></div>
+    <div class="nm-row">
+      <div class="select-wrap" style="flex: 1.2;"><select id="en-year"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="en-month"></select></div>
+      <div class="select-wrap" style="flex: 1;"><select id="en-day"></select></div>
+    </div>
+    <label class="nm-row" style="gap: 8px; font-size: 13px; color: #6E6455; cursor: pointer;">
+      <input type="checkbox" id="en-no-time" checked style="width: 16px; height: 16px;"> 出生時刻がわからない
+    </label>
+    <div id="en-time-wrap" hidden>
+      <div class="nm-row">
+        <div class="select-wrap" style="flex: 1;"><select id="en-hour"></select></div>
+        <div class="select-wrap" style="flex: 1;"><select id="en-min"></select></div>
+      </div>
+      <div class="nm-row">
+        <div class="select-wrap" style="flex: 1;"><select id="en-tz"></select></div>
+      </div>
+      <p class="form-microcopy" style="margin-top: 6px;">出生地のタイムゾーンを選んでください。当時サマータイムが実施されていた場合はそれも含めます（日本でも1948〜1951年の夏は夏時刻でした）。</p>
+    </div>
+    <div class="nm-row" style="gap: 14px; font-size: 13px; color: #6E6455; margin-top: 10px; align-items: center;">
+      <span>性別</span>
+      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="radio" name="en-gender" value="F" checked style="width: 15px; height: 15px;"> 女性</label>
+      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="radio" name="en-gender" value="M" style="width: 15px; height: 15px;"> 男性</label>
+    </div>
+    <p class="form-microcopy" style="margin-top: 4px; text-align: left;">性別は大運（十年ごとの運）の順行・逆行を決めるためだけに使います。同じ年干でも男女で大運の向きが逆になります。</p>
+    <button class="btn-primary" id="en-run" style="margin-top: 16px;">命式を作成する</button>
+    <noscript><p class="form-microcopy" style="margin-top: 10px; text-align: left;">この計算機は JavaScript で動作します。ブラウザの JavaScript を有効にしてから、ページを再読み込みしてください。</p></noscript>
+  </div>
+
+  <!-- Result -->
+  <div id="en-result" hidden>
+    <p id="en-print-head"></p>
+
+    <div class="card card-pad" style="margin-top: 18px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px; white-space: nowrap;">あなたの四柱</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;" id="en-birth-line"></span>
+      </div>
+      <div class="en-pillars" id="en-pillars"></div>
+      <p class="form-microcopy" id="en-pillar-link" style="margin-top: 12px; text-align: left; font-size: 13px;" hidden></p>
+      <p class="form-microcopy" id="en-notice" style="margin-top: 10px;" hidden></p>
+    </div>
+
+    <div class="char-hero" style="margin-top: 14px;">
+      <div class="tj-code">あなたの日干</div>
+      <div class="tj-han" id="en-dm-han" style="letter-spacing: 0;"></div>
+      <div class="tj-gloss" id="en-dm-name"></div>
+    </div>
+
+    <div class="card reading-card" style="margin-top: 14px;">
+      <div class="reading-overline">日干が示すあなた</div>
+      <p class="reading-body" id="en-dm-body"></p>
+      <div class="pill-row" id="en-dm-keywords" style="margin-top: 12px;"></div>
+      <p class="reading-body" id="en-dm-strength" style="margin-top: 12px;"></p>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head"><h3 class="section-title" style="font-size: 16px;">五行のバランス</h3></div>
+      <div class="el-bars" id="en-el-bars"></div>
+      <p class="reading-body" id="en-el-note" style="margin-top: 10px; font-size: 13.5px;"></p>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">命式の通変星</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">十神・십성</span>
+      </div>
+      <div id="en-tengods" style="margin-top: 6px;"></div>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">大運 — 十年ごとの運の季節</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">대운</span>
+      </div>
+      <p class="reading-body" id="en-daeun-intro" style="margin-top: 6px; font-size: 13.5px;"></p>
+      <div id="en-daeun" style="margin-top: 8px;"></div>
+      <p class="form-microcopy" style="margin-top: 10px; text-align: left;">年齢は満年齢（暦年ベース）です。バーは各大運の五行が命式の強弱にどれだけ合うかを示す参考指数で、吉凶の判定ではありません。<a href="/en/guide/luck-pillars/" style="color: var(--seal);">大運の数え方（英語）→</a></p>
+    </div>
+
+    <div class="btn-stack no-print" style="margin-top: 16px;">
+      <a class="btn-primary" href="/en/today/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">今日の運勢を見る（英語）</a>
+      <button class="btn-outline" id="en-invite">相性診断のリンクを送る（英語）</button>
+      <a class="btn-outline" href="/en/match/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">誰かとの相性を診断する（英語）</a>
+      <button class="btn-outline" id="en-card">日干カードを保存する</button>
+      <button class="btn-outline" id="en-share">日干をシェアする</button>
+      <button class="btn-outline" id="en-print">印刷・PDFで保存</button>
+    </div>
+  </div>
+
+  <div class="card card-pad no-print" style="margin-top: 26px;">
+    <div class="section-head">
+      <h3 class="section-title" style="font-size: 16px;">英語版のガイド</h3>
+      <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">English</span>
+    </div>
+    <p class="reading-body" style="margin-top: 6px; font-size: 13.5px;">解説記事は英語版で公開しています。命式の読み方をもう少し深く知りたい方へ。</p>
+    <ul class="en-learn">
+      <li><a href="/en/guide/day-master/">日干ガイド（英語）</a><span>甲から癸まで、十の日干それぞれの性格・強み・注意点。</span></li>
+      <li><a href="/en/2027/">2027年 十二支の運勢（英語）</a><span>丁未（ひのとひつじ）の年。十二支それぞれの2027年を読みます。</span></li>
+      <li><a href="/en/match/">相性診断（英語）</a><span>二人の生年月日から、四柱推命の相性（韓国の宮合・궁합）を採点します。</span></li>
+    </ul>
+  </div>
+
+  <!-- SEO copy -->
+  <div class="card reading-card no-print" style="margin-top: 26px;">
+    <div class="reading-overline">このサイトについて</div>
+    <h3 class="reading-title" style="font-size: 17px;">韓国のサジュ（四柱）とは — 中国の八字と何が違う？</h3>
+    <p class="reading-body">サジュ（사주・四柱）は、生まれた年・月・日・時をそれぞれ干支に置き換え、八つの文字——팔자（八字）——として読む韓国の四柱推命です。根は中国の八字（BaZi）と同じですが、韓国では独自の流派に育ちました。<b>日干を自分自身の象徴として重く見る</b>こと、日常での実用性、暦の補正の厳密さが特徴です。年の境は元日でも旧正月でもなく<b>立春</b>——この計算機はその節入りの時刻を太陽の位置から算出します。</p>
+    <p class="reading-body" style="margin-top: 10px;">すべての計算はブラウザ内で完結します。生年月日がサーバーに送られることはありません。</p>
+  </div>
+
+  <div class="card card-pad no-print" style="margin-top: 14px;">
+    <div class="section-head"><h3 class="section-title" style="font-size: 16px;">よくある質問</h3></div>
+    <details class="ics-help" open><summary>出生時刻がわからなくても何が読めますか？</summary><div class="ih-body"><p>八字のうち六字——日干、五行バランス、通変星の大半——は生年月日だけで決まります。抜けるのは時柱だけなので、日付のみでも十分に読み応えのある命式になります。</p></div></details>
+    <details class="ics-help"><summary>なぜタイムゾーンが必要なのですか？</summary><div class="ih-body"><p>四柱は天文学的な節入り（二十四節気）を基準にしており、節入りは世界中で同じ一瞬に起こります。出生地の現地時刻とUTCとの時差がわかれば、その瞬間が命式のどこに当たるかを正確に決められます。</p></div></details>
+    <details class="ics-help"><summary>韓国式ですか、中国式ですか？</summary><div class="ih-body"><p>韓国式です。エンジンは韓国のサジュの慣例——節入りによる月の境、立春による年の境、23時以降の出生は日柱を当日のままにして時干だけ翌日の日干から起こす夜子時（야자시）の扱い——に従います。</p></div></details>
+    <details class="ics-help"><summary>日本の四柱推命と韓国の四柱（サジュ）は同じですか？</summary><div class="ih-body"><p>同じ干支暦（節入りで月が変わる）と同じ十干・十二支を使い、命式は一致します。違いは用語（日主→日干、十神→通変星）と解釈の流派です。時差はなく、日本時間と韓国時間はどちらもUTC+9です。</p></div></details>
+  </div>
+
+  <footer class="site-footer no-print" style="margin-top: 30px;">
+    <div class="footer-row">
+      <span class="copy">© Sajucheop</span>
+      <nav class="footer-links">
+        <a href="/en/guide/">ガイド（英語）</a>
+        <a href="/en/about/">サイトについて（英語）</a>
+        <a href="/en/privacy/">プライバシー（英語）</a>
+        <a href="/en/terms/">利用規約（英語）</a>
+        <a href="/en/">English</a>
+        <a href="/">한국어</a>
+      </nav>
+    </div>
+    <p class="footer-note">内省と娯楽のためのものです。大切な決断はいつもあなた自身のものです。</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="bottom-space"></div>
+
+</div>
+
+<script src="../js/manseryeok.js"></script>
+<script src="../js/gunghap.js"></script>
+<script src="../js/en-pillar-slugs.js"></script>
+<script src="../js/en-cards.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var M = window.Manseryeok;
+
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+  function track(name, params) {
+    if (window.gtag) { try { window.gtag('event', name, params || {}); } catch (e) { /* ignore */ } }
+  }
+
+  var STEM_EN = [
+    { name: '陽の木', arch: '大樹' },
+    { name: '陰の木', arch: '草花' },
+    { name: '陽の火', arch: '太陽' },
+    { name: '陰の火', arch: '灯火' },
+    { name: '陽の土', arch: '山岳' },
+    { name: '陰の土', arch: '田園' },
+    { name: '陽の金', arch: '鉄剣' },
+    { name: '陰の金', arch: '宝石' },
+    { name: '陽の水', arch: '大海' },
+    { name: '陰の水', arch: '雨露' }
+  ];
+  var DM_TEXT = [
+    { body: '大樹のようにまっすぐ天へ伸びる人です。筋を通し、率直で、周りがまだ迷っているうちに動き出します。求めなくてもリーダーの役目が回ってきます。誇りは背骨のようにあなたを支えますが、その分、謝ることや折れることが苦手です。ただ、硬いだけの木はどの嵐も正面から受けてしまう——そのことは覚えておいてください。', keys: ['開拓', '筋を通す', '率直', '誇り高い'], str: '最初の一歩、最初の草案、最初の動きを担うときに最も力を発揮します。', caution: '折れる前にしなる練習を。柔らかさは負けではありません。' },
+    { body: '人が壁と呼ぶものを、つたのようにするりと登っていく人です。柔軟で粘り強く、どんな環境にも根を張り、正面衝突ひとつせずに目的地へたどり着きます。よい支え——伴侶、仲間、寄り添う幹——があると大きく花開きます。弱点は終わらせ方。いちど絡みついたら、なかなか手を放せません。', keys: ['柔軟', '粘り強い', '適応力', '人とのつながり'], str: '協力関係の中で最も伸びます。登れる支えがあるほど、高くまで届きます。', caution: '手放すときを知ってください。すべての壁に根を下ろす必要はありません。' },
+    { body: '真昼の太陽そのものです。隠れることができず、意識しなくてもその場の全員を温めます。感情はそのまま顔に出て、怒りは数分で燃え尽き、根に持ちません。人の熱気で充電され、ひとりでいるとすぐに消耗します。落とし穴はひとつ——誰にでも光を注ぐうちに、光の奥にいる本当のあなたを見た人が、誰もいなくなることです。', keys: ['明朗', '率直', '気前がよい', '根に持たない'], str: '人前に立つ場面——表現、発表、目立つ役どころで最も輝きます。', caution: '火を蓄えておくこと。すべての部屋を同時に照らそうとすると燃え尽きます。' },
+    { body: '暗い部屋にともる灯火です。献身的で察しがよく、近くにいる人ほど温かさが伝わります。髪型の変化、疲れた目、微妙な機嫌の揺れ——ほかの誰もが見落とすものに気づき、そっとその場の温度を調えます。危機のときは不思議なほど冷静になり、暗闇こそあなたの光が最も意味を持つ場所です。唯一の盲点は自分の芯。人の世話をしているうちに、自分が燃え尽きていきます。', keys: ['献身', '察しがよい', '温かい', '芯が強い'], str: '一対一の関係で最も力を発揮します。広さより深さ、いつでも。', caution: '自分の炎の手入れも忘れずに。燃え尽きた芯では、誰も照らせません。' },
+    { body: '動かざる山です。あなたが揺るがないからこそ、人は嵐を抱えてあなたのもとへ来ます。頼りになり、辛抱強く、静かに人を守ります。変える前に確かめ、約束したことは守ります。内面の扉はゆっくりとしか開かず、本当に中へ入るには何年もかかりますが、いちど受け入れた人を見捨てることはありません。山の危うさは沈黙。何も口に出さないところに、圧力がたまっていきます。', keys: ['どっしり', '頼れる', '辛抱強い', '守る人'], str: '波乱の中で最も力を発揮します。あなたの静けさが、場の錨になります。', caution: '山にも寄りかかる時が必要です。重たいことこそ、声に出して。' },
+    { body: 'よく肥えた田園です。受け入れ、育て、静かに働き続けます。人がふと口にした小さなことを覚えていて、頼まれなくても世話を焼きます。あなたに蒔かれたものは何でも育つ——だからこそ「断ること」が一生の宿題で、あなたが耕した畑の実りを他人が持っていくこともあります。穏やかな表面より、はるかに深いものを蔵しています。', keys: ['育てる', '受け入れる', '気配り', '謙虚'], str: '裏方に回ったとき最も力を発揮します。周りのすべてを育ててしまう人です。', caution: '自分の実りは自分で受け取ること。畑に畔があるのには理由があります。' },
+    { body: '鍛え上げられた鉄剣です。決断が速く、義理堅く、体質的にお世辞が言えません。切るべきものは切り、身銭を切ってでも身内をかばいます。苦労はあなたを鈍らせず、むしろ鍛える——だから本領を発揮するのは後半生になりがちです。鋭い刃の下には柔らかい急所があり、心からの「お疲れさま」ひとつで崩れてしまうこともあります。', keys: ['決断力', '義理堅い', '正直', '鍛えられた'], str: '厳しい判断——区切り、線引き、正義を貫く場面で最も力を発揮します。', caution: 'ときには剣を鞘に納めて。すべての真実を今日、全力で振り下ろす必要はありません。' },
+    { body: '生まれたときから磨き上げられた宝石です。洗練された趣味、正確な基準、ほかの誰もが見落とすものを見抜く目を持っています。輝くべき時と引くべき時を心得ています。許しはしても忘れはしない——心の中の帳簿は正確です。無関心を装っていても感受性は本物で、「まあ何でもいい」が本当に何でもいいことは、一度もありません。', keys: ['洗練', '精密', '見る目', '落ち着き'], str: '仕上げの段階——細部、品質、最後の一割で最も力を発揮します。', caution: '小さな傷は見逃してあげてください。宝石にも内包物はあり、それでも輝きます。' },
+    { body: '広い海です。視野が広く、戦略的で、底が読めません。他人の悩みを苦もなく吸い込み、障害物とは戦わずに回り込んで流れます——ぶつからずに勝つ人です。どこへ向かっているのか自分でもわからないことが多いのに、なぜかたどり着きます。深くなるほど静かになり、あなたを本当に知る人はごくわずか、しかも選ばれた人だけです。', keys: ['広い心', '戦略家', '流れる', '深い'], str: '長期戦で最も力を発揮します。飛沫ではなく、潮の流れで。', caution: 'ときどき水面に顔を出して。海にも、誰かに知られる必要があります。' },
+    { body: '朝露と春の雨です。穏やかで直感が鋭く、静かに染みわたります。気づかれないうちに人の心へしみ込み、勘は不気味なほど当たります——霧の中でも、水はいつも道を知っています。周りの気分を吸収し、涙もろく、深く愛します。誰にでも水をやり続ける代償は、自分自身の渇き。あなたにも雨が必要です。', keys: ['直感', '穏やか', '共感力', '静かな深さ'], str: '見えないところ——タイミング、直感、感情の真実を扱うときに最も力を発揮します。', caution: '自分の井戸も満たして。境界のない感受性は、洪水になります。' }
+  ];
+  var BRANCH_EN = ['ね', 'うし', 'とら', 'う', 'たつ', 'み', 'うま', 'ひつじ', 'さる', 'とり', 'いぬ', 'い'];
+  var EL_EN = { '목': '木', '화': '火', '토': '土', '금': '金', '수': '水' };
+  var EL_COLOR = { '목': '#3B9C69', '화': '#BC3E28', '토': '#B98D28', '금': '#6297DC', '수': '#2C69A8' };
+  var EL_MISS = {
+    '목': '成長や新しい始まりには意識的な後押しが要ります。朝の習慣や緑のある環境を味方にしてください',
+    '화': '表現することや人前に出ることは自然には来ないかもしれません。意識して舞台に立つ練習を',
+    '토': '地に足をつけ、安定させることが宿題です。習慣づけと「始めたことを終わらせる」ことが助けになります',
+    '금': '線引きと決断が苦手に感じられるかもしれません。きれいに区切りをつける練習を',
+    '수': '休息と柔軟さに目を向けてください。本当の休みを予定に入れ、計画にしなやかさを'
+  };
+  var TEN_GODS = {
+    '비견': ['比肩', '同輩、独立心、自力で立つ力'],
+    '겁재': ['劫財', '競争心、推進力、共有する損得'],
+    '식신': ['食神', '創造性、楽しみ、衣食の豊かさ'],
+    '상관': ['傷官', '鋭い表現力、型を破る才能'],
+    '편재': ['偏財', '好機、事業、動くお金'],
+    '정재': ['正財', '安定した収入、勤勉、自分で稼ぐもの'],
+    '편관': ['偏官', '圧力、勇気、試練による鍛錬'],
+    '정관': ['正官', '秩序、評価、責任'],
+    '편인': ['偏印', '型にはまらない学び、洞察'],
+    '정인': ['印綬', '支え、学問、資格、後ろ盾']
+  };
+  var STRENGTH_EN = {
+    '신강': ['身強の日干', '自分の中にエンジンを持っています。自力で前へ押し進むのが性に合いますが、意識して荷物を分け合うことを覚えてください。'],
+    '중화': ['中和の日干', '命式が自分で均衡を保っています。人生のどの季節にも適応できる、応用のきく土台です。'],
+    '신약': ['身弱の日干', '後ろ盾があるほど遠くまで行けます。よい人、資格、環境があなたを何倍にもします。']
+  };
+  /* luck pillar themes by the Ten God of the pillar's stem — same readings as the Korean app's DAEUN_TEXT */
+  var DAEUN_EN = {
+    '비견': '自分の足で立つ十年。独立、自分の名前、対等な相手との競争。',
+    '겁재': '勝負の十年。大胆な一手が実りますが、共有するお金と共同事業には注意。',
+    '식신': '技が生活の糧になる十年。作り、育て、楽しむ。暮らしが豊かになります。',
+    '상관': '才能が表に出る十年。創作、教育、発信。目上への物言いには気をつけて。',
+    '편재': '盤面が広がる十年。事業と好機。お金の出入りが速くなります。',
+    '정재': '着実に積み上げる十年。勤勉が報われ、資産がゆっくり育ちます。',
+    '편관': '鍛えられる十年。まず重い責任、その後に地位と権限。',
+    '정관': '名が立つ十年。ルールの中での評価、地位、信用。',
+    '편인': '深く潜る十年。専門的な学びと洞察。決断は止めずに。',
+    '정인': '学びが力になる十年。勉強、資格、師と後ろ盾。'
+  };
+  var SIP_GROUP = { '비견': '비겁', '겁재': '비겁', '식신': '식상', '상관': '식상', '편재': '재성', '정재': '재성', '편관': '관성', '정관': '관성', '편인': '인성', '정인': '인성' };
+  /* reference index, same weights as interpret.js daeunScores: strong charts favor output/wealth/authority pillars, gentle ones resource/peer pillars */
+  function daeunScore(r, dw) {
+    var strong = r.strength.label === '신강';
+    var fav = strong ? { '식상': 1, '재성': 1, '관성': 1 } : { '인성': 1, '비겁': 1 };
+    var stemS = M.sipseongOf(r.pillars.day.stem, dw.stem), branchS = M.branchSipseong(r.pillars.day.stem, dw.branch);
+    var score = 52;
+    score += fav[SIP_GROUP[stemS]] ? 16 : -10;
+    score += fav[SIP_GROUP[branchS]] ? 22 : -14;
+    if (r.strength.label === '중화') score = 52 + (score - 52) * 0.5;
+    return Math.max(18, Math.min(92, score));
+  }
+  /* 日本語版: ピンインの代わりに十干・十二支の訓読み */
+  var PINYIN_S = ['きのえ', 'きのと', 'ひのえ', 'ひのと', 'つちのえ', 'つちのと', 'かのえ', 'かのと', 'みずのえ', 'みずのと'];
+  var PINYIN_B = ['ね', 'うし', 'とら', 'う', 'たつ', 'み', 'うま', 'ひつじ', 'さる', 'とり', 'いぬ', 'い'];
+  function genderOf() { var el = document.querySelector('input[name="en-gender"]:checked'); return el ? el.value : 'F'; }
+
+  /* Selects */
+  var MONTHS = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+  var o = '';
+  for (var m = 1; m <= 12; m++) o += '<option value="' + m + '">' + MONTHS[m - 1] + '</option>';
+  $('#en-month').innerHTML = o;
+  o = '';
+  for (var d = 1; d <= 31; d++) o += '<option value="' + d + '">' + d + '日</option>';
+  $('#en-day').innerHTML = o;
+  var nowY = new Date().getFullYear();
+  o = '';
+  for (var y = nowY; y >= 1900; y--) o += '<option value="' + y + '">' + y + '年</option>';
+  $('#en-year').innerHTML = o;
+  $('#en-year').value = '1995';
+  o = '';
+  for (var h = 0; h < 24; h++) o += '<option value="' + h + '">' + String(h).padStart(2, '0') + '時</option>';
+  $('#en-hour').innerHTML = o;
+  $('#en-hour').value = '12';
+  o = '';
+  for (var mi = 0; mi < 60; mi += 5) o += '<option value="' + mi + '">' + String(mi).padStart(2, '0') + '分</option>';
+  $('#en-min').innerHTML = o;
+
+  var TZ = [
+    [-720, 'UTC−12'], [-660, 'UTC−11'], [-600, 'UTC−10 · ハワイ'], [-540, 'UTC−9 · アラスカ'],
+    [-480, 'UTC−8 · ロサンゼルス'], [-420, 'UTC−7 · デンバー'], [-360, 'UTC−6 · シカゴ、メキシコシティ'],
+    [-300, 'UTC−5 · ニューヨーク、トロント'], [-240, 'UTC−4 · サンティアゴ、ハリファックス'], [-210, 'UTC−3:30 · ニューファンドランド'],
+    [-180, 'UTC−3 · サンパウロ、ブエノスアイレス'], [-120, 'UTC−2'], [-60, 'UTC−1'],
+    [0, 'UTC±0 · ロンドン、リスボン、アクラ'], [60, 'UTC+1 · パリ、ベルリン、ラゴス'], [120, 'UTC+2 · カイロ、アテネ、ヨハネスブルグ'],
+    [180, 'UTC+3 · モスクワ、イスタンブール、リヤド'], [210, 'UTC+3:30 · テヘラン'], [240, 'UTC+4 · ドバイ'],
+    [270, 'UTC+4:30 · カブール'], [300, 'UTC+5 · カラチ、タシケント'], [330, 'UTC+5:30 · インド、スリランカ'],
+    [345, 'UTC+5:45 · ネパール'], [360, 'UTC+6 · ダッカ、アルマトイ'], [390, 'UTC+6:30 · ミャンマー'],
+    [420, 'UTC+7 · バンコク、ジャカルタ、ハノイ'], [480, 'UTC+8 · 北京、シンガポール、マニラ'],
+    [540, 'UTC+9 · 日本・韓国（JST／KST）'], [570, 'UTC+9:30 · アデレード'], [600, 'UTC+10 · シドニー、グアム'],
+    [660, 'UTC+11'], [720, 'UTC+12 · オークランド'], [780, 'UTC+13'], [840, 'UTC+14']
+  ];
+  $('#en-tz').innerHTML = TZ.map(function (t) {
+    return '<option value="' + t[0] + '">' + t[1] + '</option>';
+  }).join('');
+  /* 日本語版は日本標準時（UTC+9）を既定にする — 出生地が違えば上の欄で変更できる */
+  $('#en-tz').value = '540';
+
+  $('#en-no-time').addEventListener('change', function () {
+    $('#en-time-wrap').hidden = this.checked;
+  });
+
+  /* ---------- Cast ---------- */
+
+  $('#en-run').addEventListener('click', function () {
+    var y2 = +$('#en-year').value, m2 = +$('#en-month').value, d2 = +$('#en-day').value;
+    var unknown = $('#en-no-time').checked;
+    var r;
+    try {
+      r = M.compute({
+        year: y2, month: m2, day: d2,
+        hour: unknown ? 12 : +$('#en-hour').value,
+        minute: unknown ? 0 : +$('#en-min').value,
+        unknownTime: unknown,
+        gender: genderOf(),
+        applySolarTime: false,
+        tzOffsetMinutes: +$('#en-tz').value
+      });
+    } catch (e) {
+      toast('計算できませんでした。日付を確認してください。');
+      return;
+    }
+    track('en_cast', { unknown_time: unknown ? 1 : 0 });
+    /* 오늘의 운세·궁합 페이지에서 재사용할 프로필 저장 (기기에만) */
+    try {
+      localStorage.setItem('sajucheop.en.profile.v1', JSON.stringify({
+        y: y2, m: m2, d: d2, unknown: unknown,
+        hh: unknown ? 12 : +$('#en-hour').value,
+        mi: unknown ? 0 : +$('#en-min').value,
+        tz: +$('#en-tz').value, g: genderOf()
+      }));
+    } catch (e) { /* ignore */ }
+    lastInput = { year: y2, month: m2, day: d2 };
+    render(r, unknown);
+    $('#en-result').hidden = false;
+    $('#en-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  function pillarHtml(label, p, isDay) {
+    if (!p) {
+      return '<div class="en-pillar"><div class="ep-name">' + label + '</div>' +
+        '<div class="ep-han" style="color: #C9BFAC;">—</div>' +
+        '<div class="ep-en">出生時刻<br>不明</div></div>';
+    }
+    var st = M.STEMS[p.stem], br = M.BRANCHES[p.branch];
+    var hidden = (M.JIJANGGAN[p.branch] || []).map(function (i) { return M.STEMS[i].han; }).join(' ');
+    return '<div class="en-pillar' + (isDay ? ' day' : '') + '">' +
+      '<div class="ep-name">' + label + '</div>' +
+      '<div class="ep-han">' + st.han + '<br>' + br.han + '</div>' +
+      '<div class="ep-en">' + STEM_EN[p.stem].name + '<br>' + BRANCH_EN[p.branch] + '（' + EL_EN[br.el] + '）</div>' +
+      '<div class="ep-hidden" title="地支の蔵干（余気・中気・正気の順）"><span>蔵干</span>' + hidden + '</div>' +
+      '</div>';
+  }
+
+  function renderDaeun(r) {
+    var d = r.daeun, list = d.list, birthY = r.input.year;
+    var cur = null;
+    list.forEach(function (dw) { if (dw.current) cur = dw; });
+    var age0 = list[0].startAge - 1;   /* Korean count → international: the calendar year you turn startAge − 1 */
+    var intro = 'あなたの大運は月柱から六十干支を' + (d.forward ? '順行' : '逆行') + 'し、十年ごとに切り替わります。最初の大運は' + (birthY + age0) + '年、満' + age0 + '歳になる年に始まります。';
+    if (cur) {
+      var g = M.STEMS[cur.stem].han + M.BRANCHES[cur.branch].han;
+      intro += '現在は<b>' + g + '</b>（' + PINYIN_S[cur.stem] + PINYIN_B[cur.branch] + '）の大運の中にいます。日干から見て' + TEN_GODS[cur.sipseong][0] + 'の運です。';
+    } else if (d.koreanAge < list[0].startAge) {
+      intro += 'それまでは、命式そのもの（八字）の力で進む時期です。';
+    }
+    $('#en-daeun-intro').innerHTML = intro;
+    $('#en-daeun').innerHTML = list.map(function (dw) {
+      var a0 = dw.startAge - 1, a1 = dw.endAge - 1, y0 = birthY + a0, y1 = birthY + a1;
+      var score = daeunScore(r, dw);
+      var tg = TEN_GODS[dw.sipseong] ? TEN_GODS[dw.sipseong][0] : dw.sipseong;
+      return '<div class="dl-row' + (dw.current ? ' current' : '') + '">' +
+        '<div class="dl-age">' + a0 + '–' + a1 + '歳<br><span style="font-weight: 400;">' + y0 + '–' + y1 + '</span></div>' +
+        '<div class="dl-han">' + M.STEMS[dw.stem].han + M.BRANCHES[dw.branch].han + '</div>' +
+        '<div class="dl-info"><b>' + PINYIN_S[dw.stem] + PINYIN_B[dw.branch] + ' · ' + tg + (dw.current ? ' · 現在' : '') + '</b><small>' + (DAEUN_EN[dw.sipseong] || '') + '</small></div>' +
+        '<div class="dl-bar" title="参考指数 ' + Math.round(score) + '/100"><i style="width: ' + Math.round(score) + '%;"></i></div>' +
+        '</div>';
+    }).join('');
+  }
+
+  var lastResult = null;
+
+  function render(r, unknown) {
+    lastResult = r;
+    var p = r.pillars;
+    $('#en-pillars').innerHTML =
+      pillarHtml('年柱', p.year, false) +
+      pillarHtml('月柱', p.month, false) +
+      pillarHtml('日柱', p.day, true) +
+      pillarHtml('時柱', p.hour, false);
+    $('#en-birth-line').textContent = r.input.year + '年' + MONTHS[r.input.month - 1] + r.input.day + '日';
+    var tzSel = $('#en-tz'), tzLabel = tzSel.options[tzSel.selectedIndex] ? tzSel.options[tzSel.selectedIndex].text : '';
+    $('#en-print-head').textContent = 'サジュチョプ (Sajucheop) — 四柱推命 命式 · 生年月日 ' + r.input.year + '年' + MONTHS[r.input.month - 1] + r.input.day + '日' +
+      (unknown ? '（出生時刻不明）' : ' ' + String(r.input.hour).padStart(2, '0') + ':' + String(r.input.minute).padStart(2, '0') + ' ' + tzLabel) +
+      ' · 韓国式（立春を年の境、節入りを月の境）· sajucheop.com/ja · 印刷日 ' + new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+    renderDaeun(r);
+
+    /* Day Pillar article — 60 pages under /en/guide/day-pillar/ */
+    var pl = $('#en-pillar-link');
+    if (pl && window.EN_PILLAR_SLUGS) {
+      var dk = -1;
+      for (var k = 0; k < 60; k++) if (k % 10 === p.day.stem && k % 12 === p.day.branch) { dk = k; break; }
+      if (dk >= 0) {
+        var slug = window.EN_PILLAR_SLUGS[dk];
+        var py = slug.split('-').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+        pl.innerHTML = 'あなたの日柱は<b>' + M.STEMS[p.day.stem].han + M.BRANCHES[p.day.branch].han + '（' + PINYIN_S[p.day.stem] + PINYIN_B[p.day.branch] + '）</b>です。英語版に六十日柱それぞれの解説（' + py + ' — “' + window.EN_PILLAR_ALIAS[dk] + '”）があります。' +
+          '<a href="/en/guide/day-pillar/' + slug + '/" style="color: var(--seal);">解説を読む（英語）→</a>';
+        pl.hidden = false;
+      }
+    }
+
+    var notice = $('#en-notice');
+    if (r.jeolipWarning) {
+      notice.textContent = '注意：出生が節入りの時刻と数時間しか離れていません。出生時刻のわずかな違いで月柱が変わる可能性があります。';
+      notice.hidden = false;
+    } else { notice.hidden = true; }
+
+    var dmIdx = p.day.stem;
+    var st = M.STEMS[dmIdx];
+    $('#en-dm-han').textContent = st.han;
+    $('#en-dm-name').textContent = PINYIN_S[dmIdx] + '・' + STEM_EN[dmIdx].name + ' — ' + STEM_EN[dmIdx].arch;
+    $('#en-dm-body').textContent = DM_TEXT[dmIdx].body;
+    $('#en-dm-keywords').innerHTML = DM_TEXT[dmIdx].keys.map(function (k) {
+      return '<span class="pill">' + k + '</span>';
+    }).join('');
+    var sEn = STRENGTH_EN[r.strength.label] || STRENGTH_EN['중화'];
+    $('#en-dm-strength').innerHTML = '<b>' + sEn[0] + '</b> — ' + sEn[1] + '<br><span style="color: #9A8F7E; font-size: 12.5px;">' + DM_TEXT[dmIdx].caution + '</span>';
+
+    /* Elements */
+    var els = r.elements;
+    var max = Math.max(1, Math.max(els['목'], els['화'], els['토'], els['금'], els['수']));
+    $('#en-el-bars').innerHTML = ['목', '화', '토', '금', '수'].map(function (k) {
+      return '<div class="el-bar-row"><span class="eb-name">' + EL_EN[k] + '</span>' +
+        '<div class="eb-track"><div class="eb-fill" style="width: ' + Math.round(els[k] / max * 100) + '%; background: ' + EL_COLOR[k] + ';"></div></div>' +
+        '<span class="eb-count">' + els[k] + '</span></div>';
+    }).join('');
+    var missing = ['목', '화', '토', '금', '수'].filter(function (k) { return els[k] === 0; });
+    var domKey = ['목', '화', '토', '금', '수'].reduce(function (a, b) { return els[b] > els[a] ? b : a; });
+    $('#en-el-note').textContent = missing.length
+      ? '命式で最も強い五行は' + EL_EN[domKey] + 'で、' + missing.map(function (k) { return EL_EN[k]; }).join('と') + 'がありません。' +
+        EL_MISS[missing[0]] + '。欠けた五行は欠点ではなく、ヒントです。'
+      : '五行がすべて揃い、' + EL_EN[domKey] + 'が中心です。めったにない、恵まれた命式です。';
+
+    /* Ten Gods */
+    var counts = r.sipseongCounts || {};
+    var rows = Object.keys(TEN_GODS).filter(function (k) { return counts[k]; })
+      .sort(function (a, b) { return counts[b] - counts[a]; });
+    $('#en-tengods').innerHTML = rows.length
+      ? rows.map(function (k) {
+          return '<div class="tg-row"><b>' + TEN_GODS[k][0] + (counts[k] > 1 ? ' ×' + counts[k] : '') + '</b>' +
+            '<span class="tg-kor">' + k + '</span>' +
+            '<span class="tg-gloss">' + TEN_GODS[k][1] + '</span></div>';
+        }).join('')
+      : '<p class="reading-body" style="font-size: 13px;">目に見える命式には、自分の五行以外の通変星が現れていません。めったにない、自己完結した命式です。</p>';
+  }
+
+  /* Match invite link — the other person opens it and only enters their own birthday */
+  var lastInput = null;
+  $('#en-invite').addEventListener('click', function () {
+    if (!lastInput) return;
+    track('en_match_invite_link', { from: 'chart' });
+    var url = location.origin + '/en/match/#p=' + window.Gunghap.encodeProfile({
+      name: '', year: lastInput.year, month: lastInput.month, day: lastInput.day, unknownTime: true, gender: 'F', applySolarTime: false
+    });
+    var text = '四柱推命で二人の相性を見てみよう。あなたの生年月日を入れるだけ（英語ページ）：';
+    if (navigator.share) {
+      navigator.share({ title: 'サジュチョプ — 四柱推命の相性診断', text: text, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + ' ' + url).then(function () { toast('リンクをコピーしました。あなたの生年月日が含まれるので、知っている相手だけに送ってください。'); });
+    }
+  });
+
+  $('#en-print').addEventListener('click', function () {
+    if (!lastResult) return;
+    track('en_print');
+    window.print();
+  });
+
+  /* story card with the real chart: Day Master archetype + the four pillars */
+  $('#en-card').addEventListener('click', function () {
+    if (!lastResult || !window.EnCards) return;
+    track('en_card');
+    var r = lastResult, p = r.pillars, dm = p.day.stem;
+    var d = (window.EN_DAY_MASTERS || [])[dm] || { han: M.STEMS[dm].han, arch: STEM_EN[dm].arch, name: STEM_EN[dm].name, essence: '', keywords: DM_TEXT[dm].keys };
+    var pill = function (label, q, isDay) { return q ? { label: label, han: M.STEMS[q.stem].han + M.BRANCHES[q.branch].han, day: isDay } : { label: label, han: '—' }; };
+    window.EnCards.fonts(d.han + M.STEMS[p.year.stem].han + M.BRANCHES[p.year.branch].han).then(function () {
+      var c = window.EnCards.dayMaster({ han: d.han, arch: d.arch, name: d.name, essence: d.essence, keywords: d.keywords,
+        overline: '私の日干 · 四柱推命', footerLine: '生年月日から、あなたの四柱推命 — 無料。', url: 'sajucheop.com/ja',
+        pillars: [pill('年柱', p.year), pill('月柱', p.month), pill('日柱', p.day, true), pill('時柱', p.hour)] });
+      return window.EnCards.deliver(c, 'my-day-master-' + (d.slug || dm) + '.png', '私の日干は ' + d.han + '（' + d.name + '）「' + d.arch + '」でした。あなたの日干は？ https://sajucheop.com/ja/', '私の日干 — サジュチョプ');
+    }).then(function (how) {
+      if (how === 'downloaded') toast('カードを保存しました（1080×1920、ストーリー用）。');
+      else if (how === 'failed') toast('カードを作成できませんでした。');
+    });
+  });
+
+  $('#en-share').addEventListener('click', function () {
+    if (!lastResult) return;
+    track('en_share');
+    var dmIdx = lastResult.pillars.day.stem;
+    var text = '私の日干は ' + M.STEMS[dmIdx].han + '（' + PINYIN_S[dmIdx] + '・' + STEM_EN[dmIdx].name +
+      '）「' + STEM_EN[dmIdx].arch + '」でした。あなたの日干は？';
+    var url = 'https://sajucheop.com/ja/';
+    if (navigator.share) {
+      navigator.share({ title: 'サジュチョプ — 四柱推命 命式計算', text: text, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + ' ' + url).then(function () { toast('クリップボードにコピーしました。'); });
+    }
+  });
+})();
+</script>
+</body>
+</html>
