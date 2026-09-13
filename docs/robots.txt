@@ -18,3 +18,4 @@ Sitemap: https://sajucheop.com/sitemap-en-tools.xml
 Sitemap: https://sajucheop.com/sitemap-en-learn.xml
 Sitemap: https://sajucheop.com/sitemap-en-terms.xml
 Sitemap: https://sajucheop.com/sitemap-en-monthly.xml
+Sitemap: https://sajucheop.com/sitemap-ja.xml

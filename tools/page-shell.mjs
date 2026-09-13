@@ -20,15 +20,24 @@ export function brandSvg() {
 /* o: { rel, title, desc, canonical, jsonld (object|array), nav: [{href,label}], body, lang, extraHead, noindex } */
 export function shell(o) {
   const lang = o.lang || 'ko';
-  const brand = lang === 'en' ? 'Sajucheop' : '사주첩';
-  const nav = (o.nav || []).concat(lang === 'en' ? [] : [{ href: 'http://saengil.sajucheop.com/', label: '생일 사전' }, { href: 'https://dream.sajucheop.com/', label: '꿈해몽' }, { href: 'https://tarot.sajucheop.com/', label: '타로' }]).map((n) => `<a href="${esc(n.href)}">${n.label}</a>`).join('\n      ');
+  const foreign = lang === 'en' || lang === 'ja';
+  const brand = foreign ? 'Sajucheop' : '사주첩';
+  const nav = (o.nav || []).concat(foreign ? [] : [{ href: 'http://saengil.sajucheop.com/', label: '생일 사전' }, { href: 'https://dream.sajucheop.com/', label: '꿈해몽' }, { href: 'https://tarot.sajucheop.com/', label: '타로' }]).map((n) => `<a href="${esc(n.href)}">${n.label}</a>`).join('\n      ');
   const ld = o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld)}</script>` : '';
   const footerLinks = lang === 'en'
     ? `<a href="${o.rel}en/">Chart</a><a href="${o.rel}en/guide/">Library</a><a href="${o.rel}en/about/">About</a><a href="${o.rel}en/privacy/">Privacy</a><a href="${o.rel}en/terms/">Terms</a>`
-    : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}about/">소개</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a><a href="https://donpyo.com/">돈표</a><a href="https://bodyzip.com/">바디집</a>`;
+    : lang === 'ja'
+      ? `<a href="${o.rel}ja/">命式計算</a><a href="${o.rel}ja/2027/">2027年の運勢</a><a href="${o.rel}en/about/">About（英語）</a><a href="${o.rel}en/privacy/">Privacy</a><a href="${o.rel}en/terms/">Terms</a><a href="${o.rel}en/">English</a><a href="${o.rel}">한국어</a>`
+      : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}about/">소개</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a><a href="https://donpyo.com/">돈표</a><a href="https://bodyzip.com/">바디집</a>`;
   const footerNote = o.footerNote || (lang === 'en'
     ? 'For reflection and entertainment. Important decisions are always yours to make.'
-    : '본 콘텐츠는 전통 명리학 이론을 바탕으로 한 참고용입니다.');
+    : lang === 'ja'
+      ? '本コンテンツは伝統的な命理学に基づく参考情報です。大切な決断はご自身で。'
+      : '본 콘텐츠는 전통 명리학 이론을 바탕으로 한 참고용입니다.');
+  const jaFonts = lang === 'ja'
+    ? `\n  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap">`
+    : '';
+  const jaStyle = lang === 'ja' ? `\n  <style>:root{--serif:'Noto Serif JP','Noto Serif KR',serif;--sans:'Noto Sans JP','Noto Sans KR',sans-serif}</style>` : '';
   return `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -42,15 +51,15 @@ export function shell(o) {
   <link rel="icon" type="image/svg+xml" href="${o.rel}favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="${o.rel}css/style.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">${jaFonts}
+  <link rel="stylesheet" href="${o.rel}css/style.css">${jaStyle}
   ${ld}
   <meta property="og:title" content="${esc(o.ogTitle || o.title)}">
   <meta property="og:description" content="${esc(o.desc)}">
-  <meta property="og:image" content="https://sajucheop.com/${lang === 'en' ? 'og-image-en.png' : 'og-image.png'}">
+  <meta property="og:image" content="https://sajucheop.com/${foreign ? 'og-image-en.png' : 'og-image.png'}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  ${lang === 'en' ? '<meta property="og:locale" content="en_US">' : ''}
+  ${lang === 'en' ? '<meta property="og:locale" content="en_US">' : lang === 'ja' ? '<meta property="og:locale" content="ja_JP">' : ''}
   <meta name="twitter:card" content="summary_large_image">
   ${o.extraHead || ''}
 </head>
@@ -58,7 +67,7 @@ export function shell(o) {
 <div class="app doc">
 
   <header class="doc-header">
-    <a class="brand" href="${o.rel}${lang === 'en' ? 'en/' : ''}">
+    <a class="brand" href="${o.rel}${lang === 'en' ? 'en/' : lang === 'ja' ? 'ja/' : ''}">
       ${brandSvg()}
       <span class="brand-name" style="font-size: 16px;">${brand}</span>
     </a>

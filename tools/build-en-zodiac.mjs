@@ -599,7 +599,7 @@ function year27Page(b) {
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>See 2027 in your full chart</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `The ${A.name} in 2027 — ${score}/100`, extraHead: STYLE + alt(url, `/2027/ddi/${A.slug}/`),
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `The ${A.name} in 2027 — ${score}/100`, extraHead: STYLE + alt(url, `/2027/ddi/${A.slug}/`) + `\n  <link rel="alternate" hreflang="ja" href="${SITE}/ja/2027/${A.slug}/">`,
     jsonld: [crumbs([['2027 Horoscope', '/en/2027/'], [A.name, url]]), article(url, title, desc),
       { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq27.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }], body }));
 }
@@ -648,7 +648,7 @@ function year27Hub() {
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>See 2027 in your full chart</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: '2027 — Year of the Fire Goat', extraHead: STYLE + alt(url, '/2027/'),
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: '2027 — Year of the Fire Goat', extraHead: STYLE + alt(url, '/2027/') + `\n  <link rel="alternate" hreflang="ja" href="${SITE}/ja/2027/">`,
     jsonld: [crumbs([['2027 Horoscope', url]]), article(url, title, desc),
       { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: hubFaq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }], body }));
 }
