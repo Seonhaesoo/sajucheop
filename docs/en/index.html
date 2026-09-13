@@ -57,6 +57,26 @@
     .tg-row b { flex: none; width: 128px; font-size: 13px; }
     .tg-row .tg-kor { flex: none; font-size: 11px; color: var(--faint); }
     .tg-row span.tg-gloss { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .en-pillar .ep-hidden { font-size: 10px; color: var(--faint); margin-top: 5px; font-family: 'Noto Serif KR', serif; letter-spacing: 1px; }
+    .en-pillar .ep-hidden span { display: block; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 0; font-size: 8.5px; text-transform: uppercase; }
+    .dl-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line-soft); }
+    .dl-row:first-child { border-top: 0; }
+    .dl-row.current { background: rgba(184, 56, 45, .06); margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 8px; }
+    .dl-age { flex: none; width: 78px; font-size: 12px; color: var(--faint); line-height: 1.3; }
+    .dl-row.current .dl-age { color: var(--ink); font-weight: 700; }
+    .dl-han { flex: none; font-family: 'Noto Serif KR', serif; font-size: 20px; font-weight: 700; width: 46px; }
+    .dl-info { flex: 1; min-width: 0; }
+    .dl-info b { font-size: 13px; }
+    .dl-info small { display: block; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+    .dl-bar { flex: none; width: 50px; height: 6px; background: #F0E9DA; border-radius: 999px; overflow: hidden; }
+    .dl-bar i { display: block; height: 100%; background: var(--seal); }
+    #en-print-head { display: none; }
+    @media print {
+      .no-print { display: none !important; }
+      #en-result { display: block !important; }
+      #en-print-head { display: block; font-size: 12px; color: #6E6455; margin: 8px 0 12px; }
+      .card { break-inside: avoid; }
+    }
     .en-learn { list-style: none; padding: 0; margin: 6px 0 0; }
     .en-learn li { padding: 9px 0; border-bottom: 1px solid var(--line-soft); font-size: 14px; line-height: 1.5; }
     .en-learn li:last-child { border-bottom: 0; }
@@ -67,7 +87,7 @@
 <body>
 <div class="app">
 
-  <header class="doc-header">
+  <header class="doc-header no-print">
     <a class="brand" href="./">
       <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true">
         <rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"></rect>
@@ -85,13 +105,13 @@
     </nav>
   </header>
 
-  <div class="daeun-intro" style="margin-top: 26px;">
+  <div class="daeun-intro no-print" style="margin-top: 26px;">
     <h1 style="font-size: 24px;">Your Korean Four Pillars</h1>
     <p>Saju (사주) is Korea's tradition of the Four Pillars of Destiny. Enter your birth date and we'll cast your chart — <b>with each solar-term boundary computed from the Sun's position</b>, the way Korean masters do it.</p>
   </div>
 
   <!-- Input -->
-  <div class="card card-pad" style="margin-top: 8px;">
+  <div class="card card-pad no-print" style="margin-top: 8px;">
     <div class="section-head"><h3 class="section-title" style="font-size: 15px;">Birth date</h3></div>
     <div class="nm-row">
       <div class="select-wrap" style="flex: 1;"><select id="en-month"></select></div>
@@ -111,11 +131,18 @@
       </div>
       <p class="form-microcopy" style="margin-top: 6px;">Pick the time zone of your birthplace, including daylight saving if it was in effect.</p>
     </div>
+    <div class="nm-row" style="gap: 14px; font-size: 13px; color: #6E6455; margin-top: 10px; align-items: center;">
+      <span>Luck pillars for a</span>
+      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="radio" name="en-gender" value="F" checked style="width: 15px; height: 15px;"> woman</label>
+      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;"><input type="radio" name="en-gender" value="M" style="width: 15px; height: 15px;"> man</label>
+    </div>
+    <p class="form-microcopy" style="margin-top: 4px; text-align: left;">Only the ten-year luck pillars depend on this — they run in opposite directions for women and men.</p>
     <button class="btn-primary" id="en-run" style="margin-top: 16px;">Cast my chart</button>
   </div>
 
   <!-- Result -->
   <div id="en-result" hidden>
+    <p id="en-print-head"></p>
 
     <div class="card card-pad" style="margin-top: 18px;">
       <div class="section-head">
@@ -154,15 +181,26 @@
       <div id="en-tengods" style="margin-top: 6px;"></div>
     </div>
 
-    <div class="btn-stack" style="margin-top: 16px;">
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">Luck pillars — your ten-year seasons</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">대운</span>
+      </div>
+      <p class="reading-body" id="en-daeun-intro" style="margin-top: 6px; font-size: 13.5px;"></p>
+      <div id="en-daeun" style="margin-top: 8px;"></div>
+      <p class="form-microcopy" style="margin-top: 10px; text-align: left;">Ages are international age, by calendar year. The bar is a reference index of how well each pillar’s elements suit your chart’s strength — not a verdict. <a href="guide/luck-pillars/" style="color: var(--seal);">How luck pillars are counted →</a></p>
+    </div>
+
+    <div class="btn-stack no-print" style="margin-top: 16px;">
       <a class="btn-primary" href="today/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Read my fortune for today</a>
       <button class="btn-outline" id="en-invite">Send someone a match link</button>
       <a class="btn-outline" href="match/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Check compatibility with someone</a>
       <button class="btn-outline" id="en-share">Share my Day Master</button>
+      <button class="btn-outline" id="en-print">Print or save as PDF</button>
     </div>
   </div>
 
-  <div class="card card-pad" style="margin-top: 26px;">
+  <div class="card card-pad no-print" style="margin-top: 26px;">
     <div class="section-head">
       <h3 class="section-title" style="font-size: 16px;">Chinese zodiac</h3>
       <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">띠</span>
@@ -170,7 +208,7 @@
     <p class="reading-body" style="margin-top: 6px;">Your birth-year animal is one pillar of four. <a href="zodiac/">Find your animal sign</a> with the real Lunar New Year boundary, see <a href="zodiac/compatibility/">how the twelve signs match</a>, and read <a href="2027/">what the Year of the Fire Goat brings</a> each sign in 2027. More calendar pages: the <a href="korean-age/">Korean age calculator</a>, the <a href="lunar-birthday/">lunar birthday calculator</a>, <a href="lunar-new-year/">Lunar New Year 2027 dates</a> and the <a href="solar-terms/">24 solar terms</a> that set every pillar.</p>
   </div>
 
-  <div class="card card-pad" style="margin-top: 14px;">
+  <div class="card card-pad no-print" style="margin-top: 14px;">
     <div class="section-head">
       <h3 class="section-title" style="font-size: 16px;">Learn to read your chart</h3>
       <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">Library</span>
@@ -189,21 +227,21 @@
   </div>
 
   <!-- SEO copy -->
-  <div class="card reading-card" style="margin-top: 26px;">
+  <div class="card reading-card no-print" style="margin-top: 26px;">
     <div class="reading-overline">About</div>
     <h3 class="reading-title" style="font-size: 17px;">What is Saju — and how is it different from BaZi?</h3>
     <p class="reading-body">Saju (사주, "four pillars") converts your birth year, month, day and hour into eight Chinese characters — your <i>palja</i> (팔자). It shares its roots with Chinese BaZi, but Korean Saju grew into its own school: a strong focus on the <b>Day Master</b> as the self, everyday practical use, and precise calendar corrections. The year doesn't change on January 1st or Lunar New Year, but at <b>Ipchun</b> (the "Start of Spring" solar term) — and this calculator computes those term boundaries from the Sun's position.</p>
     <p class="reading-body" style="margin-top: 10px;">Everything runs in your browser. Your birth data is never sent to a server.</p>
   </div>
 
-  <div class="card card-pad" style="margin-top: 14px;">
+  <div class="card card-pad no-print" style="margin-top: 14px;">
     <div class="section-head"><h3 class="section-title" style="font-size: 16px;">FAQ</h3></div>
     <details class="ics-help" open><summary>What can I read without a birth time?</summary><div class="ih-body"><p>Six of your eight characters — including your Day Master, element balance and most Ten Gods — come from the date alone. Only the Hour Pillar is left out, so a date-only reading is still solid.</p></div></details>
     <details class="ics-help"><summary>Why does the time zone matter?</summary><div class="ih-body"><p>The pillars are anchored to astronomical solar terms, which happen at one absolute moment worldwide. Your local birth time plus its UTC offset tells us where that moment fell in your chart.</p></div></details>
     <details class="ics-help"><summary>Is this the Korean or Chinese system?</summary><div class="ih-body"><p>Korean. The engine follows the Korean saju convention: solar-term month boundaries, Ipchun year boundary, and the late-night hour rule (야자시).</p></div></details>
   </div>
 
-  <footer class="site-footer" style="margin-top: 30px;">
+  <footer class="site-footer no-print" style="margin-top: 30px;">
     <div class="footer-row">
       <span class="copy">© Sajucheop</span>
       <nav class="footer-links">
@@ -293,6 +331,34 @@
     '중화': ['A balanced Day Master', 'your chart holds itself in equilibrium — a versatile foundation that adapts to most seasons of life.'],
     '신약': ['A gentle Day Master', 'you go furthest with backing — the right people, credentials and environments multiply you.']
   };
+  /* luck pillar themes by the Ten God of the pillar's stem — same readings as the Korean app's DAEUN_TEXT */
+  var DAEUN_EN = {
+    '비견': 'Ten years of standing on your own — independence, your own name, competition among equals.',
+    '겁재': 'Ten years of contests — bold moves pay off; shared money and partnerships need care.',
+    '식신': 'Ten years when skill becomes a living — make, build, enjoy; life gets more comfortable.',
+    '상관': 'Ten years of talent showing — creating, teaching, speaking; mind what you say to authority.',
+    '편재': 'Ten years when the board gets bigger — ventures and opportunity; money moves in and out fast.',
+    '정재': 'Ten years of steady accumulation — diligence pays and assets build slowly.',
+    '편관': 'Ten years of being forged — heavy responsibility first, rank and authority after.',
+    '정관': 'Ten years when your name is made — recognition, position and reputation through the rules.',
+    '편인': 'Ten years of going deep — specialist study and insight; keep decisions moving.',
+    '정인': 'Ten years when learning becomes strength — study, credentials, mentors and backing.'
+  };
+  var SIP_GROUP = { '비견': '비겁', '겁재': '비겁', '식신': '식상', '상관': '식상', '편재': '재성', '정재': '재성', '편관': '관성', '정관': '관성', '편인': '인성', '정인': '인성' };
+  /* reference index, same weights as interpret.js daeunScores: strong charts favor output/wealth/authority pillars, gentle ones resource/peer pillars */
+  function daeunScore(r, dw) {
+    var strong = r.strength.label === '신강';
+    var fav = strong ? { '식상': 1, '재성': 1, '관성': 1 } : { '인성': 1, '비겁': 1 };
+    var stemS = M.sipseongOf(r.pillars.day.stem, dw.stem), branchS = M.branchSipseong(r.pillars.day.stem, dw.branch);
+    var score = 52;
+    score += fav[SIP_GROUP[stemS]] ? 16 : -10;
+    score += fav[SIP_GROUP[branchS]] ? 22 : -14;
+    if (r.strength.label === '중화') score = 52 + (score - 52) * 0.5;
+    return Math.max(18, Math.min(92, score));
+  }
+  var PINYIN_S = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'];
+  var PINYIN_B = ['Zi', 'Chou', 'Yin', 'Mao', 'Chen', 'Si', 'Wu', 'Wei', 'Shen', 'You', 'Xu', 'Hai'];
+  function genderOf() { var el = document.querySelector('input[name="en-gender"]:checked'); return el ? el.value : 'F'; }
 
   /* Selects */
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -351,7 +417,7 @@
         hour: unknown ? 12 : +$('#en-hour').value,
         minute: unknown ? 0 : +$('#en-min').value,
         unknownTime: unknown,
-        gender: 'F',
+        gender: genderOf(),
         applySolarTime: false,
         tzOffsetMinutes: +$('#en-tz').value
       });
@@ -366,7 +432,7 @@
         y: y2, m: m2, d: d2, unknown: unknown,
         hh: unknown ? 12 : +$('#en-hour').value,
         mi: unknown ? 0 : +$('#en-min').value,
-        tz: +$('#en-tz').value
+        tz: +$('#en-tz').value, g: genderOf()
       }));
     } catch (e) { /* ignore */ }
     lastInput = { year: y2, month: m2, day: d2 };
@@ -382,11 +448,39 @@
         '<div class="ep-en">unknown<br>time</div></div>';
     }
     var st = M.STEMS[p.stem], br = M.BRANCHES[p.branch];
+    var hidden = (M.JIJANGGAN[p.branch] || []).map(function (i) { return M.STEMS[i].han; }).join(' ');
     return '<div class="en-pillar' + (isDay ? ' day' : '') + '">' +
       '<div class="ep-name">' + label + '</div>' +
       '<div class="ep-han">' + st.han + '<br>' + br.han + '</div>' +
       '<div class="ep-en">' + STEM_EN[p.stem].name + '<br>' + BRANCH_EN[p.branch] + ' (' + EL_EN[br.el] + ')</div>' +
+      '<div class="ep-hidden" title="Hidden stems of the branch, residual to main qi"><span>hidden</span>' + hidden + '</div>' +
       '</div>';
+  }
+
+  function renderDaeun(r) {
+    var d = r.daeun, list = d.list, birthY = r.input.year;
+    var cur = null;
+    list.forEach(function (dw) { if (dw.current) cur = dw; });
+    var age0 = list[0].startAge - 1;   /* Korean count → international: the calendar year you turn startAge − 1 */
+    var intro = 'Your luck pillars run ' + (d.forward ? 'forward' : 'backward') + ' through the sixty pairs from your Month Pillar, one every ten years, and the first begins in ' + (birthY + age0) + ', the year you turn ' + age0 + '.';
+    if (cur) {
+      var g = M.STEMS[cur.stem].han + M.BRANCHES[cur.branch].han;
+      intro += ' You are in the <b>' + g + '</b> (' + PINYIN_S[cur.stem] + ' ' + PINYIN_B[cur.branch] + ') pillar now — ' + TEN_GODS[cur.sipseong][0] + ' over your Day Master.';
+    } else if (d.koreanAge < list[0].startAge) {
+      intro += ' Until then, the chart runs on its own eight characters.';
+    }
+    $('#en-daeun-intro').innerHTML = intro;
+    $('#en-daeun').innerHTML = list.map(function (dw) {
+      var a0 = dw.startAge - 1, a1 = dw.endAge - 1, y0 = birthY + a0, y1 = birthY + a1;
+      var score = daeunScore(r, dw);
+      var tg = TEN_GODS[dw.sipseong] ? TEN_GODS[dw.sipseong][0] : dw.sipseong;
+      return '<div class="dl-row' + (dw.current ? ' current' : '') + '">' +
+        '<div class="dl-age">' + a0 + '–' + a1 + '<br><span style="font-weight: 400;">' + y0 + '–' + y1 + '</span></div>' +
+        '<div class="dl-han">' + M.STEMS[dw.stem].han + M.BRANCHES[dw.branch].han + '</div>' +
+        '<div class="dl-info"><b>' + PINYIN_S[dw.stem] + ' ' + PINYIN_B[dw.branch] + ' · ' + tg + (dw.current ? ' · now' : '') + '</b><small>' + (DAEUN_EN[dw.sipseong] || '') + '</small></div>' +
+        '<div class="dl-bar" title="reference index ' + Math.round(score) + '/100"><i style="width: ' + Math.round(score) + '%;"></i></div>' +
+        '</div>';
+    }).join('');
   }
 
   var lastResult = null;
@@ -400,6 +494,11 @@
       pillarHtml('Day', p.day, true) +
       pillarHtml('Hour', p.hour, false);
     $('#en-birth-line').textContent = MONTHS[r.input.month - 1] + ' ' + r.input.day + ', ' + r.input.year;
+    var tzSel = $('#en-tz'), tzLabel = tzSel.options[tzSel.selectedIndex] ? tzSel.options[tzSel.selectedIndex].text : '';
+    $('#en-print-head').textContent = 'Sajucheop — Four Pillars report · born ' + MONTHS[r.input.month - 1] + ' ' + r.input.day + ', ' + r.input.year +
+      (unknown ? ' (birth time unknown)' : ' at ' + String(r.input.hour).padStart(2, '0') + ':' + String(r.input.minute).padStart(2, '0') + ' ' + tzLabel) +
+      ' · Korean saju convention (Ipchun year boundary, solar-term months) · sajucheop.com/en · printed ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    renderDaeun(r);
 
     /* Day Pillar article — 60 pages under /en/guide/day-pillar/ */
     var pl = $('#en-pillar-link');
@@ -474,6 +573,12 @@
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text + ' ' + url).then(function () { toast('Link copied — it carries your birth date, so send it only to people you know.'); });
     }
+  });
+
+  $('#en-print').addEventListener('click', function () {
+    if (!lastResult) return;
+    track('en_print');
+    window.print();
   });
 
   $('#en-share').addEventListener('click', function () {
