@@ -142,6 +142,7 @@
 <script src="../../js/manseryeok.js"></script>
 <script src="../../js/characters.js"></script>
 <script src="../../js/en-daymaster.js"></script>
+<script src="../../js/en-cards.js"></script>
 <script>
 (function () {
   'use strict';
@@ -282,77 +283,18 @@
     window.scrollTo(0, 0);
   }
 
-  /* story card 1080×1920 — same paper-and-ink style as the Korean name card */
-  function drawCard(d) {
-    var W = 1080, H = 1920, c = document.createElement('canvas'), x = c.getContext('2d');
-    c.width = W; c.height = H;
-    var INK = '#211C15', SEAL = '#B8382D', PAPER = '#F6F1E8', MUTED = '#6E6455', LINE = '#C9BFAC';
-    x.fillStyle = PAPER; x.fillRect(0, 0, W, H);
-    x.strokeStyle = INK; x.lineWidth = 8; x.strokeRect(40, 40, W - 80, H - 80);
-    x.strokeStyle = LINE; x.lineWidth = 2; x.strokeRect(72, 72, W - 144, H - 144);
-    /* seal */
-    x.fillStyle = SEAL;
-    x.beginPath(); x.roundRect ? x.roundRect(120, 120, 120, 120, 16) : x.rect(120, 120, 120, 120); x.fill();
-    x.fillStyle = PAPER; x.font = '600 44px "Noto Serif KR"'; x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.fillText('四', 180, 158); x.fillText('柱', 180, 204);
-    x.textAlign = 'left'; x.textBaseline = 'alphabetic';
-    x.fillStyle = MUTED; x.font = '500 30px "Noto Sans KR"'; x.fillText('MY DAY MASTER · SAJU QUIZ', 280, 190);
-    /* character */
-    x.fillStyle = SEAL; x.font = '700 420px "Noto Serif KR"'; x.textAlign = 'center';
-    x.fillText(d.han, W / 2, 780);
-    x.fillStyle = INK; x.font = '700 76px "Noto Serif KR"';
-    x.fillText(d.arch, W / 2, 930);
-    x.fillStyle = MUTED; x.font = '500 38px "Noto Sans KR"';
-    x.fillText(d.name + ' Day Master', W / 2, 1000);
-    x.strokeStyle = SEAL; x.lineWidth = 4; x.beginPath(); x.moveTo(440, 1050); x.lineTo(640, 1050); x.stroke();
-    /* essence — wrap */
-    x.fillStyle = INK; x.font = '400 40px "Noto Serif KR"';
-    var words = d.essence.split(' '), line = '', y = 1150, lines = [];
-    words.forEach(function (w) { var t = line ? line + ' ' + w : w; if (x.measureText(t).width > 820) { lines.push(line); line = w; } else line = t; });
-    if (line) lines.push(line);
-    lines.forEach(function (l, i) { x.fillText(l, W / 2, y + i * 58); });
-    y += lines.length * 58 + 40;
-    /* keywords */
-    x.font = '500 30px "Noto Sans KR"';
-    var pills = d.keywords.map(function (k) { return k.charAt(0).toUpperCase() + k.slice(1); });
-    var widths = pills.map(function (p) { return x.measureText(p).width + 44; });
-    var total = widths.reduce(function (a, b) { return a + b; }, 0) + (pills.length - 1) * 16;
-    var px = (W - total) / 2;
-    pills.forEach(function (p, i) {
-      x.strokeStyle = LINE; x.lineWidth = 2;
-      if (x.roundRect) { x.beginPath(); x.roundRect(px, y - 34, widths[i], 52, 26); x.stroke(); } else x.strokeRect(px, y - 34, widths[i], 52);
-      x.fillStyle = INK; x.textAlign = 'center'; x.fillText(p, px + widths[i] / 2, y + 2);
-      px += widths[i] + 16;
-    });
-    /* footer */
-    x.textAlign = 'center';
-    x.fillStyle = MUTED; x.font = '400 30px "Noto Sans KR"';
-    x.fillText('Which nature are you? Twelve questions, one minute.', W / 2, 1700);
-    x.fillStyle = SEAL; x.font = '700 36px "Noto Sans KR"';
-    x.fillText('sajucheop.com/en/quiz', W / 2, 1760);
-    return c;
-  }
-
+  /* story card 1080×1920 — drawn by js/en-cards.js (shared with the chart and match pages) */
   $('#rs-card').addEventListener('click', function () {
     var d = state.result;
     if (!d) return;
     track('en_quiz_card');
-    var fontsReady = document.fonts && document.fonts.load ? Promise.all([document.fonts.load('700 420px "Noto Serif KR"'), document.fonts.load('700 76px "Noto Serif KR"'), document.fonts.load('500 30px "Noto Sans KR"')]) : Promise.resolve();
-    fontsReady.then(function () {
-      var c = drawCard(d);
-      c.toBlob(function (blob) {
-        if (!blob) { toast('Could not draw the card.'); return; }
-        var file = new File([blob], 'my-day-master-' + d.slug + '.png', { type: 'image/png' });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          navigator.share({ files: [file], title: 'My Day Master — Sajucheop', text: 'I test as ' + d.arch + ' (' + d.name + '). Which nature are you? sajucheop.com/en/quiz' }).catch(function () {});
-        } else {
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob); a.download = file.name;
-          document.body.appendChild(a); a.click(); document.body.removeChild(a);
-          setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
-          toast('Card saved — 1080×1920, ready for a story.');
-        }
-      }, 'image/png');
+    window.EnCards.fonts(d.han).then(function () {
+      var c = window.EnCards.dayMaster({ han: d.han, arch: d.arch, name: d.name, essence: d.essence, keywords: d.keywords,
+        overline: 'MY DAY MASTER · SAJU QUIZ', footerLine: 'Which nature are you? Twelve questions, one minute.', url: 'sajucheop.com/en/quiz' });
+      return window.EnCards.deliver(c, 'my-day-master-' + d.slug + '.png', 'I test as ' + d.arch + ' (' + d.name + '). Which nature are you? sajucheop.com/en/quiz', 'My Day Master — Sajucheop');
+    }).then(function (how) {
+      if (how === 'downloaded') toast('Card saved — 1080×1920, ready for a story.');
+      else if (how === 'failed') toast('Could not draw the card.');
     });
   });
 

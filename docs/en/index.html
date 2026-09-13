@@ -195,6 +195,7 @@
       <a class="btn-primary" href="today/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Read my fortune for today</a>
       <button class="btn-outline" id="en-invite">Send someone a match link</button>
       <a class="btn-outline" href="match/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">Check compatibility with someone</a>
+      <button class="btn-outline" id="en-card">Save my Day Master card</button>
       <button class="btn-outline" id="en-share">Share my Day Master</button>
       <button class="btn-outline" id="en-print">Print or save as PDF</button>
     </div>
@@ -263,6 +264,8 @@
 <script src="../js/manseryeok.js"></script>
 <script src="../js/gunghap.js"></script>
 <script src="../js/en-pillar-slugs.js"></script>
+<script src="../js/en-daymaster.js"></script>
+<script src="../js/en-cards.js"></script>
 <script>
 (function () {
   'use strict';
@@ -579,6 +582,24 @@
     if (!lastResult) return;
     track('en_print');
     window.print();
+  });
+
+  /* story card with the real chart: Day Master archetype + the four pillars */
+  $('#en-card').addEventListener('click', function () {
+    if (!lastResult || !window.EnCards) return;
+    track('en_card');
+    var r = lastResult, p = r.pillars, dm = p.day.stem;
+    var d = (window.EN_DAY_MASTERS || [])[dm] || { han: M.STEMS[dm].han, arch: STEM_EN[dm].arch, name: STEM_EN[dm].name, essence: '', keywords: DM_TEXT[dm].keys };
+    var pill = function (label, q, isDay) { return q ? { label: label, han: M.STEMS[q.stem].han + M.BRANCHES[q.branch].han, day: isDay } : { label: label, han: '—' }; };
+    window.EnCards.fonts(d.han + M.STEMS[p.year.stem].han + M.BRANCHES[p.year.branch].han).then(function () {
+      var c = window.EnCards.dayMaster({ han: d.han, arch: d.arch, name: d.name, essence: d.essence, keywords: d.keywords,
+        overline: 'MY DAY MASTER · FOUR PILLARS', footerLine: 'Your Korean Four Pillars, from your birth date — free.', url: 'sajucheop.com/en',
+        pillars: [pill('Year', p.year), pill('Month', p.month), pill('Day', p.day, true), pill('Hour', p.hour)] });
+      return window.EnCards.deliver(c, 'my-day-master-' + (d.slug || dm) + '.png', 'My Saju Day Master is ' + d.han + ' ' + d.name + ' — ' + d.arch + '. Find yours: https://sajucheop.com/en/', 'My Day Master — Sajucheop');
+    }).then(function (how) {
+      if (how === 'downloaded') toast('Card saved — 1080×1920, ready for a story.');
+      else if (how === 'failed') toast('Could not draw the card.');
+    });
   });
 
   $('#en-share').addEventListener('click', function () {

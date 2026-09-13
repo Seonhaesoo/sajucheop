@@ -142,6 +142,7 @@
 
     <div class="btn-stack" style="margin-top: 16px;">
       <button class="btn-primary" id="mr-share">Share this match</button>
+      <button class="btn-outline" id="mr-card">Save a match card</button>
       <a class="btn-outline" href="../" style="display: flex; align-items: center; justify-content: center; text-decoration: none;" id="mr-cast">Cast a full chart</a>
       <button class="btn-outline" id="mr-new" hidden>Check a match of my own</button>
       <p class="form-microcopy">Match links carry birth dates — share them only with people you know.</p>
@@ -187,6 +188,7 @@
 
 <script src="../../js/manseryeok.js"></script>
 <script src="../../js/gunghap.js"></script>
+<script src="../../js/en-cards.js"></script>
 <script>
 (function () {
   'use strict';
@@ -279,6 +281,7 @@
   }
 
   /* A is always the person reading the screen; B is the other one */
+  var lastCard = null;  /* what the story card draws — set by renderMatch */
   function renderMatch(pa, pb, labelA, labelB) {
     var ra = cast(pa), rb = cast(pb);
     var a = ra.pillars.day.stem, b = rb.pillars.day.stem;
@@ -328,8 +331,21 @@
 
     $('#ma-result').hidden = false;
     $('#ma-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    lastCard = { aHan: M.STEMS[a].han, bHan: M.STEMS[b].han, aLabel: labelA, bLabel: labelB, aName: STEM_EN[a], bName: STEM_EN[b], score: score, tier: tier,
+      notes: [rel.title, 'To you, they are ' + TEN_EN[sipBtoA] + ' · to them, you are ' + TEN_EN[sipAtoB] + '.'] };
     return { score: score, tier: tier };
   }
+  $('#mr-card').addEventListener('click', function () {
+    if (!lastCard || !window.EnCards) return;
+    track('en_match_card', { mode: mode });
+    window.EnCards.fonts(lastCard.aHan + lastCard.bHan).then(function () {
+      var c = window.EnCards.match(lastCard);
+      return window.EnCards.deliver(c, 'saju-match-' + lastCard.score + '.png', 'Our Saju match: ' + lastCard.score + '/100 — "' + lastCard.tier + '". https://sajucheop.com/en/match/', 'Sajucheop — Saju match');
+    }).then(function (how) {
+      if (how === 'downloaded') toast('Card saved — 1080×1920, ready for a story.');
+      else if (how === 'failed') toast('Could not draw the card.');
+    });
+  });
 
   function shareOut(title, text, url, copiedMsg) {
     if (navigator.share) {
