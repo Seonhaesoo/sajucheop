@@ -1,12 +1,9 @@
 {
-  "seq": 4,
-  "type": "viral",
-  "date": "2026-09-11",
-  "slug": "teuk-eulmok",
-  "title": "을목 특",
+  "seq": 5,
+  "type": "hook",
+  "date": "2026-09-14",
+  "slug": "hook-angry",
+  "title": "일간별 화났을 때 반응 모음",
   "cards": 7,
-  "en": {
-    "title": "Winding Vine things",
-    "cards": 7
-  }
+  "en": null
 }
