@@ -3,6 +3,7 @@
 import { ARTICLES as A } from './en-learn-a.mjs';
 import { ARTICLES as B } from './en-learn-b.mjs';
 import { ARTICLES as C } from './en-learn-c.mjs';
+import { ARTICLES as D } from './en-learn-d.mjs';
 
 export const CATS = [
   { key: 'basics', label: 'Start here: saju basics', short: 'Saju basics',
@@ -10,7 +11,7 @@ export const CATS = [
   { key: 'chart', label: 'Reading your chart', short: 'Reading a chart',
     note: 'The tools a reader actually uses: the Ten Gods, hidden stems, ten-year luck pillars, Day Master strength and the useful god.' },
   { key: 'culture', label: 'Saju in Korean life', short: 'Korean life',
-    note: 'Where saju shows up in Korea today, from couples checking their gunghap to saju cafés in Seoul.' },
+    note: 'Where saju shows up in Korea today, from couples checking their gunghap to saju cafés in Seoul, and how it sits beside MBTI.' },
 ];
 
-export const ARTICLES = [...A, ...B, ...C];
+export const ARTICLES = [...A, ...B, ...C, ...D];
