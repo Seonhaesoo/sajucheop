@@ -56,7 +56,7 @@ export const ARTICLES = [
 <tr><td>Elements</td><td>Each element one of you lacks entirely and the other has (up to two each way, +10 in total)</td><td>+5 each</td></tr>
 <tr><td>Yin and yang</td><td>Day Masters of opposite polarity</td><td>+4</td></tr>
 </table>
-<p>The result is kept between 30 and 99 and given a label: 90 and up is "A rare, fated fit," the 80s "Deeply harmonious," the 70s "A warm, workable match," the 60s "Complementary with effort," 45 to 59 "A study in contrasts," and anything lower "A challenge — and a teacher." The page also names what each of you is to the other in the <a href="/en/guide/ten-gods/">Ten Gods</a>, which often says more than the number. Sajucheop's Korean-language match uses the same ingredients with slightly different weights, so the two versions may not give identical scores.</p>
+<p>The result is kept between 30 and 99 and given a label: 90 and up is "A rare, fated fit," the 80s "Deeply harmonious," the 70s "A warm, workable match," the 60s "Complementary with effort," 45 to 59 "A study in contrasts," and anything lower "A challenge — and a teacher." The page also names what each of you is to the other in the <a href="/en/guide/ten-gods/">Ten Gods</a>, which often says more than the number. Sajucheop's Korean-language match uses exactly the same formula; when birth times are entered there, it also counts the elements of the hour pillar.</p>
 
 <h2>A worked example</h2>
 <p>Ha-eun was born in Seoul on March 10, 1996, and Ethan on August 30, 1994. Neither knows a birth time, which is fine for this page. Their six characters:</p>

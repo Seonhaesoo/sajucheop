@@ -33,7 +33,7 @@ function pairScore(a, b) {
   if (STEM_HAP[a.s] === b.s) s += 18; else if (STEM_CHUNG[a.s] === b.s) s -= 12;
   else if (GEN[sa.el] === sb.el || GEN[sb.el] === sa.el) s += 10; else if (sa.el === sb.el) s += 4; else s -= 6;
   const br = M.branchRelation(a.b, b.b);
-  if (br === '육합') s += 14; else if (br === '삼합') s += 10; else if (br === '동일') s += 4; else if (br === '충') s -= 14;
+  if (br === '육합') s += 12; else if (br === '삼합') s += 10; else if (br === '충') s -= 16;
   if (sa.yang !== sb.yang) s += 4;
   return s;
 }

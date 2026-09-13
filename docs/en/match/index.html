@@ -269,12 +269,12 @@
 
   function stemRelation(a, b) {
     var sa = M.STEMS[a], sb = M.STEMS[b];
-    if (HAP[a] === b) return { pts: 18, title: 'Your Day Masters combine (합)', body: 'In the classical pairings, ' + STEM_EN[a] + ' and ' + STEM_EN[b] + ' bind into one — a chemistry old texts reserved for partners. You don\'t merely get along; you make a third thing together.' };
-    if (CHUNG[a] === b) return { pts: -12, title: 'Your Day Masters clash (충)', body: STEM_EN[a] + ' and ' + STEM_EN[b] + ' sit opposite each other — sparks are guaranteed, boredom never is. Handled with respect, this clash becomes momentum; handled carelessly, friction.' };
-    if (M.elCycle.gen[sa.el] === sb.el) return { pts: 10, title: 'You feed their fire', body: 'Your ' + EL_EN[sa.el] + ' nourishes their ' + EL_EN[sb.el] + ' — you are the giving side of this pair. Beautiful, as long as the giving flows both ways in other currencies.' };
-    if (M.elCycle.gen[sb.el] === sa.el) return { pts: 10, title: 'They feed your fire', body: 'Their ' + EL_EN[sb.el] + ' nourishes your ' + EL_EN[sa.el] + ' — around them you grow with less effort. Say thank you out loud sometimes.' };
-    if (sa.el === sb.el) return { pts: 4, title: 'Same element, same weather', body: 'Two ' + EL_EN[sa.el] + ' natures: instantly familiar, deeply comfortable, occasionally too similar to balance each other. Bring in outside perspectives when you\'re stuck.' };
-    return { pts: -6, title: 'Your elements check each other', body: EL_EN[sa.el] + ' and ' + EL_EN[sb.el] + ' sit in a controlling relationship — one of you naturally edits the other. As respect, it\'s structure; as habit, it\'s criticism. Choose the former.' };
+    if (HAP[a] === b) return { title: 'Your Day Masters combine (합)', body: 'In the classical pairings, ' + STEM_EN[a] + ' and ' + STEM_EN[b] + ' bind into one — a chemistry old texts reserved for partners. You don\'t merely get along; you make a third thing together.' };
+    if (CHUNG[a] === b) return { title: 'Your Day Masters clash (충)', body: STEM_EN[a] + ' and ' + STEM_EN[b] + ' sit opposite each other — sparks are guaranteed, boredom never is. Handled with respect, this clash becomes momentum; handled carelessly, friction.' };
+    if (M.elCycle.gen[sa.el] === sb.el) return { title: 'You feed their fire', body: 'Your ' + EL_EN[sa.el] + ' nourishes their ' + EL_EN[sb.el] + ' — you are the giving side of this pair. Beautiful, as long as the giving flows both ways in other currencies.' };
+    if (M.elCycle.gen[sb.el] === sa.el) return { title: 'They feed your fire', body: 'Their ' + EL_EN[sb.el] + ' nourishes your ' + EL_EN[sa.el] + ' — around them you grow with less effort. Say thank you out loud sometimes.' };
+    if (sa.el === sb.el) return { title: 'Same element, same weather', body: 'Two ' + EL_EN[sa.el] + ' natures: instantly familiar, deeply comfortable, occasionally too similar to balance each other. Bring in outside perspectives when you\'re stuck.' };
+    return { title: 'Your elements check each other', body: EL_EN[sa.el] + ' and ' + EL_EN[sb.el] + ' sit in a controlling relationship — one of you naturally edits the other. As respect, it\'s structure; as habit, it\'s criticism. Choose the former.' };
   }
 
   /* A is always the person reading the screen; B is the other one */
@@ -282,30 +282,24 @@
     var ra = cast(pa), rb = cast(pb);
     var a = ra.pillars.day.stem, b = rb.pillars.day.stem;
     var rel = stemRelation(a, b);
-    var score = 62 + rel.pts;
+    /* the score is shared with the Korean match: js/gunghap.js Gunghap.score */
+    var sc = G.score(ra, rb), score = sc.score;
 
-    var brel = M.branchRelation(ra.pillars.day.branch, rb.pillars.day.branch);
-    var brelLine, brelPts = 0;
-    if (brel === '육합') { brelPts = 12; brelLine = 'Your Day Branches form a six-harmony — daily rhythms sync with almost no negotiation.'; }
-    else if (brel === '삼합') { brelPts = 10; brelLine = 'Your Day Branches share a trine harmony — you work best as a team with a project.'; }
-    else if (brel === '충') { brelPts = -16; brelLine = 'Your Day Branches clash — living patterns differ (sleep, pace, tidiness). Name the differences early and they stop being fights.'; }
+    var brel = sc.branch;
+    var brelLine;
+    if (brel === '육합') { brelLine = 'Your Day Branches form a six-harmony — daily rhythms sync with almost no negotiation.'; }
+    else if (brel === '삼합') { brelLine = 'Your Day Branches share a trine harmony — you work best as a team with a project.'; }
+    else if (brel === '충') { brelLine = 'Your Day Branches clash — living patterns differ (sleep, pace, tidiness). Name the differences early and they stop being fights.'; }
     else if (brel === '동일') { brelLine = 'Your Day Branches are identical — uncannily similar instincts, for better and for worse.'; }
     else { brelLine = 'Your Day Branches neither clash nor combine — daily life is a neutral canvas you paint together.'; }
-    score += brelPts;
-
-    var ELS = ['목', '화', '토', '금', '수'];
-    var fills = ELS.filter(function (k) { return ra.elements[k] === 0 && rb.elements[k] > 0; });
-    var fillsB = ELS.filter(function (k) { return rb.elements[k] === 0 && ra.elements[k] > 0; });
-    score += Math.min(10, Math.min(2, fills.length) * 5 + Math.min(2, fillsB.length) * 5);
+    var fills = sc.aLacks, fillsB = sc.bLacks;
     var compLine = (fills.length || fillsB.length)
       ? 'Element-wise you patch each other\'s gaps' +
         (fills.length ? ' — they carry the ' + fills.map(function (k) { return EL_EN[k]; }).join(' and ') + ' your chart lacks' : '') +
         (fillsB.length ? (fills.length ? ', and you' : ' — you') + ' bring their missing ' + fillsB.map(function (k) { return EL_EN[k]; }).join(' and ') : '') + '.'
       : 'Neither of you fills the other\'s missing elements — your bond is built on resonance rather than completion.';
 
-    if (M.STEMS[a].yang !== M.STEMS[b].yang) score += 4;
-    score = Math.max(30, Math.min(99, score));
-    var tier = TIERS.filter(function (t) { return score >= t[0]; })[0][1];
+    var tier = TIERS[G.tierIndex(score)][1];
 
     $('#mr-emblem-a').textContent = M.STEMS[a].han;
     $('#mr-emblem-b').textContent = M.STEMS[b].han;

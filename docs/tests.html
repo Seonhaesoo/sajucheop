@@ -230,7 +230,7 @@
   var gh1 = GH.compute(gA, gB1, '가', '나');
   check('丙×辛 = 천간합', gh1.stemRel.type, 'hap');
   check('午×亥 일지 무관계', gh1.branchRel.type, null);
-  check('丙×辛 점수 72 (50+18+음양4)', gh1.score, 72);
+  check('丙×辛 점수 84 (62+18+음양4)', gh1.score, 84);
   check('상대(丙)는 나(辛)에게 정관', gh1.sipseong.aboutA.name, '정관');
   check('나(辛)는 상대(丙)에게 정재', gh1.sipseong.aboutB.name, '정재');
 
@@ -240,7 +240,7 @@
   var gh2 = GH.compute(gA, gB2, '가', '나');
   check('丙×壬 = 천간충', gh2.stemRel.type, 'chung');
   check('午×子 = 일지충', gh2.branchRel.type, '충');
-  check('충충 조합 점수 하한 30', gh2.score, 30);
+  check('충충 조합 점수 34 (62−12−16, 이 계산의 최저)', gh2.score, 34);
 
   // 상생 + 오행 보완 (가짜 명식으로 단위 검증)
   var fakeA = { pillars: { day: { stem: 2, branch: 6 } }, elements: { '목': 3, '화': 3, '토': 0, '금': 1, '수': 1 } };
@@ -248,8 +248,16 @@
   var gh3 = GH.compute(fakeA, fakeB, '가', '나');
   check('丙×戊 = 상생 (화생토)', gh3.stemRel.type, 'saeng');
   check('보완 1건 (戊의 토가 丙의 빈 토를 채움)', gh3.complement.length, 1);
-  check('상생+보완 점수 65 (50+10+5)', gh3.score, 65);
+  check('상생+보완 점수 77 (62+10+5)', gh3.score, 77);
   check('이름 이스케이프 적용', GH.compute(fakeA, fakeB, '<x>', '나').complement[0].indexOf('&lt;x&gt;') >= 0, true);
+  // 영문판(/en/match/)과 같은 점수식 — 2026-09-13 통일
+  var fakeB2 = { pillars: { day: { stem: 4, branch: 1 } }, elements: { '목': 2, '화': 1, '토': 1, '금': 3, '수': 1 } };
+  check('보완은 상대가 하나만 가져도 인정', GH.compute(fakeA, fakeB2, '가', '나').complement.length, 1);
+  var fakeH1 = { pillars: { day: { stem: 0, branch: 0 } }, elements: { '목': 3, '화': 0, '토': 0, '금': 2, '수': 3 } };
+  var fakeH2 = { pillars: { day: { stem: 5, branch: 1 } }, elements: { '목': 1, '화': 2, '토': 3, '금': 1, '수': 1 } };
+  check('상한 99 (62+합18+육합12+보완10+음양4 = 106)', GH.compute(fakeH1, fakeH2, '가', '나').score, 99);
+  check('등급 경계 90·80·70·60·45', [GH.tierIndex(90), GH.tierIndex(80), GH.tierIndex(79), GH.tierIndex(60), GH.tierIndex(45), GH.tierIndex(44)].join(), '0,1,2,3,4,5');
+  check('공용 score() = compute() 점수', GH.score(gA, gB1).score, gh1.score);
 
   /* ---- 15. 음력 변환 (korean-lunar-calendar · 설날/추석 앵커) ---- */
   var KL = new window.KoreanLunarCalendar();

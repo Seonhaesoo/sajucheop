@@ -120,22 +120,64 @@
   };
 
   var BRANCH_TEXT = {
-    '육합': { title: '일지가 합(合)', body: '일상 리듬과 속정이 잘 붙는 사이입니다. 오래 같이 있어도 편안하고, 말하지 않아도 통하는 구석이 있어요.', delta: 14 },
-    '삼합': { title: '일지가 삼합(三合)', body: '함께 무언가를 벌일 때 시너지가 나는 사이입니다. 같은 목표가 생기면 빠르게 가까워져요.', delta: 10 },
-    '동일': { title: '일지가 같음', body: '닮은 생활 습관, 닮은 속마음 — 거울을 보는 듯한 사이입니다. 편안하지만 서로의 단점도 닮았을 수 있어요.', delta: 4 },
-    '충': { title: '일지가 충(沖)', body: '생활 패턴과 속마음이 자주 엇갈릴 수 있는 사이입니다. 각자의 시간과 공간을 존중하는 것이 오래 가는 비결이에요.', delta: -14 }
+    '육합': { title: '일지가 합(合)', body: '일상 리듬과 속정이 잘 붙는 사이입니다. 오래 같이 있어도 편안하고, 말하지 않아도 통하는 구석이 있어요.' },
+    '삼합': { title: '일지가 삼합(三合)', body: '함께 무언가를 벌일 때 시너지가 나는 사이입니다. 같은 목표가 생기면 빠르게 가까워져요.' },
+    '동일': { title: '일지가 같음', body: '닮은 생활 습관, 닮은 속마음 — 거울을 보는 듯한 사이입니다. 편안하지만 서로의 단점도 닮았을 수 있어요.' },
+    '충': { title: '일지가 충(沖)', body: '생활 패턴과 속마음이 자주 엇갈릴 수 있는 사이입니다. 각자의 시간과 공간을 존중하는 것이 오래 가는 비결이에요.' }
   };
 
   var EL_HAN = { '목': '木', '화': '火', '토': '土', '금': '金', '수': '水' };
 
+  /* 등급 경계는 영문판(/en/match/)과 같다 — 이름만 언어별 */
   var TIERS = [
     { min: 90, label: '하늘이 이어준 짝' },
-    { min: 78, label: '합이 빼어난 사이' },
-    { min: 64, label: '합이 좋은 사이' },
-    { min: 50, label: '맞춰갈수록 좋은 사이' },
-    { min: 38, label: '노력이 빛나는 사이' },
+    { min: 80, label: '합이 빼어난 사이' },
+    { min: 70, label: '합이 좋은 사이' },
+    { min: 60, label: '맞춰갈수록 좋은 사이' },
+    { min: 45, label: '노력이 빛나는 사이' },
     { min: 0, label: '서로를 배우게 하는 사이' }
   ];
+
+  function tierIndex(s) {
+    for (var i = 0; i < TIERS.length; i++) if (s >= TIERS[i].min) return i;
+    return TIERS.length - 1;
+  }
+
+  /* ---------- 궁합 점수 — 한국어·영문 공용 (2026-09-13 영문 기준으로 통일) ----------
+   * 기본 62 · 일간: 천간합 +18 / 충 −12 / 상생(어느 쪽이든) +10 / 같은 오행 +4 / 상극 −6
+   * 일지: 육합 +12 / 삼합 +10 / 충 −16 (같은 글자·그 밖은 0)
+   * 오행 보완: 한쪽에 없는 오행을 상대가 하나라도 가지면 +5, 양쪽 합쳐 최대 +10
+   * 일간 음양이 다르면 +4 · 30~99로 자름(실제 최저는 충충 34) */
+  var SCORE = {
+    base: 62,
+    stem: { hap: 18, chung: -12, saeng: 10, bihwa: 4, geuk: -6 },
+    branch: { '육합': 12, '삼합': 10, '충': -16 },
+    fill: 5, fillMax: 10, yinyang: 4
+  };
+  var ELS = ['목', '화', '토', '금', '수'];
+
+  function stemType(sa, sb) {
+    var M = window.Manseryeok, ea = M.STEMS[sa].el, eb = M.STEMS[sb].el;
+    if (STEM_HAP[sa] === sb) return 'hap';
+    if (STEM_CHUNG[sa] === sb) return 'chung';
+    if (ea === eb) return 'bihwa';
+    if (M.elCycle.gen[ea] === eb || M.elCycle.gen[eb] === ea) return 'saeng';
+    return 'geuk';
+  }
+
+  /* a, b: Manseryeok.compute 결과. aLacks = a에게 없고 b에게 있는 오행, bLacks = 그 반대 */
+  function score(a, b) {
+    var M = window.Manseryeok;
+    var sa = a.pillars.day.stem, sb = b.pillars.day.stem;
+    var type = stemType(sa, sb);
+    var branch = M.branchRelation(a.pillars.day.branch, b.pillars.day.branch) || null;
+    var aLacks = ELS.filter(function (el) { return a.elements[el] === 0 && b.elements[el] > 0; });
+    var bLacks = ELS.filter(function (el) { return b.elements[el] === 0 && a.elements[el] > 0; });
+    var yinyang = M.STEMS[sa].yang !== M.STEMS[sb].yang;
+    var s = SCORE.base + SCORE.stem[type] + (SCORE.branch[branch] || 0) +
+      Math.min(SCORE.fillMax, (aLacks.length + bLacks.length) * SCORE.fill) + (yinyang ? SCORE.yinyang : 0);
+    return { score: Math.max(30, Math.min(99, s)), stemType: type, branch: branch, aLacks: aLacks, bLacks: bLacks, yinyang: yinyang };
+  }
 
   /* ---------- 궁합 계산 ----------
    * a, b: Manseryeok.compute 결과. nameA/nameB: 표시 이름(이미 이스케이프 전 원문).
@@ -145,13 +187,12 @@
     var sa = a.pillars.day.stem, sb = b.pillars.day.stem;
     var stA = M.STEMS[sa], stB = M.STEMS[sb];
     var nA = escapeHtml(nameA || '상대'), nB = escapeHtml(nameB || '나');
-    var score = 50;
+    var sc = score(a, b);   /* 점수는 공용 score() — 여기서는 풀이 문장만 만든다 */
 
     /* 1. 일간 천간 관계 */
     var stemRel;
     if (STEM_HAP[sa] === sb) {
       var hwa = HAPHWA[[Math.min(sa, sb), Math.max(sa, sb)].join('')];
-      score += 18;
       stemRel = {
         type: 'hap',
         title: '천간의 합(合) — 서로에게 끌리는 조합',
@@ -159,42 +200,36 @@
           hwa + '(' + EL_HAN[hwa] + ')의 기운으로 화(化)해, 함께 있을 때 없던 힘이 생겨요.'
       };
     } else if (STEM_CHUNG[sa] === sb) {
-      score -= 12;
       stemRel = {
         type: 'chung',
         title: '천간의 충(沖) — 강하게 부딪히는 조합',
         body: stA.kor + stA.el + '·' + stB.kor + stB.el + ' 두 천간은 정면으로 마주 서는 기운입니다. 밀어내는 만큼 서로를 성장시키는 자극이 되기도 해요. 거리와 예의가 이 관계의 기술입니다.'
       };
     } else if (stA.el === stB.el) {
-      score += 4;
       stemRel = {
         type: 'bihwa',
         title: '비화(比和) — 같은 기운의 만남',
         body: '같은 ' + stA.el + ' 기운끼리 만났습니다. 서로를 가장 잘 알아보는 동료 같은 사이 — 편안하고 빠르게 가까워지지만, 양보가 없으면 부딪히기도 해요.'
       };
     } else if (window.Manseryeok.elCycle.gen[stA.el] === stB.el) {
-      score += 10;
       stemRel = {
         type: 'saeng',
         title: '상생(相生) — ' + GEN_METAPHOR[stA.el + stB.el],
         body: nA + '의 ' + stA.el + ' 기운이 ' + nB + '의 ' + stB.el + ' 기운을 살립니다. 한쪽이 든든히 밀어주는, 주고받음이 분명한 관계예요. 받는 쪽의 고마움 표현이 관계의 연료가 됩니다.'
       };
     } else if (window.Manseryeok.elCycle.gen[stB.el] === stA.el) {
-      score += 10;
       stemRel = {
         type: 'saeng',
         title: '상생(相生) — ' + GEN_METAPHOR[stB.el + stA.el],
         body: nB + '의 ' + stB.el + ' 기운이 ' + nA + '의 ' + stA.el + ' 기운을 살립니다. 한쪽이 든든히 밀어주는, 주고받음이 분명한 관계예요. 받는 쪽의 고마움 표현이 관계의 연료가 됩니다.'
       };
     } else if (window.Manseryeok.elCycle.control[stA.el] === stB.el) {
-      score -= 6;
       stemRel = {
         type: 'geuk',
         title: '상극(相剋) — ' + GEUK_METAPHOR[stA.el + stB.el],
         body: nA + '의 ' + stA.el + ' 기운이 ' + nB + '의 ' + stB.el + ' 기운을 다듬습니다. 불편한 순간도 있지만, 잘 쓰면 서로를 단련시키는 관계입니다.'
       };
     } else {
-      score -= 6;
       stemRel = {
         type: 'geuk',
         title: '상극(相剋) — ' + GEUK_METAPHOR[stB.el + stA.el],
@@ -214,33 +249,24 @@
     var bRel = M.branchRelation(a.pillars.day.branch, b.pillars.day.branch);
     var branchRel;
     if (bRel && BRANCH_TEXT[bRel]) {
-      score += BRANCH_TEXT[bRel].delta;
       branchRel = { type: bRel, title: BRANCH_TEXT[bRel].title, body: BRANCH_TEXT[bRel].body };
     } else {
       branchRel = { type: null, title: '일지는 담백한 사이', body: '일상에서 크게 부딪히지도, 유난히 끈적이지도 않는 무난한 흐름입니다. 다른 관계 요소가 궁합의 색을 결정해요.' };
     }
 
-    /* 4. 오행 보완 */
-    var complement = [];
-    ['목', '화', '토', '금', '수'].forEach(function (el) {
-      if (a.elements[el] === 0 && b.elements[el] >= 2) {
-        complement.push(nB + '의 넉넉한 ' + el + '(' + EL_HAN[el] + ') 기운이 ' + nA + '의 빈 곳을 채워줍니다.');
-      }
-      if (b.elements[el] === 0 && a.elements[el] >= 2) {
-        complement.push(nA + '의 넉넉한 ' + el + '(' + EL_HAN[el] + ') 기운이 ' + nB + '의 빈 곳을 채워줍니다.');
-      }
-    });
-    score += Math.min(complement.length, 2) * 5;
+    /* 4. 오행 보완 — 한쪽에 없는 오행을 상대가 하나라도 가지면 */
+    var complement = sc.aLacks.map(function (el) {
+      return nB + '의 ' + el + '(' + EL_HAN[el] + ') 기운이 ' + nA + '의 빈 곳을 채워줍니다.';
+    }).concat(sc.bLacks.map(function (el) {
+      return nA + '의 ' + el + '(' + EL_HAN[el] + ') 기운이 ' + nB + '의 빈 곳을 채워줍니다.';
+    }));
 
     /* 5. 음양 조화 */
-    var yinyang = stA.yang !== stB.yang;
-    if (yinyang) score += 4;
-
-    score = Math.max(30, Math.min(99, Math.round(score)));
-    var tier = TIERS.filter(function (t) { return score >= t.min; })[0].label;
+    var yinyang = sc.yinyang;
+    var tier = TIERS[tierIndex(sc.score)].label;
 
     return {
-      score: score,
+      score: sc.score,
       tier: tier,
       stemRel: stemRel,
       sipseong: sipseong,
@@ -256,6 +282,8 @@
     encodePair: encodePair,
     decodePair: decodePair,
     escapeHtml: escapeHtml,
-    compute: compute
+    compute: compute,
+    score: score,          /* 영문 /en/match/ 도 이 점수를 쓴다 */
+    tierIndex: tierIndex
   };
 })();

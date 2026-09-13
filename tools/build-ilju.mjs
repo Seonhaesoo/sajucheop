@@ -28,7 +28,7 @@ list.forEach((e, i) => {
   if (e.s !== i % 10 || e.b !== i % 12) throw new Error('60갑자 순서 불일치: ' + e.han + ' at ' + i);
 });
 
-/* 일주끼리의 궁합 점수 — 링크 궁합(gunghap.js)의 천간·지지 가중치와 같은 기준 */
+/* 일주끼리의 궁합 점수 — 링크 궁합(gunghap.js score)의 천간·지지 가중치와 같은 기준(2026-09-13 영문 기준으로 통일) */
 function pairScore(a, b) {
   let s = 0;
   const sa = M.STEMS[a.s], sb = M.STEMS[b.s];
@@ -38,7 +38,7 @@ function pairScore(a, b) {
   else if (sa.el === sb.el) s += 4;
   else s -= 6;
   const br = M.branchRelation(a.b, b.b);
-  if (br === '육합') s += 14; else if (br === '삼합') s += 10; else if (br === '동일') s += 4; else if (br === '충') s -= 14;
+  if (br === '육합') s += 12; else if (br === '삼합') s += 10; else if (br === '충') s -= 16;
   if (sa.yang !== sb.yang) s += 4;
   return s;
 }
