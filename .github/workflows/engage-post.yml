@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # 봇 푸시 뒤 배포 워크플로를 직접 부르기 위해(workflow_dispatch)
 
 concurrency:
   group: social-bot
@@ -39,3 +40,11 @@ jobs:
           git commit -m "참여형 궁합 글 $(TZ=Asia/Seoul date +%F)" || echo '변경 없음'
           git pull --rebase
           git push
+
+      # 봇 푸시(GITHUB_TOKEN)는 deploy-pages 를 깨우지 않는다 — 운영 페이지가 최신이 되게 직접 부른다(실패해도 무관)
+      - name: Pages 배포 요청
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-pages.yml --ref main
