@@ -99,7 +99,7 @@ ARTICLES.forEach((a, k) => {
   write(url.slice(1), shell({
     rel, lang: 'en', title: a.title, desc: a.desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: a.title,
     jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Library', url: SITE + '/en/guide/' }, { name: a.title, url: SITE + url }]),
-      { '@context': 'https://schema.org', '@type': 'Article', headline: a.title, description: a.desc, image: SITE + '/og-image.png', datePublished: a.published, dateModified: a.updated || a.published, inLanguage: 'en', author: ORG, publisher: PUBLISHER, mainEntityOfPage: SITE + url }],
+      { '@context': 'https://schema.org', '@type': 'Article', headline: a.title, description: a.desc, image: SITE + '/og-image-en.png', datePublished: a.published, dateModified: a.updated || a.published, inLanguage: 'en', author: ORG, publisher: PUBLISHER, mainEntityOfPage: SITE + url }],
     body: localize(body, rel)
   }));
   urls.push({ loc: SITE + url, lastmod: a.updated || a.published });

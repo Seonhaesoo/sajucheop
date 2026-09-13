@@ -47,9 +47,10 @@ export function shell(o) {
   ${ld}
   <meta property="og:title" content="${esc(o.ogTitle || o.title)}">
   <meta property="og:description" content="${esc(o.desc)}">
-  <meta property="og:image" content="https://sajucheop.com/og-image.png">
+  <meta property="og:image" content="https://sajucheop.com/${lang === 'en' ? 'og-image-en.png' : 'og-image.png'}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  ${lang === 'en' ? '<meta property="og:locale" content="en_US">' : ''}
   <meta name="twitter:card" content="summary_large_image">
   ${o.extraHead || ''}
 </head>
