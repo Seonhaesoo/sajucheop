@@ -68,6 +68,10 @@ jobs:
         if: steps.gate.outputs.go == '1'
         run: node tools/build-en-pages.mjs
 
+      - name: 영문 월간 띠별 운세 갱신 (이번 달 표시·새 달 추가)
+        if: steps.gate.outputs.go == '1'
+        run: node tools/build-en-monthly.mjs
+
       - name: 오늘·내일 띠별 운세 갱신
         if: steps.gate.outputs.go == '1'
         run: node tools/build-ddi-daily.mjs

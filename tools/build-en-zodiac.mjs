@@ -353,7 +353,7 @@ function animalPage(b) {
       <h2>Beyond the year animal</h2>
       <p>Your animal sign is one of eight characters in a Korean saju chart, and not the one that describes you most closely. That job belongs to the Day Master, the stem of your birth day: ten natures from <a href="${rel}en/guide/day-master/yang-wood/">the Tall Pine</a> to <a href="${rel}en/guide/day-master/yin-water/">the Morning Dew</a>. <a href="${rel}en/guide/what-is-saju/">What saju is</a> explains how the eight fit together.</p>
       <h2>The ${A.name} in 2027</h2>
-      <p>The Year of the Fire Goat gives the ${A.name} <b>${S27[b]}/100</b> — ${g27.label.toLowerCase()} (${Y27_REL[DDI[b].rel].short.toLowerCase()}). <a href="${rel}${y27Url(b).slice(1)}">Read the ${A.name}’s 2027 horoscope →</a></p>
+      <p>The Year of the Fire Goat gives the ${A.name} <b>${S27[b]}/100</b> — ${g27.label.toLowerCase()} (${Y27_REL[DDI[b].rel].short.toLowerCase()}). <a href="${rel}${y27Url(b).slice(1)}">Read the ${A.name}’s 2027 horoscope →</a> · <a href="${rel}en/monthly/">Month by month for the ${A.name}</a></p>
       <p class="callout">Korean: ${A.ko} · <a href="${rel}ddi-gunghap/${A.slug}/" hreflang="ko">${A.ko} 궁합</a> · <a href="${rel}2027/ddi/${A.slug}/" hreflang="ko">2027년 ${A.ko} 운세</a> · All signs: ${ANIMALS.map((X, i) => i === b ? `<b>${X.name}</b>` : `<a href="${rel}${aUrl(i).slice(1)}">${X.name}</a>`).join(' · ')}</p>
     </div>
     <div class="ga-cta">
@@ -593,7 +593,7 @@ function year27Page(b) {
       <ul class="zd-list">${S.do.map((t) => `<li><b>Do</b> — ${esc(t)}</li>`).join('')}${S.dont.map((t) => `<li><b>Don’t</b> — ${esc(t)}</li>`).join('')}</ul>
       <h2>FAQ</h2>
       ${faq27.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
-      <p class="callout"><a href="${rel}en/2027/">All twelve signs in 2027</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">A Fire Goat baby in 2027</a> ·<a href="${rel}${aUrl(b).slice(1)}">${A.name} years and personality</a> · <a href="${rel}${pairUrl(b, 7).slice(1)}">${A.name} and Goat compatibility</a> · <a href="${rel}2027/ddi/${A.slug}/" hreflang="ko">2027년 ${A.ko} 운세 (한국어)</a></p>
+      <p class="callout"><a href="${rel}en/2027/">All twelve signs in 2027</a> · <a href="${rel}en/monthly/">Month by month</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">A Fire Goat baby in 2027</a> ·<a href="${rel}${aUrl(b).slice(1)}">${A.name} years and personality</a> · <a href="${rel}${pairUrl(b, 7).slice(1)}">${A.name} and Goat compatibility</a> · <a href="${rel}2027/ddi/${A.slug}/" hreflang="ko">2027년 ${A.ko} 운세 (한국어)</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>See 2027 in your full chart</span></a>
@@ -642,7 +642,7 @@ function year27Hub() {
       <div class="zd-wrap"><table class="zd-table"><tr><th>Month</th><th>Pillar</th><th>Smooth for</th></tr>${MONTHS27.map((mo) => { const ok = ANIMALS.map((_, b) => b).filter((b) => ['yukhap', 'samhap', 'banghap'].includes(monthRel(b, mo.branch))); return `<tr><td>${monthLabel(mo)}<br><small>${mo.term}</small></td><td>${M.STEMS[mo.stem].han}${M.BRANCHES[mo.branch].han}<br><small>${ANIMALS[mo.branch].name} month</small></td><td>${ok.map((b) => ANIMALS[b].name).join(', ')}</td></tr>`; }).join('')}</table></div>
       <h2>FAQ</h2>
       ${hubFaq.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
-      <p class="callout">Find your sign first: <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/zodiac/compatibility/">compatibility chart</a> · <a href="${rel}${yUrl(2027).slice(1)}">2027 Fire Goat year page</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">Having a baby in 2027?</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year 2027 dates</a></p>
+      <p class="callout">Find your sign first: <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/zodiac/compatibility/">compatibility chart</a> · <a href="${rel}${yUrl(2027).slice(1)}">2027 Fire Goat year page</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">Having a baby in 2027?</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year 2027 dates</a> · <a href="${rel}en/monthly/">Month-by-month horoscope</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>See 2027 in your full chart</span></a>
