@@ -126,7 +126,8 @@ DAY_MASTERS.forEach((d, i) => {
       <h2>How the ten are built</h2>
       <p>Five elements, each in a yang and a yin form, make the ten heavenly stems. The yang stems — Jia, Bing, Wu, Geng and Ren — are the outward, expansive side of their element: the tall pine, the midday sun. The yin stems — Yi, Ding, Ji, Xin and Gui — are the inward, refined side: the vine, the candle flame. Neither is better; they are two ways of being the same element.</p>
       <p>The Day Master decides how every other character in the chart is read. The same Fire is output to a Wood person, a peer to a Fire person and pressure to a Metal person — that is the logic of the <a href="${rel}en/guide/ten-gods/">Ten Gods</a>. Whether a Day Master is <a href="${rel}en/guide/day-master-strength/">strong or weak</a> changes the reading again, and the branch it sits on gives the <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a>.</p>
-      <p class="callout"><a href="${rel}en/guide/what-is-saju/">What saju is</a> · <a href="${rel}en/guide/compatibility/">Day Master compatibility — 100 pairings</a> · <a href="${rel}guide/ilgan.html" hreflang="ko">한국어: 일간이란</a></p>
+      <p>Don’t know your birth time, or just curious? <a href="${rel}en/quiz/">Twelve quick questions</a> estimate which of the ten you are by temperament — then compare the guess with the real thing.</p>
+      <p class="callout"><a href="${rel}en/guide/what-is-saju/">What saju is</a> · <a href="${rel}en/guide/compatibility/">Day Master compatibility — 100 pairings</a> · <a href="${rel}en/quiz/">Which Day Master are you? — quiz</a> · <a href="${rel}guide/ilgan.html" hreflang="ko">한국어: 일간이란</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Find my Day Master</span></a>
@@ -180,6 +181,9 @@ DAY_MASTERS.forEach((d, i) => {
   urls.unshift(SITE + '/en/guide/');
 }
 
+/* client table for the English quiz (/en/quiz/) — slug, character, names, tagline, essence, keywords */
+fs.writeFileSync(path.join(DOCS, 'js', 'en-daymaster.js'), '/* English Day Master archetypes — tools/build-en-guide.mjs from en-daymaster-data.mjs */\nwindow.EN_DAY_MASTERS = ' +
+  JSON.stringify(DAY_MASTERS.map((d) => ({ slug: d.slug, han: d.han, name: d.name, arch: d.arch, tagline: d.tagline, essence: d.essence, keywords: d.keywords }))) + ';\n');
 fs.writeFileSync(path.join(DOCS, 'sitemap-en.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
   .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');

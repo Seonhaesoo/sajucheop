@@ -267,7 +267,7 @@ sitePage('terms', {
     <ul class="en-learn">
       ${FEATURED.map((a) => `<li><a href="guide/${a.slug}/">${esc(a.title)}</a><span>${esc(firstSentence(a.desc))}</span></li>`).join('\n      ')}
     </ul>
-    <p class="reading-body" style="margin-top: 10px; font-size: 13px;"><a href="guide/">All ${ARTICLES.length} articles</a> · <a href="guide/#day-masters">The ten Day Masters</a> · <a href="guide/day-pillar/">60 Day Pillars</a> · <a href="guide/compatibility/">Day Master compatibility</a> · <a href="day/">Day pillar calendar</a></p>
+    <p class="reading-body" style="margin-top: 10px; font-size: 13px;"><a href="guide/">All ${ARTICLES.length} articles</a> · <a href="guide/day-master/">The ten Day Masters</a> · <a href="quiz/">Which Day Master are you? — quiz</a> · <a href="guide/day-pillar/">60 Day Pillars</a> · <a href="guide/compatibility/">Day Master compatibility</a> · <a href="monthly/">Monthly horoscope</a> · <a href="day/">Day pillar calendar</a></p>
     <!-- en-learn:end -->`;
   const html = fs.readFileSync(p, 'utf8');
   const re = /<!-- en-learn:start -->[\s\S]*?<!-- en-learn:end -->/;
