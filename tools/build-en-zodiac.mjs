@@ -9,6 +9,7 @@ import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { DDI, REL, relations, elRelation, SAMHAP_G, BANGHAP_G } from './ddi-data.mjs';
 import { YEAR_REL_SCORE, YEAR_EL_ADJ, SAMJAE_ADJ } from './newyear-2027-data.mjs';
 import { ANIMALS, EL, GEN_METAPHOR, CTL_METAPHOR, SAMHAP_EN, BANGHAP_EN, REL_EN, EL_REL_EN, gradeEn, Y27_OPENER, Y27_REL, Y27_EL, SAMJAE_EN, Y27_MONTH } from './en-zodiac-data.mjs';
+import { SIGNS27 } from './en-2027-signs.mjs';
 import { STEM_PINYIN, BRANCH_PINYIN } from './en-ilju-data.mjs';
 import { zodiacSpan, lunarNewYear, koreaTz } from './cny.mjs';
 
@@ -31,6 +32,8 @@ ANIMALS.forEach((a, b) => {
   if (Object.keys(a.el).length !== 5) throw new Error('element lines: ' + a.slug);
   if (!Y27_OPENER[a.slug]) throw new Error('2027 opener: ' + a.slug);
   if (!Y27_REL[DDI[b].rel]) throw new Error('2027 relation text: ' + DDI[b].rel);
+  const s = SIGNS27[a.slug];
+  if (!s || !s.overall || s.overall.length !== 2 || !s.love || !s.money || !s.work || !s.health || !s.do || s.do.length < 2 || !s.dont || s.dont.length < 2 || !s.faq || s.faq.length < 3) throw new Error('2027 sign copy missing or incomplete: ' + a.slug);
 });
 
 /* ---------- years ---------- */
@@ -101,6 +104,26 @@ const MONTHS27 = [];
   MONTHS27.forEach((mo, i) => { mo.end = dayBefore(i < 11 ? MONTHS27[i + 1].start : end); });
 }
 const monthRel = (b, mb) => { const r = relations(b, mb); return primary(r); };
+/* 2027 띠 페이지 자료 — DUMP27=파일경로 로 실행하면 띠별 계산값을 JSON으로 남긴다(글쓴이·검증용) */
+const DUMP27 = [];
+/* 정화(丁火)·미토(未土)의 해에 띠 오행이 기대면 좋은 오행 — 억부의 약식(목·수는 인성, 화는 관성으로 식힘, 토는 식상으로 덜어냄, 금은 인성으로 압박을 받아냄) */
+const LEAN27 = { 목: '수', 화: '수', 토: '금', 금: '토', 수: '금' };
+const LEAN27_WHY = {
+  목: 'A Fire-and-Earth year draws hard on Wood: Fire burns it as fuel and Earth is ground it has to work. Water refills Wood and cools the year, so it is the element to lean on.',
+  화: 'Your Fire meets a Fire year, so the risk is running too hot. Water cools and steadies, which makes it the element to lean on.',
+  토: 'Fire feeds your Earth and the Goat adds more of it, so the year can feel heavy and slow. Metal is what Earth produces; it gives all that weight an outlet, so it is the element to lean on.',
+  금: 'The year’s Fire presses on your Metal while its Earth supports you. Leaning on Earth, the steadying support, is what turns that pressure into strength.',
+  수: 'To Water, Fire is money and Earth is authority, so opportunities and obligations arrive together. Metal feeds Water, so it is the element to lean on.',
+};
+/* 출생 연도 천간 오행이 2027년 정화(丁火)를 만나는 결 — 한국어 STEM_REL_TEXT 다섯 갈래의 영문 한 줄 */
+const BIRTH_EL27 = {
+  Wood: 'your Wood feeds the year’s Fire — an active, visible year that spends energy fast, so book the rest before you need it.',
+  Fire: 'your Fire stands beside the year’s Fire — drive, company and some rivalry; a steady pace wins.',
+  Earth: 'the year’s Fire warms your Earth — mentors, approvals and paperwork tend to go your way.',
+  Metal: 'the year’s Fire tempers your Metal — more responsibility and scrutiny, and more strength by winter.',
+  Water: 'your Water keeps the year’s Fire in check — results and money within reach, for real effort.',
+};
+const listText = (arr) => (arr.length < 3 ? arr.join(' and ') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1]);
 
 /* ---------- output ---------- */
 const urls = [];
@@ -473,6 +496,51 @@ function year27Page(b) {
   const months = MONTHS27.map((mo) => ({ mo, r: monthRel(b, mo.branch) }));
   const good = months.filter((m) => ['yukhap', 'samhap', 'banghap'].includes(m.r)), bad = months.filter((m) => ['chung', 'hyeong', 'hae', 'wonjin', 'pa', 'selfhyeong'].includes(m.r));
   const births = yearsOf(b).filter((x) => x.y <= 2027);
+  const others = ANIMALS.map((_, i) => i).filter((i) => i !== b);
+  const withRel = (key) => others.filter((i) => relations(b, i).includes(key));
+  const ally = (i) => ({ name: ANIMALS[i].name, slug: ANIMALS[i].slug, score2027: S27[i], pairScore: PAIR[b + '-' + i].score });
+  DUMP27.push({
+    slug: A.slug, name: A.name, branch: han(b), element: EL[d.el].en, polarity: A.yang ? 'yang' : 'yin',
+    score2027: score, grade: g.label, relationWithGoat: d.rel, relationLabel: R.label, allRelationsWithGoat: rels.map((r) => REL_EN[r].long),
+    samjaeFinalYear: !!d.samjae, openerAlreadyOnPage: Y27_OPENER[A.slug], elementLineAlreadyOnPage: Y27_EL[d.el],
+    months: months.map((m) => ({ dates: monthLabel(m.mo), solarTerm: m.mo.term, pillar: M.STEMS[m.mo.stem].han + M.BRANCHES[m.mo.branch].han, monthAnimal: ANIMALS[m.mo.branch].name, relationToYourSign: m.r })),
+    smoothestMonths: good.map((m) => `${ANIMALS[m.mo.branch].name} month (${monthLabel(m.mo)})`),
+    careMonths: bad.map((m) => `${ANIMALS[m.mo.branch].name} month (${monthLabel(m.mo)})`),
+    birthYears: births.map((x) => ({ year: x.y, sign: x.name, pillar: x.han, turnsIn2027: 2027 - x.y })),
+    sixHarmonyPartner: withRel('yukhap').map(ally), trinePartners: withRel('samhap').map(ally), seasonalTrio: withRel('banghap').map(ally),
+    clashPartner: withRel('chung').map(ally),
+    topMatches: ranking(b).filter((r) => r.i !== b).slice(0, 3).map((r) => ({ ...ally(r.i), relation: REL_EN[primary(r.rels)].label })),
+  });
+  const S = SIGNS27[A.slug];
+  const monthShort = (m) => `${ANIMALS[m.mo.branch].name} (${monthLabel(m.mo)})`;
+  const monthName = (m) => `the ${ANIMALS[m.mo.branch].name} month (${monthLabel(m.mo)})`;
+  const relWords = rels.length ? listText(rels.map((r) => REL_EN[r].long.toLowerCase())) : 'no fixed link';
+  const top3 = ranking(b).filter((r) => r.i !== b).slice(0, 3);
+  const lean = EL[LEAN27[d.el]];
+  const glance = `<ul class="zd-list">
+        <li><b>Score</b> ${score}/100 — ${g.label.toLowerCase()}</li>
+        <li><b>With the Goat</b> ${relWords.charAt(0).toUpperCase() + relWords.slice(1)}</li>
+        ${d.samjae ? '<li><b>Samjae</b> the final, “leaving” year of the 2025–2027 stretch</li>' : ''}
+        <li><b>Smoothest months</b> ${good.length ? esc(listText(good.map(monthShort))) : 'none stands out — an even year'}</li>
+        <li><b>Take care in</b> ${bad.length ? esc(listText(bad.map(monthShort))) : 'no clashing months'}</li>
+        <li><b>Best partners</b> ${top3.map((r) => `<a href="${rel}${pairUrl(b, r.i).slice(1)}">${ANIMALS[r.i].name}</a> (${r.score})`).join(', ')}</li>
+        <li><b>Element to lean on</b> ${lean.en} — ${esc(lean.color)}</li>
+      </ul>`;
+  /* 짝의 다른 관계(예: 원숭이–뱀은 육합에 형·파가 겹쳐 57점)도 함께 보여 준다 */
+  const extraRels = (i, key) => PAIR[b + '-' + i].rels.filter((r) => r !== 'same' && r !== key).map((r) => REL_EN[r].long.toLowerCase());
+  const allyItem = (i, key) => { const x = extraRels(i, key); return `<a href="${rel}${y27Url(i).slice(1)}">${ANIMALS[i].name}</a>${x.length ? ` (also ${listText(x)})` : ''} — <a href="${rel}${pairUrl(b, i).slice(1)}">${PAIR[b + '-' + i].score}/100 as a pair</a>, ${S27[i]}/100 in 2027`; };
+  const allyRow = (label, key, note) => { const list = withRel(key); return list.length ? `<li><b>${label}</b> ${list.map((i) => allyItem(i, key)).join('; ')}. ${note}</li>` : ''; };
+  const alliesHtml = `<p>Your sign’s closest partners, and how their own 2027 looks. A partner who is having a strong year makes a good co-pilot for the plans you share.</p>
+      <ul class="zd-list">
+        ${[allyRow('Secret friend (Six Harmony)', 'yukhap', 'Traditionally the closest one-to-one bond in the zodiac.'),
+    allyRow('Natural allies (Three Harmony)', 'samhap', 'Signs in the same trine face the same direction and multiply each other’s strength.'),
+    allyRow('Opposite (Clash)', 'chung', 'Strong chemistry and frequent friction — agree on roles early.')].filter(Boolean).join('\n        ')}
+      </ul>`;
+  const leanHtml = `<p>${esc(LEAN27_WHY[d.el])} In the traditional correspondences, ${lean.en} goes with ${esc(lean.color)}, the ${esc(lean.dir)} and the numbers ${esc(lean.nums)}. Treat them as small reminders rather than charms: your year animal is one character of eight, and the element your own chart needs is worked out from all of them — see <a href="${rel}en/guide/useful-god/">the useful god</a>.</p>`;
+  const faq27 = [
+    [`What is the ${A.name}’s 2027 horoscope score?`, `${score}/100 — ${g.label.toLowerCase()}. The score weighs the ${A.name}’s branch against the Goat’s (${relWords}) and how ${EL[d.el].en} meets the year’s Fire and Earth${d.samjae ? ', less a little for the final samjae year' : ''}. It is the same number as our Korean 2027 horoscope.`],
+    [`Which months are best for the ${A.name} in 2027?`, `${good.length ? `The smoothest are ${listText(good.map(monthName))}.` : `No month forms a harmony with the ${A.name}, so the year runs evenly.`}${bad.length ? ` Take more care in ${listText(bad.map(monthName))}.` : ''} Each month begins at a solar term, not on the 1st.`],
+  ].concat(S.faq);
   const title = `${A.name} 2027 Horoscope: Year of the Fire Goat — ${score}/100`;
   const desc = fitDesc(`2027 Chinese horoscope for the ${A.name}: ${score}/100, ${g.label.toLowerCase()}.`,
     [` ${R.short}. Love, money, work, health and the best months.`, ' Love, money, work, health and the best months of the Fire Goat year.', ' Love, money, work and health in the Fire Goat year.']);
@@ -490,23 +558,39 @@ function year27Page(b) {
     </div>
     <p class="ga-lead">${esc(Y27_OPENER[A.slug])}</p>
     <div class="ga-body">
+      <h2>2027 at a glance</h2>
+      ${glance}
       <h2>Overall</h2>
+      ${S.overall.map((p) => `<p>${esc(p)}</p>`).join('\n      ')}
       <p>${esc(R.overall)}${extra ? ' ' + esc(extra) : ''}</p>
       <p>${esc(Y27_EL[d.el])}</p>
       ${d.samjae ? `<p class="callout"><b>Samjae.</b> ${esc(SAMJAE_EN)}</p>` : ''}
       <h2>Love</h2>
-      <p>${esc(R.love)} ${esc(A.love)}</p>
+      <p>${esc(S.love)}</p>
+      <p>${esc(R.love)}</p>
       <h2>Money</h2>
+      <p>${esc(S.money)}</p>
       <p>${esc(R.money)}</p>
-      <h2>Work</h2>
-      <p>${esc(R.work)} ${esc(A.work)}</p>
-      <h2>Health</h2>
+      <h2>Work and study</h2>
+      <p>${esc(S.work)}</p>
+      <p>${esc(R.work)}</p>
+      <h2>Health and energy</h2>
+      <p>${esc(S.health)}</p>
       <p>${esc(R.health)}</p>
       <h2>Month by month</h2>
-      <p>Months here are the solar-term months that Korean saju uses — each begins on a solar term, not on the 1st.${good.length ? ` The ${A.name}’s smoothest: ${good.map((m) => `${M.BRANCHES[m.mo.branch].han} month (${monthLabel(m.mo)})`).join(', ')}.` : ''}${bad.length ? ` Take more care in: ${bad.map((m) => `${M.BRANCHES[m.mo.branch].han} month (${monthLabel(m.mo)})`).join(', ')}.` : ''}</p>
+      <p>Months here are the solar-term months that Korean saju uses — each begins on a solar term, not on the 1st, and is named for the animal of its branch.${good.length ? ` The ${A.name}’s smoothest: ${listText(good.map(monthShort))}.` : ''}${bad.length ? ` Take more care in: ${listText(bad.map(monthShort))}.` : ''}</p>
       <div class="zd-wrap"><table class="zd-table"><tr><th>Month</th><th>Pillar</th><th>For the ${A.name}</th></tr>${months.map((m) => `<tr${['yukhap', 'samhap', 'banghap'].includes(m.r) ? ' class="cur"' : ''}><td>${monthLabel(m.mo)}<br><small>${m.mo.term}</small></td><td>${M.STEMS[m.mo.stem].han}${M.BRANCHES[m.mo.branch].han}<br><small>${ANIMALS[m.mo.branch].name}</small></td><td>${Y27_MONTH[m.r].charAt(0).toUpperCase() + Y27_MONTH[m.r].slice(1)}</td></tr>`).join('')}</table></div>
+      <h2>Your people in 2027</h2>
+      ${alliesHtml}
+      <h2>Colors and habits to lean on</h2>
+      ${leanHtml}
       <h2>By birth year</h2>
-      <ul class="zd-list">${births.map((x) => `<li><a href="${rel}${yUrl(x.y).slice(1)}"><b>${x.y}</b></a> ${x.name} <small>${x.han}</small> — ${2027 - x.y === 0 ? 'born in 2027' : `turns ${2027 - x.y} in 2027`}. ${esc(A.el[x.elE])}</li>`).join('')}</ul>
+      <p>Each birth year adds an element through its heavenly stem, and each meets 2027’s Fire in its own way.</p>
+      <ul class="zd-list">${births.map((x) => `<li><a href="${rel}${yUrl(x.y).slice(1)}"><b>${x.y}</b></a> ${x.name} <small>${x.han}</small> — ${2027 - x.y === 0 ? 'born in 2027' : `turns ${2027 - x.y} in 2027`}. ${esc(A.el[x.elE])} <b>In 2027:</b> ${esc(BIRTH_EL27[x.elE])}</li>`).join('')}</ul>
+      <h2>Do and don’t in 2027</h2>
+      <ul class="zd-list">${S.do.map((t) => `<li><b>Do</b> — ${esc(t)}</li>`).join('')}${S.dont.map((t) => `<li><b>Don’t</b> — ${esc(t)}</li>`).join('')}</ul>
+      <h2>FAQ</h2>
+      ${faq27.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
       <p class="callout"><a href="${rel}en/2027/">All twelve signs in 2027</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">A Fire Goat baby in 2027</a> ·<a href="${rel}${aUrl(b).slice(1)}">${A.name} years and personality</a> · <a href="${rel}${pairUrl(b, 7).slice(1)}">${A.name} and Goat compatibility</a> · <a href="${rel}2027/ddi/${A.slug}/" hreflang="ko">2027년 ${A.ko} 운세 (한국어)</a></p>
     </div>
     <div class="ga-cta">
@@ -514,13 +598,23 @@ function year27Page(b) {
     </div>
   </article>`;
   write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `The ${A.name} in 2027 — ${score}/100`, extraHead: STYLE + alt(url, `/2027/ddi/${A.slug}/`),
-    jsonld: [crumbs([['2027 Horoscope', '/en/2027/'], [A.name, url]]), article(url, title, desc)], body }));
+    jsonld: [crumbs([['2027 Horoscope', '/en/2027/'], [A.name, url]]), article(url, title, desc),
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq27.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }], body }));
 }
 
 function year27Hub() {
   const url = '/en/2027/', rel = '../../';
   const order = ANIMALS.map((_, b) => b).sort((x, y) => S27[y] - S27[x] || x - y);
   const cells = ANIMALS.map((A, b) => `<a href="${rel}${y27Url(b).slice(1)}"><b>${han(b)}</b><span>${A.name}</span><small><i>${S27[b]}</i> · ${Y27_REL[DDI[b].rel].short}</small></a>`).join('');
+  const relShort = (b) => { const s = Y27_REL[DDI[b].rel].short; return s.charAt(0).toLowerCase() + s.slice(1); };
+  const top = order.slice(0, 3), low = order.slice(-3).reverse();
+  const hubFaq = [
+    ['What animal is 2027?', `The Goat, sometimes translated as the Sheep or the Ram, with the Fire element: 丁未 (Ding Wei), a Yin Fire Goat year. In the Chinese calendar it runs from ${fmtD(CNY27.start)} to ${fmtD(CNY27.end)}.`],
+    ['When does the Year of the Goat start?', `Chinese New Year falls on ${fmtD(CNY27.start)}; Korea’s Seollal comes a day later, on ${fmtD(SEOLLAL27)}. In Korean saju the year pillar turns at Ipchun on ${fmtD(IPCHUN27)}, which is why a baby born on February 5 can be a Goat in a saju chart and a Horse by Lunar New Year.`],
+    ['Which zodiac signs have the best 2027?', `${listText(top.map((b) => `the ${ANIMALS[b].name} (${S27[b]}, ${relShort(b)})`))}. The scores weigh each sign’s branch against the Goat’s and how its element meets the year’s Fire and Earth.`],
+    ['Which signs need more care in 2027?', `${listText(low.map((b) => `the ${ANIMALS[b].name} (${S27[b]}, ${relShort(b)})`))}. A lower score marks more friction to manage — moves, misunderstandings, paperwork — not a bad year by fate, and every sign page lists its smoothest months.`],
+    ['Which signs have samjae in 2027?', `The Pig, Rabbit and Goat. 2027 is the last of their three samjae years (2025–2027), the “leaving” year that Korean custom treats as a time to wrap things up rather than start big. It is folk tradition, not a forecast.`],
+  ];
   const title = '2027 Chinese Horoscope: Year of the Fire Goat, All 12 Signs';
   const desc = `2027 is the Year of the Fire Goat (丁未), ${fmtD(CNY27.start)} to ${fmtD(CNY27.end)}. Scores and forecasts for all twelve signs: love, money, work, health and best months.`;
   const body = `
@@ -544,6 +638,8 @@ function year27Hub() {
       <p>${esc(SAMJAE_EN)}</p>
       <h2>The months of 2027</h2>
       <div class="zd-wrap"><table class="zd-table"><tr><th>Month</th><th>Pillar</th><th>Smooth for</th></tr>${MONTHS27.map((mo) => { const ok = ANIMALS.map((_, b) => b).filter((b) => ['yukhap', 'samhap', 'banghap'].includes(monthRel(b, mo.branch))); return `<tr><td>${monthLabel(mo)}<br><small>${mo.term}</small></td><td>${M.STEMS[mo.stem].han}${M.BRANCHES[mo.branch].han}<br><small>${ANIMALS[mo.branch].name} month</small></td><td>${ok.map((b) => ANIMALS[b].name).join(', ')}</td></tr>`; }).join('')}</table></div>
+      <h2>FAQ</h2>
+      ${hubFaq.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
       <p class="callout">Find your sign first: <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/zodiac/compatibility/">compatibility chart</a> · <a href="${rel}${yUrl(2027).slice(1)}">2027 Fire Goat year page</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">Having a baby in 2027?</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year 2027 dates</a></p>
     </div>
     <div class="ga-cta">
@@ -551,13 +647,19 @@ function year27Hub() {
     </div>
   </article>`;
   write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: '2027 — Year of the Fire Goat', extraHead: STYLE + alt(url, '/2027/'),
-    jsonld: [crumbs([['2027 Horoscope', url]]), article(url, title, desc)], body }));
+    jsonld: [crumbs([['2027 Horoscope', url]]), article(url, title, desc),
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: hubFaq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }], body }));
 }
 
 /* ---------- run ---------- */
 hub();
 ANIMALS.forEach((_, b) => animalPage(b));
 for (let y = Y0; y <= Y1; y++) yearPage(y);
+/* /en/zodiac/year/ had no index page — send it to the calculator's year chart (noindex, not in the sitemap) */
+fs.writeFileSync(path.join(DOCS, 'en', 'zodiac', 'year', 'index.html'), `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Chinese zodiac years — Sajucheop</title><meta name="robots" content="noindex"><link rel="canonical" href="${SITE}/en/zodiac/"><meta http-equiv="refresh" content="0; url=../"></head>
+<body><p>The chart of every zodiac year from ${Y0} to ${Y1} is on the <a href="../">Chinese zodiac calculator</a>.</p></body></html>
+`);
 compatIndex();
 for (let a = 0; a < 12; a++) for (let b = a; b < 12; b++) pairPage(a, b);
 year27Hub();
@@ -568,4 +670,5 @@ fs.writeFileSync(path.join(DOCS, 'sitemap-en-zodiac.xml'), ['<?xml version="1.0"
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-zodiac.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-zodiac.xml\n');
+if (process.env.DUMP27) fs.writeFileSync(process.env.DUMP27, JSON.stringify(DUMP27, null, 1));
 console.log(`EN zodiac — ${urls.length} pages (hub 1 · animals 12 · years ${Y1 - Y0 + 1} · compatibility 1 + 78 · 2027 1 + 12), sitemap-en-zodiac.xml`);

@@ -219,7 +219,8 @@ function buildDay(info) {
   /* 날짜별 일진 730장은 날짜만 바뀌는 페이지라 검색에서 뺀다(애드센스 '가치가 별로 없는 콘텐츠' 대비, 2026-09-13) —
      페이지는 그대로 두고 링크로는 계속 쓰며, 사이트맵에는 허브 /day/ 와 월별·절기 페이지만 남긴다 */
   write(url.slice(1), shell({
-    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${m}월 ${d}일 일진 — ${info.g.kor}일`, noindex: true,
+    rel, title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${m}월 ${d}일 일진 — ${info.g.kor}일`, noindex: true,
+    extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/day/${iso(y, m, d)}/">`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '날짜별 일진', url: SITE + '/day/' }, { name: `${y}년 ${m}월`, url: SITE + sonUrl(y, m) }, { name: `${m}월 ${d}일`, url: SITE + url }]),
       { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: iso(y, m, d), dateModified: iso(y, m, d), inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
     body

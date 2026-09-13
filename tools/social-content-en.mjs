@@ -19,7 +19,7 @@ export const CAROUSELS_EN = {
       { head: 'The sky character of your birth day', body: 'The first character of your day pillar is called the Day Master. Every reading in Saju is measured from this one character — it is the "I" in the chart.' },
       { head: 'There are ten of them', body: 'Tall Pine, Winding Vine, Midday Sun, Candle Flame, Great Mountain, Fertile Field, Raw Blade, Polished Gem, Open Sea, Morning Dew. Ten natures — which one is yours?' },
       { head: 'Sharper than a zodiac animal', body: 'Everyone born in the same year shares an animal. The Day Master changes every single day — two people born a week apart can be a Sun and a Sea.' },
-      { head: 'Ten seconds is all it takes', body: 'Enter your birth date and your Day Master appears, computed with a precise Korean calendar that tracks the exact minute each solar term begins.' }
+      { head: 'Ten seconds is all it takes', body: 'Enter your birth date and your Day Master appears, computed with a Korean calendar that works out when each solar term begins from the Sun’s position.' }
     ],
     caption: 'Your Saju chart has eight characters — and only one of them is you. Meet the Day Master.\n\nNot sure which of the ten natures you are? Link in bio, birth date in, ten seconds out. Save this and check your friends too 📖'
   },
@@ -57,7 +57,7 @@ export const CAROUSELS_EN = {
       { head: '"I don\'t know my birth hour, so I can\'t"', body: 'You can. Without the hour you still have six characters: Day Master, element balance, the seasonal pillar. More than half the reading survives.' },
       { head: '"So my fate is fixed?"', body: 'Saju is a weather forecast, not a prophecy. It says rain is likely. Whether you bring an umbrella has always been up to you.' }
     ],
-    caption: '"Saju is lunar astrology, right?" — the most common myth, busted first.\n\nWant the real chart, computed to the minute of each solar term? Link in bio. Save this for the next dinner-table debate 😌'
+    caption: '"Saju is lunar astrology, right?" — the most common myth, busted first.\n\nWant the real chart, with every solar term computed from the Sun’s position? Link in bio. Save this for the next dinner-table debate 😌'
   },
   'sipseong': {
     title: 'The Ten Gods,\nexplained on one card',
@@ -250,7 +250,7 @@ export const CAROUSELS_EN = {
       { head: 'January babies, check again', body: 'Born January 20, "Year of the Dragon"? In Saju you are still a Rabbit. Nine out of ten January birthdays carry last year\'s animal.' },
       { head: 'Early February is a coin flip', body: 'The switch happens at a specific minute — Feb 3 or 4 or 5 depending on the year. Born that week? Only a precise calendar knows.' },
       { head: 'Months work the same way', body: 'Each month begins at a solar term, not on the 1st. Your month pillar can differ from what a naive calculator prints.' },
-      { head: 'We track it to the minute', body: 'Sajucheop computes the exact time each solar term begins, so your year and month pillars are right even at the boundaries.' }
+      { head: 'We compute every term', body: 'Sajucheop works out when each solar term begins from the Sun’s position, so your year and month pillars land on the right side of the boundary.' }
     ],
     caption: 'If you were born in January, your zodiac animal is probably last year\'s. Saju years start at Ipchun, ~Feb 4 🐉→🐇\n\nCheck your real chart — link in bio.'
   },
@@ -282,10 +282,10 @@ export const CAROUSELS_EN = {
       { head: 'The sun\'s path, cut into 24', body: 'Every 15 degrees of the sun\'s journey marks a solar term — Start of Spring, Grain Rain, Great Heat, Winter Solstice.' },
       { head: 'Twelve of them start months', body: 'Your month pillar changes not on the 1st but at the term — Ipchun, Gyeongchip, Cheongmyeong… That is why "March-born" can be two different pillars.' },
       { head: 'They shift every year', body: 'A term can land on the 4th one year and the 5th the next, at a different hour. Almanacs exist because this is hard to do by hand.' },
-      { head: 'Minutes matter at the edge', body: 'Born within hours of a term? Your month pillar hangs on the exact minute. A rough calculator can put you in the wrong season.' },
+      { head: 'Minutes matter at the edge', body: 'Born within hours of a term? Your month pillar hangs on that boundary. A calculator that goes by dates alone can put you in the wrong season.' },
       { head: 'We compute it astronomically', body: 'Sajucheop calculates the sun\'s longitude to find each term\'s time, so boundary births get the right pillar — with a warning when it is close.' }
     ],
-    caption: 'Saju does not run on months. It runs on 24 solar terms — and your pillar can flip on a single minute ⏱️\n\nGet a chart computed to the minute — link in bio.'
+    caption: 'Saju does not run on months. It runs on 24 solar terms — and your pillar can flip on a single minute ⏱️\n\nGet a chart that computes the terms — link in bio.'
   },
   'demo-lunar': {
     hanja: '陰', title: 'Yin or Yang?\nHow your nature moves', sub: 'Same element, opposite style',
@@ -322,7 +322,7 @@ export const THREADS_EN = [
   'A strong vs. weak Day Master is not a personality test.\n\nStrong = your own energy is well fed; you win by pushing.\nWeak = you go furthest with support around you.\n\nNeither is better. The strategy is different.\nSolo vs. together — see which you are → ' + EN_URL,
   'Four or more of one element = excess.\n\nExcess Fire: passion becomes impatience.\nExcess Water: thinking becomes worrying.\nExcess Earth: caution becomes stubbornness.\n\nSurplus is more often the homework than a gap. You don\'t suppress it — you let it flow out.\n\nYour Five Elements graph → ' + EN_URL,
   'Each earthly branch hides 2–3 heavenly stems inside it.\n\nThey are called hidden stems.\nThe reason a quiet person can carry three different energies under the surface.\n\nThe Saju explanation for "I can never quite figure them out."\n\nSee your hidden characters → ' + EN_URL,
-  'Born after 11 pm? Your chart gets tricky.\n\nThe late Rat hour — the clock says today, the chart says tomorrow.\n\nSomeone born 11:55 pm and someone born 12:05 am can have different day pillars.\nBoundary births need a calculator that handles it.\n\nOne that tracks solar terms to the minute → ' + EN_URL,
+  'Born after 11 pm? Your chart gets tricky.\n\nThe late Rat hour — the clock says today, the chart says tomorrow.\n\nSomeone born 11:55 pm and someone born 12:05 am can have different day pillars.\nBoundary births need a calculator that handles it.\n\nOne that computes the solar terms and the late-Rat rule → ' + EN_URL,
   'Saju is not BaZi — 3 differences\n\n1. Solar terms computed for Korea, not Beijing\n2. True-solar-time correction (Seoul runs ~32 min behind its clock)\n3. The late Rat hour convention for births after 11 pm\n\nSame eight characters, Korean calendar rules.\n\nThe Korean chart in English → ' + EN_URL,
   'How to read your daily score in 10 seconds\n\nThe number (20–96) is today\'s energy meeting your chart.\nThe weather word tells you the texture — Clear, Cloudy, Stormy.\nThe theme tells you which Ten God is driving the day.\n\nCheck it in the morning, act on it by noon.\n\n' + EN_URL + '/today/',
   'Reading a friend\'s chart? Look at one thing first.\n\nNot the animal. Not the score.\nThe Day Master — top of the day pillar.\n\nPine, Sun, Mountain, Gem, Dew… once you know their nature, everything they do makes sense.\n\nEnter their birth date → ' + EN_URL,
@@ -347,7 +347,7 @@ export const VIRAL_THREADS_EN = [
   'Your daily score is not a horoscope — here\'s the math.\n\nToday has two characters (e.g. Fire Rat).\nThe sky one meets your Day Master → a Ten God theme.\nThe earth one meets your day branch → harmony, clash or neutral.\n\nOut comes a number, 20 to 96. Same input, same output.\n\n' + EN_URL + '/today/',
   'Check your whole family\'s Day Masters at dinner tonight.\n\nDad\'s a Mountain, mom\'s a Flame, the kid\'s a Sun — suddenly every argument in the house makes sense.\n\nTen seconds each. Free. Nothing stored.\n\n' + EN_URL,
   'Game: guess your friend\'s Day Master before checking.\n\nFast, principled, bad at apologies → Pine\nCan\'t hide a mood → Sun\nEveryone leans on them → Mountain\nVery specific taste → Gem\n\nThen enter their birth date and see if you were right.\n\n' + EN_URL,
-  '24 solar terms — the clock your chart runs on.\n\nNot months. The sun\'s path cut into 24 slices.\nYour month pillar flips at the term, not on the 1st — and the term lands at a different minute every year.\n\nBorn near a boundary? The minute matters.\n\nComputed to the minute → ' + EN_URL,
+  '24 solar terms — the clock your chart runs on.\n\nNot months. The sun\'s path cut into 24 slices.\nYour month pillar flips at the term, not on the 1st — and the term lands at a different minute every year.\n\nBorn near a boundary? The hour matters.\n\nEvery term computed from the Sun’s position → ' + EN_URL,
   'Lunar or solar birthday — which one does Saju use?\n\nNeither. Saju runs on solar terms.\nEnter your Gregorian birth date; the calendar behind the scenes converts it to the year, month, day and hour pillars.\n\nNo need to look up your lunar date at all.\n\n' + EN_URL,
   'Your Chinese zodiac animal is 1 of 8 characters in your chart.\n\nAnd not the important one. The year branch is the family weather you were born into.\n"You" are the Day Master — top of the day pillar.\n\nFind the character that\'s actually you → ' + EN_URL,
   '"You have no Water in your chart." What that means:\n\n- Not a curse\n- Rest and flexibility may not come naturally\n- Swimming, night walks, black clothes — you top it up through life\n- Excess is usually the bigger homework than a gap\n\nYour Five Elements graph → ' + EN_URL

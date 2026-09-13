@@ -107,6 +107,37 @@ DAY_MASTERS.forEach((d, i) => {
   urls.push(SITE + url);
 });
 
+/* Day Master hub — /en/guide/day-master/ (the folder had no index page, and “day master” is a search term of its own) */
+{
+  const rel = '../../../', url = '/en/guide/day-master/';
+  const cards = DAY_MASTERS.map((d) => `<a href="${rel}en/guide/day-master/${d.slug}/"><i>${d.han}</i><span><b>${d.arch}</b><small>${d.name} · ${esc(d.tagline)}</small></span></a>`).join('\n        ');
+  const title = 'The Ten Day Masters — Which Nature Are You? | Saju';
+  const desc = 'The ten Day Masters of Korean saju and BaZi, one page each: what a Yang Wood or Yin Water person is like, in love and at work, and who they match.';
+  const body = `
+  <article class="guide-article">
+    <div class="ga-overline"><a href="${rel}en/guide/" style="color: inherit; text-decoration: none;">Library</a> · Day Masters</div>
+    <h1 class="ga-title">The ten Day Masters — <br>which nature are you?</h1>
+    <p class="ga-meta">Sajucheop library · one archetype for each of the ten heavenly stems</p>
+    <p class="ga-lead">Your chart has eight characters and only one of them is you: the Day Master (일간, ilgan), the heavenly stem of your birth day. There are ten — a tree, a sun, a mountain, the dew — and each reads the world differently. Find yours below, or <a href="${rel}en/">enter your birth date</a> and let the chart tell you.</p>
+    <div class="ga-body">
+      <div class="dm-grid">
+        ${cards}
+      </div>
+      <h2>How the ten are built</h2>
+      <p>Five elements, each in a yang and a yin form, make the ten heavenly stems. The yang stems — Jia, Bing, Wu, Geng and Ren — are the outward, expansive side of their element: the tall pine, the midday sun. The yin stems — Yi, Ding, Ji, Xin and Gui — are the inward, refined side: the vine, the candle flame. Neither is better; they are two ways of being the same element.</p>
+      <p>The Day Master decides how every other character in the chart is read. The same Fire is output to a Wood person, a peer to a Fire person and pressure to a Metal person — that is the logic of the <a href="${rel}en/guide/ten-gods/">Ten Gods</a>. Whether a Day Master is <a href="${rel}en/guide/day-master-strength/">strong or weak</a> changes the reading again, and the branch it sits on gives the <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a>.</p>
+      <p class="callout"><a href="${rel}en/guide/what-is-saju/">What saju is</a> · <a href="${rel}en/guide/compatibility/">Day Master compatibility — 100 pairings</a> · <a href="${rel}guide/ilgan.html" hreflang="ko">한국어: 일간이란</a></p>
+    </div>
+    <div class="ga-cta">
+      <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Find my Day Master</span></a>
+    </div>
+  </article>`;
+  write(url.slice(1), shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: 'The ten Day Masters — which nature are you?',
+    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/guide/ilgan.html">`,
+    jsonld: breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Library', url: SITE + '/en/guide/' }, { name: 'Day Masters', url: SITE + url }]), body }));
+  urls.push(SITE + url);
+}
+
 /* Index */
 {
   const rel = '../../';
@@ -130,7 +161,7 @@ DAY_MASTERS.forEach((d, i) => {
     <div class="ga-body">
       ${sections}
       <h2 id="day-masters">The ten Day Masters</h2>
-      <p>Your chart has eight characters and only one of them is you: the Day Master, the sky character of your birth day. There are ten. Each is a nature — a tree, a sun, a mountain, the dew — and each reads the world differently.</p>
+      <p>Your chart has eight characters and only one of them is you: the Day Master, the sky character of your birth day. There are ten. Each is a nature — a tree, a sun, a mountain, the dew — and each reads the world differently. <a href="${rel}en/guide/day-master/">How the ten are built →</a></p>
       <div class="dm-grid">
         ${cards}
       </div>
