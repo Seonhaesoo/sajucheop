@@ -29,6 +29,20 @@
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
+  <style>
+    .bd-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line-soft); font-size: 13.5px; }
+    .bd-row:first-child { border-top: 0; }
+    .bd-mark { flex: none; width: 22px; text-align: center; font-weight: 700; color: var(--seal); }
+    .bd-row.care .bd-mark { color: var(--muted); }
+    .bd-date { flex: none; width: 84px; line-height: 1.3; }
+    .bd-date small { display: block; color: var(--faint); font-size: 11px; }
+    .bd-han { flex: none; font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 600; width: 40px; }
+    .bd-info { flex: 1; min-width: 0; font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+    .bd-info b { color: var(--ink); font-size: 13px; }
+    .bd-score { flex: none; font-weight: 700; font-size: 15px; width: 30px; text-align: right; }
+    .bd-row.care .bd-score { color: var(--muted); font-weight: 500; }
+    .bd-gcal { flex: none; font-size: 11px; color: var(--seal); text-decoration: none; white-space: nowrap; }
+  </style>
 </head>
 <body>
 <div class="app">
@@ -75,6 +89,19 @@
       <div class="reading-overline">Tomorrow's preview</div>
       <p class="reading-body" id="td-tomorrow"></p>
       <p class="form-microcopy" style="margin-top: 8px;">The full reading unlocks at midnight — see you then.</p>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">Your best days — the next 30 days</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">길일</span>
+      </div>
+      <p class="reading-body" id="bd-note" style="margin-top: 6px; font-size: 13.5px;"></p>
+      <div id="bd-list" style="margin-top: 8px;"></div>
+      <div class="btn-stack" style="margin-top: 12px;">
+        <button class="btn-outline" id="bd-ics">Add these days to my calendar (.ics)</button>
+      </div>
+      <p class="form-microcopy" style="margin-top: 8px; text-align: left;">Each day’s pillar is scored against your chart. ○ marks a good day for asks, launches and signatures; △ marks a clash with your Day Branch — keep big decisions for another day. The file works with Apple, Google and Outlook calendars; “+ Google” adds a single day.</p>
     </div>
 
     <div class="btn-stack" style="margin-top: 16px;">
@@ -169,6 +196,11 @@
     '동일': 'Today\'s branch mirrors your own Day Branch — the day amplifies whatever you already are. Keep your footing.'
   };
 
+  var bestDays = [];
+  var PINYIN_S = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'];
+  var PINYIN_B = ['Zi', 'Chou', 'Yin', 'Mao', 'Chen', 'Si', 'Wu', 'Wei', 'Shen', 'You', 'Xu', 'Hai'];
+  var MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
   function savedProfile() {
     try { return JSON.parse(localStorage.getItem('sajucheop.en.profile.v1') || 'null'); } catch (e) { return null; }
   }
@@ -232,7 +264,91 @@
 
     $('#td-note').textContent = 'Based on the chart you cast earlier (' + MONTHS[prof.m - 1] + ' ' + prof.d + ', ' + prof.y + '). Recast anytime on the Chart page.';
     shareText = 'My Saju reading today: ' + score + '/100, "' + th[0] + '" — get yours:';
+    renderBestDays(r, t);
   }
+
+  /* ---------- best days: the next 30 days scored against the chart (constants are defined above, before render runs) ---------- */
+  function pad2(n) { return String(n).padStart(2, '0'); }
+
+  function gcalLink(d) {
+    var start = '' + d.y + pad2(d.m) + pad2(d.d);
+    var MI = M._internals, nx = MI.civilFromDays(MI.daysFromCivil(d.y, d.m, d.d) + 1);
+    var end = '' + nx.y + pad2(nx.m) + pad2(nx.d);
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(d.summary) +
+      '&dates=' + start + '/' + end + '&details=' + encodeURIComponent(d.details + ' https://sajucheop.com/en/today/');
+  }
+
+  function renderBestDays(r, t) {
+    var MI = M._internals, base = MI.daysFromCivil(t.y, t.m, t.d);
+    var all = [];
+    for (var i = 1; i <= 30; i++) {
+      var cv = MI.civilFromDays(base + i);
+      var info = M.todayInfo(r, cv.y, cv.m, cv.d);
+      var s = I.scoreDay(r, info);
+      var th = THEME_EN[info.stemSipseong] || ['A quiet day', ''];
+      all.push({ y: cv.y, m: cv.m, d: cv.d, w: (base + i + 4) % 7, han: M.STEMS[info.pillar.stem].han + M.BRANCHES[info.pillar.branch].han,
+        pinyin: PINYIN_S[info.pillar.stem] + ' ' + PINYIN_B[info.pillar.branch], score: s, theme: th[0], rel: info.relation });
+    }
+    var good = all.filter(function (x) { return x.score >= 80 && x.rel !== '충'; });
+    if (good.length < 3) {   /* some charts rarely reach 80 — show the best three anyway */
+      good = all.filter(function (x) { return x.rel !== '충'; }).sort(function (a, b) { return b.score - a.score; }).slice(0, 3);
+    }
+    var care = all.filter(function (x) { return x.rel === '충'; });
+    good.forEach(function (x) { x.kind = 'good'; x.summary = '○ Good day · ' + x.score + ' · ' + x.theme; x.details = 'Day pillar ' + x.han + ' (' + x.pinyin + ') against your Four Pillars: ' + x.score + '/100' + (x.rel === '육합' ? ', a six-harmony with your Day Branch' : x.rel === '삼합' ? ', a trine with your Day Branch' : '') + '.'; });
+    care.forEach(function (x) { x.kind = 'care'; x.summary = '△ Clash day · ' + x.score + ' · ' + x.theme; x.details = 'Day pillar ' + x.han + ' (' + x.pinyin + ') clashes with your Day Branch — postpone big decisions and signatures if you can.'; });
+    bestDays = good.concat(care).sort(function (a, b) { return MI.daysFromCivil(a.y, a.m, a.d) - MI.daysFromCivil(b.y, b.m, b.d); });
+    var top = good.slice().sort(function (a, b) { return b.score - a.score; })[0];
+    $('#bd-note').innerHTML = (top ? 'Your best day of the next month is <b>' + DAYS[top.w] + ', ' + MONTHS[top.m - 1] + ' ' + top.d + '</b> (' + top.score + '/100). ' : '') +
+      good.length + ' good day' + (good.length === 1 ? '' : 's') + ' and ' + care.length + ' clash day' + (care.length === 1 ? '' : 's') + ' in the next 30 days.';
+    $('#bd-list').innerHTML = bestDays.map(function (x) {
+      return '<div class="bd-row ' + x.kind + '"><span class="bd-mark">' + (x.kind === 'good' ? '○' : '△') + '</span>' +
+        '<span class="bd-date">' + MON3[x.m - 1] + ' ' + x.d + '<small>' + DAYS[x.w] + '</small></span>' +
+        '<span class="bd-han">' + x.han + '</span>' +
+        '<span class="bd-info"><b>' + x.theme + '</b><br>' + x.pinyin + (x.rel === '육합' ? ' · six-harmony' : x.rel === '삼합' ? ' · trine' : x.rel === '충' ? ' · clash' : '') + '</span>' +
+        '<span class="bd-score">' + x.score + '</span>' +
+        '<a class="bd-gcal" href="' + gcalLink(x) + '" target="_blank" rel="noopener">+ Google</a></div>';
+    }).join('');
+  }
+
+  /* RFC 5545: fold lines at 75 octets, break before a space so links survive */
+  function icsFold(line) {
+    var out = [], cur = '';
+    var enc = new TextEncoder();
+    line.split(' ').forEach(function (word, i) {
+      var piece = (i ? ' ' : '') + word;
+      if (enc.encode(cur + piece).length > 73 && cur) { out.push(cur); cur = ' ' + word; } else cur += piece;
+    });
+    if (cur) out.push(cur);
+    return out.join('\r\n');
+  }
+  function buildIcs() {
+    var MI = M._internals, now = new Date();
+    var stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+    var lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//sajucheop//best-days//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Sajucheop best days'];
+    bestDays.forEach(function (x) {
+      var nx = MI.civilFromDays(MI.daysFromCivil(x.y, x.m, x.d) + 1);
+      lines.push('BEGIN:VEVENT', 'UID:sajucheop-en-' + x.y + pad2(x.m) + pad2(x.d) + '@sajucheop.com', 'DTSTAMP:' + stamp,
+        'DTSTART;VALUE=DATE:' + x.y + pad2(x.m) + pad2(x.d), 'DTEND;VALUE=DATE:' + nx.y + pad2(nx.m) + pad2(nx.d),
+        icsFold('SUMMARY:' + x.summary), icsFold('DESCRIPTION:' + x.details + ' Today\'s full reading: https://sajucheop.com/en/today/'), 'URL:https://sajucheop.com/en/today/', 'END:VEVENT');
+    });
+    lines.push('END:VCALENDAR');
+    return lines.join('\r\n') + '\r\n';
+  }
+  $('#bd-ics').addEventListener('click', function () {
+    if (!bestDays.length) return;
+    track('en_ics_export', { n: bestDays.length });
+    var blob = new Blob([buildIcs()], { type: 'text/calendar;charset=utf-8' });
+    var file = new File([blob], 'sajucheop-best-days.ics', { type: 'text/calendar' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: 'Sajucheop — best days' }).catch(function () {});
+    } else {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = file.name;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+      toast('Calendar file saved — open it to add ' + bestDays.length + ' days.');
+    }
+  });
 
   $('#td-share').addEventListener('click', function () {
     if (!shareText) return;
