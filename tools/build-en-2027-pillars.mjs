@@ -23,7 +23,7 @@ const PY_S = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gu
 const PY_B = ['Zi', 'Chou', 'Yin', 'Mao', 'Chen', 'Si', 'Wu', 'Wei', 'Shen', 'You', 'Xu', 'Hai'];
 const TG = { 비견: 'Friend', 겁재: 'Rob Wealth', 식신: 'Eating God', 상관: 'Hurting Officer', 편재: 'Indirect Wealth', 정재: 'Direct Wealth', 편관: 'Seven Killings', 정관: 'Direct Officer', 편인: 'Indirect Resource', 정인: 'Direct Resource' };
 const TG_SLUG = { 비견: 'friend', 겁재: 'rob-wealth', 식신: 'eating-god', 상관: 'hurting-officer', 편재: 'indirect-wealth', 정재: 'direct-wealth', 편관: 'seven-killings', 정관: 'direct-officer', 편인: 'indirect-resource', 정인: 'direct-resource' };
-const REL = { same: ['Same branch (伏吟)', 'neutral'], yukhap: ['Six Harmony 六合', 'good'], samhap: ['Trine 三合', 'good'], banghap: ['Seasonal trio 方合', 'good'], chung: ['Clash 冲', 'bad'], hyeong: ['Punishment 刑', 'bad'], hae: ['Harm 害', 'bad'], pa: ['Break 破', 'bad'], wonjin: ['Wonjin 怨嗔', 'bad'] };
+const REL = { same: ['Same branch (伏吟)', 'neutral'], selfhyeong: ['Self-punishment 自刑', 'bad'], yukhap: ['Six Harmony 六合', 'good'], samhap: ['Trine 三合', 'good'], banghap: ['Seasonal trio 方合', 'good'], chung: ['Clash 冲', 'bad'], hyeong: ['Punishment 刑', 'bad'], hae: ['Harm 害', 'bad'], pa: ['Break 破', 'bad'], wonjin: ['Wonjin 怨嗔', 'bad'] };
 const STAGES = ['장생', '목욕', '관대', '건록', '제왕', '쇠', '병', '사', '묘', '절', '태', '양'];
 const BIRTH = { 0: 11, 2: 2, 4: 2, 6: 5, 8: 8, 1: 6, 3: 9, 5: 9, 7: 0, 9: 3 };
 const stageOf = (s, b) => STAGES[s % 2 === 0 ? (b - BIRTH[s] + 12) % 12 : (BIRTH[s] - b + 12) % 12];
@@ -157,7 +157,7 @@ pillars.forEach((p) => {
     ['How do I find my day pillar?', 'Enter your birth date in the calculator; the Day column shows it (birth time is not needed for it). Each page here also links to the full profile of that pillar.']
   ];
   const title = '2027 Horoscope by Day Pillar — All Sixty Pillars in the Fire Goat Year';
-  const desc = 'What 2027 (Ding Wei, Fire Goat) brings to each of the sixty day pillars: the Ten God the year plays, how 未 meets your day branch, the twelve-stage, and the months to act or take care.';
+  const desc = '2027 (Ding Wei, Fire Goat) for each of the sixty day pillars: the Ten God the year plays, how 未 meets your day branch, the twelve-stage, and the months to act.';
   const body = `
   <article class="guide-article">
     <div class="ga-overline">2027 · 丁未 · Fire Goat</div>

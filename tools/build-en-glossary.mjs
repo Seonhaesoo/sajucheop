@@ -35,7 +35,7 @@ ${g.terms.map((t) => `        <div class="gl-term" id="${slugify(t.term)}" data-
       </dl>`).join('\n');
 
 const title = 'Saju & BaZi Glossary — 100 Terms in Plain English';
-const desc = `${total} terms of Korean saju and Chinese BaZi explained in plain English, with the Chinese characters, Korean and pinyin: Day Master, Ten Gods, hidden stems, luck pillars, clashes, special stars and more.`;
+const desc = `${total} saju and BaZi terms in plain English with Chinese characters, Korean and pinyin — Day Master, Ten Gods, hidden stems, luck pillars, clashes, stars.`;
 const html = shell({
   rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV, extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">`,
   jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Glossary', url: SITE + url }]),
