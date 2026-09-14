@@ -12,6 +12,8 @@ export const CATS = [
     note: 'The tools a reader actually uses: the Ten Gods, hidden stems, ten-year luck pillars, Day Master strength and the useful god.' },
   { key: 'culture', label: 'Saju in Korean life', short: 'Korean life',
     note: 'Where saju shows up in Korea today, from couples checking their gunghap to saju cafés in Seoul, and how it sits beside MBTI.' },
+  { key: 'stars', label: 'Special stars (sinsal)', short: 'Special stars',
+    note: 'The named stars a Korean reader checks after the Ten Gods — Nobleman, Traveling Horse, Flower Canopy, Yang Blade, White Tiger, Kui Gang, Void and Wonjin — with the rule tables to find them.' },
 ];
 
 export const ARTICLES = [...A, ...B, ...C, ...D];

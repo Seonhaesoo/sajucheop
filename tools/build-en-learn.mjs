@@ -29,6 +29,10 @@ const STYLE = `<style>
     .lr-related li { padding: 10px 0; border-bottom: 1px solid var(--line-soft); font-size: 14px; line-height: 1.55; }
     .lr-related li a { font-weight: 600; text-decoration: none; }
     .lr-related li small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 3px; }
+    .lr-tengods { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 10px 0 4px; }
+    .lr-tengods a { display: block; text-align: center; padding: 10px 4px 8px; border: 1px solid var(--line-soft); border-radius: 10px; background: #fff; text-decoration: none; color: var(--ink); font-size: 11.5px; line-height: 1.3; }
+    .lr-tengods a b { display: block; font-family: var(--serif); font-size: 20px; color: var(--seal); }
+    .lr-tengods a small { display: block; color: var(--faint); font-size: 10.5px; }
   </style>`;
 
 /* Korean articles on the same subject — a visible 한국어 link only (only when the file exists) */
@@ -41,6 +45,13 @@ const KO_PAIR = {
 
 const warn = [];
 const written = [];
+/* the Ten Gods article doubles as the hub for /en/guide/ten-gods/<slug>/ (build-en-ten-gods.mjs) — links appended when that data exists */
+let TEN_GODS = null;
+try { TEN_GODS = (await import('./en-ten-gods.mjs')).TEN_GODS; } catch (e) { warn.push('en-ten-gods.mjs not found — Ten Gods article without the ten links'); }
+const tenGodsGrid = (rel) => TEN_GODS ? `
+      <h2>The Ten Gods one by one</h2>
+      <p>Each god has its own page — meaning, personality, love, money, career, and which stem plays it for every Day Master.</p>
+      <div class="lr-tengods">${TEN_GODS.map((g) => `<a href="${rel}en/guide/ten-gods/${g.slug}/"><b>${g.han}</b>${g.name}<small>${g.ko}</small></a>`).join('')}</div>` : '';
 function write(relDir, html) {
   const file = path.join(DOCS, relDir, 'index.html');
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -86,6 +97,7 @@ ARTICLES.forEach((a, k) => {
     <p class="ga-meta">Sajucheop library · ${minutes} min read · ${fmtDate(a.published)}</p>
     <div class="ga-body">
       ${a.body.trim()}
+      ${a.slug === 'ten-gods' ? tenGodsGrid(rel) : ''}
       ${tryBox}
       <h2>Keep reading</h2>
       <ul class="lr-related">${related.map((x) => `<li><a href="${rel}en/guide/${x.slug}/">${esc(x.title)}</a><small>${esc(firstSentence(x.desc))}</small></li>`).join('')}</ul>
@@ -267,7 +279,7 @@ sitePage('terms', {
     <ul class="en-learn">
       ${FEATURED.map((a) => `<li><a href="guide/${a.slug}/">${esc(a.title)}</a><span>${esc(firstSentence(a.desc))}</span></li>`).join('\n      ')}
     </ul>
-    <p class="reading-body" style="margin-top: 10px; font-size: 13px;"><a href="guide/">All ${ARTICLES.length} articles</a> · <a href="guide/day-master/">The ten Day Masters</a> · <a href="quiz/">Which Day Master are you? — quiz</a> · <a href="guide/day-pillar/">60 Day Pillars</a> · <a href="guide/compatibility/">Day Master compatibility</a> · <a href="monthly/">Monthly horoscope</a> · <a href="day/">Day pillar calendar</a></p>
+    <p class="reading-body" style="margin-top: 10px; font-size: 13px;"><a href="guide/">All ${ARTICLES.length} articles</a> · <a href="guide/day-master/">The ten Day Masters</a> · <a href="quiz/">Which Day Master are you? — quiz</a> · <a href="guide/day-pillar/">60 Day Pillars</a> · <a href="guide/compatibility/">Day Master compatibility</a> · <a href="monthly/">Monthly horoscope</a> · <a href="day/">Day pillar calendar</a> · <a href="bazi-calculator/">BaZi calculator</a></p>
     <!-- en-learn:end -->`;
   const html = fs.readFileSync(p, 'utf8');
   const re = /<!-- en-learn:start -->[\s\S]*?<!-- en-learn:end -->/;
