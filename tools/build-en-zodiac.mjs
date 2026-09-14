@@ -642,6 +642,7 @@ function year27Hub() {
       <div class="zd-wrap"><table class="zd-table"><tr><th>Month</th><th>Pillar</th><th>Smooth for</th></tr>${MONTHS27.map((mo) => { const ok = ANIMALS.map((_, b) => b).filter((b) => ['yukhap', 'samhap', 'banghap'].includes(monthRel(b, mo.branch))); return `<tr><td>${monthLabel(mo)}<br><small>${mo.term}</small></td><td>${M.STEMS[mo.stem].han}${M.BRANCHES[mo.branch].han}<br><small>${ANIMALS[mo.branch].name} month</small></td><td>${ok.map((b) => ANIMALS[b].name).join(', ')}</td></tr>`; }).join('')}</table></div>
       <h2>FAQ</h2>
       ${hubFaq.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
+      <p class="callout">Your sign is one character of eight — read 2027 by <a href="${rel}en/2027/day-master/">Day Master</a> (ten readings) or by <a href="${rel}en/2027/day-pillar/">day pillar</a> (sixty).</p>
       <p class="callout">Find your sign first: <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/zodiac/compatibility/">compatibility chart</a> · <a href="${rel}${yUrl(2027).slice(1)}">2027 Fire Goat year page</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">Having a baby in 2027?</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year 2027 dates</a> · <a href="${rel}en/monthly/">Month-by-month horoscope</a></p>
     </div>
     <div class="ga-cta">

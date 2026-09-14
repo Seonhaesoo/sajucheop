@@ -9,6 +9,7 @@ import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { ILJU } from './ilju-data.mjs';
+import { ILJU_EN } from './en-ilju-data.mjs';   /* 영문 2027 일주 페이지 hreflang 짝 */
 import { TRAIT, josa } from './ddi-data.mjs';
 import { YEAR, DDI, REL, DDI_TEXT, DDI_TEXT_MORE, DDI_EL_LINE, DDI_ONE, SAMJAE_TEXT, STEM_REL_TEXT, STEM_LINE, AGE_TEXT, MONTH_LINE, MONTH_SIP, MONTH_WHY, ILGAN_SEUN, ILJI_TEXT, ILJI_EL_MONEY, UN_TEXT, UN_WORK, UN_STRENGTH, STRENGTH_LINE, SIP_GROUP, SEUN_GROUP_VAR, SIP_KW, REL_KW, REL_KW_NONE, UN_KW, YEAR_REL_SCORE, YEAR_EL_ADJ, SAMJAE_ADJ, yearGrade } from './newyear-2027-data.mjs';
 
@@ -491,7 +492,9 @@ iljuList.forEach((e, i) => {
     </div>
   </article>`;
   write(url.slice(1), shell({
-    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${e.kor}일주 2027년 운세 — ${G.sip}의 해, ${G.pattern}`,
+    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `
+  <link rel="alternate" hreflang="ko" href="${SITE}${url}">
+  <link rel="alternate" hreflang="en" href="${SITE}/en/2027/day-pillar/${ILJU_EN[i].slug}/">`, ogTitle: `${e.kor}일주 2027년 운세 — ${G.sip}의 해, ${G.pattern}`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '60일주별', url: SITE + '/2027/ilju/' }, { name: `${e.kor}일주`, url: SITE + url }]), article({ title, desc, url }),
       faq([
         [`${e.kor}일주의 2027년 운세는 어떤가요?`, `정화(丁)가 ${G.sip}, 미토(未)가 ${G.bsip}인 ${G.pattern}의 해입니다. 키워드는 ${kws.join('·')}. ${firstSentence(core)}`],
@@ -584,7 +587,9 @@ iljuList.forEach((e, i) => {
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 일주 확인하고 2027 보기</span></a>
     </div>
   </article>`;
-  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: '2027년 60일주 운세',
+  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `
+  <link rel="alternate" hreflang="ko" href="${SITE}${url}">
+  <link rel="alternate" hreflang="en" href="${SITE}/en/2027/day-pillar/">`, ogTitle: '2027년 60일주 운세',
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '60일주별 운세', url: SITE + url }]), article({ title, desc, url })], body }));
   urls.unshift(SITE + url);
 }

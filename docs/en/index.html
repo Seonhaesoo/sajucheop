@@ -77,6 +77,17 @@
     .dl-info small { display: block; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
     .dl-bar { flex: none; width: 50px; height: 6px; background: #F0E9DA; border-radius: 999px; overflow: hidden; }
     .dl-bar i { display: block; height: 100%; background: var(--seal); }
+    .uf-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 13px; }
+    .uf-row:first-child { border-top: 0; }
+    .uf-row .uf-el { flex: none; width: 64px; font-weight: 700; }
+    .uf-row .uf-swatch { flex: none; width: 14px; height: 14px; border-radius: 50%; }
+    .uf-row span.uf-meta { color: var(--muted); line-height: 1.5; }
+    .yr-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 13px; }
+    .yr-row:first-child { border-top: 0; }
+    .yr-row.now { background: rgba(184, 56, 45, .06); margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 8px; }
+    .yr-row .yr-y { flex: none; width: 44px; font-weight: 700; }
+    .yr-row .yr-han { flex: none; width: 50px; font-family: 'Noto Serif KR', serif; font-size: 19px; font-weight: 700; }
+    .yr-row .yr-info { flex: 1; min-width: 0; line-height: 1.45; } .yr-row .yr-info small { display: block; color: var(--muted); font-size: 11.5px; }
     #en-print-head { display: none; }
     @media print {
       .no-print { display: none !important; }
@@ -183,10 +194,29 @@
 
     <div class="card card-pad" style="margin-top: 14px;">
       <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">Elements to lean on</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">용신</span>
+      </div>
+      <p class="reading-body" id="en-useful-why" style="margin-top: 6px; font-size: 13.5px;"></p>
+      <div id="en-useful" style="margin-top: 8px;"></div>
+      <p class="form-microcopy" style="margin-top: 10px; text-align: left;">A simplified useful god (용신) read from Day Master strength — the same rule the Korean app uses for its lucky colors. <a href="guide/useful-god/" style="color: var(--seal);">How readers choose the useful god →</a></p>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head">
         <h3 class="section-title" style="font-size: 16px;">Ten Gods in your chart</h3>
         <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">십성</span>
       </div>
       <div id="en-tengods" style="margin-top: 6px;"></div>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">Special stars in your chart</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">신살</span>
+      </div>
+      <div id="en-stars" style="margin-top: 6px;"></div>
+      <p class="form-microcopy" style="margin-top: 10px; text-align: left;">Nine named stars a Korean reader checks after the Ten Gods — found from your Day Master, your year and day branches, and your day pillar. <a href="guide/#stars" style="color: var(--seal);">All the special stars, explained →</a></p>
     </div>
 
     <div class="card card-pad" style="margin-top: 14px;">
@@ -197,6 +227,15 @@
       <p class="reading-body" id="en-daeun-intro" style="margin-top: 6px; font-size: 13.5px;"></p>
       <div id="en-daeun" style="margin-top: 8px;"></div>
       <p class="form-microcopy" style="margin-top: 10px; text-align: left;">Ages are international age, by calendar year. The bar is a reference index of how well each pillar’s elements suit your chart’s strength — not a verdict. <a href="guide/luck-pillars/" style="color: var(--seal);">How luck pillars are counted →</a></p>
+    </div>
+
+    <div class="card card-pad" style="margin-top: 14px;">
+      <div class="section-head">
+        <h3 class="section-title" style="font-size: 16px;">This year and next</h3>
+        <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">세운</span>
+      </div>
+      <div id="en-years" style="margin-top: 6px;"></div>
+      <p class="form-microcopy" id="en-year-link" style="margin-top: 10px; text-align: left; font-size: 13px;"></p>
     </div>
 
     <div class="btn-stack no-print" style="margin-top: 16px;">
@@ -231,7 +270,7 @@
       <li><a href="guide/luck-pillars/">Luck Pillars in Saju: How Your 10-Year Cycles Work</a><span>How luck pillars (daeun) work in Korean saju: forward or backward counting, the start age, how to read a decade, and yearly and monthly luck.</span></li>
       <li><a href="guide/gunghap/">Gunghap: How Koreans Check Couple Compatibility</a><span>Why Korean families ask for your birth time: what gunghap compares, how our match score works, a worked example, and how to read a low result calmly.</span></li>
     </ul>
-    <p class="reading-body" style="margin-top: 10px; font-size: 13px;"><a href="guide/">All 16 articles</a> · <a href="guide/day-master/">The ten Day Masters</a> · <a href="quiz/">Which Day Master are you? — quiz</a> · <a href="guide/day-pillar/">60 Day Pillars</a> · <a href="guide/compatibility/">Day Master compatibility</a> · <a href="monthly/">Monthly horoscope</a> · <a href="day/">Day pillar calendar</a> · <a href="bazi-calculator/">BaZi calculator</a></p>
+    <p class="reading-body" style="margin-top: 10px; font-size: 13px;"><a href="guide/">All 24 articles</a> · <a href="guide/day-master/">The ten Day Masters</a> · <a href="quiz/">Which Day Master are you? — quiz</a> · <a href="guide/day-pillar/">60 Day Pillars</a> · <a href="guide/compatibility/">Day Master compatibility</a> · <a href="monthly/">Monthly horoscope</a> · <a href="day/">Day pillar calendar</a> · <a href="bazi-calculator/">BaZi calculator</a></p>
     <!-- en-learn:end -->
   </div>
 
@@ -274,6 +313,7 @@
 <script src="../js/gunghap.js"></script>
 <script src="../js/en-pillar-slugs.js"></script>
 <script src="../js/en-daymaster.js"></script>
+<script src="../js/shensha.js"></script>
 <script src="../js/en-cards.js"></script>
 <script>
 (function () {
@@ -497,6 +537,65 @@
 
   var lastResult = null;
 
+  /* Elements to lean on — the Korean app's lucky-element rule (interpret.js todayFortune): weak → Resource + own element; otherwise Output, Wealth, Officer */
+  var EL_COLOR_EN = { '목': 'green, teal', '화': 'red, orange, pink', '토': 'yellow, beige, brown', '금': 'white, silver, gold', '수': 'black, navy, blue' };
+  var EL_DIR_EN = { '목': 'east', '화': 'south', '토': 'the centre (home ground)', '금': 'west', '수': 'north' };
+  var EL_NUM_EN = { '목': '3 · 8', '화': '2 · 7', '토': '5 · 10', '금': '4 · 9', '수': '1 · 6' };
+  var EL_SWATCH = { '목': '#3B9C69', '화': '#BC3E28', '토': '#B98D28', '금': '#9FB3C8', '수': '#2C69A8' };
+  function renderUseful(r) {
+    var cyc = M.elCycle, me = M.STEMS[r.pillars.day.stem].el, label = r.strength.label;
+    var feeder = Object.keys(cyc.gen).filter(function (e) { return cyc.gen[e] === me; })[0];
+    var officer = Object.keys(cyc.control).filter(function (e) { return cyc.control[e] === me; })[0];
+    var need, why, easy;
+    if (label === '신약') {
+      need = [[feeder, 'Resource — it feeds your ' + EL_EN[me]], [me, 'Friend — your own element, standing beside you']];
+      why = 'Your Day Master is on the gentle side, so the elements that feed and join it do the most good. Go easy on ' + EL_EN[officer] + ', the element that presses on it.';
+    } else {
+      need = [[cyc.gen[me], 'Output — what your ' + EL_EN[me] + ' produces'], [cyc.control[me], 'Wealth — what it works on'], [officer, 'Officer — what gives it shape']];
+      why = (label === '신강' ? 'Your Day Master has plenty of its own power, so the elements that give it something to do serve it best.' : 'Your Day Master is balanced, so the elements that give it something to do keep the balance moving.') + ' Go easy on ' + EL_EN[feeder] + ' and more ' + EL_EN[me] + ' — they only add to what is already full.';
+    }
+    $('#en-useful-why').textContent = why;
+    $('#en-useful').innerHTML = need.map(function (n) {
+      return '<div class="uf-row"><span class="uf-swatch" style="background: ' + EL_SWATCH[n[0]] + ';"></span><span class="uf-el">' + EL_EN[n[0]] + '</span>' +
+        '<span class="uf-meta">' + n[1] + '<br>' + EL_COLOR_EN[n[0]] + ' · ' + EL_DIR_EN[n[0]] + ' · numbers ' + EL_NUM_EN[n[0]] + '</span></div>';
+    }).join('');
+  }
+
+  /* This year and next — the annual pillar's Ten God for your Day Master, and how its branch meets your day branch */
+  var YEAR_EN = {
+    '비견': 'a year of standing on your own', '겁재': 'a year of contests and bold moves', '식신': 'a year when skill becomes a living', '상관': 'a year that wants to be heard',
+    '편재': 'a year of openings and quick money', '정재': 'a year of steady income and commitments', '편관': 'a year of pressure and proving', '정관': 'a year of position and rules',
+    '편인': 'a year of unusual learning', '정인': 'a year of backing, study and documents'
+  };
+  var YEAR_REL_EN = { '육합': 'six harmony with your day branch', '삼합': 'trine with your day branch', '충': 'clash with your day branch', '동일': 'the same branch as your day branch' };
+  function renderYears(r) {
+    var nowY = new Date().getFullYear(), me = r.pillars.day.stem, rows = [];
+    for (var y = nowY - 1; y <= nowY + 2; y++) {
+      var s = ((y - 4) % 10 + 10) % 10, b = ((y - 4) % 12 + 12) % 12;
+      var sip = M.sipseongOf(me, s), rel = M.branchRelation(b, r.pillars.day.branch);
+      rows.push('<div class="yr-row' + (y === nowY ? ' now' : '') + '"><span class="yr-y">' + y + '</span>' +
+        '<span class="yr-han"><span class="el-' + M.STEMS[s].el + '">' + M.STEMS[s].han + '</span><span class="el-' + M.BRANCHES[b].el + '">' + M.BRANCHES[b].han + '</span></span>' +
+        '<span class="yr-info"><b>' + TEN_GODS[sip][0] + '</b> — ' + YEAR_EN[sip] + (y === nowY ? ' (now)' : '') + '<small>' + PINYIN_S[s] + ' ' + PINYIN_B[b] + (rel ? ' · ' + YEAR_REL_EN[rel] : ' · no fixed link to your day branch') + '</small></span></div>');
+    }
+    $('#en-years').innerHTML = rows.join('');
+    var dmSlug = (window.EN_DAY_MASTERS || [])[me] && window.EN_DAY_MASTERS[me].slug;
+    $('#en-year-link').innerHTML = 'Years run from Ipchun to Ipchun (about 4 February). ' + (dmSlug ? '<a href="2027/day-master/' + dmSlug + '/" style="color: var(--seal);">Your ' + STEM_EN[me].name + ' Day Master in 2027 — the full reading →</a>' : '') + ' · <a href="2027/" style="color: var(--seal);">2027 by zodiac sign</a>';
+  }
+
+  /* Special stars (신살) — rules in js/shensha.js, articles under /en/guide/ */
+  function renderStars(r) {
+    var box = $('#en-stars');
+    if (!box || !window.Shensha) return;
+    var list = window.Shensha.find(r);
+    box.innerHTML = list.length
+      ? list.map(function (s) {
+          return '<div class="tg-row"><b><a href="guide/' + s.slug + '/" style="color: inherit;">' + s.name + '</a></b>' +
+            '<span class="tg-kor">' + s.han + ' · ' + s.ko + '</span>' +
+            '<span class="tg-gloss">' + s.note + '</span></div>';
+        }).join('')
+      : '<p class="reading-body" style="font-size: 13px;">None of the nine named stars sits in your natal chart — a quiet chart in this respect. Luck pillars and years can still bring them.</p>';
+  }
+
   function render(r, unknown) {
     lastResult = r;
     var p = r.pillars;
@@ -569,6 +668,9 @@
             '<span class="tg-gloss">' + TEN_GODS[k][1] + '</span></div>';
         }).join('')
       : '<p class="reading-body" style="font-size: 13px;">Your visible chart shows no Ten Gods besides your own element — a rare, self-contained pattern.</p>';
+    renderUseful(r);
+    renderYears(r);
+    renderStars(r);
   }
 
   /* Match invite link — the other person opens it and only enters their own birthday */

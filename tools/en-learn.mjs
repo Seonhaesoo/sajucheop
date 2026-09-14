@@ -4,6 +4,7 @@ import { ARTICLES as A } from './en-learn-a.mjs';
 import { ARTICLES as B } from './en-learn-b.mjs';
 import { ARTICLES as C } from './en-learn-c.mjs';
 import { ARTICLES as D } from './en-learn-d.mjs';
+import { ARTICLES as E } from './en-learn-e.mjs';
 
 export const CATS = [
   { key: 'basics', label: 'Start here: saju basics', short: 'Saju basics',
@@ -16,4 +17,4 @@ export const CATS = [
     note: 'The named stars a Korean reader checks after the Ten Gods — Nobleman, Traveling Horse, Flower Canopy, Yang Blade, White Tiger, Kui Gang, Void and Wonjin — with the rule tables to find them.' },
 ];
 
-export const ARTICLES = [...A, ...B, ...C, ...D];
+export const ARTICLES = [...A, ...B, ...C, ...D, ...E];

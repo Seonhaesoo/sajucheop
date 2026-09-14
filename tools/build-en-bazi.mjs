@@ -87,6 +87,8 @@ const calc = `<div class="bz-form">
       <div id="bz-elements"></div>
       <h2>Ten Gods</h2>
       <div id="bz-tengods"></div>
+      <h2>Special stars (神殺)</h2>
+      <div id="bz-stars"></div>
       <h2>Luck Pillars (大運)</h2>
       <p id="bz-luck-intro"></p>
       <div class="zd-wrap" style="overflow-x: auto;" id="bz-luck"></div>
@@ -129,6 +131,7 @@ ${faqHtml}
 <script src="${rel}js/manseryeok.js"></script>
 <script src="${rel}js/en-daymaster.js"></script>
 <script src="${rel}js/en-pillar-slugs.js"></script>
+<script src="${rel}js/shensha.js"></script>
 <script src="${rel}js/en-bazi.js"></script>`
 });
 const file = path.join(DOCS, 'en', 'bazi-calculator', 'index.html');

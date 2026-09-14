@@ -265,7 +265,7 @@ export const ARTICLES = [
 <tr><td>Total</td><td></td><td></td><td>8.5</td><td></td><td>2</td></tr>
 </table>
 <p>Two points out of 8.5 is about 24 percent, well under the 35 percent line, so the calculator calls this a gentle, or weak, Day Master. Without the birth time the score would be 1 out of 6.5, weaker still. If your own result sits near a line and you don't know your birth time, treat it as provisional: the hour pillar adds two characters and can tip it either way.</p>
-<p>The traditional check agrees. The season is against her: the Ox month is deep winter, when Water rules and Fire is out of season. Her ground is thin, because no branch in the chart hides any Fire at all; the Sun has only traces of Wood to lean on, 甲 in the Pig and 乙 in the Dragon. Her numbers are thin too, two helpers among seven. And none of her four branches is a Prosperity or Peak position for Bing in the twelve stages. By the usual methods, this Sun is clearly weak.</p>
+<p>The traditional check agrees. The season is against her: the Ox month is deep winter, when Water rules and Fire is out of season. Her ground is thin, because no branch in the chart hides any Fire at all; the Sun has only traces of Wood to lean on, 甲 in the Pig and 乙 in the Dragon. Her numbers are thin too, two helpers among seven. And none of her four branches is a Official or Prosperity position for Bing in the twelve stages. By the usual methods, this Sun is clearly weak.</p>
 
 <h2>Where a quick score can miss</h2>
 <p>A quick score is a starting point. It skips several things a careful reader weighs.</p>

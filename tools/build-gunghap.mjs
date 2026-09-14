@@ -237,7 +237,8 @@ for (let a = 0; a < 10; a++) {
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 실제 궁합 보기</span></a>
     </div>
   </article>`;
-  write('gunghap', shell({ rel, title, desc, canonical: SITE + '/gunghap/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/gunghap/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/compatibility/">`, ogTitle: '일간 궁합표 100',
+  write('gunghap', shell({ rel, title, desc, canonical: SITE + '/gunghap/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/gunghap/">
+  <link rel="alternate" hreflang="ja" href="${SITE}/ja/match/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/compatibility/">`, ogTitle: '일간 궁합표 100',
     jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '일간 궁합', url: SITE + '/gunghap/' }]), body }));
   urls.unshift(SITE + '/gunghap/');
 }

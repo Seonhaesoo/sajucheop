@@ -181,7 +181,7 @@ function hub() {
     [`When does 2027 start?`, `At Li Chun, ${md(IP27)} 2027 ${String(IP27.hh).padStart(2, '0')}:${String(IP27.mm).padStart(2, '0')} KST (${String((IP27.hh + 15) % 24).padStart(2, '0')}:${String(IP27.mm).padStart(2, '0')} UTC the day before). Until that moment the year pillar is still 丙午 Bing Wu.`]
   ];
   const title = '2027 Horoscope by Day Master — All Ten Stems in the Fire Goat Year';
-  const desc = 'What 2027 (Ding Wei, Fire Goat) brings to each of the ten Day Masters: the Ten God the year plays for you, love, money, work, the months to act and the months to take care.';
+  const desc = '2027 (Ding Wei, Fire Goat) for each of the ten Day Masters: the Ten God the year plays for you, love, money, work, and the months to act or take care.';
   const body = `
   <article class="guide-article">
     <div class="ga-overline">2027 · 丁未 · Fire Goat</div>

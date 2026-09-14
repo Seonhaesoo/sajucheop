@@ -15,7 +15,7 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-14', MODIFIED = '2026-09-14';
 const YB = 7, YS = 3;   /* 2027 = 丁未 */
-const NAV = (rel) => [{ href: rel + 'ja/', label: '命式計算' }, { href: rel + 'ja/2027/', label: '2027年の運勢' }, { href: rel + 'en/', label: 'English' }, { href: rel, label: '한국어' }];
+const NAV = (rel) => [{ href: rel + 'ja/', label: '命式計算' }, { href: rel + 'ja/match/', label: '相性' }, { href: rel + 'ja/nikkan/', label: '日干' }, { href: rel + 'ja/2027/', label: '2027年の運勢' }, { href: rel + 'en/', label: 'English' }, { href: rel, label: '한국어' }];
 const REL_JA = {
   same: { label: '同じ支', tone: 'neutral', short: '未と同じ支' }, yukhap: { label: '支合', tone: 'good', short: '未と支合' }, samhap: { label: '三合', tone: 'good', short: '未と三合' },
   banghap: { label: '方合', tone: 'good', short: '未と方合' }, chung: { label: '冲', tone: 'bad', short: '未と冲' }, hyeong: { label: '刑', tone: 'bad', short: '未と刑' },

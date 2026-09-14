@@ -99,7 +99,8 @@ DAY_MASTERS.forEach((d, i) => {
   const url = dmUrl(d);
   write(url.slice(1), shell({
     rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${d.name} Day Master — ${d.arch}`,
-    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/guide/${d.koGuide}.html">`,
+    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/guide/${d.koGuide}.html">
+  <link rel="alternate" hreflang="ja" href="${SITE}/ja/nikkan/${d.slug}/">`,
     jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Library', url: SITE + '/en/guide/' }, { name: d.arch, url: SITE + url }]),
       { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop' }, publisher: { '@type': 'Organization', name: 'Sajucheop' }, mainEntityOfPage: SITE + url }],
     body
@@ -134,7 +135,8 @@ DAY_MASTERS.forEach((d, i) => {
     </div>
   </article>`;
   write(url.slice(1), shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: 'The ten Day Masters — which nature are you?',
-    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/guide/ilgan.html">`,
+    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/guide/ilgan.html">
+  <link rel="alternate" hreflang="ja" href="${SITE}/ja/nikkan/">`,
     jsonld: breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Library', url: SITE + '/en/guide/' }, { name: 'Day Masters', url: SITE + url }]), body }));
   urls.push(SITE + url);
 }
@@ -170,6 +172,7 @@ DAY_MASTERS.forEach((d, i) => {
       <p>Each article describes the pure nature first, then how it behaves in love and at work, who it combines with (합) and clashes with (충), and how the reading shifts when the Day Master is strongly or weakly supported by the rest of the chart. Treat it as a mirror, not a verdict — the chart describes weather, and what you do in it has always been yours.</p>
       <h2>Go one level deeper</h2>
       <p>Your Day Master sits on one of twelve branches, and that seat changes everything. The <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a> — Jia Zi to Gui Hai — read each combination: hidden stems, spouse seat, twelve-stage, and the pillars you match best with. The <a href="${rel}en/guide/compatibility/">Day Master compatibility table</a> covers all 100 pairings.</p>
+      <p>Then the reading tools themselves: the <a href="${rel}en/guide/ten-gods/">Ten Gods, one page each</a>, the <a href="${rel}en/guide/twelve-stages/">Twelve Life Stages</a> your Day Master moves through, the <a href="${rel}en/guide/#stars">special stars</a>, and a <a href="${rel}en/glossary/">glossary of about a hundred terms</a>. For 2027, read the year by <a href="${rel}en/2027/day-master/">Day Master</a> or by <a href="${rel}en/2027/day-pillar/">day pillar</a>, and try the <a href="${rel}en/bazi-calculator/">BaZi calculator</a> if you prefer Chinese terminology.</p>
       <p class="callout"><a href="${rel}en/today/">Today\'s energy</a> · <a href="${rel}en/match/">Compatibility</a> · <a href="${rel}en/zodiac/">Chinese zodiac</a> · <a href="${rel}en/korean-age/">Korean age</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday</a> · <a href="${rel}guide/" hreflang="ko">한국어 서재</a></p>
     </div>
     <div class="ga-cta">

@@ -125,6 +125,15 @@
     }
     $('#bz-years').innerHTML = '<table class="bz-table"><tr><th>Year</th><th>Pillar</th><th>Stem · Ten God</th><th>Branch · Ten God</th><th>With your Day Branch</th></tr>' + rows + '</table>';
 
+    /* special stars */
+    var starsBox = $('#bz-stars');
+    if (starsBox && window.Shensha) {
+      var stars = window.Shensha.find(r);
+      starsBox.innerHTML = stars.length
+        ? '<table class="bz-table"><tr><th>Star</th><th>Where</th></tr>' + stars.map(function (s) { return '<tr><td><a href="/en/guide/' + s.slug + '/">' + s.name + '</a> <small style="color: var(--faint);">' + s.han + '</small></td><td>' + s.note + '</td></tr>'; }).join('') + '</table>'
+        : '<p>None of the nine named stars (Nobleman, Peach Blossom, Traveling Horse, Flower Canopy, Yang Blade, White Tiger, Kui Gang, Void, Wonjin) sits in this natal chart.</p>';
+    }
+
     /* links */
     var i60 = idx60(P.day.stem, P.day.branch), slug = (window.EN_PILLAR_SLUGS || [])[i60];
     $('#bz-links').innerHTML = (slug ? '<a href="/en/guide/day-pillar/' + slug + '/">Your Day Pillar ' + PY_S[P.day.stem] + ' ' + PY_B[P.day.branch] + ' — the sixty-pillar profile →</a>' : '') +

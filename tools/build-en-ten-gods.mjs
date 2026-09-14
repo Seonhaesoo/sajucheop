@@ -59,8 +59,9 @@ const fitDesc = (s, tails) => { for (const t of tails) if ((s + t).length <= 155
 TEN_GODS.forEach((g, gi) => {
   const url = gUrl(g), rel = '../../../../';
   const pair = gi % 2 === 0 ? TEN_GODS[gi + 1] : TEN_GODS[gi - 1];
-  const title = `${g.name} (${g.han}) in BaZi and Saju — Meaning, Personality, Love, Money`;
-  const short = `${g.name} (${g.han}) in BaZi and Saju — Meaning & Personality`;
+  const han1 = g.han.split(' ')[0];
+  const title = `${g.name} (${han1}) in BaZi & Saju — Meaning, Love, Money, Career`;
+  const short = `${g.name} (${han1}) — Ten Gods in BaZi & Saju`;
   const desc = fitDesc(`${g.name} (${g.han}, ${g.ko}) explained: ${g.rule.charAt(0).toLowerCase() + g.rule.slice(1)}.`,
     [` What it means in your chart, personality, love, money, career, and what it is for each Day Master.`, ' Meaning, personality, love, money and career.', ' Meaning and personality.']);
   const nav = `<div class="tg-nav">${TEN_GODS.map((x) => `<a href="${rel}${gUrl(x).slice(1)}"${x === g ? ' class="cur"' : ''}><b>${x.han}</b>${x.name}</a>`).join('')}</div>`;

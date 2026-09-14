@@ -41,6 +41,8 @@ const KO_PAIR = {
   'ten-gods': 'guide/sipseong.html', 'hidden-stems': 'guide/jijanggan.html', 'luck-pillars': 'guide/daeun.html',
   'day-master-strength': 'guide/singang.html', 'useful-god': 'guide/yongsin.html', 'gunghap': 'guide/gunghap-howto.html',
   'peach-blossom': 'guide/dohwasal.html', 'fire-goat-baby-2027': 'guide/2027-jeongmi.html',
+  'nobleman-star': 'guide/cheoneul-gwiin.html', 'traveling-horse': 'guide/yeokmasal.html', 'flower-canopy': 'guide/hwagaesal.html', 'yang-blade': 'guide/yanginsal.html',
+  'white-tiger': 'guide/baekhosal.html', 'kui-gang': 'guide/goegangsal.html', 'void-kong-wang': 'guide/gongmang.html', 'wonjin': 'guide/wonjinsal.html',
 };
 
 const warn = [];

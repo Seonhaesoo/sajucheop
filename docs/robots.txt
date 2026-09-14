@@ -19,3 +19,6 @@ Sitemap: https://sajucheop.com/sitemap-en-learn.xml
 Sitemap: https://sajucheop.com/sitemap-en-terms.xml
 Sitemap: https://sajucheop.com/sitemap-en-monthly.xml
 Sitemap: https://sajucheop.com/sitemap-ja.xml
+Sitemap: https://sajucheop.com/sitemap-en-tengods.xml
+Sitemap: https://sajucheop.com/sitemap-en-stages.xml
+Sitemap: https://sajucheop.com/sitemap-en-2027-dm.xml
