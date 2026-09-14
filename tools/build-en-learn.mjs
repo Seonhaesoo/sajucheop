@@ -282,7 +282,7 @@ for (const relDir of written.concat(['en'])) {
   for (const m of html.matchAll(/href="([^"#]*)(#[^"]*)?"/g)) {
     const href = m[1];
     if (!href || /^(https?:|mailto:|data:)/.test(href) || /['+]/.test(href)) continue;   /* 인라인 스크립트가 이어 붙이는 주소는 건너뜀 */
-    const target = path.resolve(path.dirname(file), href);
+    const target = href.startsWith('/') ? path.join(DOCS, href) : path.resolve(path.dirname(file), href);
     const ok = href.endsWith('/') ? fs.existsSync(path.join(target, 'index.html')) : fs.existsSync(target);
     if (!ok) warn.push(`${relDir}/: broken link ${href}`);
   }

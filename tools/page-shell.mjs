@@ -49,6 +49,12 @@ export function shell(o) {
   <link rel="canonical" href="${esc(o.canonical)}">
   ${o.noindex ? '<meta name="robots" content="noindex, follow">' : ''}
   <link rel="icon" type="image/svg+xml" href="${o.rel}favicon.svg">
+  <link rel="manifest" href="${lang === 'en' ? '/en/manifest.webmanifest' : lang === 'ja' ? '/ja/manifest.webmanifest' : '/manifest.webmanifest'}">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#F6F1E8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="${lang === 'en' ? 'Sajucheop' : lang === 'ja' ? '四柱推命' : '사주첩'}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">${jaFonts}
@@ -87,6 +93,7 @@ ${o.body}
     </div>
     <p class="footer-note">${footerNote}</p>
   </footer>
+<script src="/js/pwa.js" defer></script>
 
 </div>
 </body>

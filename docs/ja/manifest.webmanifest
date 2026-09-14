@@ -1,0 +1,22 @@
+{
+  "id": "/ja/",
+  "name": "サジュチョプ — 四柱推命 命式計算",
+  "short_name": "サジュチョプ",
+  "description": "生年月日から命式を作成し、日干・通変星・大運まで無料で読み解く韓国式四柱推命。",
+  "lang": "ja",
+  "start_url": "/ja/?utm_source=pwa&utm_medium=homescreen",
+  "scope": "/ja/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F1E8",
+  "theme_color": "#F6F1E8",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "2027年の運勢", "url": "/ja/2027/?utm_source=pwa&utm_medium=shortcut", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

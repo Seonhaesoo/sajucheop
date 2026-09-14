@@ -1,0 +1,24 @@
+{
+  "id": "/en/",
+  "name": "Sajucheop — Korean Four Pillars (Saju)",
+  "short_name": "Sajucheop",
+  "description": "Free Korean saju reading: your Four Pillars chart, Day Master, today's energy, best days and compatibility.",
+  "lang": "en",
+  "start_url": "/en/?utm_source=pwa&utm_medium=homescreen",
+  "scope": "/en/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F1E8",
+  "theme_color": "#F6F1E8",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Today", "url": "/en/today/?utm_source=pwa&utm_medium=shortcut", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Match", "url": "/en/match/?utm_source=pwa&utm_medium=shortcut", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "2027 horoscope", "url": "/en/2027/?utm_source=pwa&utm_medium=shortcut", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

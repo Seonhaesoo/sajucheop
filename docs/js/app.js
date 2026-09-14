@@ -2489,23 +2489,7 @@
     el.hidden = false;
   }
 
-  /* PWA 설치 제안 — 연속 3일 방문했고, 설치 안 됐고, 닫은 적 없을 때만 */
-  var PWA_DISMISS_KEY = 'sajucheop.pwa.dismissed';
-
-  function maybeShowPwaBanner(streak) {
-    var banner = $('#pwa-banner');
-    if (!banner || !state.deferredInstall) return;
-    var standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
-    var dismissed = false;
-    try { dismissed = !!localStorage.getItem(PWA_DISMISS_KEY); } catch (e) { /* 무시 */ }
-    if (streak >= 3 && !standalone && !dismissed) banner.hidden = false;
-  }
-
-  window.addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault();
-    state.deferredInstall = e;
-    maybeShowPwaBanner(state.visitStreak || 1);
-  });
+  /* PWA 설치 제안은 모든 페이지 공용 js/pwa.js 가 맡는다 */
 
   /* ---------- 세운 (연운) ---------- */
 
@@ -3129,19 +3113,6 @@
     $('#btn-share-card').addEventListener('click', shareCharacterCard);
     $('#btn-book-add').addEventListener('click', addToBook);
     $('#btn-alarm').addEventListener('click', downloadMorningAlarm);
-    $('#pwa-install').addEventListener('click', function () {
-      if (!state.deferredInstall) return;
-      state.deferredInstall.prompt();
-      state.deferredInstall.userChoice.then(function () {
-        $('#pwa-banner').hidden = true;
-        state.deferredInstall = null;
-      });
-      track('pwa_prompt');
-    });
-    $('#pwa-dismiss').addEventListener('click', function () {
-      $('#pwa-banner').hidden = true;
-      try { localStorage.setItem(PWA_DISMISS_KEY, '1'); } catch (e) { /* 무시 */ }
-    });
     document.querySelectorAll('#jr-btns .jr-btn').forEach(function (b) {
       b.addEventListener('click', function () { markJournal(+b.getAttribute('data-jr')); });
     });
@@ -3230,7 +3201,6 @@
   renderHomeToday();
   state.visitStreak = touchVisitStreak();
   renderDailyBit(state.visitStreak);
-  maybeShowPwaBanner(state.visitStreak);
   /* 입력 폼 자동 채움 — 첩의 '나' 장 우선, 없으면 마지막 계산 프로필 */
   var savedProfile = bookSelf() || loadProfile();
   if (savedProfile) fillFormFromProfile(savedProfile);
