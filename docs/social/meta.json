@@ -1,9 +1,12 @@
 {
-  "seq": 5,
-  "type": "hook",
-  "date": "2026-09-14",
-  "slug": "hook-angry",
-  "title": "일간별 화났을 때 반응 모음",
+  "seq": 6,
+  "type": "edu",
+  "date": "2026-09-16",
+  "slug": "eum-ilgan",
+  "title": "음간 5남매, 부드러운 것이 강하다",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "The five Yin Day Masters",
+    "cards": 7
+  }
 }
