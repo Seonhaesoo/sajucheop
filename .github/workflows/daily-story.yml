@@ -82,9 +82,12 @@ jobs:
         run: |
           git config user.name 'sajucheop-bot'
           git config user.email 'bot@users.noreply.github.com'
-          git add docs/daily/ docs/day/ docs/son/ docs/jeolgi/ docs/en/day/ docs/today/ docs/tomorrow/ docs/sitemap-pages.xml docs/sitemap-pages-en.xml docs/sitemap-ddi-daily.xml docs/robots.txt
+          # 위 생성 단계가 쓰는 곳은 전부 docs/ 아래 — 목록으로 적으면 새 단계를 붙일 때 빠뜨린다.
+          # (2026-09-15~18: 영문 월간 단계가 매일 바꾸는 sitemap-en-monthly.xml·docs/en/monthly/ 가 목록에 없어
+          #  커밋 뒤 pull --rebase 가 '스테이지 안 된 변경'으로 멈췄고, 배포·쓰레드 게시가 나흘 동안 건너뛰어졌다)
+          git add -A docs/
           git commit -m "데일리 일진 카드 $(TZ=Asia/Seoul date +%F)" || echo '변경 없음'
-          git pull --rebase
+          git pull --rebase --autostash
           git push
 
       # 봇 푸시(GITHUB_TOKEN)는 push 이벤트를 만들지 않아 deploy-pages 가 저절로 돌지 않는다 — 직접 부른다(workflow_dispatch 는 예외로 허용).

@@ -63,7 +63,7 @@ jobs:
           git config user.email 'bot@users.noreply.github.com'
           git add docs/social/
           git commit -m "주간 소셜 콘텐츠 $(TZ=Asia/Seoul date +%F)" || echo '변경 없음'
-          git pull --rebase
+          git pull --rebase --autostash
           git push
 
       # 봇 푸시(GITHUB_TOKEN)는 push 이벤트를 만들지 않아 deploy-pages 가 저절로 돌지 않는다 — 직접 부른다(workflow_dispatch 는 예외로 허용).
