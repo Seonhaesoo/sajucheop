@@ -237,9 +237,11 @@ function monthPage(y, m, idx) {
     const careDays = S.days.filter((d) => CHUNG[b] === d.branch);
     const fmtDays = (arr) => arr.map((d) => `${MON[d.m - 1]} ${d.d} (${BRANCH_ANIMAL[d.branch]})`).join(', ');
     const label = p === 'none' ? 'Neutral' : REL_EN[p].label + (extra.length ? ' · ' + extra.map((r) => REL_EN[r].long.toLowerCase()).join(' · ') : '');
-    return { b, X, p, good, bad, html: `
+    const para = `${esc(fill(variant, { S: X.name, M: A.name }))} ${esc(fill(EL_LINE[er], { E: stemEl, SE: EL[DDI[b].el].en }))}`;
+    const daysHtml = `<b>Best days:</b> ${bestDays.length ? fmtDays(bestDays) : 'none stand out'} · <b>Take care:</b> ${careDays.length ? fmtDays(careDays) : 'no clash days'}`;
+    return { b, X, p, good, bad, label, para, daysHtml, html: `
       <div class="mo-sign" id="${X.slug}">
-        <h3>${X.name} <b class="han" style="font-family: 'Noto Serif KR', serif;">${M.BRANCHES[b].han}</b><span class="tag${good ? ' good' : bad ? ' bad' : ''}">${esc(label)}</span><small><a href="${rel}en/2027/${X.slug}/">${X.name} in 2027</a></small></h3>
+        <h3>${X.name} <b class="han" style="font-family: 'Noto Serif KR', serif;">${M.BRANCHES[b].han}</b><span class="tag${good ? ' good' : bad ? ' bad' : ''}">${esc(label)}</span><small><a href="${rel}en/monthly/${X.slug}/">${X.name}, every month</a> · <a href="${rel}en/2027/${X.slug}/">${X.name} in 2027</a></small></h3>
         <p>${esc(fill(variant, { S: X.name, M: A.name }))} ${esc(fill(EL_LINE[er], { E: stemEl, SE: EL[DDI[b].el].en }))}</p>
         <p class="days"><b>Best days:</b> ${bestDays.length ? fmtDays(bestDays) : 'none stand out'} · <b>Take care:</b> ${careDays.length ? fmtDays(careDays) : 'no clash days'}</p>
       </div>` };
@@ -292,7 +294,54 @@ function monthPage(y, m, idx) {
     extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/wolun/${key(y, m)}/">`,
     jsonld: [crumbs([['Monthly horoscope', '/en/monthly/'], [monthName(y, m), url]]), article(url, title, desc, published), faqLd(faq)], body });
   urls.push({ loc: SITE + url, lastmod: published });
-  return { y, m, S, A, han, pinyin, range, isCur, goodSigns, careSigns };
+  return { y, m, S, A, han, pinyin, range, isCur, goodSigns, careSigns, signs, url };
+}
+
+/* ---------- 띠별 허브: 그 띠의 달마다 풀이 ---------- */
+function signPage(b, months) {
+  const X = ANIMALS[b], url = `/en/monthly/${X.slug}/`, rel = '../../../';
+  const first = months[0], last = months[months.length - 1];
+  const span = first.y === last.y ? String(first.y) : `${first.y}–${last.y}`;
+  const rows = months.map((mo) => {
+    const s = mo.signs[b];
+    return `
+      <div class="mo-sign" id="${key(mo.y, mo.m)}">
+        <h3><a href="${rel}${mo.url.slice(1)}" style="text-decoration: none;">${MONTHS[mo.m - 1]} ${mo.y}</a> <small>the ${mo.A.name} month · ${mo.range}</small><span class="tag${s.good ? ' good' : s.bad ? ' bad' : ''}">${esc(s.label)}</span>${mo.isCur ? '<span class="tag">this month</span>' : ''}</h3>
+        <p>${s.para}</p>
+        <p class="days">${s.daysHtml}</p>
+      </div>`;
+  }).join('\n');
+  const goodMonths = months.filter((mo) => mo.signs[b].good), careMonths = months.filter((mo) => mo.signs[b].bad);
+  const mName = (mo) => `${MONTHS[mo.m - 1]} ${mo.y}`;
+  const title = `${X.name} Monthly Horoscope ${span} — Month by Month`;
+  const desc = `Monthly horoscope for the ${X.name}, ${mName(first)} to ${mName(last)}: how each solar month meets the ${X.name}’s branch, its best and care days, and the months to watch — ${goodMonths.length ? listText(goodMonths.slice(0, 3).map(mName)) + ' favor the ' + X.name : 'a steady run'}.`;
+  const faq = [
+    [`Which months are best for the ${X.name} in ${span}?`, goodMonths.length ? `${cap(listText(goodMonths.map(mName)))} — in those months the month branch forms a harmony with the ${X.name}. Each month page lists the best days inside it.` : `No month in this span forms a harmony with the ${X.name}; the neutral months are the calm ones, and the best days inside each month still apply.`],
+    [`Which months should the ${X.name} take care in?`, careMonths.length ? `${cap(listText(careMonths.map(mName)))} — clash, punishment or harm links with the ${X.name}’s branch. Care means checking dates and documents twice, not staying home.` : `None of the months in this span clashes with the ${X.name}.`],
+    [`How is a monthly horoscope by sign worked out?`, `Each solar month carries a branch (one of the twelve animals) and a stem (one of five elements). The branch is compared with the ${X.name}’s branch ${M.BRANCHES[b].han} for harmony or clash, and the stem’s element with the ${X.name}’s own ${EL[DDI[b].el].en}. Best and care days come from the day pillars in the same way.`]
+  ];
+  const body = `
+  <article class="guide-article">
+    <div class="ga-overline"><a href="${rel}en/monthly/" style="color: inherit; text-decoration: none;">Monthly horoscope</a> · ${X.name}</div>
+    <h1 class="ga-title">${X.name} monthly horoscope — <br>${span}, month by month</h1>
+    <p class="ga-meta">${months.length} solar months · birth-year branch ${M.BRANCHES[b].han} · ${X.name} years ${[1960, 1972, 1984, 1996, 2008, 2020].map((t) => t + ((b - 4) % 12 + 12) % 12 - 8 + (b >= 8 ? 12 : 0)).join(', ')}</p>
+    <p class="ga-lead">${esc(X.short)} Below is every solar month from ${mName(first)} to ${mName(last)} read for the ${X.name}: the link between the month’s branch and yours, the month’s element against your ${EL[DDI[b].el].en}, and the best and care days inside it. Months begin at the solar terms, not on the 1st.</p>
+    <div class="ga-body">
+      <div class="mo-grid">${months.map((mo) => `<a href="#${key(mo.y, mo.m)}" class="${mo.signs[b].good ? 'good' : mo.signs[b].bad ? 'bad' : ''}"><b>${MON[mo.m - 1]}</b>${mo.y}</a>`).join('')}</div>
+      ${rows}
+
+      <h2>FAQ</h2>
+      ${faqHtml(faq)}
+      <p class="callout"><a href="${rel}en/2027/${X.slug}/">The ${X.name} in 2027</a> · <a href="${rel}en/zodiac/${X.slug}/">Year of the ${X.name}</a> · <a href="${rel}en/monthly/">All months, all signs</a> · Other signs: ${ANIMALS.map((Y, i) => i === b ? `<b>${Y.name}</b>` : `<a href="${rel}en/monthly/${Y.slug}/">${Y.name}</a>`).join(' · ')}</p>
+    </div>
+    <div class="ga-cta">
+      <a class="btn-primary" href="${rel}en/today/"><span class="seal-dot" aria-hidden="true"></span><span>Read each day for my own chart</span></a>
+    </div>
+  </article>`;
+  write(url, { rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${X.name} monthly horoscope — ${span}`,
+    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">`,
+    jsonld: [crumbs([['Monthly horoscope', '/en/monthly/'], [X.name, url]]), article(url, title, desc, `${first.S.start.y}-${pad(first.S.start.m)}-${pad(first.S.start.d)}`), faqLd(faq)], body });
+  urls.push({ loc: SITE + url, lastmod: `${today.y}-${pad(today.m)}-${pad(today.d)}` });
 }
 
 /* ---------- hub ---------- */
@@ -317,6 +366,8 @@ function hub(months) {
       <ul class="mo-list">
         ${items}
       </ul>
+      <h2>By sign — every month for one animal</h2>
+      <div class="mo-grid">${ANIMALS.map((X, b) => `<a href="${rel}en/monthly/${X.slug}/"><b>${M.BRANCHES[b].han}</b>${X.name}</a>`).join('')}</div>
       <h2>How to read a month</h2>
       <p>Start with the month pillar. Its branch is one of the twelve animals, and the same relationships that decide zodiac compatibility — six harmony, trine, clash, punishment, harm — decide how the month treats your sign. Its stem carries one of the five elements and colors the whole month: a Yang Fire month is loud and visible, a Yin Water month quiet and inward. Then look at the days: within any month, a handful of days harmonize with your sign and two or three clash with it, and those are worth knowing when you plan a meeting, a trip or a signature.</p>
       <p>All of this reads one character of your chart, the year branch. The <a href="${rel}en/">chart calculator</a> gives you the other seven, and <a href="${rel}en/today/">today’s reading</a> compares each day with your Day Master and Day Branch rather than with your animal alone.</p>
@@ -336,6 +387,7 @@ function hub(months) {
 
 const months = LIST.map(([y, m], i) => monthPage(y, m, i));
 hub(months);
+ANIMALS.forEach((_, b) => signPage(b, months));
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-monthly.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
   .concat(urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');

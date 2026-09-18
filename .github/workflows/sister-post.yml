@@ -1,6 +1,6 @@
 name: sister-post
 
-# 첩 시리즈 쓰레드 글 — 이틀에 한 편(19:37 KST), 타로첩 → 꿈첩 → 생일첩 순서 (tools/sister-post.mjs)
+# 첩 시리즈 쓰레드 글 — 이틀에 한 편(19:37 KST), 타로첩 → 꿈첩 → 생일첩 순서 (tools/sister-post.mjs) + 절기 날엔 이달의 띠별 운세(tools/wolun-post.mjs)
 # 예약은 매일 돌고 쉬는 날인지는 스크립트가 날짜로 정한다(크론 격일은 월말에 연달아 걸림). 상태 파일·커밋 없음.
 # 정각을 피해 37분 — 정각 예약은 몇 시간씩 밀린다. 수동 실행에서 kind 를 고르면 쉬는 날이어도 만든다.
 on:
@@ -39,3 +39,8 @@ jobs:
           KIND: ${{ github.event.inputs.kind }}
           DRY: ${{ github.event.inputs.dry }}
         run: node tools/sister-post.mjs
+
+      - name: 절기 날이면 이달의 띠별 운세 글 (공유 카드 첨부, tools/wolun-post.mjs)
+        env:
+          DRY: ${{ github.event.inputs.dry }}
+        run: node tools/wolun-post.mjs

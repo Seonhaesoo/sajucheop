@@ -411,7 +411,7 @@ function animalPage(b) {
       <h2>Beyond the year animal</h2>
       <p>Your animal sign is one of eight characters in a Korean saju chart, and not the one that describes you most closely. That job belongs to the Day Master, the stem of your birth day: ten natures from <a href="${rel}en/guide/day-master/yang-wood/">the Tall Pine</a> to <a href="${rel}en/guide/day-master/yin-water/">the Morning Dew</a>. <a href="${rel}en/guide/what-is-saju/">What saju is</a> explains how the eight fit together.</p>
       <h2>The ${A.name} in 2027</h2>
-      <p>The Year of the Fire Goat gives the ${A.name} <b>${S27[b]}/100</b> — ${g27.label.toLowerCase()} (${Y27_REL[DDI[b].rel].short.toLowerCase()}). <a href="${rel}${y27Url(b).slice(1)}">Read the ${A.name}’s 2027 horoscope →</a> · <a href="${rel}en/monthly/">Month by month for the ${A.name}</a></p>
+      <p>The Year of the Fire Goat gives the ${A.name} <b>${S27[b]}/100</b> — ${g27.label.toLowerCase()} (${Y27_REL[DDI[b].rel].short.toLowerCase()}). <a href="${rel}${y27Url(b).slice(1)}">Read the ${A.name}’s 2027 horoscope →</a> · <a href="${rel}en/monthly/${A.slug}/">Month by month for the ${A.name}</a></p>
       <h2>Questions about the ${A.name}</h2>
       ${faqHtml(faqs)}
       <p class="callout">Korean: ${A.ko} · <a href="${rel}ddi-gunghap/${A.slug}/" hreflang="ko">${A.ko} 궁합</a> · <a href="${rel}2027/ddi/${A.slug}/" hreflang="ko">2027년 ${A.ko} 운세</a> · All signs: ${ANIMALS.map((X, i) => i === b ? `<b>${X.name}</b>` : `<a href="${rel}${aUrl(i).slice(1)}">${X.name}</a>`).join(' · ')}</p>
