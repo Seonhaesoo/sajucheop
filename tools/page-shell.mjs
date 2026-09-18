@@ -41,7 +41,14 @@ export function shell(o) {
   const foreign = lang === 'en' || lang === 'ja';
   const brand = foreign ? 'Sajucheop' : '사주첩';
   const nav = (o.nav || []).concat(foreign ? [] : [{ href: 'http://saengil.sajucheop.com/', label: '생일 사전' }, { href: 'https://dream.sajucheop.com/', label: '꿈해몽' }, { href: 'https://tarot.sajucheop.com/', label: '타로' }]).map((n) => `<a href="${esc(n.href)}">${n.label}</a>`).join('\n      ');
-  const ld = o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld)}</script>` : '';
+  const ogUrl = 'https://sajucheop.com' + ogImage(o);
+  const withImage = (x) => (x && x['@type'] === 'Article' && !x.image ? { ...x, image: [ogUrl] } : x);
+  const ldData = o.jsonld ? (Array.isArray(o.jsonld) ? o.jsonld.map(withImage) : withImage(o.jsonld)) : null;
+  const ld = ldData ? `<script type="application/ld+json">${JSON.stringify(ldData)}</script>` : '';
+  /* 3) 본문 안 1200px 그림 — 구글 디스커버는 페이지 안의 큰 이미지를 쓴다. 그 페이지(구역)만의 카드가 있을 때만, 검색에서 뺀 페이지는 넣지 않는다 */
+  const card = !o.noindex && ogImage(o).startsWith('/og/') ? ogImage(o) : '';
+  const cardNote = lang === 'en' ? 'This card shows when you share the page' : lang === 'ja' ? 'このページを共有するとこのカードが表示されます' : '이 페이지를 공유하면 이 그림이 함께 보여요';
+  const shareCard = card ? `\n  <figure class="share-card"><img src="${card}" width="1200" height="630" loading="lazy" decoding="async" alt="${esc(o.ogTitle || o.title)}"><figcaption>${cardNote}</figcaption></figure>\n` : '';
   const footerLinks = lang === 'en'
     ? `<a href="${o.rel}en/">Chart</a><a href="${o.rel}en/guide/">Library</a><a href="${o.rel}en/about/">About</a><a href="${o.rel}en/privacy/">Privacy</a><a href="${o.rel}en/terms/">Terms</a>`
     : lang === 'ja'
@@ -65,7 +72,7 @@ export function shell(o) {
   <title>${esc(o.title)}</title>
   <meta name="description" content="${esc(o.desc)}">
   <link rel="canonical" href="${esc(o.canonical)}">
-  ${o.noindex ? '<meta name="robots" content="noindex, follow">' : ''}
+  ${o.noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="max-image-preview:large">'}
   <link rel="icon" type="image/svg+xml" href="${o.rel}favicon.svg">
   <link rel="manifest" href="${lang === 'en' ? '/en/manifest.webmanifest' : lang === 'ja' ? '/ja/manifest.webmanifest' : '/manifest.webmanifest'}">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -101,7 +108,7 @@ export function shell(o) {
   </header>
 
 ${o.body}
-
+${shareCard}
   <footer class="site-footer" style="margin-top: 30px;">
     <div class="footer-row">
       <span class="copy">© ${brand}</span>
