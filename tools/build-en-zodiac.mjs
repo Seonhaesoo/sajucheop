@@ -420,7 +420,7 @@ function animalPage(b) {
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Read your full Four Pillars chart</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `Year of the ${A.name} — ${A.key}`, extraHead: STYLE + STYLE_FACTS + alt(url),
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), og: `en-zodiac-${A.slug}`, ogTitle: `Year of the ${A.name} — ${A.key}`, extraHead: STYLE + STYLE_FACTS + alt(url),
     jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], [A.name, url]]), article(url, title, desc, MODIFIED_ZY), faqLd(faqs)], body }));
 }
 
@@ -501,7 +501,7 @@ function yearPage(y) {
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Your birth date, all four pillars</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${y} — Year of the ${x.name}`, extraHead: STYLE + STYLE_FACTS + alt(url),
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), og: `en-zodiac-${A.slug}`, ogTitle: `${y} — Year of the ${x.name}`, extraHead: STYLE + STYLE_FACTS + alt(url),
     jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], [A.name, aUrl(b)], [String(y), url]]), article(url, title, desc, MODIFIED_ZY), faqLd(faqs)], body }));
 }
 
@@ -682,7 +682,7 @@ function year27Page(b) {
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>See 2027 in your full chart</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `The ${A.name} in 2027 — ${score}/100`, extraHead: STYLE + alt(url, `/2027/ddi/${A.slug}/`) + `\n  <link rel="alternate" hreflang="ja" href="${SITE}/ja/2027/${A.slug}/">`,
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), og: `en-2027-${A.slug}`, ogTitle: `The ${A.name} in 2027 — ${score}/100`, extraHead: STYLE + alt(url, `/2027/ddi/${A.slug}/`) + `\n  <link rel="alternate" hreflang="ja" href="${SITE}/ja/2027/${A.slug}/">`,
     jsonld: [crumbs([['2027 Horoscope', '/en/2027/'], [A.name, url]]), article(url, title, desc),
       { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq27.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }], body }));
 }

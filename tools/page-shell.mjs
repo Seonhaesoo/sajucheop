@@ -17,7 +17,25 @@ export function brandSvg() {
       </svg>`;
 }
 
-/* o: { rel, title, desc, canonical, jsonld (object|array), nav: [{href,label}], body, lang, extraHead, noindex } */
+/* 공유 카드 — docs/og/<키>.jpg (tools/og.mjs 가 그림). o.og 키가 있고 그림이 있으면 그것, 없으면 주소 앞부분으로 구역 그림, 그것도 없으면 og-image.png */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const OG_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs', 'og');
+const OG_FILES = new Set(fs.existsSync(OG_DIR) ? fs.readdirSync(OG_DIR).filter((f) => f.endsWith('.jpg')).map((f) => f.slice(0, -4)) : []);
+const OG_BY_PATH = [['/2027/ilju/', '2027-ilju'], ['/2027/', '2027'], ['/wolun/', 'wolun'], ['/ddi-gunghap/', 'ddi-gunghap'], ['/gunghap/', 'gunghap'], ['/today/ddi/', 'today-ddi'], ['/tomorrow/ddi/', 'today-ddi'],
+  ['/ilju/', 'ilju'], ['/naming/hanja/', 'hanja'], ['/naming/', 'naming'], ['/guide/', 'guide'], ['/jeolgi/', 'jeolgi'], ['/day/', 'day'], ['/son/', 'son'], ['/tojeong/', 'tojeong'], ['/samjae/', 'samjae'], ['/manse/', 'manse'], ['/lunar/', 'lunar'], ['/test/', 'test'],
+  ['/en/zodiac/compatibility/', 'en-compat'], ['/en/zodiac/', 'en-zodiac'], ['/en/2027/day-pillar/', 'en-pillars'], ['/en/2027/', 'en-2027'], ['/en/monthly/', 'en-monthly'], ['/en/day/', 'en-day'], ['/en/korean-name/', 'en-name'], ['/en/guide/', 'en-guide'], ['/en/day-pillar/', 'en-pillars'], ['/en/bazi/', 'en-bazi'], ['/ja/', 'ja']];
+export function ogImage(o) {
+  const foreign = o.lang === 'en' || o.lang === 'ja';
+  if (o.og && OG_FILES.has(o.og)) return `/og/${o.og}.jpg`;
+  const p = (o.canonical || '').replace(/^https?:\/\/[^/]+/, '');
+  const hit = OG_BY_PATH.find(([prefix]) => p.startsWith(prefix));
+  if (hit && OG_FILES.has(hit[1])) return `/og/${hit[1]}.jpg`;
+  return foreign ? '/og-image-en.png' : '/og-image.png';
+}
+
+/* o: { rel, title, desc, canonical, jsonld (object|array), nav: [{href,label}], body, lang, extraHead, noindex, og } */
 export function shell(o) {
   const lang = o.lang || 'ko';
   const foreign = lang === 'en' || lang === 'ja';
@@ -62,7 +80,7 @@ export function shell(o) {
   ${ld}
   <meta property="og:title" content="${esc(o.ogTitle || o.title)}">
   <meta property="og:description" content="${esc(o.desc)}">
-  <meta property="og:image" content="https://sajucheop.com/${foreign ? 'og-image-en.png' : 'og-image.png'}">
+  <meta property="og:image" content="https://sajucheop.com${ogImage(o)}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   ${lang === 'en' ? '<meta property="og:locale" content="en_US">' : lang === 'ja' ? '<meta property="og:locale" content="ja_JP">' : ''}

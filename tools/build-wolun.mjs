@@ -179,7 +179,7 @@ function monthPage(y, m) {
       <p class="form-microcopy" style="margin-top: 10px;">점수는 띠 글자와 이달 글자의 관계(합은 더하고 충·형·해·원진·파는 빼고)에 오행 보정을 더해 55~96점으로 맞춘 참고값입니다.</p>
     </div>
   </article>`;
-  write(url, { rel, title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${y}년 ${m}월 띠별 운세 — ${kor}월, 12띠 점수와 좋은 날`, extraHead: STYLE,
+  write(url, { rel, title, desc, canonical: SITE + url, nav: NAV(rel), og: `wolun-${monthKey(y, m)}`, ogTitle: `${y}년 ${m}월 띠별 운세 — ${kor}월, 12띠 점수와 좋은 날`, extraHead: STYLE,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '이달의 띠별 운세', url: SITE + '/wolun/' }, { name: `${y}년 ${m}월`, url: SITE + url }]), article(url, title, desc, published), faqLd(faq)], body });
   urls.push({ loc: SITE + url, lastmod: published });
   return { y, m, S, han, kor, range, isCur, top, low };

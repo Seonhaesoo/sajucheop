@@ -190,7 +190,7 @@ function ddiPage(a) {
       <a class="btn-primary" href="${rel}gunghap/"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 정확한 궁합 보기</span></a>
     </div>
   </article>`;
-  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }, { name: name(a), url: SITE + url }]),
+  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, og: `gunghap-${A.slug}`, jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }, { name: name(a), url: SITE + url }]),
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([q, ans]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: ans } })) }], body }));
   urls.push(url);
 }

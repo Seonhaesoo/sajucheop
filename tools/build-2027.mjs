@@ -393,7 +393,7 @@ DDI.forEach((d, b) => {
     </div>
   </article>`;
   write(url.slice(1), shell({
-    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/2027/${d.slug}/">\n  <link rel="alternate" hreflang="ja" href="${SITE}/ja/2027/${d.slug}/">`, ogTitle: `2027년 ${d.animal}띠 운세 ${score}점 — ${tail}`,
+    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/2027/${d.slug}/">\n  <link rel="alternate" hreflang="ja" href="${SITE}/ja/2027/${d.slug}/">`, og: `2027-${d.slug}`, ogTitle: `2027년 ${d.animal}띠 운세 ${score}점 — ${tail}`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: `${d.animal}띠`, url: SITE + url }]), article({ title, desc, url }),
       faq([
         [`2027년 ${d.animal}띠 운세는 어떤가요?`, `${d.animal}띠(${d.han})는 정미년의 미(未)와 ${R.label} 관계로 ${score}점, ${grade.label}입니다. ${one}. ${firstSentence(T.overall)}`],
@@ -472,7 +472,7 @@ DDI.forEach((d, b) => {
     </div>
   </article>`;
     write(url2.slice(1), shell({
-      rel: rel2, title: title2, desc: desc2, canonical: SITE + url2, nav: NAV(rel2), extraHead: STYLE, ogTitle: `${yy}년생 ${d.animal}띠 2027년 운세 — ${S.plain}`,
+      rel: rel2, title: title2, desc: desc2, canonical: SITE + url2, nav: NAV(rel2), extraHead: STYLE, og: `2027-${d.slug}`, ogTitle: `${yy}년생 ${d.animal}띠 2027년 운세 — ${S.plain}`,
       jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: `${d.animal}띠`, url: SITE + url }, { name: `${y}년생`, url: SITE + url2 }]), article({ title: title2, desc: desc2, url: url2 }),
         faq([
           [`${y}년생은 2027년에 몇 살인가요?`, `세는나이 ${age}세, 만나이는 생일 전 ${age - 2}세·생일 후 ${age - 1}세입니다. ${y}년생은 ${ganjiKor}년(${st.han}${br.han}) ${COLOR[g.s]} ${d.animal}띠입니다.`],
