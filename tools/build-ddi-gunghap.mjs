@@ -184,7 +184,7 @@ function ddiPage(a) {
       <p>${josa(`${M.BRANCHES[a].kor}(${A.han})은`)} ${name(list.find((x) => x.rels.includes('yukhap')).i)}의 지지와 육합(六合), ${list.filter((x) => x.rels.includes('samhap')).map((x) => name(x.i)).join('·')}와 삼합(三合)을 이루고, ${name(list.find((x) => x.rels.includes('chung')).i)}와는 충(沖)입니다. 합은 끌림과 협력, 충은 변화와 마찰의 기운입니다.</p>
       <h2>자주 묻는 질문</h2>
       ${faqs.map(([q, ans]) => `<h3>${esc(q)}</h3>\n      <p>${esc(ans)}</p>`).join('\n      ')}
-      <p class="callout"><a href="${rel}today/ddi/${A.slug}/">${name(a)} 오늘의 운세</a> · <a href="${rel}2027/ddi/${A.slug}/">${name(a)} 2027년 운세</a> · <a href="${SAENGIL}/ddi/${A.slug}/">${name(a)} 출생연도와 나이 (생일 사전)</a> · <a href="${rel}gunghap/">생년월일 궁합</a>${ddiDreamLink(A) ? ' · ' + ddiDreamLink(A) : ''}</p>
+      <p class="callout"><a href="${rel}today/ddi/${A.slug}/">${name(a)} 오늘의 운세</a> · <a href="${rel}wolun/">이달의 ${name(a)} 운세</a> · <a href="${rel}2027/ddi/${A.slug}/">${name(a)} 2027년 운세</a> · <a href="${SAENGIL}/ddi/${A.slug}/">${name(a)} 출생연도와 나이 (생일 사전)</a> · <a href="${rel}gunghap/">생년월일 궁합</a>${ddiDreamLink(A) ? ' · ' + ddiDreamLink(A) : ''}</p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}gunghap/"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 정확한 궁합 보기</span></a>

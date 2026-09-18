@@ -384,7 +384,7 @@ DDI.forEach((d, b) => {
       <div class="ny-grid four">
         ${others}
       </div>
-      <p class="callout"><a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
+      <p class="callout"><a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
     </div>
 
     <div class="ga-cta">
@@ -463,7 +463,7 @@ DDI.forEach((d, b) => {
       <div class="ny-grid four">
         ${sibYears}
       </div>
-      <p class="callout"><a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027 운세 (월별·좋은 달)</a> · <a href="${rel2}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel2}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel2}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel2}2027/">정미년 운세 허브</a></p>
+      <p class="callout"><a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027 운세 (월별·좋은 달)</a> · <a href="${rel2}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel2}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel2}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel2}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel2}2027/">정미년 운세 허브</a></p>
     </div>
 
     <div class="ga-cta">

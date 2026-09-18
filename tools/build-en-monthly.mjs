@@ -289,7 +289,7 @@ function monthPage(y, m, idx) {
     </div>
   </article>`;
   write(url, { rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${MONTHS[m - 1]} ${y} — the ${A.name} month, all 12 signs`,
-    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">`,
+    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/wolun/${key(y, m)}/">`,
     jsonld: [crumbs([['Monthly horoscope', '/en/monthly/'], [monthName(y, m), url]]), article(url, title, desc, published), faqLd(faq)], body });
   urls.push({ loc: SITE + url, lastmod: published });
   return { y, m, S, A, han, pinyin, range, isCur, goodSigns, careSigns };
@@ -329,7 +329,7 @@ function hub(months) {
     </div>
   </article>`;
   write(url, { rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: 'Monthly Chinese horoscope — every sign, every solar month',
-    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">`,
+    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/wolun/">`,
     jsonld: [crumbs([['Monthly horoscope', url]]), faqLd(faq)], body });
   urls.unshift({ loc: SITE + url, lastmod: `${today.y}-${pad(today.m)}-${pad(today.d)}` });
 }
