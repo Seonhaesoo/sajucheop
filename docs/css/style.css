@@ -1832,6 +1832,8 @@ body.invite-mode .resume-chip { display: none !important; }
   font-family: inherit;
 }
 .gh-home .gh-row + .gh-row { border-top: 1px solid var(--line-soft); }
+.gh-home a.today-teaser { text-decoration: none; }
+.gh-home #home-2027 .tt-ganji { color: var(--seal); }
 .gh-home .gh-row-sub { padding: 12px 18px 13px; }
 .gh-home .gh-row-sub .tt-ganji { font-size: 17px; color: var(--muted); }
 .gh-home .gh-row-sub .tt-text b { font-size: 13px; font-weight: 600; }
