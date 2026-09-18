@@ -475,8 +475,21 @@ function buildTermIndex() {
     const ip = yearTerms(y).find((t) => t.slug === 'ipchun');
     return `<li><b><a href="${rel}jeolgi/${y}/">${y}년 24절기</a></b> — 입춘 ${ip.m}월 ${ip.d}일 ${pad(ip.hh)}:${pad(ip.mm)}</li>`;
   }).join('\n        ');
-  const title = '24절기 날짜와 시각 — 사주의 달이 바뀌는 순간';
-  const desc = `${Y0}년·${Y1}년 24절기의 정확한 시각(KST). 입춘·경칩·청명 등 열두 절이 드는 시각마다 사주의 월주가 바뀝니다.`;
+  const title = '24절기 날짜와 시각 — 절기 뜻·순서·풍습, 사주의 달이 바뀌는 순간';
+  const desc = `${Y0}년·${Y1}년 24절기의 정확한 시각(KST)과 스물네 절기의 뜻·순서·대략 날짜를 한 표로. 입춘·경칩·청명 등 열두 절이 드는 시각마다 사주의 월주가 바뀌고, 절기마다 풍습과 먹는 음식이 이어집니다.`;
+  const ORDER24 = ['소한', '대한', '입춘', '우수', '경칩', '춘분', '청명', '곡우', '입하', '소만', '망종', '하지', '소서', '대서', '입추', '처서', '백로', '추분', '한로', '상강', '입동', '소설', '대설', '동지'];
+  const SEASON = (i) => (i < 2 ? '겨울' : i < 8 ? '봄' : i < 14 ? '여름' : i < 20 ? '가을' : '겨울');
+  const cur = yearTerms(Y0);
+  const termRows = ORDER24.map((name, i) => {
+    const t = TERMS.find((x) => x.name === name), c = cur.find((x) => x.slug === t.slug);
+    return `<tr><td><b><a href="${rel}jeolgi/${c.y}/${t.slug}/">${t.name}</a></b> <span class="dp-han term">${t.han}</span></td><td>${SEASON(i)}</td><td>${t.kind === '절' ? '<span class="son">절</span>' : '중기'}</td><td>${t.approx[0]}월 ${t.approx[1]}일쯤</td><td>${t.desc.split(/(?<=[.다요])\s/)[0]}</td></tr>`;
+  }).join('\n        ');
+  const faq = [
+    ['24절기는 어떻게 정해지나요?', '태양이 하늘을 도는 길(황도)을 15도씩 스물네 칸으로 나누고, 태양이 각 칸에 들어서는 순간을 절기로 삼습니다. 그래서 절기는 양력 날짜와 거의 맞고, 해마다 하루쯤만 앞뒤로 움직여요. 음력과는 관계가 없습니다.'],
+    ['절(節)과 중기(中氣)는 무엇이 다른가요?', '스물네 절기를 번갈아 절과 중기로 부릅니다. 입춘·경칩·청명·입하·망종·소서·입추·백로·한로·입동·대설·소한 열두 절은 사주에서 달이 바뀌는 문턱이고, 우수·춘분·곡우 같은 열두 중기는 계절의 한가운데를 알립니다.'],
+    ['절기 시각이 왜 중요한가요?', '사주는 달을 1일이 아니라 절이 드는 시각에 바꿉니다. 같은 날이라도 절기 시각 앞에 태어났으면 앞달의 월주, 뒤에 태어났으면 새 달의 월주가 되고, 입춘은 년주와 띠까지 바꿔요. 그래서 사주첩은 분 단위 시각을 씁니다.'],
+    ['절기 시각은 어디서 나온 값인가요?', '한국천문연구원이 발표한 시각(한국 시간)을 쓰고, 아직 발표되지 않은 해는 같은 천문 계산으로 구한 값을 씁니다. 발표값과 계산값은 보통 몇 분 안에서 맞아요.']
+  ];
   const body = `
   <article class="guide-article">
     <div class="ga-overline">절기</div>
@@ -487,13 +500,21 @@ function buildTermIndex() {
       <ul class="dp-list">
         ${years}
       </ul>
+      <h2>24절기 한눈에 — 순서·뜻·대략 날짜</h2>
+      <p>한 해는 소한에서 시작해 동지로 끝납니다. 절기마다 뜻과 풍습, 먹는 음식은 이름을 누르면 올해 페이지에서 볼 수 있어요.</p>
+      <div class="tw"><table class="dp-table">
+        <tr><th>절기</th><th>계절</th><th>구분</th><th>날짜</th><th>뜻</th></tr>
+        ${termRows}
+      </table></div>
+      <h2>자주 묻는 질문</h2>
+      ${faq.map(([q, a]) => `<h3>${q}</h3>\n      <p>${a}</p>`).join('\n      ')}
       <p class="callout"><a href="${rel}guide/jeolgi.html">절기력이란 — 서재</a> · <a href="${rel}day/">날짜별 일진</a> · <a href="${rel}manse/">만세력</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>절기 시각 기준으로 내 사주 세우기</span></a>
     </div>
   </article>`;
-  write('jeolgi', shell({ rel, title, desc, canonical: SITE + '/jeolgi/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/jeolgi/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/solar-terms/">`, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '절기', url: SITE + '/jeolgi/' }]), body }));
+  write('jeolgi', shell({ rel, title, desc, canonical: SITE + '/jeolgi/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/jeolgi/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/solar-terms/">`, jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '절기', url: SITE + '/jeolgi/' }]), { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }], body }));
   addUrl('/jeolgi/', iso(today.y, today.m, today.d));
 }
 

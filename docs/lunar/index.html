@@ -58,6 +58,7 @@
     .ld-years td { padding: 4px 2px; border-top: 1px solid var(--line-soft); color: var(--muted); }
     .ld-years td:last-child { text-align: right; color: var(--ink-body); }
   </style>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "음력 생일을 양력으로 바꾸면 해마다 날짜가 왜 달라지나요?", "acceptedAnswer": {"@type": "Answer", "text": "음력 한 해가 양력보다 열하루쯤 짧고, 몇 해에 한 번 윤달이 끼어들기 때문이에요. 그래서 음력 같은 날짜가 양력으로는 해마다 앞뒤로 움직입니다."}}, {"@type": "Question", "name": "윤달에 태어났으면 생일은 언제 지내나요?", "acceptedAnswer": {"@type": "Answer", "text": "윤달은 몇 해에 한 번만 오니 보통 평달 같은 날짜에 지냅니다. 윤달이 든 해에는 윤달 날짜에 지내도 돼요. 도구에서 윤달 기준을 고르면 두 경우를 모두 계산합니다."}}, {"@type": "Question", "name": "제사는 돌아가신 날에 지내나요, 전날에 지내나요?", "acceptedAnswer": {"@type": "Answer", "text": "요즘은 돌아가신 날(기일) 당일 저녁이나 낮에 지내는 집이 많고, 전통대로 전날 밤 자정 무렵에 지내는 집도 있어요. 도구는 음력 기일 당일의 양력 날짜를 알려 주니 집안 관행에 맞춰 쓰세요."}}, {"@type": "Question", "name": "캘린더 파일은 어떻게 넣나요?", "acceptedAnswer": {"@type": "Answer", "text": ".ics 파일을 받아 아이폰 캘린더, 구글 캘린더, 네이버 캘린더에서 열면 10년치 기념일이 한 번에 들어갑니다. 등록한 기념일은 이 기기에만 저장되고 서버로 가지 않아요."}}]}</script>
 </head>
 <body>
 <div class="app">
@@ -126,6 +127,30 @@
   <div class="card reading-card" style="margin-top: 20px;">
     <div class="reading-overline">알아두면 좋은 것</div>
     <p class="reading-body">제사는 보통 <b>돌아가신 날의 음력 날짜</b>에 지내며, 윤달에 돌아가신 경우 평달에 지내는 것이 일반적인 관행입니다. 음력 30일이 없는 해(작은달)에는 29일로 계산해 드려요.</p>
+  </div>
+
+
+  <div class="card reading-card" style="margin-top: 14px;">
+    <div class="reading-overline">음력이란</div>
+    <h2 class="reading-title" style="font-size: 17px;">달이 차고 기우는 데 맞춘 달력</h2>
+    <p class="reading-body">음력은 달이 초승달에서 보름달을 지나 다시 그믐이 되는 한 바퀴(약 29.5일)를 한 달로 삼는 달력이에요. 그래서 음력 한 달은 29일이거나 30일이고, 열두 달을 더하면 354일쯤이라 양력보다 해마다 열하루 정도 짧습니다. 이 차이를 그대로 두면 몇 해 만에 계절이 어긋나기 때문에, 열아홉 해에 일곱 번꼴로 <b>윤달</b>을 끼워 계절을 맞춥니다. 우리가 쓰는 음력은 이렇게 해(계절)와 달을 함께 맞춘 태음태양력이에요.</p>
+    <p class="reading-body" style="margin-top: 10px;">음력 생일이나 제삿날이 해마다 양력으로 다른 날짜가 되는 이유가 여기 있어요. 같은 음력 3월 3일이라도 어느 해는 양력 4월 초, 어느 해는 4월 말에 옵니다. 그래서 해마다 달력을 뒤져야 했는데, 위 도구는 앞으로 10년치 양력 날짜를 한 번에 계산해 캘린더 파일로 만들어 줍니다.</p>
+  </div>
+
+  <div class="card reading-card" style="margin-top: 14px;">
+    <div class="reading-overline">윤달과 작은달</div>
+    <h2 class="reading-title" style="font-size: 17px;">헷갈리기 쉬운 두 가지</h2>
+    <p class="reading-body"><b>윤달</b>은 같은 달이 한 번 더 오는 달이에요(예: 윤4월). 윤달에 태어났거나 윤달에 돌아가신 경우, 윤달은 몇 해에 한 번만 있으므로 보통 그 달의 <b>평달</b>에 생일과 기일을 지냅니다. 도구에서 윤달을 표시하면 윤달이 있는 해에는 윤달 날짜를, 없는 해에는 평달 날짜를 계산해요.</p>
+    <p class="reading-body" style="margin-top: 10px;"><b>작은달</b>은 29일까지만 있는 달입니다. 음력 30일이 기일인데 그해 그 달이 작은달이면 30일이 없으니 29일로 계산해 드려요. 이것도 널리 쓰는 관행이에요.</p>
+    <p class="reading-body" style="margin-top: 10px;">음력 날짜는 한국천문연구원이 발표하는 역서를 기준으로 하고, 사주첩은 같은 천문 계산으로 날짜를 구합니다. 태어난 날의 일진과 띠, 사주 일주까지 보려면 <a href="../manse/">만세력</a>이나 <a href="http://saengil.sajucheop.com/">생일첩</a>에서 날짜를 눌러 보세요.</p>
+  </div>
+
+  <div class="card card-pad" style="margin-top: 14px;">
+    <div class="section-head"><h2 class="section-title" style="font-size: 16px;">자주 묻는 질문</h2></div>
+    <details class="ics-help" open><summary>음력 생일을 양력으로 바꾸면 해마다 날짜가 왜 달라지나요?</summary><div class="ih-body"><p>음력 한 해가 양력보다 열하루쯤 짧고, 몇 해에 한 번 윤달이 끼어들기 때문이에요. 그래서 음력 같은 날짜가 양력으로는 해마다 앞뒤로 움직입니다.</p></div></details>
+    <details class="ics-help"><summary>윤달에 태어났으면 생일은 언제 지내나요?</summary><div class="ih-body"><p>윤달은 몇 해에 한 번만 오니 보통 평달 같은 날짜에 지냅니다. 윤달이 든 해에는 윤달 날짜에 지내도 돼요. 도구에서 윤달 기준을 고르면 두 경우를 모두 계산합니다.</p></div></details>
+    <details class="ics-help"><summary>제사는 돌아가신 날에 지내나요, 전날에 지내나요?</summary><div class="ih-body"><p>요즘은 돌아가신 날(기일) 당일 저녁이나 낮에 지내는 집이 많고, 전통대로 전날 밤 자정 무렵에 지내는 집도 있어요. 도구는 음력 기일 당일의 양력 날짜를 알려 주니 집안 관행에 맞춰 쓰세요.</p></div></details>
+    <details class="ics-help"><summary>캘린더 파일은 어떻게 넣나요?</summary><div class="ih-body"><p>.ics 파일을 받아 아이폰 캘린더, 구글 캘린더, 네이버 캘린더에서 열면 10년치 기념일이 한 번에 들어갑니다. 등록한 기념일은 이 기기에만 저장되고 서버로 가지 않아요.</p></div></details>
   </div>
 
   <footer class="site-footer" style="margin-top: 30px;">
