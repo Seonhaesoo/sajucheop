@@ -106,10 +106,10 @@ export const GH_EL = {
 /* "자(子)가" → "자(子)가", "신(申)가" → "신(申)이" — 괄호 앞 한글 받침에 맞춰 조사 고르기 */
 const JOSA = { 이: '가', 가: '이', 은: '는', 는: '은', 을: '를', 를: '을', 과: '와', 와: '과' };
 const NEEDS_FINAL = { 이: true, 가: false, 은: true, 는: false, 을: true, 를: false, 과: true, 와: false };
-/* 띠 동물의 꿈해몽 — 자매 사이트 꿈첩(dream.sajucheop.com)의 /d/<slug>/. 양은 꿈첩에 상징이 없어 null.
+/* 띠 동물의 꿈해몽 — 자매 사이트 꿈첩(dream.sajucheop.com)의 /d/<slug>/. 양꿈(sheep)은 2026-09-18 꿈첩에 추가.
  * 꿈첩은 새 도메인이라 구글이 속 페이지를 아직 모른다(2026-09-18) — 띠 페이지마다 제 동물 꿈으로 길을 낸다 */
 export const DREAM_SITE = 'https://dream.sajucheop.com';
-export const DDI_DREAM = { rat: 'rat', ox: 'cow', tiger: 'tiger', rabbit: 'rabbit', dragon: 'dragon', snake: 'snake', horse: 'horse', goat: null, monkey: 'monkey', rooster: 'chicken', dog: 'dog', pig: 'pig' };
+export const DDI_DREAM = { rat: 'rat', ox: 'cow', tiger: 'tiger', rabbit: 'rabbit', dragon: 'dragon', snake: 'snake', horse: 'horse', goat: 'sheep', monkey: 'monkey', rooster: 'chicken', dog: 'dog', pig: 'pig' };
 export const ddiDreamLink = (d) => (DDI_DREAM[d.slug] ? `<a href="${DREAM_SITE}/d/${DDI_DREAM[d.slug]}/">${d.animal}꿈 해몽</a>` : '');
 
 export function josa(s) {
