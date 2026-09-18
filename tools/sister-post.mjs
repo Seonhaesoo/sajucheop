@@ -1,5 +1,6 @@
-/* 첩 시리즈 쓰레드 글 — 타로첩·꿈첩·생일첩 글을 하루 한 편씩 번갈아 (sister-post.yml, 매일 저녁)
- * 상태 파일이 없다: 날짜(KST)로 종류와 내용이 정해진다 → 커밋이 없어 다른 봇의 rebase 와 부딪히지 않는다.
+/* 첩 시리즈 쓰레드 글 — 타로첩·꿈첩·생일첩 글을 이틀에 한 편씩 번갈아 (sister-post.yml 은 매일 저녁 돌고, 쉬는 날엔 여기서 건너뜀)
+ * 상태 파일이 없다: 날짜(KST)로 올릴 날·종류·내용이 정해진다 → 커밋이 없어 다른 봇의 rebase 와 부딪히지 않는다.
+ * 격일은 크론의 '2일마다' 표기가 아니라 START 부터 센 날수의 짝홀로 — 크론은 달이 바뀔 때 31일·1일이 연달아 걸린다.
  *   타로 — 타로첩 /daily/ 와 같은 카드(cards.json 을 받아 같은 공식으로), 꿈 — sister-data.json 순서대로(인기 먼저),
  *   생일 — 그날 생일의 별자리·탄생석(생일첩 데이터). 자매 사이트 데이터는 tools/build-sister-data.mjs 로 묶어 둔다.
  * 같은 날 다시 돌려도 최근 글에 같은 첫 줄이 있으면 올리지 않는다(재실행·수동 실행 중복 방지).
@@ -10,7 +11,7 @@ import { creds, publish, fitText } from './threads-api.mjs';
 
 const DRY = process.argv.includes('--dry') || process.env.DRY === 'true';
 const DATA = JSON.parse(fs.readFileSync(new URL('./sister-data.json', import.meta.url), 'utf8'));
-const START = Date.UTC(2026, 8, 19);                 // 2026-09-19 첫 글(타로)부터 타로 → 꿈 → 생일
+const START = Date.UTC(2026, 8, 19);                 // 2026-09-19 첫 글(타로). 여기서 짝수 날째마다 한 편, 글 순서대로 타로 → 꿈 → 생일
 const KINDS = ['tarot', 'dream', 'birthday'];
 
 /* 오늘(KST) */
@@ -42,7 +43,7 @@ async function tarot({ y, m, d }, n) {
   const dayIndex = Math.floor(Date.UTC(y, m - 1, d) / 86400000);
   const c = cards[(dayIndex * 31) % 78], rev = (dayIndex * 7) % 3 === 0;
   const dir = rev ? '역방향' : '정방향', kw = (rev ? c.kr : c.ku).slice(0, 3).join('·');
-  const variant = Math.floor(n / 3) % 2;
+  const variant = ((Math.floor(n / 3) % 2) + 2) % 2;
   const head = variant === 0 ? `🔮 오늘의 타로 · ${m}월 ${d}일` : `${m}월 ${d}일, 오늘을 비추는 카드 한 장 🔮`;
   const body = variant === 0
     ? [`${c.n} ${dir}`, first(rev ? c.rv : c.up), `오늘의 조언 — ${c.ad}`, '나도 직접 골라 뽑기 → tarot.sajucheop.com/draw/']
@@ -50,11 +51,11 @@ async function tarot({ y, m, d }, n) {
   return [head].concat(body).join('\n');
 }
 
-/* 꿈 — 인기 상징부터 차례대로(사흘에 한 번이라 162개를 다 도는 데 1년 넘게 걸린다) */
+/* 꿈 — 인기 상징부터 차례대로(엿새에 한 번이라 162개를 다 도는 데 2년 넘게 걸린다) */
 function dream(date, n) {
   const k = Math.floor(n / 3);
   const x = DATA.dreams[((k % DATA.dreams.length) + DATA.dreams.length) % DATA.dreams.length];
-  const head = k % 2 === 0 ? `🌙 ${x.t}, 무슨 뜻일까?` : `어젯밤 ${x.t} 꾸셨나요? 🌙`;
+  const head = ((k % 2) + 2) % 2 === 0 ? `🌙 ${x.t}, 무슨 뜻일까?` : `어젯밤 ${x.t} 꾸셨나요? 🌙`;
   return [head, x.lead, `상황별로 뜻이 달라요 → dream.sajucheop.com${x.u}`].join('\n');
 }
 
@@ -84,8 +85,14 @@ async function alreadyPosted(c, headLine) {
 /* process.exit 대신 exitCode — 윈도에서 fetch 소켓이 열린 채 exit 하면 libuv 단언 오류가 난다 */
 async function main() {
   const date = kstDate();
-  const n = Math.round((Date.UTC(date.y, date.m - 1, date.d) - START) / 86400000);
-  const kind = KINDS.includes(process.env.KIND) ? process.env.KIND : KINDS[((n % 3) + 3) % 3];
+  const days = Math.round((Date.UTC(date.y, date.m - 1, date.d) - START) / 86400000);
+  const forced = KINDS.includes(process.env.KIND);   // 수동 실행에서 종류를 고르면 쉬는 날이어도 만든다
+  if (!forced && ((days % 2) + 2) % 2 === 1) {
+    console.log(`[${date.y}-${pad(date.m)}-${pad(date.d)}] 쉬는 날(이틀에 한 번) — 건너뜁니다.`);
+    return;
+  }
+  const n = Math.floor(days / 2);                    // 몇 번째 글인지 — 종류·꿈 순서·문구 변형이 이것으로 돈다
+  const kind = forced ? process.env.KIND : KINDS[((n % 3) + 3) % 3];
   const text = fitText(kind === 'tarot' ? await tarot(date, n) : kind === 'dream' ? dream(date, n) : birthday(date));
   console.log(`[${date.y}-${pad(date.m)}-${pad(date.d)} · ${kind}] ${text.length}자\n${text}\n`);
   if (DRY) return;
