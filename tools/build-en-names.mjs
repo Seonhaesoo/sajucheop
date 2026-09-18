@@ -149,7 +149,7 @@ ${browseHtml}
       <h2>FAQ</h2>
 ${faqHtml}
       <p class="callout" style="margin-top: 18px;">${esc(TEXT.disclaimer)}</p>
-      <p class="callout"><a href="${rel}en/">Four Pillars calculator</a> · <a href="${rel}en/guide/day-master/">The ten Day Masters</a> · <a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/quiz/">Which Day Master are you?</a></p>
+      <p class="callout"><a href="${rel}en/">Four Pillars calculator</a> · <a href="${rel}en/guide/day-master/">The ten Day Masters</a> · <a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/quiz/">Which Day Master are you?</a> · <a href="${rel}naming/hanja/" hreflang="ko" lang="ko">한국어: 이름 한자 사전 (뜻·원획·자원오행)</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Read my Four Pillars chart</span></a>
