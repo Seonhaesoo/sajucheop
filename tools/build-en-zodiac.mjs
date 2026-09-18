@@ -18,7 +18,7 @@ const { M, I } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-11', MODIFIED = '2026-09-13';
-const MODIFIED_ZY = '2026-09-18';   /* 해 108·동물 12 — 맨 위 요약 표, 자주 묻는 질문, 가까운 해 (2026-09-18) */
+const MODIFIED_ZY = '2026-09-18';   /* 해 108·동물 12·궁합 78 — 맨 위 요약 표, 자주 묻는 질문 (2026-09-18) */
 const Y0 = 1924, Y1 = 2031, NOW = 2026;
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const fmtD = (c) => `${MON[c.m - 1]} ${c.d}, ${c.y}`;
@@ -234,6 +234,22 @@ function pairPage(a, b) {
   const relText = fill(R.body, map), elText = fill(EL_REL_EN[er], map);
   const extra = rels.filter((r) => r !== p && r !== 'same').map((r) => `They also form ${/^[AEIOU]/.test(REL_EN[r].long) ? 'an' : 'a'} ${REL_EN[r].long.toLowerCase()} (${REL_EN[r].han}) link, which ${REL_EN[r].tone === 'good' ? 'adds to the pull between them' : 'adds some friction to the mix'}.`).join(' ');
   const same = a === b;
+  const bestA = ranking(a).filter((r) => r.i !== a && r.i !== b).slice(0, 3), bestB = ranking(b).filter((r) => r.i !== b && r.i !== a).slice(0, 3);
+  const yearsLink = (x) => yearsOf(x).filter((t) => t.y >= 1960 && t.y <= NOW).map((t) => `<a href="${rel}${yUrl(t.y).slice(1)}">${t.y}</a>`).join(', ');
+  const facts = [
+    ['Compatibility score', `<b>${score}/100</b> — ${g.label.toLowerCase()}`],
+    ['Branch link', rels.filter((r) => !(r === 'same' && p === 'selfhyeong')).length ? rels.filter((r) => !(r === 'same' && p === 'selfhyeong')).map(relTag).join(' · ') : 'no fixed link (neutral)'],
+    ['Elements', `${elA.en} (${han(a)}) · ${elB.en} (${han(b)}) — ${elRelWord(er)}`],
+    [`${A.name} years`, yearsLink(a)],
+  ].concat(same ? [] : [[`${B.name} years`, yearsLink(b)]]).concat([
+    [`${A.name}’s best matches`, bestA.map((r) => `<a href="${rel}${pairUrl(a, r.i).slice(1)}">${ANIMALS[r.i].name}</a> (${r.score})`).join(', ')],
+  ]).concat(same ? [] : [[`${B.name}’s best matches`, bestB.map((r) => `<a href="${rel}${pairUrl(b, r.i).slice(1)}">${ANIMALS[r.i].name}</a> (${r.score})`).join(', ')]]);
+  const faqs = [
+    [same ? `Are two ${pl(A.name)} compatible?` : `Are the ${A.name} and the ${B.name} compatible?`, `${same ? `Two ${pl(A.name)}` : `The ${A.name} and the ${B.name}`} score ${score} out of 100 — ${g.label.toLowerCase()}. ${relText.split('. ')[0]}. ${elText.split('. ')[0]}.`],
+    [same ? `Is ${A.name}–${A.name} a good match for marriage?` : `Is ${A.name}–${B.name} a good match for marriage?`, `${R.love.split(/(?<=\.)\s/)[0]} ${A.love.split(/(?<=\.)\s/)[0]}${same ? '' : ' ' + B.love.split(/(?<=\.)\s/)[0]}`],
+    [`Does it matter which one is the man?`, `Not for the branch reading — the link between ${han(a)} and ${han(b)} is the same either way, and so is the score. What changes the picture is the rest of each chart: the Day Masters, the missing elements and the timing of the ten-year luck cycles.`],
+    [`Who is the ${A.name} most compatible with?`, `The ${A.name}’s best matches are ${andList(ranking(a).filter((r) => r.i !== a).slice(0, 3).map((r) => `the ${ANIMALS[r.i].name} (${r.score}/100)`))}; the hardest are ${andList(ranking(a).filter((r) => r.i !== a).slice(-2).reverse().map((r) => `the ${ANIMALS[r.i].name} (${r.score})`))}.`],
+  ];
   const title = `${A.name} and ${B.name} Compatibility — ${score}/100 | Chinese Zodiac`;
   const branchLinks = rels.filter((r) => r !== 'same').map((r) => REL_EN[r].long).join(' and ');
   const desc = same
@@ -254,6 +270,7 @@ function pairPage(a, b) {
       <div class="zd-bar"><i style="width: ${score}%"></i></div>
       <div class="zd-badges">${badges}</div>
     </div>
+    ${factsTable(same ? `${A.name} and ${A.name} at a glance` : `${A.name} and ${B.name} at a glance`, facts)}
     <p class="ga-lead">${esc(relText.split('. ')[0])}. ${esc(elText.split('. ')[0])}.</p>
     <div class="ga-body">
       <h2>The two signs</h2>
@@ -275,6 +292,8 @@ function pairPage(a, b) {
       <ul class="zd-list">${R.advice.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
       <h2>Does it matter who is the man and who is the woman?</h2>
       <p>Not in the branch reading — the relationship between ${han(a)} and ${han(b)} is the same either way, and so is the score. What does change the picture is the rest of each birth chart: the Day Masters, the elements each of you is missing, and when your ten-year luck cycles turn. Two full birth dates on the <a href="${rel}en/match/">match page</a> read all of that.</p>
+      <h2>Questions about this match</h2>
+      ${faqHtml(faqs)}
       <h2>Other matches for the ${A.name}</h2>
       <div class="zd-chips">${chipsFor(a)}</div>
       ${same ? '' : `<h2>Other matches for the ${B.name}</h2>
@@ -286,8 +305,8 @@ function pairPage(a, b) {
     </div>
   </article>`;
   write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: same ? `Two ${pl(A.name)} — ${score}/100` : `${A.name} × ${B.name} — ${score}/100, ${g.label}`,
-    extraHead: STYLE + alt(url, `/ddi-gunghap/${url.split('/')[4]}/`),
-    jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], ['Compatibility', '/en/zodiac/compatibility/'], [same ? `${A.name} × ${A.name}` : `${A.name} × ${B.name}`, url]]), article(url, title, desc)], body }));
+    extraHead: STYLE + STYLE_FACTS + alt(url, `/ddi-gunghap/${url.split('/')[4]}/`),
+    jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], ['Compatibility', '/en/zodiac/compatibility/'], [same ? `${A.name} × ${A.name}` : `${A.name} × ${B.name}`, url]]), article(url, title, desc, MODIFIED_ZY), faqLd(faqs)], body }));
 }
 
 function compatIndex() {
@@ -733,7 +752,7 @@ year27Hub();
 ANIMALS.forEach((_, b) => year27Page(b));
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-zodiac.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${/^\/en\/zodiac\/(year\/\d{4}|[a-z]+)\/$/.test(u) && u !== '/en/zodiac/compatibility/' ? MODIFIED_ZY : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${(/^\/en\/zodiac\/(year\/\d{4}|[a-z]+|compatibility\/[a-z]+-[a-z]+)\/$/.test(u) && u !== '/en/zodiac/compatibility/') ? MODIFIED_ZY : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-zodiac.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-zodiac.xml\n');
