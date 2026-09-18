@@ -13,6 +13,7 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const SAENGIL = 'http://saengil.sajucheop.com';
 const PUBLISHED = '2026-09-08';
+const MODIFIED_DDI = '2026-09-18';   /* 띠별 12장 — 제목을 검색어 그대로(질문+답), 한눈에 상자, 자주 묻는 질문 */
 const urls = [];
 const pairUrl = (a, b) => a <= b ? `/ddi-gunghap/${DDI[a].slug}-${DDI[b].slug}/` : `/ddi-gunghap/${DDI[b].slug}-${DDI[a].slug}/`;
 const ddiUrl = (a) => `/ddi-gunghap/${DDI[a].slug}/`;
@@ -144,16 +145,31 @@ function pairPage(a, b) {
 function ddiPage(a) {
   const A = DDI[a], url = ddiUrl(a), rel = '../../';
   const list = DDI.map((_, i) => ({ i, ...pairScore(a, i) })).sort((x, y) => y.score - x.score);
-  const best = list[0], worst = list[list.length - 1];
-  const title = `${name(a)} 궁합 — 잘 맞는 띠와 안 맞는 띠 12가지 순위`;
-  const desc = `${name(a)}(${A.han}·${A.el})와 가장 잘 맞는 띠는 ${name(best.i)}(${best.score}점), 가장 부딪히는 띠는 ${name(worst.i)}(${worst.score}점). 12띠 전체 궁합 점수와 육합·삼합·충·형 관계, 연애·결혼·친구로 만났을 때.`;
+  /* 검색은 '용띠와 잘 맞는 띠', '용띠랑 잘맞는띠'처럼 들어온다(2026-09 서치콘솔 6~10위, 클릭 0) — 제목에 질문과 답을 그대로 */
+  const others = list.filter((x) => x.i !== a), self = list.find((x) => x.i === a);
+  const top = others.slice(0, 3), low = others.slice(-3).reverse();
+  const best = top[0], worst = low[0];
+  const withScore = (x) => `${name(x.i)}(${x.score}점)`;
+  const relWord = (x) => x.rels.filter((r) => r !== 'same').map((r) => REL[r].label).join('·') || '무난';
+  const title = `${name(a)}와 잘 맞는 띠는? ${top.map((x) => name(x.i)).join('·')} — ${name(a)} 궁합 순위`;
+  const desc = `${name(a)}와 가장 잘 맞는 띠는 ${top.map(withScore).join('·')}, 가장 부딪히는 띠는 ${low.slice(0, 2).map(withScore).join('·')}. 12띠 궁합 점수 순위와 연애·결혼·친구로 만났을 때를 쉬운 말로 정리했어요.`;
+  const pairHref = (x) => `${rel}ddi-gunghap/${pairUrl(a, x.i).split('/')[2]}/`;
+  const faqs = [
+    [`${name(a)}와 잘 맞는 띠는?`, `${top.map((x) => `${name(x.i)}(${x.score}점, ${relWord(x)})`).join(', ')} 순입니다. 점수는 태어난 해의 글자(지지)끼리 짝을 이루는지(합), 부딪히는지(충·형·해)와 두 띠의 오행이 서로 돕는지로 매겼어요.`],
+    [`${name(a)}와 안 맞는 띠는?`, `${low.map((x) => `${name(x.i)}(${x.score}점, ${relWord(x)})`).join(', ')} 순으로 점수가 낮아요. 생활 속도나 기준이 달라 부딪히기 쉬운 사이라는 뜻이지, 안 된다는 뜻은 아니에요. 다른 점을 미리 알고 만나면 충분히 맞춰 갈 수 있어요.`],
+    [`${name(a)}끼리 궁합은?`, `${self.score}점, ${grade(self.score).label}입니다. 같은 띠는 생각하는 방식이 비슷해 편한 대신, 약점도 같아서 함께 빠지기 쉬워요.`],
+  ];
   const rows = list.map((x) => { const g = grade(x.score); return `<tr><td><a href="${rel}ddi-gunghap/${pairUrl(a, x.i).split('/')[2]}/">${name(x.i)}</a></td><td class="sc ${g.tone === 'good' ? 'good' : g.tone === 'bad' || g.tone === 'warn' ? 'bad' : ''}">${x.score}점</td><td>${g.label}</td><td>${x.rels.map((r) => REL[r].label).join('·') || '무난'}</td></tr>`; }).join('\n        ');
   const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}ddi-gunghap/" style="color: inherit; text-decoration: none;">띠 궁합</a> · ${name(a)}</div>
-    <h1 class="ga-title">${name(a)} 궁합 —<br>잘 맞는 띠, 부딪히는 띠</h1>
+    <h1 class="ga-title">${name(a)}와 잘 맞는 띠 —<br>${top.map((x) => name(x.i)).join('·')}</h1>
     <p class="ga-meta">${A.han}(${A.el}) · ${TRAIT[A.slug].key}</p>
     <p class="ga-lead">${esc(TRAIT[A.slug].short)} ${name(a)}와 가장 잘 맞는 띠는 <b>${name(best.i)}</b>(${best.score}점, ${best.rels.map((r) => REL[r].label).join('·')}), 가장 부딪히는 띠는 <b>${name(worst.i)}</b>(${worst.score}점, ${worst.rels.map((r) => REL[r].label).join('·')})입니다.</p>
+    <div class="gh-two">
+      <div><b>잘 맞는 띠</b>${top.map((x) => `<a href="${pairHref(x)}">${name(x.i)}</a> ${x.score}점`).join(' · ')}</div>
+      <div><b>조심할 띠</b>${low.map((x) => `<a href="${pairHref(x)}">${name(x.i)}</a> ${x.score}점`).join(' · ')}</div>
+    </div>
     <div class="ga-body">
       <h2>12띠 궁합 순위</h2>
       <table class="gh-table">
@@ -166,13 +182,16 @@ function ddiPage(a) {
       <p><b>조심할 것</b> — ${esc(TRAIT[A.slug].weak)}</p>
       <h2>${name(a)}의 합과 충</h2>
       <p>${josa(`${M.BRANCHES[a].kor}(${A.han})은`)} ${name(list.find((x) => x.rels.includes('yukhap')).i)}의 지지와 육합(六合), ${list.filter((x) => x.rels.includes('samhap')).map((x) => name(x.i)).join('·')}와 삼합(三合)을 이루고, ${name(list.find((x) => x.rels.includes('chung')).i)}와는 충(沖)입니다. 합은 끌림과 협력, 충은 변화와 마찰의 기운입니다.</p>
+      <h2>자주 묻는 질문</h2>
+      ${faqs.map(([q, ans]) => `<h3>${esc(q)}</h3>\n      <p>${esc(ans)}</p>`).join('\n      ')}
       <p class="callout"><a href="${rel}today/ddi/${A.slug}/">${name(a)} 오늘의 운세</a> · <a href="${rel}2027/ddi/${A.slug}/">${name(a)} 2027년 운세</a> · <a href="${SAENGIL}/ddi/${A.slug}/">${name(a)} 출생연도와 나이 (생일 사전)</a> · <a href="${rel}gunghap/">생년월일 궁합</a>${ddiDreamLink(A) ? ' · ' + ddiDreamLink(A) : ''}</p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}gunghap/"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 정확한 궁합 보기</span></a>
     </div>
   </article>`;
-  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }, { name: name(a), url: SITE + url }]), body }));
+  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }, { name: name(a), url: SITE + url }]),
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(([q, ans]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: ans } })) }], body }));
   urls.push(url);
 }
 
@@ -223,7 +242,7 @@ indexPage();
 for (let a = 0; a < 12; a++) ddiPage(a);
 for (let a = 0; a < 12; a++) for (let b = a; b < 12; b++) pairPage(a, b);
 const sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n');
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${DDI.some((_, a) => ddiUrl(a) === u) ? MODIFIED_DDI : PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n');
 fs.writeFileSync(path.join(DOCS, 'sitemap-ddi-gunghap.xml'), sm);
 const robotsPath = path.join(DOCS, 'robots.txt');
 let robots = fs.readFileSync(robotsPath, 'utf8');
