@@ -18,6 +18,7 @@ const { M, I } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-11', MODIFIED = '2026-09-13';
+const MODIFIED_ZY = '2026-09-18';   /* 해 108·동물 12 — 맨 위 요약 표, 자주 묻는 질문, 가까운 해 (2026-09-18) */
 const Y0 = 1924, Y1 = 2031, NOW = 2026;
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const fmtD = (c) => `${MON[c.m - 1]} ${c.d}, ${c.y}`;
@@ -57,6 +58,10 @@ function yearInfo(y) {
 const YI = {};
 for (let y = Y0 - 1; y <= Y1 + 1; y++) YI[y] = yearInfo(y);
 const yearsOf = (b) => Object.values(YI).filter((x) => x.b === b && x.y >= Y0 && x.y <= Y1);
+/* 지금(NOW) 뒤 첫 같은 띠 해. 날짜는 cny.mjs 가 검증된 2032년까지만 쓴다(2033년 윤11월 문제로 2033~2034 춘절 규칙이 어긋남) */
+const nextOf = (y) => { let t = y; while (t > NOW + 12) t -= 12; while (t <= NOW) t += 12; return t; };
+const nameOf = (t) => `${EL[M.STEMS[stemOf(t)].el].en} ${ANIMALS[branchOf(t)].name}`;
+const spanOk = (t) => (t <= 2032 ? zodiacSpan(t) : null);
 
 /* ---------- compatibility (same as build-ddi-gunghap pairScore) ---------- */
 function pairScore(a, b) {
@@ -189,8 +194,24 @@ const STYLE = `<style>
     .zd-wrap { overflow-x: auto; }
     @media (max-width: 480px) { .zd-two { grid-template-columns: 1fr; } .zd-grid { grid-template-columns: repeat(3, 1fr); } .zd-hero .zd-han { font-size: 34px; } }
   </style>`;
+/* 해·동물 페이지의 맨 위 요약 표와 자주 묻는 질문 */
+const STYLE_FACTS = `<style>
+    .zd-facts { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0 0 16px; font-size: 14px; background: #FFFDF9; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+    .zd-facts caption { text-align: left; font-size: 11.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--seal); padding: 0 2px 6px; }
+    .zd-facts th { width: 40%; text-align: left; font-weight: 500; font-size: 12.5px; color: var(--muted); padding: 9px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+    .zd-facts td { padding: 9px 12px; border-bottom: 1px solid var(--line-soft); line-height: 1.55; }
+    .zd-facts tr:last-child th, .zd-facts tr:last-child td { border-bottom: 0; }
+    .zd-facts td a { font-weight: 600; text-decoration: none; }
+    .zd-faq h3 { font-family: 'Noto Serif KR', serif; font-size: 15px; font-weight: 600; margin: 16px 0 4px; }
+    .zd-faq p { margin: 0; }
+  </style>`;
 const alt = (url, ko) => `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">` + (ko ? `\n  <link rel="alternate" hreflang="ko" href="${SITE}${ko}">` : '');
-const article = (url, title, desc) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop' }, publisher: { '@type': 'Organization', name: 'Sajucheop' }, mainEntityOfPage: SITE + url });
+const article = (url, title, desc, modified) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: modified || MODIFIED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop' }, publisher: { '@type': 'Organization', name: 'Sajucheop' }, mainEntityOfPage: SITE + url });
+const andList = (arr) => (arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' and ' + arr[arr.length - 1]);
+const faqLd = (items) => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
+/* 맨 위 요약 표 — 검색에서 '1996 chinese zodiac' 에 바로 답하는 자리 */
+const factsTable = (cap, rows) => `<table class="zd-facts"><caption>${cap}</caption>${rows.map(([k, v]) => `<tr><th scope="row">${k}</th><td>${v}</td></tr>`).join('')}</table>`;
+const faqHtml = (items) => `<div class="zd-faq">${items.map(([q, a]) => `<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}</div>`;
 const crumbs = (items) => breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }].concat(items.map(([name, url]) => ({ name, url: SITE + url }))));
 const aUrl = (b) => `/en/zodiac/${ANIMALS[b].slug}/`;
 const yUrl = (y) => `/en/zodiac/year/${y}/`;
@@ -316,6 +337,23 @@ function animalPage(b) {
   const ys = yearsOf(b), rk = ranking(b);
   const best = rk.filter((r) => r.i !== b).slice(0, 3), worst = rk.filter((r) => r.i !== b).slice(-2).reverse();
   const g27 = grade27(S27[b]);
+  const nx = nextOf(ys[0].y), nxSpan = spanOk(nx), last = nx - 12;
+  const allYears = ys.map((x) => x.y).concat(nx > Y1 ? [nx] : []);
+  const facts = [
+    [`${A.name} years`, ys.filter((x) => x.y >= 1948).map((x) => `<a href="${rel}${yUrl(x.y).slice(1)}">${x.y}</a>`).join(', ') + (nx > Y1 ? `, ${nx}` : '')],
+    ['Most recent', `<a href="${rel}${yUrl(last).slice(1)}">${last}</a> (${nameOf(last)})`],
+    [`Next ${A.name} year`, `${nx <= Y1 ? `<a href="${rel}${yUrl(nx).slice(1)}">${nx}</a>` : nx} (${nameOf(nx)})${nxSpan ? `, from ${fmtD(nxSpan.start)}` : ''}`],
+    ['Branch · element', `${han(b)} ${BRANCH_PINYIN[b]} · ${A.yang ? 'Yang' : 'Yin'} ${el.en}`],
+    ['Best matches', best.map((r) => `<a href="${rel}${pairUrl(b, r.i).slice(1)}">${ANIMALS[r.i].name}</a>`).join(', ')],
+    ['Hardest matches', worst.map((r) => `<a href="${rel}${pairUrl(b, r.i).slice(1)}">${ANIMALS[r.i].name}</a>`).join(', ')],
+    ['In 2027', `<a href="${rel}${y27Url(b).slice(1)}">${S27[b]}/100</a> — ${g27.label.toLowerCase()}`],
+  ];
+  const faqs = [
+    [`What years are the Year of the ${A.name}?`, `${andList(allYears.map(String))}. Each ${A.name} year starts at Chinese New Year, between January 21 and February 20, so a birthday early in one of those years can still belong to the sign before.`],
+    [`When is the next Year of the ${A.name}?`, `${nx}${nxSpan ? `, from ${fmtD(nxSpan.start)} to ${fmtD(nxSpan.end)}` : ''} — the ${nameOf(nx)}. The most recent was ${last}, the ${nameOf(last)}.`],
+    [`What is the ${A.name} most compatible with?`, `The ${A.name}’s best matches are ${andList(best.map((r) => `the ${ANIMALS[r.i].name} (${r.score}/100)`))}; the hardest are ${andList(worst.map((r) => `the ${ANIMALS[r.i].name} (${r.score})`))}.`],
+    [`What element is the ${A.name}?`, `The ${A.name}’s branch ${han(b)} carries ${el.en}, which it keeps every year. The year’s stem adds a second element, so there are five kinds of ${A.name}: ${['Wood', 'Fire', 'Earth', 'Metal', 'Water'].map((e) => `${e} ${A.name}`).join(', ')}.`],
+  ];
   const title = `Year of the ${A.name}: Years, Personality & Compatibility`;
   const desc = fitDesc(`${A.name} years: ${ys.filter((x) => x.y >= 1948).map((x) => x.y).join(', ')}. The ${A.name} (${han(b)}) is ${A.key.toLowerCase()}.`,
     [' Personality, love, career, best matches and 2027.', ' Personality, love, career and best matches.']);
@@ -332,6 +370,7 @@ function animalPage(b) {
       <div class="zd-sub">${BRANCH_PINYIN[b]} · ${M.BRANCHES[b].kor} · ${A.ko} (${A.rr})</div>
     </div>
     <div class="zd-meta"><span>Branch <b>${han(b)} ${BRANCH_PINYIN[b]}</b></span><span>Fixed element <b>${el.en}</b></span><span><b>${A.yang ? 'Yang' : 'Yin'}</b></span><span>Hours <b>${A.hours}</b></span><span>Month <b>${A.month}</b></span></div>
+    ${factsTable(`Year of the ${A.name} at a glance`, facts)}
     <p class="ga-lead">${esc(A.short)}</p>
     <div class="ga-body">
       <h2>${A.name} years</h2>
@@ -354,14 +393,16 @@ function animalPage(b) {
       <p>Your animal sign is one of eight characters in a Korean saju chart, and not the one that describes you most closely. That job belongs to the Day Master, the stem of your birth day: ten natures from <a href="${rel}en/guide/day-master/yang-wood/">the Tall Pine</a> to <a href="${rel}en/guide/day-master/yin-water/">the Morning Dew</a>. <a href="${rel}en/guide/what-is-saju/">What saju is</a> explains how the eight fit together.</p>
       <h2>The ${A.name} in 2027</h2>
       <p>The Year of the Fire Goat gives the ${A.name} <b>${S27[b]}/100</b> — ${g27.label.toLowerCase()} (${Y27_REL[DDI[b].rel].short.toLowerCase()}). <a href="${rel}${y27Url(b).slice(1)}">Read the ${A.name}’s 2027 horoscope →</a> · <a href="${rel}en/monthly/">Month by month for the ${A.name}</a></p>
+      <h2>Questions about the ${A.name}</h2>
+      ${faqHtml(faqs)}
       <p class="callout">Korean: ${A.ko} · <a href="${rel}ddi-gunghap/${A.slug}/" hreflang="ko">${A.ko} 궁합</a> · <a href="${rel}2027/ddi/${A.slug}/" hreflang="ko">2027년 ${A.ko} 운세</a> · All signs: ${ANIMALS.map((X, i) => i === b ? `<b>${X.name}</b>` : `<a href="${rel}${aUrl(i).slice(1)}">${X.name}</a>`).join(' · ')}</p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Read your full Four Pillars chart</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `Year of the ${A.name} — ${A.key}`, extraHead: STYLE + alt(url),
-    jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], [A.name, url]]), article(url, title, desc)], body }));
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `Year of the ${A.name} — ${A.key}`, extraHead: STYLE + STYLE_FACTS + alt(url),
+    jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], [A.name, url]]), article(url, title, desc, MODIFIED_ZY), faqLd(faqs)], body }));
 }
 
 /* ---------- year pages ---------- */
@@ -380,7 +421,26 @@ function yearPage(y) {
   const age = (t) => t - y;
   const same60 = [y - 60, y + 60].filter((t) => t >= 1900 && t <= 2100);
   const g27 = grade27(S27[b]);
-  const title = `${y} Chinese Zodiac: Year of the ${x.name} (${x.han})`;
+  const title = `${y} Chinese Zodiac: Year of the ${x.name} — Dates & Traits`;
+  const ny = nextOf(y), nySpan = spanOk(ny);
+  const nyText = `${ny} (${nameOf(ny)})${nySpan ? `, from ${fmtD(nySpan.start)}` : ''}`;
+  const facts = [
+    ['Animal sign', `<b>${A.name}</b> ${han(b)} — the ${x.name}`],
+    ['Element', `${x.yang ? 'Yang' : 'Yin'} ${el.en} (${M.STEMS[x.s].han})`],
+    [`${y} ${A.name} year`, `${fmtD(x.span.start)} – ${fmtD(x.span.end)}`],
+    [`Born Jan 1 – ${fmtMD(startPrev)}, ${y}`, y > Y0 ? `<a href="${rel}${yUrl(y - 1).slice(1)}">${prev.name}</a> of ${y - 1}` : `${prev.name} of ${y - 1}`],
+    ['Korean saju year', `Starts at Ipchun, ${fmtD(x.ip)}`],
+    ['Best matches', best.map((r) => `<a href="${rel}${pairUrl(b, r.i).slice(1)}">${ANIMALS[r.i].name}</a>`).join(', ')],
+    [`Next ${A.name} year`, ny <= Y1 && ny !== y ? `<a href="${rel}${yUrl(ny).slice(1)}">${ny}</a> (${nameOf(ny)})${nySpan ? `, from ${fmtD(nySpan.start)}` : ''}` : ny === y ? `${y} (this one), then ${y + 12} (${nameOf(y + 12)})` : nyText],
+  ].concat(y < NOW ? [[`Age in ${NOW}`, `${NOW - y} (<a href="${rel}en/korean-age/">Korean age</a> ${NOW - y + 1})`]] : []);
+  const faqs = [
+    [`What Chinese zodiac animal is ${y}?`, `${y} is the Year of the ${A.name} — the ${x.name} (${x.han}). The ${A.name} year runs from ${fmtD(x.span.start)} to ${fmtD(x.span.end)}: it starts at Chinese New Year, not on January 1.`],
+    [`Is someone born in January ${y} ${an(A.name)}?`, `Only if the birthday falls on or after ${fmtD(x.span.start)}, when the ${A.name} year ${y <= NOW ? 'began' : 'begins'}. From January 1 to ${fmtMD(startPrev)}, ${y}, the sign is still the ${prev.name} of ${y - 1}.`],
+    [`What element is the ${y} ${A.name}?`, `${el.en}. The year stem ${M.STEMS[x.s].han} is ${x.yang ? 'yang' : 'yin'} ${el.en.toLowerCase()}, so everyone born in the ${y} ${A.name} year is ${an(x.name)}. ${el.en} brings ${el.traits}.`],
+    [`When is the next Year of the ${A.name}?`, `${ny === y ? `${y} is the next one, starting ${fmtD(x.span.start)}; after that comes ${y + 12}, the ${nameOf(y + 12)}` : `${ny}${nySpan ? `, starting ${fmtD(nySpan.start)}` : ''} — the ${nameOf(ny)}`}. The ${x.name} itself comes back every sixty years${same60.length ? ` — ${same60.join(' and ')}` : ''}.`],
+    [`Who is the ${A.name} most compatible with?`, `The ${A.name}’s best matches are ${andList(best.map((r) => `the ${ANIMALS[r.i].name} (${r.score}/100)`))}; the hardest are ${andList(worst.map((r) => `the ${ANIMALS[r.i].name} (${r.score})`))}.`],
+  ];
+  const near = [-2, -1, 1, 2].map((d) => y + d).filter((t) => t >= Y0 && t <= Y1);
   const desc = fitDesc(`${y} is the year of the ${x.name} (${x.han}), from ${fmtD(x.span.start)} to ${fmtD(x.span.end)}. Born before ${fmtMD(x.span.start)}? You are ${an(prev.name)}.`,
     [' Personality, matches and the Korean Ipchun rule.', ' Plus the Korean Ipchun rule.']);
   const sameSign = yearsOf(b).map((t) => (t.y === y ? `<b>${t.y}</b>` : `<a href="${rel}${yUrl(t.y).slice(1)}">${t.y}</a>`) + ` <small>${t.elE}</small>`).join(' · ');
@@ -394,7 +454,7 @@ function yearPage(y) {
       <div class="zd-sub">${x.name} · ${x.pinyin} · ${x.kor}</div>
       <div class="zd-sub" style="margin-top: 6px;">${fmtD(x.span.start)} – ${fmtD(x.span.end)}</div>
     </div>
-    <div class="zd-meta"><span>Animal <b>${A.name} ${han(b)}</b></span><span>Element <b>${x.yang ? 'Yang' : 'Yin'} ${el.en} ${M.STEMS[x.s].han}</b></span><span>Starts <b>${fmtMD(x.span.start)}</b></span><span>Ends <b>${fmtD(x.span.end)}</b></span></div>
+    ${factsTable(`${y} Chinese zodiac at a glance`, facts)}
     <p class="ga-lead">People born between ${fmtD(x.span.start)} and ${fmtD(x.span.end)} are ${/^[AEIOU]/.test(x.name) ? 'an' : 'a'} ${x.name}. ${esc(A.el[x.elE])}</p>
     <div class="ga-body">
       <h2>Born in January or early February ${y}?</h2>
@@ -412,14 +472,18 @@ function yearPage(y) {
       <p>${sameSign}</p>
       <h2>The ${A.name} in 2027</h2>
       <p>The Year of the Fire Goat gives the ${A.name} <b>${S27[b]}/100</b> — ${g27.label.toLowerCase()}. <a href="${rel}${y27Url(b).slice(1)}">Read the 2027 forecast →</a></p>
+      <h2>Questions about the ${y} zodiac</h2>
+      ${faqHtml(faqs)}
+      <h2>Nearby years</h2>
+      <div class="zd-chips">${near.map((t) => `<a href="${rel}${yUrl(t).slice(1)}">${t} ${YI[t].name}</a>`).join('')}</div>
       <p class="callout">${y > Y0 ? `← <a href="${rel}${yUrl(y - 1).slice(1)}">${y - 1} ${prev.name}</a>` : ''}${y > Y0 && y < Y1 ? ' · ' : ''}${y < Y1 ? `<a href="${rel}${yUrl(y + 1).slice(1)}">${y + 1} ${next.name}</a> →` : ''} · <a href="${rel}en/zodiac/">All years and the calculator</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Your birth date, all four pillars</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${y} — Year of the ${x.name}`, extraHead: STYLE + alt(url),
-    jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], [A.name, aUrl(b)], [String(y), url]]), article(url, title, desc)], body }));
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${y} — Year of the ${x.name}`, extraHead: STYLE + STYLE_FACTS + alt(url),
+    jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], [A.name, aUrl(b)], [String(y), url]]), article(url, title, desc, MODIFIED_ZY), faqLd(faqs)], body }));
 }
 
 /* ---------- hub ---------- */
@@ -669,7 +733,7 @@ year27Hub();
 ANIMALS.forEach((_, b) => year27Page(b));
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-zodiac.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${/^\/en\/zodiac\/(year\/\d{4}|[a-z]+)\/$/.test(u) && u !== '/en/zodiac/compatibility/' ? MODIFIED_ZY : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-zodiac.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-zodiac.xml\n');
