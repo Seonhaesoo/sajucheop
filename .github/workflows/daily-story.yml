@@ -76,6 +76,10 @@ jobs:
         if: steps.gate.outputs.go == '1'
         run: node tools/build-ddi-daily.mjs
 
+      - name: 이달의 띠별 운세 갱신 (이번 달 표시·새 달 추가)
+        if: steps.gate.outputs.go == '1'
+        run: node tools/build-wolun.mjs
+
       - name: 커밋 및 배포
         id: commit
         if: steps.gate.outputs.go == '1'
