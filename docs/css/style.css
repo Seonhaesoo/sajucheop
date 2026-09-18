@@ -1046,6 +1046,7 @@ a.btn-primary { text-decoration: none; }
 }
 .guide-grid .guide-card { padding: 14px 16px; }
 .guide-grid .guide-card h2 { font-size: 14.5px; margin-top: 4px; }
+.guide-grid .guide-card h3 { font-family: var(--serif); font-size: 14.5px; font-weight: 600; margin-top: 4px; line-height: 1.5; }
 .guide-grid .guide-card p { font-size: 12px; margin-top: 5px; }
 
 /* ---------- 세운 ---------- */

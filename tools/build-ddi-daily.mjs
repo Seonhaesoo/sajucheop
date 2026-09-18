@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, kstToday, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
-import { DDI, TRAIT, REL, DAY_REL, DAY_STEM, SIP_LINE, EL_HAN, EL_COLOR, EL_DIR, EL_NUM, YUKHAP, relations, elRelation, josa } from './ddi-data.mjs';
+import { DDI, TRAIT, REL, DAY_REL, DAY_STEM, SIP_LINE, EL_HAN, EL_COLOR, EL_DIR, EL_NUM, YUKHAP, relations, elRelation, josa, ddiDreamLink, DREAM_SITE } from './ddi-data.mjs';
 
 const { M, I, Lunar } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -34,6 +34,9 @@ const weekday = (y, m, d) => ((I.daysFromCivil(y, m, d) + 4) % 7 + 7) % 7;
 const HOURS = ['23~01시', '01~03시', '03~05시', '05~07시', '07~09시', '09~11시', '11~13시', '13~15시', '15~17시', '17~19시', '19~21시', '21~23시'];
 /* 2027년 띠 운세 요약 — tools/build-2027.mjs 가 만든다(점수·한 줄·좋은 달·조심할 달·출생연도). 시즌 동안 매일 페이지에서 2027로 가는 길 */
 const NY2027 = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'tools', 'ny2027-ddi.json'), 'utf8'));
+/* 오늘의 꿈해몽 — 꿈첩 인기순 162개를 날마다 하나씩(tools/sister-data.json). 매일 바뀌는 페이지에서 꿈첩 속 페이지로 길을 낸다 */
+const DREAMS = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'tools', 'sister-data.json'), 'utf8')).dreams;
+const firstSent = (s) => (String(s).match(/^[\s\S]*?[.!?](?=\s|$)/) || [String(s)])[0].trim();
 const NAV = (rel) => [{ href: rel, label: '사주 보기' }, { href: rel + 'day/', label: '날짜별 일진' }, { href: rel + 'ddi-gunghap/', label: '띠 궁합' }];
 const STYLE = `<style>
     .td-hero { margin: 0 0 18px; padding: 22px 20px; background: #221D17; border-radius: 14px; text-align: center; color: #F6F1E8; }
@@ -168,7 +171,7 @@ function ddiPage(day, a, kind) {
       <h2>${label} 다른 띠는</h2>
       <div class="td-chips">${others.map((x) => `<a href="${rel}${kind}/ddi/${DDI[x.i].slug}/"${x.i === a ? ' class="on"' : ''}>${DDI[x.i].animal}띠 ${x.s}</a>`).join('')}</div>
 
-      <p class="callout">${kind === 'today' ? `<a href="${rel}tomorrow/ddi/${D.slug}/">내일의 ${D.animal}띠 운세 →</a>` : `<a href="${rel}today/ddi/${D.slug}/">← 오늘의 ${D.animal}띠 운세</a>`} · <a href="${rel}day/${iso(day.y, day.m, day.d)}/">${day.m}월 ${day.d}일 일진 (일간별)</a> · <a href="${rel}ddi-gunghap/${D.slug}/">${D.animal}띠 궁합</a> · <a href="${rel}2027/ddi/${D.slug}/">${D.animal}띠 2027년 운세</a> · <a href="${SAENGIL}/ddi/${D.slug}/">${D.animal}띠 출생연도 (생일 사전)</a></p>
+      <p class="callout">${kind === 'today' ? `<a href="${rel}tomorrow/ddi/${D.slug}/">내일의 ${D.animal}띠 운세 →</a>` : `<a href="${rel}today/ddi/${D.slug}/">← 오늘의 ${D.animal}띠 운세</a>`} · <a href="${rel}day/${iso(day.y, day.m, day.d)}/">${day.m}월 ${day.d}일 일진 (일간별)</a> · <a href="${rel}ddi-gunghap/${D.slug}/">${D.animal}띠 궁합</a> · <a href="${rel}2027/ddi/${D.slug}/">${D.animal}띠 2027년 운세</a> · <a href="${SAENGIL}/ddi/${D.slug}/">${D.animal}띠 출생연도 (생일 사전)</a>${ddiDreamLink(D) ? ' · ' + ddiDreamLink(D) : ''}</p>
     </div>
 
     <div class="ga-cta">
@@ -190,6 +193,7 @@ function indexPage(day, kind, items) {
   const dateTxt = `${day.y}년 ${day.m}월 ${day.d}일 ${WD[day.w]}`;
   const sorted = items.map((it, i) => ({ ...it, i })).sort((x, y) => y.score - x.score);
   const ny = NY2027.slice().sort((x, y) => y.score - x.score);
+  const dn = I.daysFromCivil(day.y, day.m, day.d), dream = DREAMS[((dn % DREAMS.length) + DREAMS.length) % DREAMS.length];
   const title = `${label}의 띠별 운세 — ${day.m}월 ${day.d}일 12띠 점수와 한 줄 흐름`;
   const desc = `${dateTxt} ${label}의 띠별 운세. 일진 ${day.g.kor}(${day.g.han})일 기준으로 쥐띠부터 돼지띠까지 12띠 점수, 총운·재물·애정·일·건강, 출생연도별 한 줄. 매일 자정 갱신.`;
   const rows = sorted.map((it) => `<tr><td><a href="${rel}${kind}/ddi/${DDI[it.i].slug}/">${DDI[it.i].animal}띠</a></td><td class="sc">${it.score}점</td><td>${it.one}</td><td>${it.rels.map((r) => REL[r].label).join('·') || '무난'}</td></tr>`).join('\n        ');
@@ -206,6 +210,7 @@ function indexPage(day, kind, items) {
         ${rows}
       </table>
       <p class="callout"><b>2027년 띠별 운세</b> — ${ny[0].animal}띠 ${ny[0].score}점부터 ${ny[11].animal}띠 ${ny[11].score}점까지, 12띠 점수와 좋은 달·나이별 운세. <a href="${rel}2027/ddi/">보러 가기 →</a></p>
+      <p class="callout"><b>${label}의 꿈해몽 · ${esc(dream.t)}</b> — ${esc(firstSent(dream.lead))} <a href="${DREAM_SITE}${dream.u}">꿈첩에서 상황별로 보기 →</a></p>
       <p class="callout">${kind === 'today' ? `<a href="${rel}tomorrow/ddi/">내일의 띠별 운세 →</a>` : `<a href="${rel}today/ddi/">← 오늘의 띠별 운세</a>`} · <a href="${rel}day/${iso(day.y, day.m, day.d)}/">${day.m}월 ${day.d}일 일진 (일간별 흐름)</a> · <a href="${rel}ddi-gunghap/">띠 궁합표</a> · <a href="${rel}2027/">2027년 띠별 운세</a></p>
     </div>
     <div class="ga-cta">

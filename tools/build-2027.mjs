@@ -10,7 +10,7 @@ import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { ILJU } from './ilju-data.mjs';
 import { ILJU_EN } from './en-ilju-data.mjs';   /* 영문 2027 일주 페이지 hreflang 짝 */
-import { TRAIT, josa } from './ddi-data.mjs';
+import { TRAIT, josa, ddiDreamLink, DREAM_SITE } from './ddi-data.mjs';
 import { publishedTime, NAME_INDEX } from './solar-terms-data.mjs';
 import { YEAR, DDI, REL, DDI_TEXT, DDI_TEXT_MORE, DDI_EL_LINE, DDI_ONE, SAMJAE_TEXT, STEM_REL_TEXT, STEM_LINE, AGE_TEXT, MONTH_LINE, MONTH_LINE_PLAIN, MONTH_SIP, MONTH_WHY, ILGAN_SEUN, ILJI_TEXT, ILJI_EL_MONEY, UN_TEXT, UN_WORK, UN_STRENGTH, STRENGTH_LINE, SIP_GROUP, SEUN_GROUP_VAR, SIP_KW, REL_KW, REL_KW_NONE, UN_KW, YEAR_REL_SCORE, YEAR_EL_ADJ, SAMJAE_ADJ, yearGrade } from './newyear-2027-data.mjs';
 
@@ -384,7 +384,7 @@ DDI.forEach((d, b) => {
       <div class="ny-grid four">
         ${others}
       </div>
-      <p class="callout"><a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a></p>
+      <p class="callout"><a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
     </div>
 
     <div class="ga-cta">

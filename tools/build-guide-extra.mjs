@@ -180,6 +180,28 @@ if (idx.includes('<!-- extra:start -->')) {
   idx = idx.slice(0, at) + '\n\n  ' + section + idx.slice(at);
 }
 if (!idx.includes('href="../about/"')) idx = idx.replace('<a href="../terms.html">이용약관</a>', '<a href="../about/">소개</a>\n        <a href="../terms.html">이용약관</a>');
+
+/* 꿈첩 인기 꿈해몽 12 — 새 도메인이라 구글이 속 페이지를 아직 몰라서(2026-09-18 표본 10/10 미발견), 잘 읽히는 사주첩 서재에서 길을 낸다.
+ * 목록은 tools/sister-data.json(인기순, node tools/build-sister-data.mjs 로 꿈첩 데이터를 묶음) 앞에서 12개 */
+const DREAMS = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'tools', 'sister-data.json'), 'utf8')).dreams.slice(0, 12);
+const firstOf = (s) => (String(s).match(/^[\s\S]*?[.!?](?=\s|$)/) || [String(s)])[0].trim();
+const dreamSection = `<!-- dream:start -->
+  <div class="guide-section">
+    <h2>꿈해몽 — 자매 사이트 꿈첩</h2>
+    <span>많이 찾는 꿈 ${DREAMS.length}가지</span>
+  </div>
+
+  <nav class="guide-grid" aria-label="꿈첩 인기 꿈해몽">
+${DREAMS.map((x) => `    <a class="guide-card" href="https://dream.sajucheop.com${x.u}">
+      <div class="gc-tag">꿈첩</div>
+      <h3>${esc(x.t)}</h3>
+      <p>${esc(firstOf(x.lead))}</p>
+    </a>`).join('\n')}
+  </nav>
+  <!-- dream:end -->`;
+if (idx.includes('<!-- dream:start -->')) idx = idx.replace(/<!-- dream:start -->[\s\S]*?<!-- dream:end -->/, dreamSection);
+else idx = idx.replace('  <div class="ga-cta" style="padding: 0 22px;">', '  ' + dreamSection + '\n\n  <div class="ga-cta" style="padding: 0 22px;">');
+if (!idx.includes('<!-- dream:start -->')) throw new Error('서재 목록에 꿈첩 구간을 넣을 자리를 못 찾음');
 fs.writeFileSync(idxPath, idx);
 
 /* 사이트맵 — 없는 주소만 </urlset> 앞에 */

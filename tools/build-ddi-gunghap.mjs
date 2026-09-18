@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
-import { DDI, TRAIT, REL, GH_REL, GH_EL, EL_HAN, SAMHAP_G, SAMHAP_NAME, BANGHAP_G, BANGHAP_NAME, relations, elRelation, grade, josa } from './ddi-data.mjs';
+import { DDI, TRAIT, REL, GH_REL, GH_EL, EL_HAN, SAMHAP_G, SAMHAP_NAME, BANGHAP_G, BANGHAP_NAME, relations, elRelation, grade, josa, ddiDreamLink } from './ddi-data.mjs';
 
 const { M } = loadEngine();
 
@@ -166,7 +166,7 @@ function ddiPage(a) {
       <p><b>조심할 것</b> — ${esc(TRAIT[A.slug].weak)}</p>
       <h2>${name(a)}의 합과 충</h2>
       <p>${josa(`${M.BRANCHES[a].kor}(${A.han})은`)} ${name(list.find((x) => x.rels.includes('yukhap')).i)}의 지지와 육합(六合), ${list.filter((x) => x.rels.includes('samhap')).map((x) => name(x.i)).join('·')}와 삼합(三合)을 이루고, ${name(list.find((x) => x.rels.includes('chung')).i)}와는 충(沖)입니다. 합은 끌림과 협력, 충은 변화와 마찰의 기운입니다.</p>
-      <p class="callout"><a href="${rel}today/ddi/${A.slug}/">${name(a)} 오늘의 운세</a> · <a href="${rel}2027/ddi/${A.slug}/">${name(a)} 2027년 운세</a> · <a href="${SAENGIL}/ddi/${A.slug}/">${name(a)} 출생연도와 나이 (생일 사전)</a> · <a href="${rel}gunghap/">생년월일 궁합</a></p>
+      <p class="callout"><a href="${rel}today/ddi/${A.slug}/">${name(a)} 오늘의 운세</a> · <a href="${rel}2027/ddi/${A.slug}/">${name(a)} 2027년 운세</a> · <a href="${SAENGIL}/ddi/${A.slug}/">${name(a)} 출생연도와 나이 (생일 사전)</a> · <a href="${rel}gunghap/">생년월일 궁합</a>${ddiDreamLink(A) ? ' · ' + ddiDreamLink(A) : ''}</p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}gunghap/"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 정확한 궁합 보기</span></a>
