@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, kstToday, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
+import { TERM_LORE } from './jeolgi-data.mjs';
 import { josa } from './ddi-data.mjs';
 import { publishedTime, PUBLISHED } from './solar-terms-data.mjs';
 
@@ -304,8 +305,18 @@ function buildTerm(y, t, list) {
   const k = list.indexOf(t);
   const pv = k > 0 ? list[k - 1] : null, nx = k < list.length - 1 ? list[k + 1] : null;
   const dayI = M.ganjiName(M.dayPillarOf(t.y, t.m, t.d).stem, M.dayPillarOf(t.y, t.m, t.d).branch);
-  const title = `${y}년 ${t.name}(${t.han}) — ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)} 시각과 뜻`;
-  const desc = `${y}년 ${t.name} 절기는 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]} ${pad(t.hh)}:${pad(t.mm)}(한국 시간)에 듭니다. ${t.desc} ${t.kind === '절' ? '이 시각부터 사주의 월주가 바뀝니다.' : ''}`;
+  const lore = TERM_LORE[t.slug];
+  if (!lore) throw new Error('절기 풍습 자료 없음: ' + t.slug);
+  const wdShort = WD[weekday(t.y, t.m, t.d)].slice(0, 1);
+  const eun = (t.name.charCodeAt(t.name.length - 1) - 0xAC00) % 28 ? '은' : '는';   /* 입춘은 · 한로는 */
+  const title = `${y}년 ${t.name}${eun} ${t.m}월 ${t.d}일(${wdShort}) — 뜻·시각·풍습·먹는 음식`;
+  const desc = `${y}년 ${t.name}(${t.han})은 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]} ${pad(t.hh)}:${pad(t.mm)}에 들어요. ${t.desc} 이 무렵 풍습과 먹는 음식(${lore.food.replace(/\.$/, '')}), 속담, 사주에서 ${t.name}이 하는 일까지 쉬운 말로.`;
+  const faq = [
+    [`${y}년 ${t.name}${eun} 언제인가요?`, `${y}년 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]}이고, 정확한 시각은 ${pad(t.hh)}:${pad(t.mm)}(한국 시간)입니다. 절기는 태양의 위치(황경 ${t.i * 15}°)로 정해져서 해마다 하루쯤 앞뒤로 움직여요.`],
+    [`${t.name}${eun} 무슨 뜻인가요?`, `${t.desc} ${lore.nature}`],
+    [`${t.name}에는 무엇을 먹나요?`, `${lore.food} ${lore.custom.split(/(?<=[.요다])\s/)[0]}`],
+    [`${t.name}${eun} 사주에서 어떤 날인가요?`, t.kind === '절' ? `열두 절(節) 중 하나예요. 사주에서 달은 1일이 아니라 절이 드는 시각에 바뀌어서, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}부터 월주가 ${MONTH_BRANCH[t.month]}월로 넘어갑니다.${t.slug === 'ipchun' ? ' 입춘은 년주와 띠까지 바뀌는 사주의 새해예요.' : ''}` : `열두 중기(中氣) 중 하나예요. 중기에는 사주의 기둥이 바뀌지 않고, 계절의 한가운데를 알리는 절기입니다.`]
+  ];
   const roleHtml = t.kind === '절'
     ? `<p>${t.name} 절기는 열두 절(節) 중 하나입니다. 사주에서 달은 1일이 아니라 절이 드는 <b>시각</b>에 바뀌므로, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}을 기점으로 월주(月柱)의 지지가 <b class="dp-han">${MONTH_BRANCH[t.month]}</b>로 넘어갑니다.${t.slug === 'ipchun' ? ' 입춘은 특별히 <b>년주(年柱)까지 바뀌는 사주의 새해</b>입니다 — 띠도 이 시각을 기준으로 바뀝니다.' : ''}</p>
       <p>이 시각 앞뒤로 두 시간 안에 태어났다면 월주가 경계에 걸립니다. 출생 시각이 확실하면 <a href="${rel}manse/">절기 시각까지 계산하는 만세력</a>으로 확인하세요.</p>`
@@ -314,7 +325,7 @@ function buildTerm(y, t, list) {
   const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}jeolgi/" style="color: inherit; text-decoration: none;">절기</a> · <a href="${rel}jeolgi/${y}/" style="color: inherit; text-decoration: none;">${y}년</a></div>
-    <h1 class="ga-title">${y}년 ${t.name}(${t.han}) —<br>${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}</h1>
+    <h1 class="ga-title">${y}년 ${t.name}(${t.han})${eun} ${t.m}월 ${t.d}일 —<br>${pad(t.hh)}:${pad(t.mm)}, 뜻과 풍습</h1>
     <p class="ga-meta">${WD[weekday(t.y, t.m, t.d)]} · 황경 ${t.i * 15}° · ${t.kind === '절' ? '절(節) — 월주가 바뀌는 절기' : '중기(中氣)'} · 그날의 일진 <a href="${rel}day/${iso(t.y, t.m, t.d)}/">${dayI.kor}(${dayI.han})일</a></p>
     <p class="ga-lead">${t.desc}</p>
 
@@ -324,6 +335,20 @@ function buildTerm(y, t, list) {
 
       <h2>이 절기의 결</h2>
       <p>${t.tip}</p>
+
+      <h2>${t.name} 무렵의 자연과 농사</h2>
+      <p>${esc(lore.nature)}</p>
+      <h2>${t.name}의 풍습</h2>
+      <p>${esc(lore.custom)}</p>
+      <h2>${t.name}에 먹는 음식</h2>
+      <p>${esc(lore.food)}</p>
+      <h2>${t.name} 속담</h2>
+      <ul>
+        ${lore.saying.map((x) => `<li>${esc(x)}</li>`).join('\n        ')}
+      </ul>
+
+      <h2>자주 묻는 질문</h2>
+      ${faq.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${esc(a)}</p>`).join('\n      ')}
 
       <p class="callout">${pv ? `← <a href="${rel}jeolgi/${pv.y}/${pv.slug}/">${pv.name} ${pv.m}/${pv.d}</a>` : ''}${pv && nx ? ' · ' : ''}${nx ? `<a href="${rel}jeolgi/${nx.y}/${nx.slug}/">${nx.name} ${nx.m}/${nx.d}</a> →` : ''} · <a href="${rel}jeolgi/${y}/">${y}년 절기 전체</a> · <a href="${rel}guide/jeolgi.html">절기력이란</a></p>
     </div>
@@ -335,9 +360,10 @@ function buildTerm(y, t, list) {
 
   const url = termUrl(y, t.slug);
   write(url.slice(1), shell({
-    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${y}년 ${t.name} — ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}`,
+    rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${y}년 ${t.name}${eun} ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)} — 뜻·풍습·음식`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '절기', url: SITE + '/jeolgi/' }, { name: `${y}년`, url: SITE + `/jeolgi/${y}/` }, { name: t.name, url: SITE + url }]),
-      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: iso(t.y, t.m, t.d), inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
+      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: iso(t.y, t.m, t.d), inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url },
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }],
     body
   }));
   addUrl(url);
