@@ -1,0 +1,40 @@
+name: sister-post
+
+# 첩 시리즈 쓰레드 글 — 매일 19:37 KST, 타로첩 → 꿈첩 → 생일첩 순서로 하루 한 편 (tools/sister-post.mjs)
+# 날짜로 종류·내용이 정해져 상태 파일·커밋이 없다. 정각을 피해 37분 — 정각 예약은 몇 시간씩 밀린다.
+on:
+  schedule:
+    - cron: '37 10 * * *'
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: '종류 지정 (tarot / dream / birthday, 비우면 날짜대로)'
+        default: ''
+      dry:
+        description: '게시하지 않고 글만 출력 (true/false)'
+        default: 'false'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: social-bot
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    env:
+      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: 글 만들기 + 쓰레드 게시
+        env:
+          KIND: ${{ github.event.inputs.kind }}
+          DRY: ${{ github.event.inputs.dry }}
+        run: node tools/sister-post.mjs
