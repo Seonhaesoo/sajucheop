@@ -18,6 +18,7 @@ const { M, I } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-11', MODIFIED = '2026-09-13';
+const MODIFIED_27 = '2026-09-19';   /* /en/2027/ — lucky colors, 제목을 검색어 꼴로 (2026-09-19) */
 const MODIFIED_ZY = '2026-09-18';   /* 해 108·동물 12·궁합 78 — 맨 위 요약 표, 자주 묻는 질문 (2026-09-18) */
 const Y0 = 1924, Y1 = 2031, NOW = 2026;
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -622,7 +623,7 @@ function year27Page(b) {
     allyRow('Natural allies (Three Harmony)', 'samhap', 'Signs in the same trine face the same direction and multiply each other’s strength.'),
     allyRow('Opposite (Clash)', 'chung', 'Strong chemistry and frequent friction — agree on roles early.')].filter(Boolean).join('\n        ')}
       </ul>`;
-  const leanHtml = `<p>${esc(LEAN27_WHY[d.el])} In the traditional correspondences, ${lean.en} goes with ${esc(lean.color)}, the ${esc(lean.dir)} and the numbers ${esc(lean.nums)}. Treat them as small reminders rather than charms: your year animal is one character of eight, and the element your own chart needs is worked out from all of them — see <a href="${rel}en/guide/useful-god/">the useful god</a>.</p>`;
+  const leanHtml = `<p>${esc(LEAN27_WHY[d.el])} In the traditional correspondences, ${lean.en} goes with ${esc(lean.color)}, the ${esc(lean.dir)} and the numbers ${esc(lean.nums)}. Treat them as small reminders rather than charms: your year animal is one character of eight, and the element your own chart needs is worked out from all of them — see <a href="${rel}en/guide/useful-god/">the useful god</a>. <a href="${rel}en/2027/lucky-colors/#${A.slug}">Lucky colors for all twelve signs in 2027</a></p>`;
   const faq27 = [
     [`What is the ${A.name}’s 2027 horoscope score?`, `${score}/100 — ${g.label.toLowerCase()}. The score weighs the ${A.name}’s branch against the Goat’s (${relWords}) and how ${EL[d.el].en} meets the year’s Fire and Earth${d.samjae ? ', less a little for the final samjae year' : ''}. It is the same number as our Korean 2027 horoscope.`],
     [`Which months are best for the ${A.name} in 2027?`, `${good.length ? `The smoothest are ${listText(good.map(monthName))}.` : `No month forms a harmony with the ${A.name}, so the year runs evenly.`}${bad.length ? ` Take more care in ${listText(bad.map(monthName))}.` : ''} Each month begins at a solar term, not on the 1st.`],
@@ -727,7 +728,7 @@ function year27Hub() {
       <h2>FAQ</h2>
       ${hubFaq.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
       <p class="callout">Your sign is one character of eight — read 2027 by <a href="${rel}en/2027/day-master/">Day Master</a> (ten readings) or by <a href="${rel}en/2027/day-pillar/">day pillar</a> (sixty).</p>
-      <p class="callout">Find your sign first: <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/zodiac/compatibility/">compatibility chart</a> · <a href="${rel}${yUrl(2027).slice(1)}">2027 Fire Goat year page</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">Having a baby in 2027?</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year 2027 dates</a> · <a href="${rel}en/monthly/">Month-by-month horoscope</a></p>
+      <p class="callout">Find your sign first: <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/zodiac/compatibility/">compatibility chart</a> · <a href="${rel}${yUrl(2027).slice(1)}">2027 Fire Goat year page</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">Having a baby in 2027?</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year 2027 dates</a> · <a href="${rel}en/2027/lucky-colors/">Lucky colors for 2027</a> · <a href="${rel}en/chinese-calendar/2027/">Chinese calendar 2027</a> · <a href="${rel}en/monthly/">Month-by-month horoscope</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>See 2027 in your full chart</span></a>
@@ -736,6 +737,103 @@ function year27Hub() {
   write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: '2027 — Year of the Fire Goat', extraHead: STYLE + alt(url, '/2027/') + `\n  <link rel="alternate" hreflang="ja" href="${SITE}/ja/2027/">`,
     jsonld: [crumbs([['2027 Horoscope', url]]), article(url, title, desc),
       { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: hubFaq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }], body }));
+}
+
+/* /en/2027/lucky-colors/ — the same "element to lean on" as the sign pages (LEAN27), laid out as colors, numbers and directions.
+ * No new rules here: every row is LEAN27[sign element] read through the traditional correspondences. */
+const SHADES = {
+  목: { main: 'green, teal and sage', swatch: ['#3E7A55', '#2F7F7A', '#9DB59A'] },
+  화: { main: 'red, coral and orange', swatch: ['#B8382D', '#E0705A', '#E08A3C'] },
+  토: { main: 'yellow, beige and terracotta', swatch: ['#D9B44A', '#D8C7A3', '#B5653C'] },
+  금: { main: 'white, silver and gold', swatch: ['#FFFFFF', '#C4C8CC', '#C9A24B'] },
+  수: { main: 'black, navy and deep blue', swatch: ['#1F1F1F', '#1F2F55', '#2B4C7E'] },
+};
+/* what the year already brings plenty of, from each element's side */
+const EASY27 = { 목: '화', 화: '화', 토: '토', 금: '화', 수: '토' };
+const EASY27_NAME = { 화: 'red', 토: 'yellow and brown' };
+const EASY27_WHY = {
+  목: 'red is where your energy is already going',
+  화: 'more red on a Fire year runs hot',
+  토: 'the year supplies more than enough Earth',
+  금: 'red is the pressure side of the year for Metal',
+  수: 'Earth is the dam on your Water this year',
+};
+function luckyColors27() {
+  const url = '/en/2027/lucky-colors/', rel = '../../../';
+  const sw = (el) => SHADES[el].swatch.map((c) => `<i style="background:${c}"></i>`).join('');
+  const rows = ANIMALS.map((A, b) => {
+    const d = DDI[b], lean = LEAN27[d.el];
+    return `<tr><td><a href="${rel}${y27Url(b).slice(1)}">${A.name}</a><br><small>${han(b)} · ${EL[d.el].en}</small></td><td><span class="lc-sw">${sw(lean)}</span>${SHADES[lean].main}<br><small>${EL[lean].en}</small></td><td>${EL[lean].nums.replace(' and ', ', ')}</td><td>${EL[lean].dir.replace(' (close to home)', '')}</td></tr>`;
+  }).join('');
+  const sections = ANIMALS.map((A, b) => {
+    const d = DDI[b], lean = LEAN27[d.el], easy = EASY27[d.el];
+    const own = d.rel === 'same' ? ` 2027 is the Goat’s own zodiac year, 本命年 (benming nian). By Chinese custom you wear something red through it, a belt, a bracelet or socks, ideally given by someone else. The custom is about protection rather than balance: red is the color that keeps bad luck away in Chinese folk belief. By the elements the Goat already has plenty of Fire and Earth in 2027, so keep the red to the talisman and let ${SHADES[lean].main} be the everyday colors.` : '';
+    return `<h3 id="${A.slug}">${A.name} <small>${han(b)} · ${EL[d.el].en}</small></h3>
+      <p><span class="lc-sw">${sw(lean)}</span><b>${SHADES[lean].main.charAt(0).toUpperCase() + SHADES[lean].main.slice(1)}</b> — ${EL[lean].en}. Numbers ${EL[lean].nums}; direction: ${EL[lean].dir}.</p>
+      <p>${esc(LEAN27_WHY[d.el])}${own} Go easy on ${EASY27_NAME[easy]} as a main color: ${EASY27_WHY[d.el]}. The ${A.name}’s 2027 in one line: ${Y27_REL[d.rel].label.charAt(0).toLowerCase() + Y27_REL[d.rel].label.slice(1)}, ${S27[b]}/100. <a href="${rel}${y27Url(b).slice(1)}">${A.name} 2027 horoscope →</a></p>`;
+  }).join('\n      ');
+  const STEM_EL = ['금', '금', '수', '수', '목', '목', '화', '화', '토', '토'];   /* last digit of the year: 0,1 Metal … 8,9 Earth */
+  const digitRows = [['0 or 1', '금'], ['2 or 3', '수'], ['4 or 5', '목'], ['6 or 7', '화'], ['8 or 9', '토']].map(([dg, el]) => `<tr><td>${dg}</td><td>${EL[el].en}</td><td><span class="lc-sw">${sw(LEAN27[el])}</span>${SHADES[LEAN27[el]].main}</td></tr>`).join('');
+  if (STEM_EL[0] !== '금' || ['금', '수', '목', '화', '토'].some((e) => !LEAN27[e])) throw new Error('lucky colors: element tables out of step');
+  const byLean = (el) => listText(ANIMALS.filter((_, b) => LEAN27[DDI[b].el] === el).map((A) => `the ${A.name}`));
+  const faq = [
+    ['What is the lucky color for 2027?', `It depends on your sign. In the Fire Goat year, ${byLean('금')} lean on Metal colors (${SHADES.금.main}); ${byLean('수')} on Water colors (${SHADES.수.main}); and ${byLean('토')} on Earth colors (${SHADES.토.main}). For the year as a whole, white, metallics, black and blue balance its Fire and Earth.`],
+    ['What color should a Goat wear in 2027?', `2027 is the Goat’s own zodiac year, and the custom for that is red: a red belt, bracelet or socks, ideally a gift. By the elements, ${SHADES.금.main} give the year’s heavy Earth an outlet. Wear the red as a talisman and the lighter colors day to day.`],
+    ['What are the lucky numbers for 2027?', `They follow the same elements: 4 and 9 for Metal, 1 and 6 for Water, 5 and 10 for Earth. Look up your sign in the table above. The pairs come from the Hetu diagram, the traditional link between numbers and the Five Elements.`],
+    ['Why do other websites list different lucky colors?', 'There is no official list. Every almanac writer and feng shui master publishes their own, and few explain the reasoning. Ours follows one rule for every sign and shows the working, so you can check it.'],
+    ['Are there unlucky colors in 2027?', 'Not in any strict sense. Each sign has a color family the year already supplies in excess, listed as “go easy on” above. Wearing it will not harm you; it just is not where the balance lies.'],
+    ['Does my birth year element matter?', 'It fine-tunes the answer. The last digit of your birth year gives your year element; the second table shows the color it leans on in 2027. If the two tables agree, the choice is easy. If they differ, use the sign color as the main one and the other as an accent.'],
+  ];
+  const title = 'Lucky Colors 2027 for Every Chinese Zodiac Sign + Numbers';
+  const desc = 'Lucky colors, numbers and directions for all 12 Chinese zodiac signs in 2027, the Year of the Fire Goat, worked out from the Five Elements with the reasoning shown.';
+  const LC_STYLE = `<style>
+    .lc-sw { display: inline-flex; gap: 3px; vertical-align: -2px; margin-right: 7px; }
+    .lc-sw i { display: inline-block; width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(33, 28, 21, .25); }
+    .ga-body h3 small { font-weight: 400; font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+  </style>`;
+  const body = `
+  <article class="guide-article">
+    <div class="ga-overline"><a href="${rel}en/2027/" style="color: inherit; text-decoration: none;">2027 horoscope</a> · Lucky colors</div>
+    <h1 class="ga-title">Lucky colors for 2027, sign by sign</h1>
+    <p class="ga-lead">2027 is 丁未, the Year of the Fire Goat: Fire on top, warm dry Earth underneath. A lucky color, in the traditional sense, is the color of the element that balances that mix for you. Here is each sign’s color, number and direction, with the reasoning, so you can check it rather than take it on faith.</p>
+    <div class="ga-body">
+      <h2>Lucky colors 2027 by zodiac sign</h2>
+      <div class="zd-wrap"><table class="zd-table"><tr><th>Sign</th><th>Lucky colors</th><th>Numbers</th><th>Direction</th></tr>${rows}</table></div>
+      <p>Born in January or February? The zodiac year starts at Chinese New Year, so check your sign with the <a href="${rel}en/zodiac/">zodiac calculator</a> first.</p>
+
+      <h2>How the colors are worked out</h2>
+      <p>Each of the twelve animals has a fixed element: Tiger and Rabbit are Wood; Snake and Horse are Fire; Ox, Dragon, Goat and Dog are Earth; Monkey and Rooster are Metal; Pig and Rat are Water. The elements feed one another in a circle (Wood, Fire, Earth, Metal, Water, and back to Wood) and check one another across it: Water checks Fire, Fire checks Metal, Metal checks Wood, Wood checks Earth, Earth checks Water.</p>
+      <p>Set your element against a year of Fire and Earth and one of three things is true. The year drains or crowds you, and you need the element that refills you. The year presses on you, and you need the element that stands between the two and turns pressure into support. Or the year piles more of your own element on you, and you need an outlet. That element is the one to lean on, and the old correspondences give it a color, a pair of numbers and a direction.</p>
+      <p>These are the same elements named on each of our <a href="${rel}en/2027/">2027 sign pages</a>, and the same logic as the Korean edition of this site.</p>
+
+      <h2>The colors of the year itself</h2>
+      <p>The year’s own colors are Fire and Earth: reds and corals for the candle flame of 丁, and sand, ochre and terracotta for the late-summer soil of 未. You will see them everywhere in New Year decorations, and red remains the festival color whatever the year. What the year lacks is Metal and Water, which is why white, metallics, black and blue turn up as balancing colors for so many signs above.</p>
+
+      <h2>Sign by sign</h2>
+      ${sections}
+
+      <h2>Fine-tune by birth year</h2>
+      <p>Your birth year has an element of its own, set by the last digit of the year. It meets 2027 by the same rule.</p>
+      <div class="zd-wrap"><table class="zd-table"><tr><th>Birth year ends in</th><th>Year element</th><th>Leans on in 2027</th></tr>${digitRows}</table></div>
+      <p>A 1990 Horse is a Metal Horse: the sign leans on ${SHADES[LEAN27.화].main.split(',')[0]}, the birth-year Metal on ${SHADES[LEAN27.금].main.split(',')[0]}. Use the sign color as the main one and the other as an accent. For January and February birthdays the year element follows the Chinese year too.</p>
+
+      <h2>How to use a lucky color</h2>
+      <p>Traditionally, in small things you see or touch every day: a wallet, a phone case, a scarf, a notebook, the corner of a desk. The direction is used the same way, for where a desk faces or which side of a room gets the plant. Treat all of it as a reminder of what balances your year, not as a charm. Nothing here changes what happens to you, and no color is worth buying things you do not need.</p>
+
+      <h2>Your sign is one character of eight</h2>
+      <p>The zodiac animal is the year branch of a Four Pillars chart, one character out of eight. The element your own chart leans on is worked out from all of them, and above all from the Day Master, the stem of the day you were born. If it differs from the color above, the chart outranks the sign. <a href="${rel}en/bazi-calculator/">Cast your chart</a> · <a href="${rel}en/guide/useful-god/">How the useful god is chosen</a> · <a href="${rel}en/2027/day-master/">2027 by Day Master</a></p>
+
+      <h2>FAQ</h2>
+      ${faq.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
+      <p class="callout"><a href="${rel}en/2027/">2027 horoscope for all twelve signs</a> · <a href="${rel}en/chinese-calendar/2027/">Chinese calendar 2027</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year 2027 dates</a> · <a href="${rel}en/zodiac/compatibility/">Zodiac compatibility</a></p>
+    </div>
+    <div class="ga-cta">
+      <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Find the element your chart leans on</span></a>
+    </div>
+  </article>`;
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), og: 'en-lucky-colors', ogTitle: 'Lucky colors for 2027, sign by sign', extraHead: STYLE + LC_STYLE + alt(url),
+    jsonld: [crumbs([['2027 Horoscope', '/en/2027/'], ['Lucky colors', url]]), { ...article(url, title, desc, MODIFIED_27), datePublished: MODIFIED_27 },
+      { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }], body }));
 }
 
 /* ---------- run ---------- */
@@ -751,9 +849,10 @@ compatIndex();
 for (let a = 0; a < 12; a++) for (let b = a; b < 12; b++) pairPage(a, b);
 year27Hub();
 ANIMALS.forEach((_, b) => year27Page(b));
+luckyColors27();
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-zodiac.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${(/^\/en\/zodiac\/(year\/\d{4}|[a-z]+|compatibility\/[a-z]+-[a-z]+)\/$/.test(u) && u !== '/en/zodiac/compatibility/') ? MODIFIED_ZY : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${(/^\/en\/zodiac\/(year\/\d{4}|[a-z]+|compatibility\/[a-z]+-[a-z]+)\/$/.test(u) && u !== '/en/zodiac/compatibility/') ? MODIFIED_ZY : u.startsWith('/en/2027/') ? MODIFIED_27 : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-zodiac.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-zodiac.xml\n');
