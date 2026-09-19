@@ -441,7 +441,8 @@ function yearPage(y) {
   const age = (t) => t - y;
   const same60 = [y - 60, y + 60].filter((t) => t >= 1900 && t <= 2100);
   const g27 = grade27(S27[b]);
-  const title = `${y} Chinese Zodiac: Year of the ${x.name} — Dates & Traits`;
+  /* 올해와 내년은 "what is the chinese zodiac for 2027" 꼴로 찾는다(구글 트렌드 급상승어, 2026-09-19). 태어난 해는 "1990 chinese zodiac" 꼴 그대로 */
+  const title = y === NOW || y === NOW + 1 ? `What Is the Chinese Zodiac for ${y}? Year of the ${x.name}` : `${y} Chinese Zodiac: Year of the ${x.name} — Dates & Traits`;
   const ny = nextOf(y), nySpan = spanOk(ny);
   const nyText = `${ny} (${nameOf(ny)})${nySpan ? `, from ${fmtD(nySpan.start)}` : ''}`;
   const facts = [
@@ -628,8 +629,8 @@ function year27Page(b) {
     [`What is the ${A.name}’s 2027 horoscope score?`, `${score}/100 — ${g.label.toLowerCase()}. The score weighs the ${A.name}’s branch against the Goat’s (${relWords}) and how ${EL[d.el].en} meets the year’s Fire and Earth${d.samjae ? ', less a little for the final samjae year' : ''}. It is the same number as our Korean 2027 horoscope.`],
     [`Which months are best for the ${A.name} in 2027?`, `${good.length ? `The smoothest are ${listText(good.map(monthName))}.` : `No month forms a harmony with the ${A.name}, so the year runs evenly.`}${bad.length ? ` Take more care in ${listText(bad.map(monthName))}.` : ''} Each month begins at a solar term, not on the 1st.`],
   ].concat(S.faq);
-  const title = `${A.name} 2027 Horoscope: Year of the Fire Goat — ${score}/100`;
-  const desc = fitDesc(`2027 Chinese horoscope for the ${A.name}: ${score}/100, ${g.label.toLowerCase()}.`,
+  const title = `Year of the ${A.name} 2027 Predictions & Horoscope — ${score}/100`;
+  const desc = fitDesc(`${A.name} 2027 predictions for the Year of the Fire Goat: ${score}/100, ${g.label.toLowerCase()}.`,
     [` ${R.short}. Love, money, work, health and the best months.`, ' Love, money, work, health and the best months of the Fire Goat year.', ' Love, money, work and health in the Fire Goat year.']);
   const body = `
   <article class="guide-article">
@@ -702,8 +703,8 @@ function year27Hub() {
     ['Which signs need more care in 2027?', `${listText(low.map((b) => `the ${ANIMALS[b].name} (${S27[b]}, ${relShort(b)})`))}. A lower score marks more friction to manage — moves, misunderstandings, paperwork — not a bad year by fate, and every sign page lists its smoothest months.`],
     ['Which signs have samjae in 2027?', `The Pig, Rabbit and Goat. 2027 is the last of their three samjae years (2025–2027), the “leaving” year that Korean custom treats as a time to wrap things up rather than start big. It is folk tradition, not a forecast.`],
   ];
-  const title = '2027 Chinese Horoscope: Year of the Fire Goat, All 12 Signs';
-  const desc = `2027 is the Year of the Fire Goat (丁未), ${fmtD(CNY27.start)} to ${fmtD(CNY27.end)}. Scores and forecasts for all twelve signs: love, money, work, health and best months.`;
+  const title = 'Chinese Zodiac 2027 Predictions: Year of the Fire Goat';
+  const desc = `Chinese zodiac 2027 predictions for all 12 signs. The Year of the Fire Goat (Sheep or Ram) runs ${fmtD(CNY27.start)} to ${fmtD(CNY27.end)}: love, money, work, health, best months.`;
   const body = `
   <article class="guide-article">
     <div class="ga-overline">2027 horoscope</div>
