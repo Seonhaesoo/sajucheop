@@ -12,8 +12,9 @@ import vm from 'node:vm';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, breadcrumb } from './page-shell.mjs';
 import { chineseMonths, toChineseLunar, selfCheck } from './chinese-lunar.mjs';
+import { publishedTime, TERM_INFO } from './solar-terms-data.mjs';
 
-const { I } = loadEngine();
+const { I, M, Lunar } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const MODIFIED = '2026-09-19';
@@ -155,12 +156,12 @@ const STYLE = `<style>
 
 const urls = [];
 const strip = (s) => s.replace(/<[^>]+>/g, '');
-function page(slug, { title, desc, h1, lead, calc = '', body, faq, script = '', overline = 'Tools', og, cta = { href: 'en/', label: 'Read my Four Pillars chart' }, app = true }) {
-  const rel = '../../', url = `/en/${slug}/`;
+function page(slug, { title, desc, h1, lead, calc = '', body, faq, script = '', overline = 'Tools', og, cta = { href: 'en/', label: 'Read my Four Pillars chart' }, app = true, crumbs = [], extraStyle = '' }) {
+  const rel = '../'.repeat(2 + slug.split('/').length - 1), url = `/en/${slug}/`;
   const faqHtml = faq.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${q}</summary><div class="ih-body"><p>${a}</p></div></details>`).join('\n      ');
   const html = shell({
-    rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, og,
-    jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: h1, url: SITE + url }]),
+    rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + extraStyle, og,
+    jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, ...crumbs.map((c) => ({ name: c.name, url: SITE + c.url })), { name: h1, url: SITE + url }]),
       app
         ? { '@context': 'https://schema.org', '@type': 'WebApplication', name: h1, url: SITE + url, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Any', inLanguage: 'en', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }
         : { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: MODIFIED, dateModified: MODIFIED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop', url: SITE + '/en/about/' }, publisher: { '@type': 'Organization', name: 'Sajucheop', url: SITE + '/en/' }, mainEntityOfPage: SITE + url },
@@ -175,7 +176,7 @@ function page(slug, { title, desc, h1, lead, calc = '', body, faq, script = '', 
 ${body}
       <h2>FAQ</h2>
       ${faqHtml}
-      <p class="callout"><a href="${rel}en/chinese-gender-calendar/">Chinese gender calendar</a> · <a href="${rel}en/lunar-age/">Lunar age calculator</a> · <a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a></p>
+      <p class="callout"><a href="${rel}en/chinese-calendar/">Chinese calendar</a> · <a href="${rel}en/chinese-gender-calendar/">Chinese gender calendar</a> · <a href="${rel}en/lunar-age/">Lunar age calculator</a> · <a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}${cta.href}"><span class="seal-dot" aria-hidden="true"></span><span>${cta.label}</span></a>
@@ -250,6 +251,7 @@ page('chinese-gender-calendar', {
         <tr><th>${LYB} · ${signOf(LYB)}</th><th>First day</th><th>Last day</th><th>Days</th></tr>
         ${monthRows(LYB)}
       </table>
+      <p>The full calendars, with the lunar date of every day: <a href="../chinese-calendar/${LYA}/">Chinese calendar ${LYA}</a> · <a href="../chinese-calendar/${LYB}/">Chinese calendar ${LYB}</a>.</p>
       <p>These are dates on the Chinese calendar, counted in Beijing time. Korea’s lunar calendar is counted an hour ahead, so now and then a month starts a day later there: the ${ord(9)} month of ${LYA} and New Year ${LYB} are two examples (<a href="../lunar-new-year/">why the dates differ</a>).</p>
 
       <h2>Why two calculators can give different answers</h2>
@@ -437,6 +439,384 @@ page('lunar-age', {
     $('#la-birth').addEventListener('change', go);
     $('#la-on').addEventListener('change', go);
     go();
+  })();
+  </script>`
+});
+
+/* ---------- Chinese calendar: hub, year pages, Gregorian month pages ----------
+ *   /en/chinese-calendar/            today's lunar date + two-way converter
+ *   /en/chinese-calendar/2027/       the lunar year at a glance: months, festivals, solar terms, Korea differences
+ *   /en/chinese-calendar/2027/02/    one Gregorian month: grid with lunar dates, day list with day pillars
+ * Solar-term times are the published KASI values minus one hour (Korea → Beijing). */
+const CAL_YEARS = YEARS;
+const WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const STEM_PY = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'], BRANCH_PY = ['Zi', 'Chou', 'Yin', 'Mao', 'Chen', 'Si', 'Wu', 'Wei', 'Shen', 'You', 'Xu', 'Hai'];
+const HAN_S = '甲乙丙丁戊己庚辛壬癸', HAN_B = '子丑寅卯辰巳午未申酉戌亥';
+const YY = ['Yang', 'Yin'];
+const dnOf = (y, m, d) => I.daysFromCivil(y, m, d);
+const wdOf = (dn) => (((dn + 4) % 7) + 7) % 7;
+const pad2 = (n) => String(n).padStart(2, '0');
+const isoOf = (dn) => { const c = civ(dn); return `${c.y}-${pad2(c.m)}-${pad2(c.d)}`; };
+const dayPillar = (dn) => { const idx = I.dayPillarIndex(dn + I.JDN_EPOCH); return { stem: idx % 10, branch: idx % 12 }; };
+const pHan = (p) => HAN_S[p.stem] + HAN_B[p.branch];
+const pPin = (p) => `${STEM_PY[p.stem]} ${BRANCH_PY[p.branch]}`;
+const pEn = (p) => `${ELEM[p.stem]} ${ANIMAL[p.branch]}`;
+{ const p = dayPillar(dnOf(2026, 9, 19)); if (pHan(p) !== '丙申') throw new Error('chinese calendar: day pillar check failed — 2026-09-19 should be 丙申, got ' + pHan(p)); }
+const longWd = (dn) => `${WD[wdOf(dn)]}, ${long(dn)}`;
+const lunarOf = (dn) => { const c = civ(dn); return toChineseLunar(months, c.y, c.m, c.d); };
+const lunarText = (L) => `${ord(L.day)} day of the ${L.leap ? 'leap ' : ''}${ord(L.month)} lunar month`;
+const clock = (hh, mm) => `${pad2(hh)}:${pad2(mm)}`;
+
+function termsOf(y) {
+  return TERM_INFO.map((info, i) => {
+    const p = publishedTime(y, i);
+    if (!p) throw new Error(`chinese calendar: no published solar-term time for ${y} ${info.en}`);
+    let dn = dnOf(p.y, p.m, p.d), min = p.hh * 60 + p.mm - 60;
+    if (min < 0) { min += 1440; dn -= 1; }
+    return { i, info, dn, hh: Math.floor(min / 60), mm: min % 60, kst: p };
+  }).sort((a, b) => a.dn - b.dn);
+}
+
+const FEST = [
+  { m: 1, d: 1, en: 'Spring Festival', han: '春節', holiday: true, ko: 'Seollal (설날)', text: 'Chinese New Year, the first day of the first lunar month. Families gather the night before for the reunion dinner, children receive red envelopes, and the celebrations run until the Lantern Festival on the 15th.' },
+  { m: 1, d: 15, en: 'Lantern Festival', han: '元宵節', ko: 'Daeboreum (정월대보름)', text: 'The first full moon of the year closes the New Year season with lanterns, riddles and sweet rice balls (yuanxiao or tangyuan). In Korea the day is Daeboreum, kept with five-grain rice and nuts cracked for luck.' },
+  { m: 2, d: 2, en: 'Longtaitou', han: '龍抬頭', text: '“The dragon raises its head”: the old start of the farming year, and by custom the day for the first haircut after New Year.' },
+  { m: 4, d: 8, en: 'Buddha’s Birthday', han: '佛誕', ko: 'Bucheonim Osin Nal (부처님오신날)', text: 'Temples hang lotus lanterns for the birth of the Buddha. It is a public holiday in South Korea, Hong Kong and Macau.' },
+  { m: 5, d: 5, en: 'Dragon Boat Festival', han: '端午節', holiday: true, ko: 'Dano (단오)', text: 'Dragon-boat races and zongzi, sticky rice wrapped in leaves, in memory of the poet Qu Yuan. Korea’s Dano falls on the same lunar date with customs of its own, the Gangneung Danoje festival among them.' },
+  { m: 7, d: 7, en: 'Qixi Festival', han: '七夕', ko: 'Chilseok (칠석)', text: 'The one night of the year when the Cowherd and the Weaver Girl meet across the Milky Way, now often called Chinese Valentine’s Day. Korea knows it as Chilseok; Japan’s Tanabata comes from the same story.' },
+  { m: 7, d: 15, en: 'Ghost Festival', han: '中元節', ko: 'Baekjung (백중)', text: 'Zhongyuan, the middle of Ghost Month, when families make offerings to ancestors and to wandering spirits. The Korean name for the day is Baekjung.' },
+  { m: 8, d: 15, en: 'Mid-Autumn Festival', han: '中秋節', holiday: true, ko: 'Chuseok (추석)', text: 'Mooncakes and moon-viewing on the full moon of the eighth month. In Korea the same date is Chuseok, a three-day harvest holiday and the biggest family gathering of the year.' },
+  { m: 9, d: 9, en: 'Double Ninth Festival', han: '重陽節', text: 'Chongyang: climbing to a high place, chrysanthemum wine and visits to elders. China also marks it as Seniors’ Day.' },
+  { m: 12, d: 8, en: 'Laba Festival', han: '臘八節', text: 'A bowl of Laba congee, cooked from mixed grains, beans and dried fruit, opens the run-up to New Year.' },
+  { m: 12, d: 23, en: 'Little New Year', han: '小年', text: 'The Kitchen God leaves to make his yearly report, and the house is cleaned for New Year. Northern China keeps it on the 23rd of the 12th month, the south on the 24th.' },
+  { eve: true, en: 'New Year’s Eve', han: '除夕', holiday: true, text: 'Chuxi, the last day of the lunar year: the reunion dinner, staying up past midnight, and fireworks where they are allowed.' },
+];
+const TERM_FEST = { 1: { en: 'Qingming Festival', han: '清明節', holiday: true, text: 'Tomb-Sweeping Day falls on the solar term Qingming: families tidy graves and make offerings. It is a public holiday in mainland China. Korea’s Hansik, 105 days after the winter solstice, lands on or next to the same day.' }, 18: { en: 'Dongzhi Festival', han: '冬至', text: 'The winter solstice is a family day: dumplings in northern China, tangyuan in the south, and red-bean porridge (patjuk) in Korea.' } };
+const lunarDn = (ly, m, d) => { const mo = months.find((x) => x.lunarYear === ly && x.month === m && !x.leap); return mo && d <= mo.days ? mo.start + d - 1 : null; };
+const koreaDn = (ly, m, d) => { if (!Lunar || !Lunar.setLunarDate(ly, m, d, false)) return null; const s = Lunar.getSolarCalendar(); return dnOf(s.year, s.month, s.day); };
+/* festivals of one lunar year, in date order — { f, dn, kdn, ly, label } */
+function festivalsOf(ly) {
+  return FEST.map((f) => {
+    const dn = f.eve ? newYearDn(ly + 1) - 1 : lunarDn(ly, f.m, f.d);
+    const kdn = f.eve ? koreaDn(ly + 1, 1, 1) - 1 : koreaDn(ly, f.m, f.d);
+    const L = lunarOf(dn);
+    return { f, dn, kdn, ly, lunarLabel: f.eve ? `last day of the 12th month (${ord(L.day)})` : `${ord(f.d)} day of the ${ord(f.m)} month` };
+  }).sort((a, b) => a.dn - b.dn);
+}
+
+const CC_STYLE = `<style>
+    table.cc-grid { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 14px 0 6px; }
+    table.cc-grid th { text-align: center; font-size: 11px; font-weight: 700; padding: 6px 0; white-space: nowrap; border: 1px solid var(--line); background: var(--paper); }
+    table.cc-grid td { height: 66px; padding: 0; vertical-align: top; border: 1px solid var(--line); background: #FFFDF9; }
+    .cc-grid td a, .cc-grid td > div { display: block; min-height: 66px; padding: 5px 4px 4px; text-decoration: none; color: inherit; }
+    .cc-grid b { display: block; font-family: 'Noto Serif KR', serif; font-size: 15px; line-height: 1.2; color: var(--ink); }
+    .cc-grid i { display: block; font-style: normal; font-size: 10.5px; color: var(--muted); line-height: 1.3; }
+    .cc-grid em { display: block; font-style: normal; font-size: 9.5px; line-height: 1.25; color: var(--seal); margin-top: 2px; overflow-wrap: anywhere; }
+    table.cc-grid td.cc-new { background: #FBF3E6; }
+    .cc-grid td.cc-new i { color: var(--seal); font-weight: 700; }
+    .cc-grid td.cc-sun b { color: var(--seal); }
+    table.cc-grid td.cc-x { background: transparent; }
+    .cc-note { font-size: 12.5px; color: var(--muted); margin: 0 0 14px; }
+    .ga-body table.cc-list { font-size: 12.5px; }
+    .ga-body table.cc-list th, .ga-body table.cc-list td { padding: 6px; }
+    .ga-body table.cc-list td:first-child, .ga-body table.cc-list td:nth-child(3) { white-space: nowrap; }
+    .ga-body table.cc-list small { color: var(--muted); font-size: 11px; }
+    .cc-nav { display: flex; justify-content: space-between; gap: 10px; margin: 18px 0 4px; font-size: 13.5px; }
+    .cc-months { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0 16px; }
+    .cc-months a { display: block; padding: 10px 6px; text-align: center; border: 1px solid var(--line); border-radius: 10px; background: #FFFDF9; text-decoration: none; color: var(--ink); font-size: 13.5px; font-weight: 700; }
+    .cc-months a small { display: block; font-weight: 400; font-size: 11px; color: var(--muted); margin-top: 2px; }
+    @media (max-width: 420px) { .cc-months { grid-template-columns: repeat(3, 1fr); } }
+  </style>`;
+const CAL_CRUMB = { name: 'Chinese calendar', url: '/en/chinese-calendar/' };
+const dayPageExists = (dn) => fs.existsSync(path.join(DOCS, 'en', 'day', isoOf(dn), 'index.html'));
+const sajuMonth = (y, m, d) => { const r = M.compute({ year: y, month: m, day: d, hour: 12, minute: 0, gender: 'F', applySolarTime: false }); return r.pillars; };
+
+/* ----- Gregorian month pages ----- */
+function monthPage(y, m) {
+  const first = dnOf(y, m, 1), dim = I.daysInMonth(y, m), last = first + dim - 1;
+  const rel = '../../../../';
+  const terms = termsOf(y).filter((t) => t.dn >= first && t.dn <= last);
+  const fests = [y - 1, y].flatMap((ly) => festivalsOf(ly)).filter((x) => x.dn >= first && x.dn <= last);
+  const byDn = new Map();
+  const note = (dn, label, full) => { if (!byDn.has(dn)) byDn.set(dn, []); byDn.get(dn).push({ label, full }); };
+  fests.forEach((x) => note(x.dn, x.f.en, `${x.f.en} (${x.f.han})`));
+  terms.forEach((t) => note(t.dn, TERM_FEST[t.i] ? TERM_FEST[t.i].en : t.info.en, `${t.info.en} (${t.info.han}, ${t.info.pinyin})${TERM_FEST[t.i] ? ' · ' + TERM_FEST[t.i].en : ''}`));
+  const L1 = lunarOf(first), Ln = lunarOf(last);
+  const starts = months.filter((mo) => mo.start >= first && mo.start <= last);
+  const overlap = months.filter((mo) => mo.start <= last && mo.start + mo.days - 1 >= first);
+
+  /* grid */
+  const cells = [];
+  for (let i = 0; i < wdOf(first); i++) cells.push('<td class="cc-x"></td>');
+  for (let dn = first; dn <= last; dn++) {
+    const L = lunarOf(dn), c = civ(dn), notes = byDn.get(dn) || [];
+    const cls = [L.day === 1 ? 'cc-new' : '', wdOf(dn) === 0 ? 'cc-sun' : ''].filter(Boolean).join(' ');
+    const inner = `<b>${c.d}</b><i>${L.day === 1 ? '● ' : ''}${L.leap ? 'L' : ''}${L.month}/${L.day}</i>${notes.map((n) => `<em>${n.label}</em>`).join('')}`;
+    cells.push(`<td${cls ? ` class="${cls}"` : ''}>${dayPageExists(dn) ? `<a href="${rel}en/day/${isoOf(dn)}/">${inner}</a>` : `<div>${inner}</div>`}</td>`);
+  }
+  while (cells.length % 7) cells.push('<td class="cc-x"></td>');
+  const gridRows = [];
+  for (let i = 0; i < cells.length; i += 7) gridRows.push(`<tr>${cells.slice(i, i + 7).join('')}</tr>`);
+  const grid = `<table class="cc-grid">
+        <tr>${WD.map((w) => `<th>${w.slice(0, 3)}</th>`).join('')}</tr>
+        ${gridRows.join('\n        ')}
+      </table>
+      <p class="cc-note">Small numbers are the lunar month and day. ● marks the first day of a lunar month, the day of the new moon in Beijing time.${L1 && months.some((mo) => mo.leap && mo.start <= last && mo.start + mo.days - 1 >= first) ? ' L marks a leap month.' : ''} Tap a day for its day pillar.</p>`;
+
+  /* day list */
+  const listRows = [];
+  for (let dn = first; dn <= last; dn++) {
+    const L = lunarOf(dn), c = civ(dn), p = dayPillar(dn), notes = (byDn.get(dn) || []).map((n) => n.full);
+    if (L.day === 1) notes.unshift(`${L.leap ? 'Leap ' : ''}${ord(L.month)} lunar month begins`);
+    const dateCell = `${WD[wdOf(dn)].slice(0, 3)}, ${MON[c.m - 1]} ${c.d}`;
+    listRows.push(`<tr><td>${dayPageExists(dn) ? `<a href="${rel}en/day/${isoOf(dn)}/">${dateCell}</a>` : dateCell}</td><td>${L.leap ? 'Leap ' : ''}${ord(L.month)} month, day ${L.day}</td><td>${pHan(p)} ${pPin(p)}<br><small>${YY[p.stem % 2]} ${pEn(p)}</small></td><td>${notes.join('<br>')}</td></tr>`);
+  }
+
+  /* text */
+  const yearOfText = (ly) => `${ly}, the Year of the ${signOf(ly)}`;
+  const overlapList = overlap.map((mo) => `<li>The ${mo.leap ? 'leap ' : ''}${ord(mo.month)} month of ${yearOfText(mo.lunarYear)}: ${long(mo.start)} – ${long(mo.start + mo.days - 1)} (${mo.days} days)</li>`).join('\n        ');
+  const festHtml = fests.map((x) => `<p><strong>${x.f.en} (${x.f.han}) — ${longWd(x.dn)}.</strong> The ${x.lunarLabel}. ${x.f.text}${x.f.holiday && !x.f.eve ? ' It is a public holiday in mainland China.' : ''}${x.kdn !== null && x.kdn !== x.dn ? ` On the Korean calendar the date falls on ${long(x.kdn)}, a day later, because Korea counts the new moon in its own time zone.` : ''}</p>`).join('\n      ');
+  const termHtml = terms.map((t) => `<p><strong>${t.info.en} (${t.info.han}, ${t.info.pinyin}) — ${longWd(t.dn)}, ${clock(t.hh, t.mm)} Beijing time.</strong> ${t.info.meaning}${TERM_FEST[t.i] ? ' ' + TERM_FEST[t.i].text : ''}</p>`).join('\n      ');
+  const jie = terms.find((t) => t.info.jie);
+  let pillarsHtml = '';
+  if (jie) {
+    const c = civ(jie.dn), before = sajuMonth(y, m, 1), after = sajuMonth(y, m, Math.min(dim, 25));
+    if (c.d <= 1 || c.d >= 25) throw new Error(`chinese calendar: ${y}-${m} jie term on day ${c.d} — sample days need a rethink`);
+    pillarsHtml = `<h2>Four Pillars months in ${MONTH[m - 1]} ${y}</h2>
+      <p>A saju or BaZi chart does not follow the lunar months above. Its month changes at a solar term: until ${t_en(jie)} on ${MONTH[c.m - 1]} ${c.d} the month pillar is ${pHan(before.month)} (${pPin(before.month)}), and from that moment it is ${pHan(after.month)} (${pPin(after.month)}).${pHan(before.year) !== pHan(after.year) ? ` The year pillar turns at the same moment, from ${pHan(before.year)} (${pEn(before.year)}) to ${pHan(after.year)} (${pEn(after.year)}): in a chart, the new year starts here and not at Lunar New Year.` : ''} <a href="${rel}en/solar-terms/${y}/">Solar terms of ${y}, with Korea times</a> · <a href="${rel}en/">Cast a chart</a></p>`;
+  }
+  const koreaHere = koreaDiffs.filter((d) => d.solar >= isoOf(first) && d.solar <= isoOf(last));
+  const koreaHtml = koreaHere.length ? `<h2>Korea’s calendar this month</h2>
+      <p>${koreaHere.map((d) => { const dn = dnOf(...d.solar.split('-').map(Number)); const L = lunarOf(dn); return `The new moon on ${long(dn)} comes in the last hour before midnight in Beijing, which is already the next day in Seoul. China starts its ${ord(L.month)} lunar month on ${MONTH[civ(dn).m - 1]} ${civ(dn).d}, Korea on ${MONTH[civ(dn + 1).m - 1]} ${civ(dn + 1).d}, and every date in that lunar month is a day apart between the two calendars.`; }).join(' ')} <a href="${rel}en/lunar-new-year/">More on the one-day gap</a></p>` : '';
+  const prev = m === 1 ? [y - 1, 12] : [y, m - 1], next = m === 12 ? [y + 1, 1] : [y, m + 1];
+  const has = ([yy]) => CAL_YEARS.includes(yy);
+  const navHtml = `<div class="cc-nav"><span>${has(prev) ? `<a href="${rel}en/chinese-calendar/${prev[0]}/${pad2(prev[1])}/">← ${MONTH[prev[1] - 1]} ${prev[0]}</a>` : ''}</span><span><a href="${rel}en/chinese-calendar/${y}/">All of ${y}</a></span><span>${has(next) ? `<a href="${rel}en/chinese-calendar/${next[0]}/${pad2(next[1])}/">${MONTH[next[1] - 1]} ${next[0]} →</a>` : ''}</span></div>`;
+
+  const startsText = starts.length ? starts.map((mo) => `the ${mo.leap ? 'leap ' : ''}${ord(mo.month)} lunar month begins on ${MONTH[civ(mo.start).m - 1]} ${civ(mo.start).d}`).join(' and ') : '';
+  const highlights = fests.map((x) => `${x.f.en} on ${MONTH[civ(x.dn).m - 1]} ${civ(x.dn).d}`);
+  const lead = `${MONTH[m - 1]} ${y} opens on the ${lunarText(L1)} and closes on the ${lunarText(Ln)}${L1.year === Ln.year ? `, in the Chinese year ${yearOfText(L1.year)}` : `: it starts in the Year of the ${signOf(L1.year)} and ends in the Year of the ${signOf(Ln.year)}`}. ${startsText ? startsText[0].toUpperCase() + startsText.slice(1) + '.' : ''}${highlights.length ? ' Festivals this month: ' + (highlights.length === 1 ? highlights[0] : highlights.slice(0, -1).join(', ') + ' and ' + highlights[highlights.length - 1]) + '.' : ''}`;
+  const faq = [
+    [`What is the lunar date on ${MONTH[m - 1]} 1, ${y}?`, `${longWd(first)} is the ${lunarText(L1)} of the Chinese year ${L1.year} (${signOf(L1.year)}). The day pillar is ${pHan(dayPillar(first))} (${pPin(dayPillar(first))}).`],
+    [`When does a new lunar month start in ${MONTH[m - 1]} ${y}?`, starts.length ? `${starts.map((mo) => `The ${mo.leap ? 'leap ' : ''}${ord(mo.month)} lunar month starts on ${longWd(mo.start)}`).join('. ')}. A lunar month begins on the day of the new moon, counted in Beijing time.` : `No lunar month starts in ${MONTH[m - 1]} ${y}.`],
+  ];
+  if (fests.length) faq.push([`When is ${fests[0].f.eve ? 'Chinese New Year’s Eve' : 'the ' + fests[0].f.en} in ${y}?`, `${longWd(fests[0].dn)}, the ${fests[0].lunarLabel}.`]);
+  faq.push([`Which zodiac year is ${MONTH[m - 1]} ${y} in?`, L1.year === Ln.year ? `All of ${MONTH[m - 1]} ${y} falls in the Year of the ${signOf(L1.year)}, which runs from ${long(newYearDn(L1.year))} to ${long(newYearDn(L1.year + 1) - 1)}.` : `The Year of the ${signOf(L1.year)} ends on ${long(newYearDn(Ln.year) - 1)}, and the Year of the ${signOf(Ln.year)} begins on ${long(newYearDn(Ln.year))}, Chinese New Year.`]);
+
+  page(`chinese-calendar/${y}/${pad2(m)}`, {
+    og: 'en-chinese-calendar', overline: `Chinese calendar ${y}`, app: false, crumbs: [CAL_CRUMB, { name: String(y), url: `/en/chinese-calendar/${y}/` }], extraStyle: CC_STYLE,
+    cta: { href: `en/2027/`, label: 'See what 2027 brings your sign' },
+    title: `Chinese Calendar ${MONTH[m - 1]} ${y}: Lunar Dates & Festivals`,
+    desc: `${MONTH[m - 1]} ${y} on the Chinese lunar calendar: the lunar date of every day${starts.length ? `, the new moon on ${starts.map((mo) => MON[civ(mo.start).m - 1] + ' ' + civ(mo.start).d).join(' and ')}` : ''}${fests.length ? ', ' + fests.map((x) => x.f.en).slice(0, 2).join(' and ') : ''}, solar terms and day pillars.`,
+    h1: `Chinese calendar, ${MONTH[m - 1]} ${y}`,
+    lead,
+    calc: grid,
+    body: `      ${navHtml}
+      <h2>Lunar months in ${MONTH[m - 1]} ${y}</h2>
+      <ul>
+        ${overlapList}
+      </ul>
+${fests.length ? `      <h2>Festivals</h2>\n      ${festHtml}\n` : ''}      <h2>Solar terms</h2>
+      ${termHtml}
+      ${pillarsHtml}
+      ${koreaHtml}
+      <h2>Every day of ${MONTH[m - 1]} ${y}</h2>
+      <table class="cc-list">
+        <tr><th>Date</th><th>Lunar date</th><th>Day pillar</th><th></th></tr>
+        ${listRows.join('\n        ')}
+      </table>
+      ${navHtml}`,
+    faq,
+  });
+}
+function t_en(t) { return t.info.en; }
+
+/* ----- year pages ----- */
+function yearPage(y) {
+  const rel = '../../../';
+  const ms = months.filter((mo) => mo.lunarYear === y), ny = newYearDn(y), end = newYearDn(y + 1) - 1, days = end - ny + 1;
+  const leap = ms.find((mo) => mo.leap);
+  const fests = festivalsOf(y), terms = termsOf(y);
+  const lichun = terms.find((t) => t.i === 21);
+  const monthRowsHtml = ms.map((mo) => { const c = civ(mo.start); return `<tr><td>${mo.leap ? 'Leap ' : ''}${ord(mo.month)} month</td><td><a href="${rel}en/chinese-calendar/${c.y}/${pad2(c.m)}/">${longWd(mo.start)}</a></td><td>${long(mo.start + mo.days - 1)}</td><td>${mo.days}</td></tr>`; }).filter(Boolean).join('\n        ');
+  const allFests = fests.map((x) => ({ dn: x.dn, html: `<tr><td><b>${x.f.en}</b><br>${x.f.han}</td><td>${x.lunarLabel}</td><td>${longWd(x.dn)}</td><td>${x.kdn !== null && x.kdn !== x.dn ? `<b>${short(x.kdn)}</b>` : 'same day'}${x.f.ko ? `<br><small>${x.f.ko}</small>` : ''}</td></tr>` }))
+    .concat(terms.filter((t) => TERM_FEST[t.i]).map((t) => ({ dn: t.dn, html: `<tr><td><b>${TERM_FEST[t.i].en}</b><br>${TERM_FEST[t.i].han}</td><td>solar term ${t.info.en}</td><td>${longWd(t.dn)}</td><td>${civ(dnOf(t.kst.y, t.kst.m, t.kst.d)).d !== civ(t.dn).d ? `<b>${short(dnOf(t.kst.y, t.kst.m, t.kst.d))}</b>` : 'same day'}</td></tr>` })))
+    .sort((a, b) => a.dn - b.dn).map((x) => x.html).join('\n        ');
+  const termRows = terms.map((t) => `<tr><td>${t.info.en}<br><small>${t.info.han} ${t.info.pinyin}</small></td><td>${longWd(t.dn)}</td><td>${clock(t.hh, t.mm)}</td></tr>`).join('\n        ');
+  const monthLinks = Array.from({ length: 12 }, (_, i) => { const f = dnOf(y, i + 1, 1), L = lunarOf(f); return `<a href="${rel}en/chinese-calendar/${y}/${pad2(i + 1)}/">${MONTH[i]}<small>from ${L.leap ? 'L' : ''}${L.month}/${L.day}</small></a>`; }).join('');
+  const diffs = koreaDiffs.filter((d) => { const dn = dnOf(...d.solar.split('-').map(Number)); return dn >= dnOf(y, 1, 1) && dn <= dnOf(y, 12, 31); });
+  const diffHtml = diffs.length
+    ? `<p>The two calendars follow the same rules in different time zones, Beijing (UTC+8) and Seoul (UTC+9), so a new moon in the last hour before midnight in Beijing starts the month a day later in Korea. In ${y} that happens ${diffs.length === 1 ? 'once' : diffs.length + ' times'}:</p>
+      <ul>
+        ${diffs.map((d) => { const dn = dnOf(...d.solar.split('-').map(Number)), L = lunarOf(dn); return `<li>The ${ord(L.month)} lunar month${L.month === 1 ? ' (New Year)' : ''}: ${long(dn)} in China, ${long(dn + 1)} in Korea.</li>`; }).join('\n        ')}
+      </ul>
+      <p>Every festival in those months is a day apart too. <a href="${rel}en/lunar-new-year/">Why Seollal and Chinese New Year differ</a> · <a href="${rel}en/lunar-birthday/">Lunar birthdays on the Korean calendar</a></p>`
+    : `<p>The two calendars follow the same rules in different time zones, Beijing (UTC+8) and Seoul (UTC+9). In ${y} every lunar month starts on the same day in both. <a href="${rel}en/lunar-new-year/">When they differ, and why</a></p>`;
+  const others = CAL_YEARS.filter((x) => x !== y).map((x) => `<a href="${rel}en/chinese-calendar/${x}/">Chinese calendar ${x}</a>`).join(' · ');
+  const mid = fests.find((x) => x.f.m === 8 && x.f.d === 15), db = fests.find((x) => x.f.m === 5 && x.f.d === 5);
+
+  page(`chinese-calendar/${y}`, {
+    og: 'en-chinese-calendar', overline: 'Chinese calendar', app: false, crumbs: [CAL_CRUMB], extraStyle: CC_STYLE,
+    cta: { href: 'en/2027/', label: 'See what 2027 brings your sign' },
+    title: `Chinese Calendar ${y}: Lunar Dates, Festivals & Solar Terms`,
+    desc: `Chinese lunar calendar ${y}, the Year of the ${signOf(y)}: New Year on ${short(ny)}, the dates of all ${ms.length} lunar months, festivals, the 24 solar terms and a calendar for each month.`,
+    h1: `Chinese calendar ${y}`,
+    lead: `The Chinese year ${y} is ${HAN_S[((y - 4) % 10 + 10) % 10]}${HAN_B[((y - 4) % 12 + 12) % 12]}, the Year of the ${signOf(y)}. It begins on ${longWd(ny)} and ends on ${longWd(end)}: ${ms.length} lunar months and ${days} days, ${leap ? `with a leap ${ord(leap.month)} month` : 'with no leap month'}.`,
+    body: `      <h2>${y} at a glance</h2>
+      <table>
+        <tr><th>Chinese New Year</th><td>${longWd(ny)}</td></tr>
+        <tr><th>Last day of the year</th><td>${longWd(end)}</td></tr>
+        <tr><th>Length</th><td>${ms.length} months, ${days} days</td></tr>
+        <tr><th>Leap month</th><td>${leap ? `Leap ${ord(leap.month)} month, ${long(leap.start)} – ${long(leap.start + leap.days - 1)}` : 'None'}</td></tr>
+        <tr><th>Zodiac</th><td><a href="${rel}en/zodiac/year/${y}/">${signOf(y)}</a> (${YY[((y - 4) % 10 + 10) % 2]} ${ELEM[((y - 4) % 10 + 10) % 10]})</td></tr>
+        <tr><th>Start of Spring (立春)</th><td>${longWd(lichun.dn)}, ${clock(lichun.hh, lichun.mm)} Beijing time — when the year turns in a Four Pillars chart</td></tr>
+      </table>
+
+      <h2>Month-by-month calendars</h2>
+      <p>Each page has the lunar date of every day, the festivals, the solar terms and the day pillars. The small print is the lunar date on the 1st.</p>
+      <div class="cc-months">${monthLinks}</div>
+
+      <h2>Lunar months of ${y}</h2>
+      <table>
+        <tr><th>Lunar month</th><th>First day (new moon)</th><th>Last day</th><th>Days</th></tr>
+        ${monthRowsHtml}
+      </table>
+      <p>A lunar month runs from one new moon to the next and has 29 or 30 days. The dates are for Beijing time, which is what the Chinese calendar is counted in.</p>
+
+      <h2>Festivals in ${y}</h2>
+      <table>
+        <tr><th>Festival</th><th>Lunar date</th><th>${y}${civ(end).y !== y ? '–' + String(civ(end).y).slice(2) : ''} date</th><th>In Korea</th></tr>
+        ${allFests}
+      </table>
+      <p>Spring Festival, Qingming, Dragon Boat and Mid-Autumn are public holidays in mainland China; the days off around them are set each year by the State Council. The last column shows where Korea’s calendar puts the same lunar date.</p>
+
+      <h2>The 24 solar terms in ${y}</h2>
+      <table>
+        <tr><th>Solar term</th><th>Date</th><th>Beijing time</th></tr>
+        ${termRows}
+      </table>
+      <p>Solar terms mark the Sun’s position, fifteen degrees apart, and keep the lunar calendar tied to the seasons. They also set the months of a Four Pillars chart. <a href="${rel}en/solar-terms/${y}/">The same terms in Korea time, with what each one means</a></p>
+
+      <h2>Chinese and Korean calendars in ${y}</h2>
+      ${diffHtml}
+
+      <h2>Counting an age or expecting a baby?</h2>
+      <p>Lunar age goes up on ${long(ny)}, not on your birthday: <a href="${rel}en/lunar-age/">lunar age calculator</a>. The traditional boy-or-girl chart is read with lunar age and the lunar months above: <a href="${rel}en/chinese-gender-calendar/">Chinese gender calendar ${DUE}</a>. For the year ahead by sign, see the <a href="${rel}en/2027/">2027 Chinese horoscope</a>.</p>
+      <p>${others}</p>`,
+    faq: [
+      [`When is Chinese New Year ${y}?`, `${longWd(ny)}. It opens the Year of the ${signOf(y)}, which lasts until ${long(end)}.`],
+      [`Is there a leap month in ${y}?`, leap ? `Yes: a leap ${ord(leap.month)} month from ${long(leap.start)} to ${long(leap.start + leap.days - 1)}, which makes the year ${days} days long.` : `No. The Chinese year ${y} has twelve months and ${days} days. The next leap month is a leap ${ord(months.find((mo) => mo.leap && mo.lunarYear > y).month)} month in ${months.find((mo) => mo.leap && mo.lunarYear > y).lunarYear}.`],
+      [`When is the Mid-Autumn Festival in ${y}?`, `${longWd(mid.dn)}, the 15th day of the 8th lunar month.${mid.kdn !== mid.dn ? ` Korea’s Chuseok falls on ${long(mid.kdn)}.` : ' Korea’s Chuseok is the same day.'}`],
+      [`When is the Dragon Boat Festival in ${y}?`, `${longWd(db.dn)}, the 5th day of the 5th lunar month.`],
+      ['Why do some websites show a date one day off?', 'Usually a time zone. The Chinese calendar is counted in Beijing time, Korea’s in Seoul time and Vietnam’s in Hanoi time, and a new moon close to midnight lands on different dates. A few converters also use simplified tables rather than the astronomical rules.'],
+      [`What is today’s date on the Chinese calendar?`, `The <a href="${rel}en/chinese-calendar/">Chinese calendar converter</a> shows today’s lunar date and converts any date from 1930 to 2050 in both directions.`],
+    ],
+  });
+}
+
+for (const y of CAL_YEARS) { yearPage(y); for (let m = 1; m <= 12; m++) monthPage(y, m); }
+
+/* ----- hub: today's lunar date + converter ----- */
+page('chinese-calendar', {
+  og: 'en-chinese-calendar', overline: 'Chinese calendar', extraStyle: CC_STYLE,
+  cta: { href: 'en/2027/', label: 'See what 2027 brings your sign' },
+  title: 'Chinese Calendar: Today’s Lunar Date & Date Converter',
+  desc: 'Today’s date on the Chinese lunar calendar, a two-way converter for 1930–2050, and month-by-month calendars with festivals, solar terms and day pillars.',
+  h1: 'Chinese calendar',
+  lead: 'Today’s date on the Chinese lunar calendar, a converter that works in both directions, and a calendar for every month. All dates are counted in Beijing time, the way the Chinese calendar itself is.',
+  calc: `<div class="tl-calc">
+      <div class="tl-out" id="cc-today" aria-live="polite" style="margin-top: 0;"></div>
+      <div class="tl-row" style="margin-top: 14px;">
+        <label for="cc-date">Gregorian date<input id="cc-date" type="date" min="1930-02-01" max="2050-12-31"></label>
+      </div>
+      <div class="tl-out" id="cc-out1" aria-live="polite"></div>
+      <div class="tl-row" style="margin-top: 16px;">
+        <label for="cc-ly">Chinese year<select id="cc-ly"></select></label>
+        <label for="cc-lm">Lunar month<select id="cc-lm"></select></label>
+        <label for="cc-ld">Day<select id="cc-ld"></select></label>
+      </div>
+      <div class="tl-out" id="cc-out2" aria-live="polite"></div>
+    </div>`,
+  body: `      <h2>Calendars by year</h2>
+      <div class="cc-months" style="grid-template-columns: repeat(2, 1fr);">${CAL_YEARS.map((y) => `<a href="${y}/">Chinese calendar ${y}<small>${signOf(y)} · New Year ${short(newYearDn(y))}</small></a>`).join('')}</div>
+      <p>${CAL_YEARS.map((y) => `<b>${y}:</b> ${Array.from({ length: 12 }, (_, i) => `<a href="${y}/${pad2(i + 1)}/">${MON[i]}</a>`).join(' · ')}`).join('<br>')}</p>
+
+      <h2>How the Chinese calendar works</h2>
+      <p><strong>Months follow the Moon.</strong> Each month begins on the day of the new moon and lasts 29 or 30 days, so the 15th is always close to the full moon. Twelve such months make 354 or 355 days, about eleven short of a solar year.</p>
+      <p><strong>Leap months keep it in step with the Sun.</strong> Seven times in nineteen years a thirteenth month is added. The rule is astronomical: the month that contains the winter solstice is always the 11th, and when there are thirteen new moons between two winter solstices, the first month without a major solar term is the leap one. It repeats the number of the month before it. ${(() => { const next = months.filter((mo) => mo.leap && mo.lunarYear >= CAL_YEARS[0]).slice(0, 3); return `The next leap months are ${next.map((mo) => `a leap ${ord(mo.month)} month in ${mo.lunarYear}`).join(', ')}.`; })()}</p>
+      <p><strong>Solar terms mark the seasons.</strong> The Sun’s yearly path is cut into 24 terms of fifteen degrees, from Start of Spring to Major Cold. Farmers worked by them, the leap-month rule depends on them, and a Four Pillars chart changes month at them. <a href="../solar-terms/">The 24 solar terms</a></p>
+      <p><strong>Years run in a cycle of sixty.</strong> Ten heavenly stems and twelve earthly branches pair off into sixty names, and the branches carry the twelve animals: ${CAL_YEARS.map((y) => `${y} is ${HAN_S[((y - 4) % 10 + 10) % 10]}${HAN_B[((y - 4) % 12 + 12) % 12]}, the ${signOf(y)}`).join(', and ')}. Days are counted in the same sixty-day cycle without a break, which is where the <a href="../day/">day pillar</a> of each date comes from. <a href="../zodiac/">Find your zodiac animal</a></p>
+      <p><strong>Time zone matters.</strong> The calendar is calculated for 120° east, Beijing time. Korea and Vietnam use the same rules for their own meridians, so their lunar dates occasionally differ from China’s by a day, and twice in recent years by a whole leap month (2012 and 2017 in Korea). This site’s <a href="../lunar-birthday/">lunar birthday calculator</a> follows the Korean calendar; everything on this page follows the Chinese one.</p>
+
+      <h2>What people use it for</h2>
+      <p>Festival dates, from <a href="../lunar-new-year/">Lunar New Year</a> to Mid-Autumn. Birthdays and memorial days kept on the lunar date. <a href="../lunar-age/">Lunar age</a>, which goes up at New Year. The <a href="../chinese-gender-calendar/">Chinese gender chart</a>, which needs the lunar month of conception. And choosing a date for a wedding or a move, for which almanacs list each day’s stem and branch.</p>`,
+  faq: [
+    ['What is today’s date on the Chinese calendar?', 'The box at the top of this page shows it, together with the zodiac year and the day pillar. It uses the date on your device.'],
+    ['How do I convert a date to the Chinese lunar calendar?', 'Pick the Gregorian date in the converter above; it covers 1930 to 2050. To go the other way, choose the Chinese year, the lunar month and the day.'],
+    ['Why does the Chinese year start in late January or February?', 'New Year is the second new moon after the winter solstice (the third, in the rare years with a leap 11th or 12th month), which falls between January 21 and February 20.'],
+    ['Is the Chinese calendar the same as the lunar calendar?', 'It is a lunisolar calendar: months follow the Moon, and leap months and the 24 solar terms keep the year tied to the Sun. A purely lunar calendar, like the Islamic one, drifts through the seasons.'],
+    ['Do Korea and Vietnam use the same calendar?', 'The same rules, calculated for their own time zones, so dates match China’s except when a new moon falls close to midnight. Lunar New Year 2027 is February 6 in China and Vietnam and February 7 in Korea.'],
+  ],
+  script: `  <script src="../../js/en-lunar.js"></script>
+  <script>
+  (function () {
+    var CL = window.ChineseLunar;
+    var MONTHS = ${JSON.stringify(MONTH)}, WD = ${JSON.stringify(WD)}, AN = ${JSON.stringify(ANIMAL)}, EL = ${JSON.stringify(ELEM)};
+    var SP = ${JSON.stringify(STEM_PY)}, BP = ${JSON.stringify(BRANCH_PY)}, HS = '${HAN_S}', HB = '${HAN_B}', HAS = ${JSON.stringify(CAL_YEARS)};
+    var $ = function (s) { return document.querySelector(s); };
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function ord(n) { var s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+    function fmt(z) { var c = CL.civil(z); return WD[((z + 4) % 7 + 7) % 7] + ', ' + MONTHS[c.m - 1] + ' ' + c.d + ', ' + c.y; }
+    function sign(y) { return EL[((y - 4) % 10 + 10) % 10] + ' ' + AN[((y - 4) % 12 + 12) % 12]; }
+    function pillar(z) { var i = ((z + 2440588 + 49) % 60 + 60) % 60; return HS.charAt(i % 10) + HB.charAt(i % 12) + ' (' + SP[i % 10] + ' ' + BP[i % 12] + ')'; }
+    function describe(z) {
+      var c = CL.civil(z), L = CL.fromSolar(c.y, c.m, c.d);
+      if (!L) return null;
+      var link = HAS.indexOf(c.y) >= 0 ? ' <a href="' + c.y + '/' + pad(c.m) + '/">' + MONTHS[c.m - 1] + ' ' + c.y + ' calendar</a>' : '';
+      return '<span class="tl-big" style="font-size: 20px;">' + ord(L.day) + ' day of the ' + (L.leap ? 'leap ' : '') + ord(L.month) + ' lunar month, ' + L.year + '</span>' +
+        '<p>' + fmt(z) + ' · Year of the ' + sign(L.year) + ' · day pillar ' + pillar(z) + '.' + link + '</p>';
+    }
+    if (!CL) { $('#cc-today').textContent = 'The calendar did not load — please reload the page.'; return; }
+    var now = new Date(), tz = CL.dn(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    $('#cc-today').innerHTML = '<span class="tl-fine">Today</span>' + (describe(tz) || '');
+    $('#cc-date').value = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+    function g2l() {
+      var v = $('#cc-date').value, out = $('#cc-out1');
+      if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(v)) { out.textContent = ''; return; }
+      var p = v.split('-'), h = describe(CL.dn(+p[0], +p[1], +p[2]));
+      out.innerHTML = h || 'The converter covers ' + CL.first + ' to ' + CL.last + '.';
+    }
+    $('#cc-date').addEventListener('change', g2l);
+    $('#cc-date').addEventListener('input', g2l);
+    /* lunar → Gregorian */
+    var o = '';
+    for (var y = CL.last; y >= CL.first; y--) o += '<option value="' + y + '">' + y + ' · ' + AN[((y - 4) % 12 + 12) % 12] + '</option>';
+    $('#cc-ly').innerHTML = o;
+    function fillMonths() {
+      var ms = CL.months(+$('#cc-ly').value), keep = $('#cc-lm').value, h = '';
+      for (var i = 0; i < ms.length; i++) h += '<option value="' + i + '">' + (ms[i].leap ? 'Leap ' : '') + ord(ms[i].month) + '</option>';
+      $('#cc-lm').innerHTML = h;
+      if (keep && +keep < ms.length) $('#cc-lm').value = keep;
+      fillDays();
+    }
+    function fillDays() {
+      var mo = CL.months(+$('#cc-ly').value)[+$('#cc-lm').value], keep = +$('#cc-ld').value || 1, h = '';
+      for (var d = 1; d <= mo.days; d++) h += '<option value="' + d + '">' + d + '</option>';
+      $('#cc-ld').innerHTML = h;
+      $('#cc-ld').value = Math.min(keep, mo.days);
+      l2g();
+    }
+    function l2g() {
+      var mo = CL.months(+$('#cc-ly').value)[+$('#cc-lm').value], d = +$('#cc-ld').value, z = mo.start + d - 1, c = CL.civil(z);
+      var link = HAS.indexOf(c.y) >= 0 ? ' <a href="' + c.y + '/' + pad(c.m) + '/">' + MONTHS[c.m - 1] + ' ' + c.y + ' calendar</a>' : '';
+      $('#cc-out2').innerHTML = '<span class="tl-big" style="font-size: 20px;">' + fmt(z) + '</span><p>The ' + ord(d) + ' day of the ' + (mo.leap ? 'leap ' : '') + ord(mo.month) + ' lunar month of ' + $('#cc-ly').value + ' · day pillar ' + pillar(z) + '.' + link + '</p>';
+    }
+    $('#cc-ly').addEventListener('change', fillMonths);
+    $('#cc-lm').addEventListener('change', fillDays);
+    $('#cc-ld').addEventListener('change', l2g);
+    var T = CL.fromSolar(now.getFullYear(), now.getMonth() + 1, now.getDate());
+    $('#cc-ly').value = T ? T.year : ${CAL_YEARS[1]};
+    fillMonths();
+    g2l();
   })();
   </script>`
 });

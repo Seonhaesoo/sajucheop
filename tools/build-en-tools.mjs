@@ -76,7 +76,7 @@ function page(slug, { title, desc, h1, lead, calc = '', body, faq, script = '', 
 ${body}
       <h2>FAQ</h2>
       ${faqHtml}
-      <p class="callout"><a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}en/lunar-age/">Lunar age calculator</a> · <a href="${rel}en/chinese-gender-calendar/">Chinese gender calendar</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a> · <a href="${rel}en/day/">Day pillar calendar</a></p>
+      <p class="callout"><a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}en/lunar-age/">Lunar age calculator</a> · <a href="${rel}en/chinese-gender-calendar/">Chinese gender calendar</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a> · <a href="${rel}en/chinese-calendar/">Chinese calendar</a> · <a href="${rel}en/day/">Day pillar calendar</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}${cta.href}"><span class="seal-dot" aria-hidden="true"></span><span>${cta.label}</span></a>
@@ -362,7 +362,7 @@ page('lunar-new-year', {
         <tr><th>Year</th><th>China</th><th>Korea (Seollal)</th><th>Sign</th></tr>
         ${lnyRows}
       </table>
-      <p>Dates in bold differ from China’s. Chinese dates are computed for Beijing time; Korean dates follow the calendar of the Korea Astronomy and Space Science Institute.</p>`,
+      <p>For every lunar date of the year, see the <a href="../chinese-calendar/2027/">Chinese calendar for 2027</a>. Dates in bold differ from China’s. Chinese dates are computed for Beijing time; Korean dates follow the calendar of the Korea Astronomy and Space Science Institute.</p>`,
   faq: [
     ['When is Lunar New Year 2027?', `${longD(L27.cn)} in China and Vietnam, and ${longD(L27.kr)} in Korea. The Year of the Fire Goat lasts until the next Lunar New Year: ${longD(L28.cn)} in China and ${md(L28.kr)} in Korea.`],
     ['Why is Seollal a day later than Chinese New Year in 2027?', `The new moon arrives at ${ampm(L27.cn.hh, L27.cn.mm)} Beijing time on February 6, which is already past midnight in Korea. Each calendar starts the month on the local date of the new moon.`],

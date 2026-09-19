@@ -203,7 +203,7 @@ for (const y of [Y0, Y1]) {
     <p class="ga-lead">The sixty-day cycle never stops: every day has two characters of its own. Tap a date for its day pillar, the Korean lunar date, solar terms and what the day means for each of the ten Day Masters. <a href="${rel}en/day/${iso(today.y, today.m, today.d)}/">Read today in full →</a></p>
     <div class="ga-body">
       ${grids}
-      <p class="callout"><a href="${rel}en/today/">Today\'s energy for your chart</a> · <a href="${rel}en/guide/day-pillar/">The 60 Day Pillars</a> · <a href="${rel}en/solar-terms/${today.y}/">24 solar terms of ${today.y}</a> · <a href="${rel}day/" hreflang="ko">한국어</a></p>
+      <p class="callout"><a href="${rel}en/today/">Today\'s energy for your chart</a> · <a href="${rel}en/guide/day-pillar/">The 60 Day Pillars</a> · <a href="${rel}en/solar-terms/${today.y}/">24 solar terms of ${today.y}</a> · <a href="${rel}en/chinese-calendar/">Chinese lunar calendar</a> · <a href="${rel}day/" hreflang="ko">한국어</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/today/"><span class="seal-dot" aria-hidden="true"></span><span>See today for my own chart</span></a>

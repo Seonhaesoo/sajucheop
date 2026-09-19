@@ -449,6 +449,7 @@ function yearPage(y) {
     [`${y} ${A.name} year`, `${fmtD(x.span.start)} – ${fmtD(x.span.end)}`],
     [`Born Jan 1 – ${fmtMD(startPrev)}, ${y}`, y > Y0 ? `<a href="${rel}${yUrl(y - 1).slice(1)}">${prev.name}</a> of ${y - 1}` : `${prev.name} of ${y - 1}`],
     ['Korean saju year', `Starts at Ipchun, ${fmtD(x.ip)}`],
+    ...(fs.existsSync(path.join(DOCS, 'en', 'chinese-calendar', String(y), 'index.html')) ? [['Lunar calendar', `<a href="${rel}en/chinese-calendar/${y}/">Chinese calendar ${y}</a>: every lunar date, festivals and solar terms`]] : []),
     ['Best matches', best.map((r) => `<a href="${rel}${pairUrl(b, r.i).slice(1)}">${ANIMALS[r.i].name}</a>`).join(', ')],
     [`Next ${A.name} year`, ny <= Y1 && ny !== y ? `<a href="${rel}${yUrl(ny).slice(1)}">${ny}</a> (${nameOf(ny)})${nySpan ? `, from ${fmtD(nySpan.start)}` : ''}` : ny === y ? `${y} (this one), then ${y + 12} (${nameOf(y + 12)})` : nyText],
   ].concat(y < NOW ? [[`Age in ${NOW}`, `${NOW - y} (<a href="${rel}en/korean-age/">Korean age</a> ${NOW - y + 1})`]] : []);

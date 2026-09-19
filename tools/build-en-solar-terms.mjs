@@ -131,7 +131,7 @@ function yearPage(y) {
 
       <h2>FAQ</h2>
       ${faqHtml(faq)}
-      <p class="callout">${YEARS.filter((x) => x !== y).map((x) => `<a href="${rel}en/solar-terms/${x}/">${x}</a>`).join(' · ')} · <a href="${rel}en/solar-terms/">What the 24 terms mean</a> · <a href="${rel}en/day/">Day pillar calendar</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a>${koPage ? ` · <a href="${rel}jeolgi/${y}/" hreflang="ko">한국어</a>` : ''}</p>
+      <p class="callout">${YEARS.filter((x) => x !== y).map((x) => `<a href="${rel}en/solar-terms/${x}/">${x}</a>`).join(' · ')} · <a href="${rel}en/solar-terms/">What the 24 terms mean</a> · <a href="${rel}en/day/">Day pillar calendar</a> · <a href="${rel}en/chinese-calendar/">Chinese lunar calendar</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a>${koPage ? ` · <a href="${rel}jeolgi/${y}/" hreflang="ko">한국어</a>` : ''}</p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Cast my chart with the right month pillar</span></a>
@@ -196,7 +196,7 @@ function hub() {
 
       <h2>FAQ</h2>
       ${faqHtml(faq)}
-      <p class="callout"><a href="${rel}en/guide/what-is-saju/">What saju is</a> · <a href="${rel}en/day/">Day pillar calendar</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}jeolgi/" hreflang="ko">한국어: 절기</a></p>
+      <p class="callout"><a href="${rel}en/guide/what-is-saju/">What saju is</a> · <a href="${rel}en/day/">Day pillar calendar</a> · <a href="${rel}en/chinese-calendar/">Chinese lunar calendar</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}jeolgi/" hreflang="ko">한국어: 절기</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Cast my Four Pillars chart</span></a>
