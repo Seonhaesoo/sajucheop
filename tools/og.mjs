@@ -42,6 +42,10 @@ const STATIC = [
   { key: 'en-name', lang: 'en', kicker: 'Korean Name Generator', title: 'A Korean name\nthat fits your chart', sub: '70 syllables · 646 name hanja · sorted by element' },
   { key: 'en-guide', lang: 'en', kicker: 'Library', title: 'Saju, explained\nwithout the mysticism', sub: 'Day Masters · Five Elements · Ten Gods · luck cycles' },
   { key: 'en-pillars', lang: 'en', kicker: 'Sixty Day Pillars', title: 'Which of the sixty\nday pillars are you?', sub: 'Personality, love, career · your 2027' },
+  { key: 'en-gender', lang: 'en', kicker: 'Chinese Gender Calendar 2027', title: 'Boy or girl?\nThe old chart, read right', sub: 'Lunar age and lunar month worked out from real dates · 2026–2027 tables' },
+  { key: 'en-lunar-age', lang: 'en', kicker: 'Lunar Age Calculator', title: 'What is my\nlunar age?', sub: 'One at birth, one more at every Chinese New Year · 1930–2050' },
+  { key: 'en-chinese-calendar', lang: 'en', kicker: 'Chinese Calendar 2027', title: 'Every lunar date\nin the Year of the Goat', sub: 'Month by month · festivals · solar terms · day pillars' },
+  { key: 'en-lucky-colors', lang: 'en', kicker: 'Lucky Colors 2027', title: 'Your lucky colors\nfor the Fire Goat year', sub: 'All twelve signs · worked out from the Five Elements, step by step' },
   { key: 'en-bazi', lang: 'en', kicker: 'Four Pillars', title: 'Your BaZi chart\nin ten seconds', sub: 'Day Master · Five Elements · Ten Gods · luck cycles' },
   { key: 'ja', lang: 'ja', kicker: '四柱推命', title: '生年月日で\n命式を立てる', sub: '日干・五行・十神 · 2027年 干支別の運勢' },
 ];

@@ -76,7 +76,7 @@ function page(slug, { title, desc, h1, lead, calc = '', body, faq, script = '', 
 ${body}
       <h2>FAQ</h2>
       ${faqHtml}
-      <p class="callout"><a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a> · <a href="${rel}en/day/">Day pillar calendar</a></p>
+      <p class="callout"><a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}en/lunar-age/">Lunar age calculator</a> · <a href="${rel}en/chinese-gender-calendar/">Chinese gender calendar</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a> · <a href="${rel}en/day/">Day pillar calendar</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}${cta.href}"><span class="seal-dot" aria-hidden="true"></span><span>${cta.label}</span></a>

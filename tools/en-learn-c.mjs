@@ -330,6 +330,7 @@ export const ARTICLES = [
     links: [
       { href: '/en/2027/', title: '2027 Fire Goat year' },
       { href: '/en/zodiac/goat/', title: 'Year of the Goat' },
+      { href: '/en/chinese-gender-calendar/', title: 'Chinese gender calendar 2027' },
       { href: '/en/', title: "Cast a baby's chart" },
     ],
     body: `
