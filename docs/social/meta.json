@@ -1,12 +1,9 @@
 {
-  "seq": 7,
-  "type": "viral",
-  "date": "2026-09-18",
-  "slug": "teuk-byeonghwa",
-  "title": "병화 특",
+  "seq": 8,
+  "type": "hook",
+  "date": "2026-09-21",
+  "slug": "hook-money",
+  "title": "일간별 돈 쓰는 법, 소름 주의",
   "cards": 7,
-  "en": {
-    "title": "Midday Sun things",
-    "cards": 7
-  }
+  "en": null
 }
