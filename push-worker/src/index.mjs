@@ -1,10 +1,11 @@
 /* 사주첩 알림 서버 — Cloudflare Worker (무료 플랜)
- *  POST /subscribe   { token, ddi } 또는 { token, mode: 'saju' }   FCM 토큰을 주제에 넣는다 — 띠 알림은 'ddi-<띠>', 내 사주 알림은 'saju'; 둘 중 하나만, 'all' 은 늘
+ *  POST /subscribe   { token, ddi } 또는 { token, mode: 'saju' }, 함께 time: 'HH:MM'(기기 시간), tz: 기기의 UTC 오프셋(분, 한국 540)
+ *                    주제 세 개에 넣는다 — 종류 하나('ddi-<띠>' 또는 'saju'), 시간 칸 하나('t-HHMM', UTC 15분 단위), 'all'. 종류·시간은 늘 하나만.
  *  POST /unsubscribe { token }        토큰이 든 주제를 모두 뺀다
- *  GET  /status                        마지막 발송 기록·대략의 구독자 수
- *  POST /admin/send-test { token | topic, title?, body?, kind? }  (X-Admin-Key) 시험 알림
- *  POST /admin/send-daily              (X-Admin-Key) 오늘 알림을 지금 (하루 한 번 표식이 있으면 건너뜀 — force: true 면 다시)
- *  cron 0 23 * * * (08:00 KST) — sajucheop.com/today/ddi/push.json 을 읽어 띠마다 한 통 + 'saju' 주제에 한 통(문구는 기기가 만든다). 0 0 * * * (09:00 KST) 는 못 보냈을 때만.
+ *  GET  /status                        마지막 발송 기록·대략의 구독자 수(종류별·시간 칸별)
+ *  POST /admin/send-test { token | topic | topics:[..], title?, body?, kind? }  (X-Admin-Key) 시험 알림
+ *  POST /admin/send-now  { slot?: 'HHMM'(UTC), force?: true }                   (X-Admin-Key) 그 시간 칸의 알림을 지금 (표식이 있으면 건너뜀, force 면 다시)
+ *  cron 15분마다(wrangler.toml) — 지금 칸에 구독자가 있으면 sajucheop.com/today/ddi/push.json(오늘·내일)을 읽어 띠마다 한 통('ddi-x' && 't-HHMM' 조건) + 'saju' && 't-HHMM' 에 한 통(문구는 기기가 만든다).
  * 비밀: FCM_SA_JSON(서비스 계정 JSON 전체 — Cloudflare 대시보드), ADMIN_KEY(wrangler secret). 공개 설정: wrangler.toml [vars]. 상태: KV STATE.
  * 구독자 목록은 구글(FCM 주제)이 갖고 있고 여기엔 남기지 않는다 — 대략의 수만 KV 에 센다. 토큰은 IID 주소에 넣지 않고 본문(batchAdd/batchRemove)으로 보낸다(':' 인코딩 문제). */
 
@@ -12,9 +13,26 @@ const DDI = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat',
 const NAME = { rat: '쥐띠', ox: '소띠', tiger: '호랑이띠', rabbit: '토끼띠', dragon: '용띠', snake: '뱀띠', horse: '말띠', goat: '양띠', monkey: '원숭이띠', rooster: '닭띠', dog: '개띠', pig: '돼지띠' };
 const SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
 const SAJU_TOPIC = 'saju';
+const SLOT_MIN = 15;                       /* 시간 칸 크기(분) — wrangler.toml 의 cron 과 맞춘다 */
+const DEFAULT_TIME = '08:00', DEFAULT_TZ = 540;
 
 const json = (obj, status = 200, extra = {}) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', ...extra } });
 const kstDate = (d = new Date()) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
+const pad = (n) => String(n).padStart(2, '0');
+const hhmm = (min) => pad(Math.floor(min / 60)) + pad(min % 60);
+const slotOf = (d) => hhmm(Math.floor((d.getUTCHours() * 60 + d.getUTCMinutes()) / SLOT_MIN) * SLOT_MIN);
+const isSubject = (t) => t === SAJU_TOPIC || t.startsWith('ddi-');
+const isSlot = (t) => /^t-\d{4}$/.test(t);
+/* 기기 시간 'HH:MM' + 오프셋 → { slot: 'HHMM'(UTC, 15분 단위로 반올림), time: 'HH:MM'(반올림된 기기 시간) } */
+function slotFor(time, tz) {
+  const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(String(time || DEFAULT_TIME));
+  if (!m) return null;
+  const off = Number.isFinite(+tz) && Math.abs(+tz) <= 840 ? Math.round(+tz) : DEFAULT_TZ;
+  const local = Math.round((+m[1] * 60 + +m[2]) / SLOT_MIN) * SLOT_MIN % 1440;
+  const utc = ((local - off) % 1440 + 1440) % 1440;
+  return { slot: hhmm(utc), time: pad(Math.floor(local / 60)) + ':' + pad(local % 60) };
+}
+const slotKst = (slot) => { const m = (+slot.slice(0, 2) * 60 + +slot.slice(2) + 540) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
 
 /* ---------- 구글 OAuth (서비스 계정 JWT → 액세스 토큰, KV 에 50분 저장) ---------- */
 const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -55,13 +73,15 @@ async function topicOp(env, token, topic, method) {
   const first = ((JSON.parse(text) || {}).results || [])[0] || {};
   if (first.error) throw new Error(`${method} ${topic} ${first.error}`);
 }
-async function bump(env, key, delta) {
-  const n = parseInt((await env.STATE.get(key)) || '0', 10) + delta;
-  await env.STATE.put(key, String(Math.max(0, n)));
+const countKey = (t) => (isSlot(t) ? `count:slot:${t.slice(2)}` : `count:${t}`);
+async function bump(env, topic, delta) {
+  if (!isSubject(topic) && !isSlot(topic)) return;
+  const k = countKey(topic);
+  const n = parseInt((await env.STATE.get(k)) || '0', 10) + delta;
+  await env.STATE.put(k, String(Math.max(0, n)));
 }
-const isPersonal = (t) => t === SAJU_TOPIC || t.startsWith('ddi-');
 
-/* ---------- FCM 보내기 ---------- */
+/* ---------- FCM 보내기 — target: { token } | { topic } | { condition } ---------- */
 async function send(env, target, n) {
   const body = { message: { ...target, webpush: { headers: { TTL: '43200', Urgency: 'normal' }, notification: { title: n.title, body: n.body, icon: env.SITE + '/icons/icon-192.png', tag: n.tag || 'sajucheop-daily', lang: 'ko' }, fcm_options: { link: n.url } }, data: { url: n.url, date: n.date || '', kind: n.kind || 'ddi' } } };
   const r = await fetch(`https://fcm.googleapis.com/v1/projects/${env.FCM_PROJECT_ID}/messages:send`, { method: 'POST', headers: await gHeaders(env), body: JSON.stringify(body) });
@@ -72,32 +92,39 @@ async function send(env, target, n) {
 const withUtm = (u, campaign) => u + (u.includes('?') ? '&' : '?') + `utm_source=push&utm_medium=web_push&utm_campaign=${campaign}`;
 /* 내 사주 알림 — 서버는 신호와 안내 문구만 보내고, 문구는 기기의 서비스 워커가 저장된 사주로 만든다(sw.js personalToday) */
 const sajuMessage = (env, date) => ({ title: '오늘의 내 사주 운세', body: '눌러서 오늘 점수와 흐름을 확인하세요.', url: withUtm(env.SITE + '/', 'saju_daily') + '#today', date, kind: 'saju', tag: 'saju-daily' });
+const cleanTopic = (t) => String(t || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40);
+const condition = (topics) => topics.map((t) => `'${cleanTopic(t)}' in topics`).join(' && ');
 
-async function sendDaily(env, retry, force) {
-  const date = kstDate();
-  const done = await env.STATE.get(`sent:${date}`);
-  if (done && !force) return { skipped: 'already', date };
+/* 한 시간 칸의 발송 — 구독자가 없는 칸은 바로 끝(하루 96번 도는 cron 이 거의 비용 없이 지나가도록) */
+async function sendSlot(env, slot, force, when = new Date()) {
+  const date = kstDate(when);
+  const subscribers = parseInt((await env.STATE.get(`count:slot:${slot}`)) || '0', 10);
+  if (!subscribers && !force) return { skipped: 'empty', slot, date };
+  const sentKey = `sent:${date}`;
+  const sent = (await env.STATE.get(sentKey, 'json')) || {};
+  if (sent[slot] && !force) return { skipped: 'already', slot, date };
+  let items = null, feedNote = 'ok';
   const r = await fetch(`${env.SITE}/today/ddi/push.json?t=${Date.now()}`, { headers: { 'Cache-Control': 'no-cache' } });
-  if (!r.ok) return { skipped: 'no-json ' + r.status, date };
-  const feed = await r.json();
-  if (feed.date !== date && !force) {
-    if (!retry) return { skipped: 'stale ' + feed.date, date };            /* 일진 봇이 늦으면 9시에 다시 본다 */
-    return { skipped: 'stale-at-retry ' + feed.date, date };
-  }
+  if (r.ok) {
+    const feed = await r.json();
+    items = (feed.days && feed.days[date]) || (feed.date === date ? feed.items : null);   /* 오늘·내일이 든 새 꼴, 없으면 옛 꼴 */
+    if (!items) feedNote = 'stale ' + (feed.date || '?');
+  } else feedNote = 'no-json ' + r.status;
   const results = [];
-  for (const it of feed.items) {
+  if (items) for (const it of items) {
     if (!DDI.includes(it.slug)) continue;
     try {
-      const id = await send(env, { topic: `ddi-${it.slug}` }, { title: it.title, body: it.body, url: withUtm(it.url, 'ddi_daily'), date, kind: 'ddi', tag: 'ddi-daily' });
-      results.push({ ddi: it.slug, ok: true, id: id.split('/').pop() });
-    } catch (e) { results.push({ ddi: it.slug, ok: false, error: String(e.message).slice(0, 120) }); }
+      const id = await send(env, { condition: condition([`ddi-${it.slug}`, `t-${slot}`]) }, { title: it.title, body: it.body, url: withUtm(it.url, 'ddi_daily'), date, kind: 'ddi', tag: 'ddi-daily' });
+      results.push({ to: it.slug, ok: true, id: id.split('/').pop() });
+    } catch (e) { results.push({ to: it.slug, ok: false, error: String(e.message).slice(0, 120) }); }
   }
   try {
-    const id = await send(env, { topic: SAJU_TOPIC }, sajuMessage(env, date));
-    results.push({ ddi: SAJU_TOPIC, ok: true, id: id.split('/').pop() });
-  } catch (e) { results.push({ ddi: SAJU_TOPIC, ok: false, error: String(e.message).slice(0, 120) }); }
-  const record = { date, at: new Date().toISOString(), retry: !!retry, force: !!force, n: results.filter((x) => x.ok).length, results };
-  if (record.n) await env.STATE.put(`sent:${date}`, JSON.stringify(record), { expirationTtl: 14 * 86400 });
+    const id = await send(env, { condition: condition([SAJU_TOPIC, `t-${slot}`]) }, sajuMessage(env, date));
+    results.push({ to: SAJU_TOPIC, ok: true, id: id.split('/').pop() });
+  } catch (e) { results.push({ to: SAJU_TOPIC, ok: false, error: String(e.message).slice(0, 120) }); }
+  const record = { date, slot, kst: slotKst(slot), at: new Date().toISOString(), force: !!force, subscribers, feed: feedNote, n: results.filter((x) => x.ok).length, results };
+  sent[slot] = { at: record.at, n: record.n, feed: feedNote };
+  await env.STATE.put(sentKey, JSON.stringify(sent), { expirationTtl: 3 * 86400 });
   await env.STATE.put('last', JSON.stringify(record));
   return record;
 }
@@ -116,24 +143,32 @@ export default {
     const url = new URL(req.url), h = cors(env, req);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
     try {
-      if (url.pathname === '/health') return json({ ok: true, now: new Date().toISOString(), kst: kstDate() }, 200, h);
+      if (url.pathname === '/health') return json({ ok: true, now: new Date().toISOString(), kst: kstDate(), slot: slotOf(new Date()) }, 200, h);
       if (url.pathname === '/status') {
         const last = await env.STATE.get('last', 'json');
         const counts = { saju: parseInt((await env.STATE.get(`count:${SAJU_TOPIC}`)) || '0', 10) };
         for (const d of DDI) counts[d] = parseInt((await env.STATE.get(`count:ddi-${d}`)) || '0', 10);
-        return json({ ok: true, last, subscribers_approx: counts }, 200, h);
+        const slots = {};
+        for (const k of (await env.STATE.list({ prefix: 'count:slot:' })).keys) {
+          const n = parseInt((await env.STATE.get(k.name)) || '0', 10);
+          if (n) slots[k.name.slice(11) + ' (KST ' + slotKst(k.name.slice(11)) + ')'] = n;
+        }
+        return json({ ok: true, last, subscribers_approx: counts, slots_utc: slots }, 200, h);
       }
       if (req.method !== 'POST') return json({ ok: false, error: 'method' }, 405, h);
       if (url.pathname.startsWith('/admin/')) {
         if (!env.ADMIN_KEY || req.headers.get('X-Admin-Key') !== env.ADMIN_KEY) return json({ ok: false, error: 'auth' }, 401, h);
         const b = await req.json().catch(() => ({}));
-        if (url.pathname === '/admin/send-daily') return json({ ok: true, result: await sendDaily(env, true, !!b.force) }, 200, h);
+        if (url.pathname === '/admin/send-now' || url.pathname === '/admin/send-daily') {
+          const slot = /^\d{4}$/.test(String(b.slot || '')) ? String(b.slot) : slotOf(new Date());
+          return json({ ok: true, result: await sendSlot(env, slot, !!b.force) }, 200, h);
+        }
         if (url.pathname === '/admin/send-test') {
           const date = kstDate();
           const msg = b.kind === 'saju' ? { ...sajuMessage(env, date), tag: 'test' } : { title: b.title || '사주첩 알림 시험', body: b.body || '이 알림이 보이면 준비가 끝난 거예요.', url: withUtm(b.url || env.SITE + '/today/ddi/', 'push_test'), kind: b.kind || 'test', tag: 'test', date };
-          const target = b.topic ? { topic: String(b.topic).replace(/[^a-z0-9_-]/gi, '') } : { token: b.token };
-          if (!target.topic && !validToken(target.token)) return json({ ok: false, error: 'token' }, 400, h);
-          return json({ ok: true, id: await send(env, target, msg) }, 200, h);
+          const target = Array.isArray(b.topics) && b.topics.length ? { condition: condition(b.topics.slice(0, 5)) } : b.topic ? { topic: cleanTopic(b.topic) } : { token: b.token };
+          if (target.token !== undefined && !validToken(target.token)) return json({ ok: false, error: 'token' }, 400, h);
+          return json({ ok: true, target, id: await send(env, target, msg) }, 200, h);
         }
         return json({ ok: false, error: 'not-found' }, 404, h);
       }
@@ -143,15 +178,20 @@ export default {
       if (url.pathname === '/subscribe') {
         const want = b.mode === 'saju' ? SAJU_TOPIC : (DDI.includes(b.ddi) ? `ddi-${b.ddi}` : null);
         if (!want) return json({ ok: false, error: 'ddi' }, 400, h);
+        const s = slotFor(b.time, b.tz);
+        if (!s) return json({ ok: false, error: 'time' }, 400, h);
+        const slotTopic = `t-${s.slot}`;
         const have = (await topicInfo(env, b.token)) || [];
-        for (const t of have) if (isPersonal(t) && t !== want) { await topicOp(env, b.token, t, 'DELETE'); await bump(env, `count:${t}`, -1); }
-        if (!have.includes(want)) { await topicOp(env, b.token, want, 'POST'); await bump(env, `count:${want}`, 1); }
+        for (const t of have) {
+          if ((isSubject(t) && t !== want) || (isSlot(t) && t !== slotTopic)) { await topicOp(env, b.token, t, 'DELETE'); await bump(env, t, -1); }
+        }
+        for (const t of [want, slotTopic]) if (!have.includes(t)) { await topicOp(env, b.token, t, 'POST'); await bump(env, t, 1); }
         if (!have.includes('all')) await topicOp(env, b.token, 'all', 'POST');
-        return json({ ok: true, mode: want === SAJU_TOPIC ? 'saju' : 'ddi', ddi: b.ddi || null, name: want === SAJU_TOPIC ? '내 사주' : NAME[b.ddi] }, 200, h);
+        return json({ ok: true, mode: want === SAJU_TOPIC ? 'saju' : 'ddi', ddi: b.ddi || null, name: want === SAJU_TOPIC ? '내 사주' : NAME[b.ddi], time: s.time, slot: s.slot }, 200, h);
       }
       if (url.pathname === '/unsubscribe') {
         const have = (await topicInfo(env, b.token)) || [];
-        for (const t of have) { await topicOp(env, b.token, t, 'DELETE'); if (isPersonal(t)) await bump(env, `count:${t}`, -1); }
+        for (const t of have) { await topicOp(env, b.token, t, 'DELETE'); await bump(env, t, -1); }
         return json({ ok: true, removed: have }, 200, h);
       }
       return json({ ok: false, error: 'not-found' }, 404, h);
@@ -160,7 +200,7 @@ export default {
     }
   },
   async scheduled(event, env, ctx) {
-    const retry = event.cron !== '0 23 * * *';
-    ctx.waitUntil(sendDaily(env, retry, false).then((r) => console.log('daily', JSON.stringify(r))));
+    const when = new Date(event.scheduledTime || Date.now());
+    ctx.waitUntil(sendSlot(env, slotOf(when), false, when).then((r) => console.log('slot', JSON.stringify(r))));
   },
 };

@@ -133,7 +133,7 @@ function ddiPage(day, a, kind) {
       <div class="td-sub">${f.one} · ${f.rels.map((r) => REL[r].label).join('·') || '합충 없음'} · ${f.sip}의 날</div>
       <div class="td-bar"><i style="width: ${f.score}%"></i></div>
     </div>
-    <div class="push-box" data-push data-ddi="${D.slug}" data-name="${D.animal}띠"><p class="push-text"><b>🔔 매일 아침 8시, ${D.animal}띠 운세를 알림으로 받기</b></p></div>
+    <div class="push-box" data-push data-ddi="${D.slug}" data-name="${D.animal}띠"><p class="push-text"><b>🔔 매일 내가 정한 시간에 ${D.animal}띠 운세를 알림으로 받기</b></p></div>
     <p class="ga-lead">${esc(f.total)}</p>
 
     <div class="ga-body">
@@ -208,7 +208,7 @@ function indexPage(day, kind, items) {
     <h1 class="ga-title">${label}의 띠별 운세 —<br>${day.m}월 ${day.d}일 ${WD[day.w]}</h1>
     <p class="ga-meta">일진 ${day.g.kor}(${day.g.han})일 · ${day.st.kor}${day.st.el}의 기운 · 매일 자정 갱신</p>
     <p class="ga-lead">${label}의 일진은 ${day.g.kor}(${day.g.han})일입니다. ${josa(`지지 ${day.br.kor}(${day.br.han})와`)} 내 띠의 지지가 합인지 충인지, 천간 ${day.st.kor}(${day.st.han})의 오행이 내 띠에게 무엇으로 드는지로 열두 띠의 하루를 읽습니다. 가장 순한 띠는 <b>${DDI[sorted[0].i].animal}띠</b>(${sorted[0].score}점), 한 템포 쉬어 갈 띠는 <b>${DDI[sorted[11].i].animal}띠</b>(${sorted[11].score}점)입니다.</p>
-    <div class="push-box" data-push><p class="push-text"><b>🔔 매일 아침 8시, 내 띠 운세를 알림으로 받기</b></p></div>
+    <div class="push-box" data-push><p class="push-text"><b>🔔 매일 내가 정한 시간에 내 띠 운세를 알림으로 받기</b></p></div>
     <div class="ga-body">
       <h2>12띠 점수</h2>
       <table class="td-table">
@@ -230,15 +230,17 @@ function indexPage(day, kind, items) {
 const today = kstToday();
 const tmr = I.civilFromDays(I.daysFromCivil(today.y, today.m, today.d) + 1);
 const urls = [];
+const pushDays = {};   /* 날짜 → 띠별 알림 문구 (오늘·내일) */
 for (const [kind, dt] of [['today', today], ['tomorrow', tmr]]) {
   const day = dayInfo(dt.y, dt.m, dt.d);
   const items = DDI.map((_, a) => ddiPage(day, a, kind));
   indexPage(day, kind, items);
-  /* 아침 알림용 요약 — push-worker 가 08:00 KST 에 읽어 띠마다 한 통씩 보낸다 (docs/js/push.js 로 구독) */
-  if (kind === 'today') fs.writeFileSync(path.join(DOCS, 'today', 'ddi', 'push.json'), JSON.stringify({ date: iso(dt.y, dt.m, dt.d), made: new Date().toISOString(), items: items.map((it) => ({ slug: it.slug, name: it.name, score: it.score, title: `오늘의 ${it.name} 운세 ${it.score}점 · ${it.grade}`, body: `${it.one}. 행운의 시간 ${it.lucky.hour}, 색 ${it.lucky.color}`, url: SITE + it.url })) }, null, 1));
+  /* 아침 알림용 요약 — push-worker 가 구독자가 고른 시간마다 읽어 띠마다 한 통씩 보낸다(docs/js/push.js 로 구독). 오늘·내일을 함께 두어 봇이 늦은 새벽에도 어제 것이 가지 않게 한다. 링크는 받는 날의 /today/ */
+  pushDays[iso(dt.y, dt.m, dt.d)] = items.map((it) => ({ slug: it.slug, name: it.name, score: it.score, title: `오늘의 ${it.name} 운세 ${it.score}점 · ${it.grade}`, body: `${it.one}. 행운의 시간 ${it.lucky.hour}, 색 ${it.lucky.color}`, url: `${SITE}/today/ddi/${it.slug}/` }));
   const base = kind === 'today' ? '/today/ddi/' : '/tomorrow/ddi/';
   urls.push(base, ...items.map((it) => it.url));
 }
+fs.writeFileSync(path.join(DOCS, 'today', 'ddi', 'push.json'), JSON.stringify({ date: iso(today.y, today.m, today.d), made: new Date().toISOString(), items: pushDays[iso(today.y, today.m, today.d)], days: pushDays }, null, 1));
 const lastmod = iso(today.y, today.m, today.d);
 const sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
   .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${lastmod}</lastmod><changefreq>daily</changefreq></url>`)).concat(['</urlset>', '']).join('\n');
