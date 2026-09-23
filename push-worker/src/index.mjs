@@ -38,15 +38,20 @@ const gHeaders = async (env) => ({ Authorization: `Bearer ${await accessToken(en
 
 /* ---------- FCM 주제 ---------- */
 async function topicInfo(env, token) {
-  const r = await fetch(`https://iid.googleapis.com/iid/info/${encodeURIComponent(token)}?details=true`, { headers: await gHeaders(env) });
+  /* 토큰은 주소에 그대로(':' 를 %3A 로 바꾸면 InvalidToken) — validToken 이 글자 종류를 걸러 둔다 */
+  const r = await fetch(`https://iid.googleapis.com/iid/info/${token}?details=true`, { headers: await gHeaders(env) });
   if (r.status === 404) return null;
   if (!r.ok) throw new Error('info ' + r.status + ' ' + (await r.text()).slice(0, 200));
   const j = await r.json();
   return Object.keys((j.rel && j.rel.topics) || {});
 }
 async function topicOp(env, token, topic, method) {
-  const r = await fetch(`https://iid.googleapis.com/iid/v1/${encodeURIComponent(token)}/rel/topics/${topic}`, { method, headers: await gHeaders(env) });
-  if (!r.ok) throw new Error(`${method} ${topic} ${r.status} ${(await r.text()).slice(0, 200)}`);
+  /* Admin SDK 와 같은 일괄 주소(batchAdd/batchRemove) — 토큰이 본문에 들어가 인코딩 문제가 없다 */
+  const r = await fetch(`https://iid.googleapis.com/iid/v1:${method === 'DELETE' ? 'batchRemove' : 'batchAdd'}`, { method: 'POST', headers: await gHeaders(env), body: JSON.stringify({ to: `/topics/${topic}`, registration_tokens: [token] }) });
+  const text = await r.text();
+  if (!r.ok) throw new Error(`${method} ${topic} ${r.status} ${text.slice(0, 200)}`);
+  const first = ((JSON.parse(text) || {}).results || [])[0] || {};
+  if (first.error) throw new Error(`${method} ${topic} ${first.error}`);
 }
 async function bump(env, key, delta) {
   const n = parseInt((await env.STATE.get(key)) || '0', 10) + delta;
