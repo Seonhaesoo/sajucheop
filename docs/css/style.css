@@ -2528,3 +2528,15 @@ body.invite-mode .resume-chip { display: none !important; }
 .pwa-add { font: inherit; font-weight: 700; font-size: 13px; padding: 8px 14px; border: 0; border-radius: 999px; background: var(--seal); color: #F6F1E8; cursor: pointer; }
 .pwa-later { font: inherit; font-size: 12px; padding: 6px 10px; border: 0; background: none; color: var(--faint); cursor: pointer; }
 @media print { .pwa-bar { display: none; } }
+
+/* 아침 알림 상자 — js/push.js 가 채운다 */
+.push-box { margin: 18px 0; padding: 14px 16px; background: #FFFDF9; border: 1px solid var(--line); border-left: 4px solid var(--seal); border-radius: 12px; }
+.push-box .push-text { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink); }
+.push-box .push-text span { color: var(--muted); font-size: 13px; }
+.push-box .push-btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.push-box .push-btns .btn-primary { width: auto; min-height: 40px; padding: 8px 18px; font-size: 14px; }
+.push-box .btn-outline, .push-box .btn-ghost { font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 8px; cursor: pointer; background: #fff; border: 1px solid var(--line); color: var(--ink); }
+.push-box .btn-ghost { border-color: transparent; color: var(--muted); text-decoration: underline; }
+.push-box .push-sel { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+.push-box .push-sel select { font: inherit; font-size: 14px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+.push-box .push-note { margin: 8px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--muted); }

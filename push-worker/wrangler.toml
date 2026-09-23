@@ -1,0 +1,18 @@
+# 사주첩 알림 서버 — Cloudflare Worker. 배포: cd push-worker && npx wrangler deploy (한 번 npx wrangler login 필요)
+# 비밀은 대시보드나 `npx wrangler secret put` 으로: FCM_SA_JSON(서비스 계정 JSON 전체), ADMIN_KEY
+name = "sajucheop-push"
+main = "src/index.mjs"
+compatibility_date = "2026-09-01"
+
+[vars]
+FCM_PROJECT_ID = "sajucheop"
+SITE = "https://sajucheop.com"
+ALLOWED_ORIGINS = "https://sajucheop.com,https://www.sajucheop.com"
+
+[triggers]
+# 08:00 KST 본 발송, 09:00 KST 는 아직 못 보냈을 때만(일진 봇이 늦은 날)
+crons = ["0 23 * * *", "0 0 * * *"]
+
+[[kv_namespaces]]
+binding = "STATE"
+id = "0581c58072774d08a1abc223b1d896bd"
