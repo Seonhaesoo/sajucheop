@@ -235,9 +235,20 @@
 
   var PROFILE_KEY = 'sajucheop.profile.v1';
 
+  /* 알림용 복사본 — IndexedDB 'sajucheop'/'kv' 의 'profile'. 서비스 워커(sw.js)가 '내 사주' 알림이 올 때 여기서 읽어 오늘 점수를 계산한다. (js/push.js 와 같은 자리) */
+  function kvPut(key, val) {
+    try {
+      var open = indexedDB.open('sajucheop', 1);
+      open.onupgradeneeded = function () { open.result.createObjectStore('kv'); };
+      open.onsuccess = function () {
+        try { var tx = open.result.transaction('kv', 'readwrite'); if (val === null) tx.objectStore('kv').delete(key); else tx.objectStore('kv').put(val, key); } catch (e) { /* 무시 */ }
+      };
+    } catch (e) { /* 지원 안 함 — 무시 */ }
+  }
+
   function saveProfile(input) {
     try {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify({
+      var prof = {
         name: $('#in-name').value.trim(),
         year: input.year, month: input.month, day: input.day,
         hour: input.hour, minute: input.minute,
@@ -248,7 +259,9 @@
         lunar: state.calInfo
           ? { y: state.calInfo.ly, m: state.calInfo.lm, d: state.calInfo.ld, leap: state.calInfo.leap }
           : null
-      }));
+      };
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(prof));
+      kvPut('profile', prof);
     } catch (e) { /* 저장 불가 환경 — 무시 */ }
     renderResumeChip();
   }
@@ -262,6 +275,7 @@
 
   function clearProfile() {
     try { localStorage.removeItem(PROFILE_KEY); } catch (e) { /* 무시 */ }
+    kvPut('profile', null);
     renderResumeChip();
   }
 
@@ -289,6 +303,18 @@
     var g = document.querySelector('input[name="gender"][value="' + (p.gender || 'F') + '"]');
     if (g) g.checked = true;
     $('#in-solar').checked = p.applySolarTime !== false;
+  }
+
+  /* '#today' (아침 알림을 누르면 오는 주소): 저장된 내 사주로 계산해 오늘 화면으로. 저장된 사주가 없으면 홈. */
+  function openToday() {
+    var p = loadProfile();
+    if (p) {
+      fillFormFromProfile(p);
+      runCompute();
+      if (state.result) { showView('today'); track('push_open', { view: 'today' }); return; }
+    }
+    showView('home');
+    toast('사주를 먼저 입력하면 오늘 운세를 볼 수 있어요.');
   }
 
   function renderResumeChip() {
@@ -3087,6 +3113,7 @@
     window.addEventListener('hashchange', function () {
       if (location.hash === '#ranking') openRanking();
       if (location.hash === '#weekly') openWeekly();
+      if (location.hash === '#today') openToday();
     });
     $('#menu-weekly').addEventListener('click', function (e) {
       e.preventDefault();
@@ -3250,6 +3277,8 @@
     openRanking();
   } else if (location.hash === '#weekly') {
     openWeekly();
+  } else if (location.hash === '#today') {
+    openToday();
   } else {
     showView(location.hash === '#taegil' ? 'taegil' : 'home');
   }

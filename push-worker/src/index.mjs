@@ -1,15 +1,17 @@
 /* 사주첩 알림 서버 — Cloudflare Worker (무료 플랜)
- *  POST /subscribe   { token, ddi }   FCM 토큰을 'ddi-<띠>' 와 'all' 주제에 넣고, 다른 띠 주제는 뺀다
+ *  POST /subscribe   { token, ddi } 또는 { token, mode: 'saju' }   FCM 토큰을 주제에 넣는다 — 띠 알림은 'ddi-<띠>', 내 사주 알림은 'saju'; 둘 중 하나만, 'all' 은 늘
  *  POST /unsubscribe { token }        토큰이 든 주제를 모두 뺀다
- *  GET  /status                        마지막 발송 기록
- *  POST /admin/send-test { token }    (X-Admin-Key) 토큰 하나에 시험 알림
- *  cron 0 23 * * * (08:00 KST) — sajucheop.com/today/ddi/push.json 을 읽어 띠마다 한 통씩 FCM 주제로 보낸다. 0 0 * * * (09:00 KST) 는 아직 못 보냈을 때만 다시.
- * 비밀: FCM_SA_JSON(서비스 계정 JSON 전체 — Cloudflare 대시보드에서 넣음), ADMIN_KEY. 공개 설정: wrangler.toml [vars]. 상태: KV STATE.
- * 구독자 목록은 구글(FCM 주제)이 갖고 있고 여기엔 남기지 않는다 — 대략의 수만 KV 에 센다. */
+ *  GET  /status                        마지막 발송 기록·대략의 구독자 수
+ *  POST /admin/send-test { token | topic, title?, body?, kind? }  (X-Admin-Key) 시험 알림
+ *  POST /admin/send-daily              (X-Admin-Key) 오늘 알림을 지금 (하루 한 번 표식이 있으면 건너뜀 — force: true 면 다시)
+ *  cron 0 23 * * * (08:00 KST) — sajucheop.com/today/ddi/push.json 을 읽어 띠마다 한 통 + 'saju' 주제에 한 통(문구는 기기가 만든다). 0 0 * * * (09:00 KST) 는 못 보냈을 때만.
+ * 비밀: FCM_SA_JSON(서비스 계정 JSON 전체 — Cloudflare 대시보드), ADMIN_KEY(wrangler secret). 공개 설정: wrangler.toml [vars]. 상태: KV STATE.
+ * 구독자 목록은 구글(FCM 주제)이 갖고 있고 여기엔 남기지 않는다 — 대략의 수만 KV 에 센다. 토큰은 IID 주소에 넣지 않고 본문(batchAdd/batchRemove)으로 보낸다(':' 인코딩 문제). */
 
 const DDI = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig'];
 const NAME = { rat: '쥐띠', ox: '소띠', tiger: '호랑이띠', rabbit: '토끼띠', dragon: '용띠', snake: '뱀띠', horse: '말띠', goat: '양띠', monkey: '원숭이띠', rooster: '닭띠', dog: '개띠', pig: '돼지띠' };
 const SCOPE = 'https://www.googleapis.com/auth/firebase.messaging';
+const SAJU_TOPIC = 'saju';
 
 const json = (obj, status = 200, extra = {}) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', ...extra } });
 const kstDate = (d = new Date()) => new Date(d.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
@@ -57,6 +59,7 @@ async function bump(env, key, delta) {
   const n = parseInt((await env.STATE.get(key)) || '0', 10) + delta;
   await env.STATE.put(key, String(Math.max(0, n)));
 }
+const isPersonal = (t) => t === SAJU_TOPIC || t.startsWith('ddi-');
 
 /* ---------- FCM 보내기 ---------- */
 async function send(env, target, n) {
@@ -67,15 +70,17 @@ async function send(env, target, n) {
   return JSON.parse(text).name;
 }
 const withUtm = (u, campaign) => u + (u.includes('?') ? '&' : '?') + `utm_source=push&utm_medium=web_push&utm_campaign=${campaign}`;
+/* 내 사주 알림 — 서버는 신호와 안내 문구만 보내고, 문구는 기기의 서비스 워커가 저장된 사주로 만든다(sw.js personalToday) */
+const sajuMessage = (env, date) => ({ title: '오늘의 내 사주 운세', body: '눌러서 오늘 점수와 흐름을 확인하세요.', url: withUtm(env.SITE + '/', 'saju_daily') + '#today', date, kind: 'saju', tag: 'saju-daily' });
 
-async function sendDaily(env, retry) {
+async function sendDaily(env, retry, force) {
   const date = kstDate();
   const done = await env.STATE.get(`sent:${date}`);
-  if (done) return { skipped: 'already', date };
+  if (done && !force) return { skipped: 'already', date };
   const r = await fetch(`${env.SITE}/today/ddi/push.json?t=${Date.now()}`, { headers: { 'Cache-Control': 'no-cache' } });
   if (!r.ok) return { skipped: 'no-json ' + r.status, date };
   const feed = await r.json();
-  if (feed.date !== date) {
+  if (feed.date !== date && !force) {
     if (!retry) return { skipped: 'stale ' + feed.date, date };            /* 일진 봇이 늦으면 9시에 다시 본다 */
     return { skipped: 'stale-at-retry ' + feed.date, date };
   }
@@ -87,7 +92,11 @@ async function sendDaily(env, retry) {
       results.push({ ddi: it.slug, ok: true, id: id.split('/').pop() });
     } catch (e) { results.push({ ddi: it.slug, ok: false, error: String(e.message).slice(0, 120) }); }
   }
-  const record = { date, at: new Date().toISOString(), retry: !!retry, n: results.filter((x) => x.ok).length, results };
+  try {
+    const id = await send(env, { topic: SAJU_TOPIC }, sajuMessage(env, date));
+    results.push({ ddi: SAJU_TOPIC, ok: true, id: id.split('/').pop() });
+  } catch (e) { results.push({ ddi: SAJU_TOPIC, ok: false, error: String(e.message).slice(0, 120) }); }
+  const record = { date, at: new Date().toISOString(), retry: !!retry, force: !!force, n: results.filter((x) => x.ok).length, results };
   if (record.n) await env.STATE.put(`sent:${date}`, JSON.stringify(record), { expirationTtl: 14 * 86400 });
   await env.STATE.put('last', JSON.stringify(record));
   return record;
@@ -110,32 +119,39 @@ export default {
       if (url.pathname === '/health') return json({ ok: true, now: new Date().toISOString(), kst: kstDate() }, 200, h);
       if (url.pathname === '/status') {
         const last = await env.STATE.get('last', 'json');
-        const counts = {}; for (const d of DDI) counts[d] = parseInt((await env.STATE.get(`count:ddi-${d}`)) || '0', 10);
+        const counts = { saju: parseInt((await env.STATE.get(`count:${SAJU_TOPIC}`)) || '0', 10) };
+        for (const d of DDI) counts[d] = parseInt((await env.STATE.get(`count:ddi-${d}`)) || '0', 10);
         return json({ ok: true, last, subscribers_approx: counts }, 200, h);
       }
       if (req.method !== 'POST') return json({ ok: false, error: 'method' }, 405, h);
-      if (url.pathname === '/admin/send-test' || url.pathname === '/admin/send-daily') {
+      if (url.pathname.startsWith('/admin/')) {
         if (!env.ADMIN_KEY || req.headers.get('X-Admin-Key') !== env.ADMIN_KEY) return json({ ok: false, error: 'auth' }, 401, h);
-        if (url.pathname === '/admin/send-daily') return json({ ok: true, result: await sendDaily(env, true) }, 200, h);
-        const b = await req.json();
-        if (!validToken(b.token)) return json({ ok: false, error: 'token' }, 400, h);
-        const id = await send(env, { token: b.token }, { title: b.title || '사주첩 알림 시험', body: b.body || '이 알림이 보이면 준비가 끝난 거예요.', url: withUtm(b.url || env.SITE + '/today/ddi/', 'push_test'), kind: 'test', tag: 'test' });
-        return json({ ok: true, id }, 200, h);
+        const b = await req.json().catch(() => ({}));
+        if (url.pathname === '/admin/send-daily') return json({ ok: true, result: await sendDaily(env, true, !!b.force) }, 200, h);
+        if (url.pathname === '/admin/send-test') {
+          const date = kstDate();
+          const msg = b.kind === 'saju' ? { ...sajuMessage(env, date), tag: 'test' } : { title: b.title || '사주첩 알림 시험', body: b.body || '이 알림이 보이면 준비가 끝난 거예요.', url: withUtm(b.url || env.SITE + '/today/ddi/', 'push_test'), kind: b.kind || 'test', tag: 'test', date };
+          const target = b.topic ? { topic: String(b.topic).replace(/[^a-z0-9_-]/gi, '') } : { token: b.token };
+          if (!target.topic && !validToken(target.token)) return json({ ok: false, error: 'token' }, 400, h);
+          return json({ ok: true, id: await send(env, target, msg) }, 200, h);
+        }
+        return json({ ok: false, error: 'not-found' }, 404, h);
       }
       if (!Object.keys(h).length) return json({ ok: false, error: 'origin' }, 403, h);
       const b = await req.json().catch(() => ({}));
       if (!validToken(b.token)) return json({ ok: false, error: 'token' }, 400, h);
       if (url.pathname === '/subscribe') {
-        if (!DDI.includes(b.ddi)) return json({ ok: false, error: 'ddi' }, 400, h);
+        const want = b.mode === 'saju' ? SAJU_TOPIC : (DDI.includes(b.ddi) ? `ddi-${b.ddi}` : null);
+        if (!want) return json({ ok: false, error: 'ddi' }, 400, h);
         const have = (await topicInfo(env, b.token)) || [];
-        for (const t of have) if (t.startsWith('ddi-') && t !== `ddi-${b.ddi}`) { await topicOp(env, b.token, t, 'DELETE'); await bump(env, `count:${t}`, -1); }
-        if (!have.includes(`ddi-${b.ddi}`)) { await topicOp(env, b.token, `ddi-${b.ddi}`, 'POST'); await bump(env, `count:ddi-${b.ddi}`, 1); }
+        for (const t of have) if (isPersonal(t) && t !== want) { await topicOp(env, b.token, t, 'DELETE'); await bump(env, `count:${t}`, -1); }
+        if (!have.includes(want)) { await topicOp(env, b.token, want, 'POST'); await bump(env, `count:${want}`, 1); }
         if (!have.includes('all')) await topicOp(env, b.token, 'all', 'POST');
-        return json({ ok: true, ddi: b.ddi, name: NAME[b.ddi] }, 200, h);
+        return json({ ok: true, mode: want === SAJU_TOPIC ? 'saju' : 'ddi', ddi: b.ddi || null, name: want === SAJU_TOPIC ? '내 사주' : NAME[b.ddi] }, 200, h);
       }
       if (url.pathname === '/unsubscribe') {
         const have = (await topicInfo(env, b.token)) || [];
-        for (const t of have) { await topicOp(env, b.token, t, 'DELETE'); if (t.startsWith('ddi-')) await bump(env, `count:${t}`, -1); }
+        for (const t of have) { await topicOp(env, b.token, t, 'DELETE'); if (isPersonal(t)) await bump(env, `count:${t}`, -1); }
         return json({ ok: true, removed: have }, 200, h);
       }
       return json({ ok: false, error: 'not-found' }, 404, h);
@@ -145,6 +161,6 @@ export default {
   },
   async scheduled(event, env, ctx) {
     const retry = event.cron !== '0 23 * * *';
-    ctx.waitUntil(sendDaily(env, retry).then((r) => console.log('daily', JSON.stringify(r))));
+    ctx.waitUntil(sendDaily(env, retry, false).then((r) => console.log('daily', JSON.stringify(r))));
   },
 };
