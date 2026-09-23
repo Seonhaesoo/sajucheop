@@ -1,9 +1,12 @@
 {
-  "seq": 8,
-  "type": "hook",
-  "date": "2026-09-21",
-  "slug": "hook-money",
-  "title": "일간별 돈 쓰는 법, 소름 주의",
+  "seq": 9,
+  "type": "edu",
+  "date": "2026-09-23",
+  "slug": "saju-myths",
+  "title": "사주 볼 때 다들 오해하는 5가지",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "5 things people get wrong about Saju",
+    "cards": 7
+  }
 }
