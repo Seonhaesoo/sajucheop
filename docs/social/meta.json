@@ -1,12 +1,9 @@
 {
-  "seq": 10,
-  "type": "viral",
-  "date": "2026-09-25",
-  "slug": "teuk-jeonghwa",
-  "title": "정화 특",
+  "seq": 11,
+  "type": "hook",
+  "date": "2026-09-28",
+  "slug": "hook-missing-el",
+  "title": "사주에 이 오행 없으면 생기는 일",
   "cards": 7,
-  "en": {
-    "title": "Candle Flame things",
-    "cards": 7
-  }
+  "en": null
 }
