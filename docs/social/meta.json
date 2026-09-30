@@ -1,9 +1,12 @@
 {
-  "seq": 11,
-  "type": "hook",
-  "date": "2026-09-28",
-  "slug": "hook-missing-el",
-  "title": "사주에 이 오행 없으면 생기는 일",
+  "seq": 12,
+  "type": "edu",
+  "date": "2026-09-30",
+  "slug": "sipseong",
+  "title": "십성, 이 한 장으로 끝내겠습니다",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "The Ten Gods, explained on one card",
+    "cards": 7
+  }
 }
