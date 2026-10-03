@@ -20,8 +20,8 @@ const I = M._internals;
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-06';
-const MODIFIED = '2026-09-18';   /* 2026-09-18 제목·설명을 쉬운 말로, 출생연도 페이지에 열두 달 흐름 */
-const MODIFIED_ILJU = '2026-09-08';   /* 일주 60장은 본문이 그대로라 수정일도 그대로(사이트맵 lastmod 같음) */
+const MODIFIED = '2026-10-03';   /* 2026-10-03 문장 다듬기(번역투), 허브에 '2027년 한눈에' — 이전: 2026-09-18 제목·설명 쉬운 말로 */   /* 2026-09-18 제목·설명을 쉬운 말로, 출생연도 페이지에 열두 달 흐름 */
+const MODIFIED_ILJU = '2026-10-03';   /* 일주 60장 본문(ilju-data) 문장 다듬기 2026-10-03 */   /* 일주 60장은 본문이 그대로라 수정일도 그대로(사이트맵 lastmod 같음) */
 const Y = YEAR.y, YS = YEAR.stem, YB = YEAR.branch; /* 丁=3, 未=7 */
 const BIRTH_FROM = 1945, BIRTH_TO = 2010;
 const SAENGIL = 'http://saengil.sajucheop.com';
@@ -385,7 +385,7 @@ DDI.forEach((d, b) => {
       <div class="ny-grid four">
         ${others}
       </div>
-      <p class="callout"><a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
+      <p class="callout"><a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
     </div>
 
     <div class="ga-cta">
@@ -464,7 +464,7 @@ DDI.forEach((d, b) => {
       <div class="ny-grid four">
         ${sibYears}
       </div>
-      <p class="callout"><a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027 운세 (월별·좋은 달)</a> · <a href="${rel2}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel2}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel2}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel2}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel2}2027/">정미년 운세 허브</a></p>
+      <p class="callout"><a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027 운세 (월별·좋은 달)</a> · <a href="${rel2}tojeong/2027/">2027 토정비결</a> · <a href="${rel2}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel2}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel2}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel2}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel2}2027/">정미년 운세 허브</a></p>
     </div>
 
     <div class="ga-cta">
@@ -618,7 +618,7 @@ iljuList.forEach((e, i) => {
           ${yearTable.join('\n          ')}
         </tbody>
       </table>
-      <p class="callout"><a href="${rel}2027/">정미년 운세 허브</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${SAENGIL}/ddi/">생일첩 띠별 해 목록</a></p>
+      <p class="callout"><a href="${rel}2027/">정미년 운세 허브</a> · <a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${SAENGIL}/ddi/">생일첩 띠별 해 목록</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>띠 말고 내 사주로 2027 보기</span></a>
@@ -649,7 +649,7 @@ iljuList.forEach((e, i) => {
     <p class="ga-lead">띠는 태어난 해의 한 글자지만, 사주의 주인공은 태어난 날의 천간인 일간입니다. 같은 정미년도 갑목에게는 상관생재의 해, 경금에게는 관인상생의 해, 임수에게는 재생관의 해로 전혀 다르게 옵니다. 내 일주를 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나오고, 60일주의 성격은 <a href="${rel}ilju/">일주 사전</a>에 있습니다.</p>
     <div class="ga-body">
       ${groups}
-      <p class="callout"><a href="${rel}2027/">정미년 운세 허브</a> · <a href="${rel}2027/ddi/">띠별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}guide/sipseong.html">십성 한눈에</a> · <a href="${rel}ilju/">60일주 사전</a></p>
+      <p class="callout"><a href="${rel}2027/">정미년 운세 허브</a> · <a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}2027/ddi/">띠별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}guide/sipseong.html">십성 한눈에</a> · <a href="${rel}ilju/">60일주 사전</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 일주 확인하고 2027 보기</span></a>

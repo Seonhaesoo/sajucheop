@@ -12,6 +12,7 @@ const { M, C } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-05';
+const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod */
 const SLUG = ['gapmok', 'eulmok', 'byeonghwa', 'jeonghwa', 'muto', 'gito', 'gyeonggeum', 'singeum', 'imsu', 'gyesu'];
 const GUIDE = SLUG.map((s) => 'ilgan-' + s);
 const STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
@@ -202,7 +203,7 @@ for (let a = 0; a < 10; a++) {
       rel, title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${A} × ${B} 궁합 — ${T.label}`,
       extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/compatibility/${DAY_MASTERS[a].slug}-${DAY_MASTERS[b].slug}/">`,
       jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '일간 궁합', url: SITE + '/gunghap/' }, { name: `${A} × ${B}`, url: SITE + url }]),
-        { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
+        { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED_TXT, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
       body
     }));
     urls.push(SITE + url);
@@ -244,7 +245,7 @@ for (let a = 0; a < 10; a++) {
 }
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-gunghap.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-gunghap.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-gunghap.xml\n');

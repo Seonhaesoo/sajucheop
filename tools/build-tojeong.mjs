@@ -14,6 +14,7 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const FY = 2027;
 const PUBLISHED = '2026-09-12';
+const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod */
 const Y_MIN = 1930;
 const mod1 = TJ._mod1;
 const cal = new W.KoreanLunarCalendar();
@@ -108,7 +109,7 @@ const STYLE = `<style>
     @media (max-width: 480px) { .tj-months { grid-template-columns: 1fr; } }
   </style>`;
 const crumbs = (items) => breadcrumb([{ name: '사주첩', url: SITE + '/' }].concat(items.map(([name, url]) => ({ name, url: SITE + url }))));
-const article = (url, title, desc) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
+const article = (url, title, desc) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED_TXT, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
 const titleOf = (code) => TJ.text(code).title;
 
 /* ---------- /tojeong/2027/ ---------- */
@@ -205,7 +206,7 @@ yearPage();
 gwaePage();
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-tojeong.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-tojeong.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-tojeong.xml\n');

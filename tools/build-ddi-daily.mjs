@@ -216,7 +216,7 @@ function indexPage(day, kind, items) {
         ${rows}
       </table>
       <p class="callout"><b>2027년 띠별 운세</b>: ${ny[0].animal}띠 ${ny[0].score}점부터 ${ny[11].animal}띠 ${ny[11].score}점까지, 12띠 점수와 좋은 달·나이별 운세. <a href="${rel}2027/ddi/">보러 가기 →</a></p>
-      <p class="callout"><b>${label}의 꿈해몽 · ${esc(dream.t)}</b>: ${esc(firstSent(dream.lead))} <a href="${DREAM_SITE}${dream.u}">꿈첩에서 상황별로 보기 →</a></p>
+      <p class="callout"><b>${label}의 꿈해몽 · ${esc(dream.t)}</b>: ${esc(firstSent(dream.lead))} <a href="${DREAM_SITE}${dream.u}">꿈첩에서 상황별로 보기 →</a> · <a href="${DREAM_SITE}/d/">꿈해몽 사전 전체 목록</a></p>
       <p class="callout">${kind === 'today' ? `<a href="${rel}tomorrow/ddi/">내일의 띠별 운세 →</a>` : `<a href="${rel}today/ddi/">← 오늘의 띠별 운세</a>`} · <a href="${rel}${wolunUrl(day).url}">${wolunUrl(day).m}월 띠별 운세</a> · <a href="${rel}day/${iso(day.y, day.m, day.d)}/">${day.m}월 ${day.d}일 일진 (일간별 흐름)</a> · <a href="${rel}ddi-gunghap/">띠 궁합표</a> · <a href="${rel}2027/">2027년 띠별 운세</a></p>
     </div>
     <div class="ga-cta">

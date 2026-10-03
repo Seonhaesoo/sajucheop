@@ -19,6 +19,7 @@ const { M, I } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const today = kstToday();
+const EN_MONTHLY_LAUNCH = '2026-09-19';   /* 아직 오지 않은 달의 발행일·lastmod 는 미래로 적지 않고 처음 올린 날로 */
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -253,7 +254,8 @@ function monthPage(y, m, idx) {
   const hasPrev = LIST.some(([a, b]) => a === py && b === pm), hasNext = LIST.some(([a, b]) => a === ny && b === nm);
   const title = `Chinese Horoscope ${MONTHS[m - 1]} ${y} — the ${A.name} Month`;
   const desc = `${MONTHS[m - 1]} ${y} horoscope for all 12 Chinese zodiac signs: the ${A.name} month (${range}), each sign’s best and care days, and notes for the ten Day Masters.`;
-  const published = `${S.start.y}-${pad(S.start.m)}-${pad(S.start.d)}`;
+  const startIso = `${S.start.y}-${pad(S.start.m)}-${pad(S.start.d)}`, todayIso = `${today.y}-${pad(today.m)}-${pad(today.d)}`;
+  const published = startIso <= todayIso ? startIso : EN_MONTHLY_LAUNCH;
   const faq = [
     [`When does the ${A.name} month of ${y} begin and end?`, `It runs from ${longD(S.start)} at ${hm(S.start)} Korea time, the solar term that opens it, to ${longD(S.end)}; the next month begins on ${md(S.nextStart)} at ${hm(S.nextStart)}. Saju months follow the solar terms, not the calendar, which is why the ${A.name} month straddles ${MONTHS[S.start.m - 1]} and ${MONTHS[S.end.m - 1]}.`],
     [`Which zodiac signs have the best ${MONTHS[m - 1]} ${y}?`, `${goodSigns.length ? `${listText(goodSigns.map((b) => `the ${ANIMALS[b].name}`))} — their branches form a harmony with the ${A.name}. ` : ''}${careSigns.length ? `${cap(listText(careSigns.map((b) => `the ${ANIMALS[b].name}`)))} meet more friction and should take the month steadily.` : 'No sign clashes with the month.'} The rest have no fixed link and read the month by its element, ${stemEl}.`],

@@ -13,7 +13,8 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const SAENGIL = 'http://saengil.sajucheop.com';
 const PUBLISHED = '2026-09-08';
-const MODIFIED_DDI = '2026-09-18';   /* 띠별 12장 — 제목을 검색어 그대로(질문+답), 한눈에 상자, 자주 묻는 질문 */
+const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod */
+const MODIFIED_DDI = '2026-10-03';   /* 띠별 12장 — 제목을 검색어 그대로(질문+답), 한눈에 상자, 자주 묻는 질문 */
 const urls = [];
 const pairUrl = (a, b) => a <= b ? `/ddi-gunghap/${DDI[a].slug}-${DDI[b].slug}/` : `/ddi-gunghap/${DDI[b].slug}-${DDI[a].slug}/`;
 const ddiUrl = (a) => `/ddi-gunghap/${DDI[a].slug}/`;
@@ -135,7 +136,7 @@ function pairPage(a, b) {
   write(url.slice(1), shell({
     rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/zodiac/compatibility/${url.split('/')[2]}/">`, ogTitle: `${name(a)} ${name(b)} 궁합 ${score}점`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }, { name: `${name(a)} ${name(b)}`, url: SITE + url }]),
-      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
+      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED_TXT, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
     body
   }));
   urls.push(url);
@@ -242,7 +243,7 @@ indexPage();
 for (let a = 0; a < 12; a++) ddiPage(a);
 for (let a = 0; a < 12; a++) for (let b = a; b < 12; b++) pairPage(a, b);
 const sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${DDI.some((_, a) => ddiUrl(a) === u) ? MODIFIED_DDI : PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n');
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${DDI.some((_, a) => ddiUrl(a) === u) ? MODIFIED_DDI : MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n');
 fs.writeFileSync(path.join(DOCS, 'sitemap-ddi-gunghap.xml'), sm);
 const robotsPath = path.join(DOCS, 'robots.txt');
 let robots = fs.readFileSync(robotsPath, 'utf8');

@@ -12,6 +12,7 @@ const { M, C } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-05';
+const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod */
 const GUIDE = ['ilgan-gapmok', 'ilgan-eulmok', 'ilgan-byeonghwa', 'ilgan-jeonghwa', 'ilgan-muto', 'ilgan-gito', 'ilgan-gyeonggeum', 'ilgan-singeum', 'ilgan-imsu', 'ilgan-gyesu'];
 const STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
 const STEM_CHUNG = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3 };
@@ -165,7 +166,7 @@ list.forEach((e, i) => {
     rel, title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: `${e.kor}일주(${e.han}) — ${e.alias}`,
     extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${enUrl}">`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '60일주 사전', url: SITE + '/ilju/' }, { name: `${e.kor}일주`, url: SITE + url }]),
-      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
+      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED_TXT, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url }],
     body
   }));
   urls.push(SITE + url);
@@ -202,7 +203,7 @@ list.forEach((e, i) => {
 
 /* 사이트맵 + robots */
 fs.writeFileSync(path.join(DOCS, 'sitemap-ilju.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 let robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-ilju.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-ilju.xml\n');

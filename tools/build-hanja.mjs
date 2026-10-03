@@ -17,6 +17,7 @@ import { KO_MEAN, EXCLUDE } from './hanja-names-ko.mjs';
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-18';
+const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod */
 const EL_HAN = { 목: '木', 화: '火', 토: '土', 금: '金', 수: '水' };
 const EL_ORDER = ['목', '화', '토', '금', '수'];
 const NAV = (rel) => [{ href: rel, label: '사주 보기' }, { href: rel + 'naming/', label: '이름 짓기' }, { href: rel + 'naming/hanja/', label: '이름 한자 사전' }];
@@ -116,7 +117,7 @@ function write(url, o) {
   fs.writeFileSync(file, shell(o));
 }
 const faqLd = (faq) => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
-const article = (url, title, desc) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: PUBLISHED, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
+const article = (url, title, desc) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED_TXT, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
 const urls = [];
 const radLabel = (n) => RAD_NAME[n] || '';
 const strokeCell = (x) => x.won === x.written ? `${x.won}획` : `${x.won}획<small>쓰는 획수 ${x.written}획</small>`;
@@ -214,7 +215,7 @@ function hub() {
 groups.forEach(sylPage);
 hub();
 fs.writeFileSync(path.join(DOCS, 'sitemap-hanja.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${PUBLISHED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-hanja.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-hanja.xml\n');

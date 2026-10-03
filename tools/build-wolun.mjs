@@ -23,6 +23,7 @@ const today = kstToday();
 const WD = ['일', '월', '화', '수', '목', '금', '토'];
 const pad = (n) => String(n).padStart(2, '0');
 const iso = (c) => `${c.y}-${pad(c.m)}-${pad(c.d)}`;
+const WOLUN_LAUNCH = '2026-09-18', WOLUN_MODIFIED = '2026-10-03';   /* 처음 올린 날, 문장을 마지막으로 고친 날 — 사이트맵·Article 날짜는 미래가 되면 안 된다 */
 const hm = (t) => `${pad(t.hh)}:${pad(t.mm)}`;
 const ILGAN_SLUG = ['gapmok', 'eulmok', 'byeonghwa', 'jeonghwa', 'muto', 'gito', 'gyeonggeum', 'singeum', 'imsu', 'gyesu'];
 const NAV = (rel) => [{ href: rel, label: '사주 보기' }, { href: rel + 'today/ddi/', label: '오늘의 띠별 운세' }, { href: rel + '2027/', label: '2027 신년운세' }, { href: rel + 'ddi-gunghap/', label: '띠 궁합' }];
@@ -87,7 +88,7 @@ function write(url, o) {
   fs.writeFileSync(file, shell(o));
 }
 const faqLd = (faq) => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
-const article = (url, title, desc, published) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: published, dateModified: published, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
+const article = (url, title, desc, published, modified = published) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: published, dateModified: modified, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
 
 /* ---------- 범위 ---------- */
 const [CY, CM] = currentSolarMonth(today);
@@ -135,7 +136,8 @@ function monthPage(y, m) {
   const yearHan = M.STEMS[S.yearStem].han + M.BRANCHES[S.yearBranch].han, yearKor = M.STEMS[S.yearStem].kor + M.BRANCHES[S.yearBranch].kor;
   const title = `${y}년 ${m}월 띠별 운세 — 12띠 이달의 흐름과 좋은 날 (${kor}월)`;
   const desc = `${y}년 ${m}월 띠별 운세. ${S.start.m}월 ${S.start.d}일 ${JIE_NAME[m]}부터 ${kor}월(${han})입니다. 운이 좋은 띠는 ${top.map((s) => name(s.b)).join('·')}, 조심할 띠는 ${low.map((s) => name(s.b)).join('·')}. 12띠 점수와 좋은 날·조심할 날, 일간별 한 줄까지 쉬운 말로.`;
-  const published = iso(S.start);
+  const published = iso(S.start) <= iso(today) ? iso(S.start) : WOLUN_LAUNCH;   /* 아직 오지 않은 달은 처음 올린 날로 */
+  const modified = [published, WOLUN_MODIFIED].sort().pop();
   const gap = S.start.d > 1 ? `<p class="callout">${m}월 1일~${S.start.d - 1}일은 아직 절기상 지난달(${M.STEMS[(S.stem + 9) % 10].kor}${M.BRANCHES[(S.branch + 11) % 12].kor}월)이라 ${hasPrev ? `<a href="${rel}wolun/${monthKey(py, pm)}/">${pm}월 운세</a>` : `${pm}월 운세`}의 흐름입니다. ${m}월의 기운은 ${S.start.d}일 ${hm(S.start)} ${JIE_NAME[m]}부터 들어옵니다.</p>` : '';
   const faq = [
     [`${y}년 ${m}월 운세는 언제부터 언제까지인가요?`, `사주에서 달은 1일이 아니라 절기로 바뀝니다. ${y}년 ${m}월의 ${kor}월(${han})은 ${S.start.m}월 ${S.start.d}일 ${hm(S.start)} ${JIE_NAME[m]}부터 ${S.end.m}월 ${S.end.d}일까지이고, 다음 달은 ${S.nextStart.m}월 ${S.nextStart.d}일 ${JIE_NAME[S.nextStart.m]}에 시작합니다.`],
@@ -183,8 +185,8 @@ function monthPage(y, m) {
   write(url, { rel, title, desc, canonical: SITE + url, nav: NAV(rel), og: `wolun-${monthKey(y, m)}`, ogTitle: `${y}년 ${m}월 띠별 운세 — ${kor}월, 12띠 점수와 좋은 날`, extraHead: STYLE + `
   <link rel="alternate" hreflang="ko" href="${SITE}${url}">
   <link rel="alternate" hreflang="en" href="${SITE}/en/monthly/${monthKey(y, m)}/">`,
-    jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '이달의 띠별 운세', url: SITE + '/wolun/' }, { name: `${y}년 ${m}월`, url: SITE + url }]), article(url, title, desc, published), faqLd(faq)], body });
-  urls.push({ loc: SITE + url, lastmod: published });
+    jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '이달의 띠별 운세', url: SITE + '/wolun/' }, { name: `${y}년 ${m}월`, url: SITE + url }]), article(url, title, desc, published, modified), faqLd(faq)], body });
+  urls.push({ loc: SITE + url, lastmod: modified });
   return { y, m, S, han, kor, range, isCur, top, low };
 }
 
