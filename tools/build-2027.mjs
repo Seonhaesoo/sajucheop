@@ -6,6 +6,7 @@
  * 사용: node tools/build-2027.mjs */
 import fs from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { ILJU } from './ilju-data.mjs';
@@ -678,6 +679,32 @@ iljuList.forEach((e, i) => {
   }).join('\n');
   /* 나이별 바로 가기 — 출생연도 66장으로 가는 길을 허브에서 바로(검색은 '72년생 쥐띠'처럼 두 자리로 많이 한다) */
   const yearLinks = DDI.map((d, b) => `        <div class="ny-yl-row"><a class="yl-ddi" href="ddi/${d.slug}/">${d.animal}띠</a><span class="yl-ys">${yearsOf(b).map((y) => `<a href="ddi/${d.slug}/${y}/" title="${y}년생 ${d.animal}띠 2027년 운세">${yy2(y)}년생</a>`).join('')}</span></div>`).join('\n');
+  /* '2027년 한눈에' — AI 비서와 검색이 첫머리에서 바로 인용할 수 있게 사실만 한 상자로 (점수·관계는 SCORES·REL 에서) */
+  const glance = (() => {
+    const require = createRequire(import.meta.url);
+    const KLC = require(path.join(ROOT_DIR, 'docs', 'js', 'vendor-korean-lunar.js'));
+    const kc = new KLC(); kc.setLunarDate(YEAR.y, 1, 1, false); const sl = kc.getSolarCalendar();
+    const wd = (y, m, d) => '일월화수목금토'[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+    const ip = publishedTime(YEAR.y, NAME_INDEX['입춘']);
+    const order = DDI.map((d, b) => ({ d, b, s: SCORES[b] }));
+    const top = [...order].sort((x, y) => y.s - x.s).slice(0, 3);
+    const warn = order.filter((x) => REL[x.d.rel].badge === 'warn').sort((x, y) => x.s - y.s);
+    const sam = DDI.filter((d) => d.samjae);
+    const lab = (x) => `${x.d.animal}띠 ${x.s}점(${REL[x.d.rel].label.replace(/\(.*\)/, '')})`;
+    return `        <div class="card reading-card" style="margin-top: 18px;">
+          <div class="reading-overline">${YEAR.y}년 한눈에</div>
+          <dl class="ny-gl">
+            <div><dt>간지</dt><dd>${YEAR.kor}년(${YEAR.han}年), ${YEAR.nick} · 육십갑자 ${((YEAR.y - 4) % 60) + 1}번째</dd></div>
+            <div><dt>사주로 보는 시작</dt><dd>${YEAR.y}년 ${ip.m}월 ${ip.d}일(${wd(YEAR.y, ip.m, ip.d)}) ${ip.hh}시 ${ip.mm}분 입춘</dd></div>
+            <div><dt>설날</dt><dd>${sl.year}년 ${sl.month}월 ${sl.day}일(${wd(sl.year, sl.month, sl.day)})</dd></div>
+            <div><dt>점수 높은 띠</dt><dd>${top.map(lab).join(' · ')}</dd></div>
+            <div><dt>조심할 띠</dt><dd>${warn.map(lab).join(' · ')}</dd></div>
+            <div><dt>삼재</dt><dd>${sam.map((d) => d.animal + '띠').join('·')} ${sam[0] ? sam[0].samjae : ''}(삼재 3년 중 마지막 해)</dd></div>
+          </dl>
+          <style>.ny-gl{margin:10px 0 0;display:grid;gap:8px}.ny-gl div{display:grid;grid-template-columns:7.5em 1fr;gap:10px;font-size:14px;line-height:1.55}.ny-gl dt{color:var(--muted);font-weight:700}.ny-gl dd{margin:0;color:var(--ink)}</style>
+        </div>`;
+  })();
+  hub = replaceBetween(hub, '<!-- ny:glance -->', '<!-- /ny:glance -->', glance);
   hub = replaceBetween(hub, '<!-- ny:year-links -->', '<!-- /ny:year-links -->', yearLinks);
   hub = replaceBetween(hub, '<!-- ny:ddi-cards -->', '<!-- /ny:ddi-cards -->', cards);
   hub = replaceBetween(hub, '<!-- ny:ilju-grid -->', '<!-- /ny:ilju-grid -->', grid);

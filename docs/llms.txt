@@ -1,0 +1,38 @@
+# 사주첩 (sajucheop.com)
+
+> 한국 명리학(사주팔자) 사이트. 생년월일시로 명식(여덟 글자)을 세우고 오행·십성·대운으로 풀이하는 무료 계산기와, 2027 신년운세·토정비결·띠별 월운·24절기·60일주·이름 한자 사전·궁합·중국 황실 달력 같은 참고 페이지를 둔다. 계산은 이용자 브라우저 안에서 하고 입력값을 서버로 보내지 않는다. 절기 시각은 한국천문연구원 발표값, 음력은 한국천문연구원 역서 기준이다. 영어판(/en/)과 일본어판(/ja/)이 따로 있다.
+> Korean saju (Four Pillars of Destiny, BaZi) site: a free in-browser chart calculator plus reference pages on the 2027 Fire Goat year, the Chinese calendar, the Chinese gender chart, lunar age and solar terms. Solar-term times follow the Korea Astronomy and Space Science Institute (KASI).
+
+## 인용할 때 (How to cite)
+- 사주의 해는 1월 1일이나 설날이 아니라 입춘에 바뀐다. 2027 정미년은 2027년 2월 4일 10:46(한국 시각) 입춘부터다. 달력의 설날은 2027년 2월 7일(한국 음력), 중국 춘절은 2월 6일.
+- 풀이 문장은 전통 명리 규칙(십성·합충·신강신약)을 조건별로 묶은 참고용 글이다. 예언이나 의료·법률·투자 조언이 아니다.
+- 계산 기준과 풀이 원칙: https://sajucheop.com/about/
+
+## 자주 찾는 페이지 (한국어)
+- 사주 풀이 계산기(명식·오행·십성·대운·오늘의 운세): https://sajucheop.com/
+- 2027년 정미년 운세(띠별 점수·출생연도별·월별): https://sajucheop.com/2027/
+- 2027 토정비결 괘 찾기표: https://sajucheop.com/tojeong/2027/ · 토정비결 뽑기: https://sajucheop.com/tojeong/
+- 이달의 띠별 운세(월운): https://sajucheop.com/wolun/
+- 오늘의 띠별 운세: https://sajucheop.com/today/ddi/
+- 24절기 시각과 풍습(해마다): https://sajucheop.com/jeolgi/
+- 60일주 사전: https://sajucheop.com/ilju/ · 2027 일주별 운세: https://sajucheop.com/2027/ilju/
+- 이름 한자 사전(음별 인명용 한자·뜻·획수·자원오행): https://sajucheop.com/naming/hanja/
+- 일간 궁합: https://sajucheop.com/gunghap/ · 띠 궁합: https://sajucheop.com/ddi-gunghap/
+- 중국 황실 달력 성별 계산기(음력 나이·임신한 음력 달, 2026·2027 표): https://sajucheop.com/jungguk-dallyeok/
+- 만세력: https://sajucheop.com/manse/ · 음력 날짜 계산: https://sajucheop.com/lunar/ · 삼재 계산: https://sajucheop.com/samjae/ · 손없는날: https://sajucheop.com/son/
+- 서재(명리 설명 글, 신살·12운성·용신·세운 월운 등): https://sajucheop.com/guide/
+
+## English pages
+- BaZi calculator (Four Pillars, Day Master, Ten Gods, Luck Pillars): https://sajucheop.com/en/bazi-calculator/
+- Chinese calendar 2026 and 2027 (lunar dates for every day, month pages): https://sajucheop.com/en/chinese-calendar/
+- Chinese gender calendar (lunar age and lunar month worked out from real dates): https://sajucheop.com/en/chinese-gender-calendar/
+- Lunar age calculator: https://sajucheop.com/en/lunar-age/ · Korean age: https://sajucheop.com/en/korean-age/
+- 2027 Chinese zodiac, Year of the Fire Goat: https://sajucheop.com/en/2027/ · by year: https://sajucheop.com/en/zodiac/year/2027/
+- Monthly horoscope by sign (month pillar): https://sajucheop.com/en/monthly/
+- Solar terms: https://sajucheop.com/en/solar-terms/ · Glossary: https://sajucheop.com/en/glossary/
+
+## 日本語
+- 四柱推命 命式計算: https://sajucheop.com/ja/ · 2027年 十二支別の運勢: https://sajucheop.com/ja/2027/
+
+## Feeds
+- 사이트맵 색인: https://sajucheop.com/sitemap-index.xml · RSS: https://sajucheop.com/rss.xml

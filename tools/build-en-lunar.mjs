@@ -171,6 +171,8 @@ function page(slug, { title, desc, h1, lead, calc = '', body, faq, script = '', 
     <div class="ga-overline">${overline}</div>
     <h1 class="ga-title">${h1}</h1>
     <p class="ga-lead">${lead}</p>
+    <p class="callout ko-hint" lang="ko" hidden>한국어로 보기: ${slug === 'chinese-gender-calendar' ? `<a href="${rel}jungguk-dallyeok/">중국 황실 달력 성별 계산기</a> · ` : ''}<a href="${rel}jungguk-dallyeok/">중국달력 음력 달 날짜</a> · <a href="${rel}lunar/">음력 날짜 계산</a> · <a href="${rel}manse/">만세력</a></p>
+    <script>try{if((navigator.languages||[navigator.language]).some(function(l){return /^ko/i.test(l)}))document.querySelector('.ko-hint').hidden=false}catch(e){}</script>
     ${calc}
     <div class="ga-body">
 ${body}
