@@ -169,7 +169,9 @@
     try {
       localStorage.setItem('sajucheop.en.profile.v1', JSON.stringify({ y: parts[0], m: parts[1], d: parts[2], unknown: unknown, hh: unknown ? 12 : t[0], mi: unknown ? 0 : (t[1] || 0), tz: +$('#bz-tz').value, g: $('#bz-gender').value }));
     } catch (e) { /* ignore */ }
+    if (window.Cinema) window.Cinema.revealChart(r, { lang: 'en', order: 'west' });
     $('#bz-out').hidden = false;
+    if (window.Cinema) window.Cinema.enhance($('#bz-out'));
     $('#bz-out').scrollIntoView({ behavior: 'smooth', block: 'start' });
     track('en_bazi_cast', { unknown_time: unknown ? 1 : 0, solar: solar ? 1 : 0 });
   });

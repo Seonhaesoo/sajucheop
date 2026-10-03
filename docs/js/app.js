@@ -78,6 +78,7 @@
       el._animT = setTimeout(function () { el.classList.remove('animate-in'); }, 1400);
     }
     window.scrollTo(0, 0);
+    if (window.Cinema) window.Cinema.onView(name, el);   /* 화면 넘김·스크롤 등장·카드·긁기 (js/cinema.js) */
   }
 
   function fmtTime(minOfDay) {
@@ -152,7 +153,8 @@
 
     $('#saju-form').addEventListener('submit', function (e) {
       e.preventDefault();
-      runCompute();
+      state.cineNext = true;   /* 직접 '명식 세우기'를 눌렀을 때만 펼침 연출 (js/cinema.js) */
+      try { runCompute(); } finally { state.cineNext = false; }
     });
   }
 
@@ -222,7 +224,7 @@
         if (!state.invite.persona) recordGunghap(state.invite);
         updateGunghapButtons(state.invite.persona ? 'persona' : 'mine');
         showView('gunghap');
-      } else {
+      } else if (!(state.cineNext && window.Cinema && window.Cinema.revealChart(result, { lang: 'ko', name: state.name, onCovered: function () { showView('result'); } }))) {
         showView('result');
       }
     } catch (err) {
@@ -1460,16 +1462,32 @@
     return 0;
   }
 
+  function renderCharTeaser() {
+    var c = state.character; if (!c) return;
+    var me = M.STEMS.filter(function (x) { return x.han === c.han; })[0];
+    var sealed = window.Cinema && window.Cinema.isSealed(window.Cinema.key(c.input));
+    if (sealed) {
+      $('#ch-mini').innerHTML = window.Cinema.cardBackMini(36);
+      $('#ch-teaser-name').textContent = '나의 사주 캐릭터 — 아직 뒤집지 않은 카드';
+      $('#ch-teaser-sub').textContent = '눌러서 나를 닮은 캐릭터를 확인해 보세요';
+    } else {
+      $('#ch-mini').innerHTML = C.emblemSvg(c.han, 36, 'light');
+      $('#ch-teaser-name').textContent = '나의 사주 캐릭터 — ' + c.data.name;
+      $('#ch-teaser-sub').textContent = c.data.metaphor + ' · ' + me.kor + me.el + ' · ' + c.strength;
+    }
+  }
+  document.addEventListener('cine:flip', renderCharTeaser);
+
   function renderCharacter(r) {
     var me = M.STEMS[r.pillars.day.stem];
     var ch = C.of(me.han);
     var strength = r.strength.label;
-    state.character = { han: me.han, data: ch, strength: strength };
+    state.character = { han: me.han, data: ch, strength: strength, input: r.input };
 
-    /* 결과 화면 티저 */
-    $('#ch-mini').innerHTML = C.emblemSvg(me.han, 36, 'light');
-    $('#ch-teaser-name').textContent = '나의 사주 캐릭터 — ' + ch.name;
-    $('#ch-teaser-sub').textContent = ch.metaphor + ' · ' + me.kor + me.el + ' · ' + strength;
+    /* 결과 화면 티저 — 캐릭터 카드를 아직 안 뒤집었으면 이름을 숨긴다 (캐릭터 화면에서 뒤집기, js/cinema.js) */
+    var cHero = document.querySelector('#view-character .char-hero');
+    if (cHero) { cHero.setAttribute('data-key', window.Cinema ? window.Cinema.key(r.input) : ''); cHero.setAttribute('data-han', me.han); }
+    renderCharTeaser();
 
     /* 캐릭터 화면 */
     $('#ch-emblem').innerHTML = C.emblemSvg(me.han, 120, 'dark');
@@ -1763,6 +1781,12 @@
       '<div class="cd-title"><span class="t-score">' + f.score + '</span>점 · ' + f.weather + '</div>' +
       '<div class="cd-body">' + f.weatherLine + '입니다.</div>' +
       '</div>';
+    /* 연출용: 점수·날씨·사주 열쇠 (js/cinema.js 가 하루 한 번 긁어서 보기·점수 올라가기) */
+    var tHero = $('#t-hero');
+    tHero.setAttribute('data-score', f.score);
+    tHero.setAttribute('data-weather', f.weather);
+    tHero.setAttribute('data-key', window.Cinema ? window.Cinema.key(r.input) : '');
+    tHero.removeAttribute('data-cdone');
 
     $('#t-relation').innerHTML = f.relationText
       ? '<p class="notice">' + f.relationText + '</p>'

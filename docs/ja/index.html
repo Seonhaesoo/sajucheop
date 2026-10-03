@@ -442,7 +442,9 @@
     } catch (e) { /* ignore */ }
     lastInput = { year: y2, month: m2, day: d2 };
     render(r, unknown);
+    if (window.Cinema) window.Cinema.revealChart(r, { lang: 'ja', order: 'west' });
     $('#en-result').hidden = false;
+    if (window.Cinema) window.Cinema.enhance($('#en-result'));
     $('#en-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
@@ -619,6 +621,7 @@
   });
 })();
 </script>
+<script src="/js/cinema.js" defer></script>
 <script src="/js/pwa.js" defer></script>
 </body>
 </html>
