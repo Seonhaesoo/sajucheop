@@ -26,3 +26,4 @@ Sitemap: https://sajucheop.com/sitemap-en-2027-pillars.xml
 Sitemap: https://sajucheop.com/sitemap-wolun.xml
 Sitemap: https://sajucheop.com/sitemap-hanja.xml
 Sitemap: https://sajucheop.com/sitemap-en-lunar.xml
+Sitemap: https://sajucheop.com/sitemap-jungguk.xml

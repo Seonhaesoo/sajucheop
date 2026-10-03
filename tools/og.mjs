@@ -31,6 +31,7 @@ const STATIC = [
   { key: 'samjae', kicker: '삼재', title: '내 띠는\n지금 삼재일까', sub: '들삼재·눌삼재·날삼재 · 띠별 3년' },
   { key: 'manse', kicker: '만세력', title: '절기 시각까지\n정확한 만세력', sub: '년·월·일·시 네 기둥 · 진태양시 보정' },
   { key: 'lunar', kicker: '음력 기념일', title: '음력 생일,\n올해는 양력 며칠', sub: '음력 ↔ 양력 · 윤달 · 해마다 바뀌는 날짜' },
+  { key: 'ko-gender', kicker: '중국 황실 달력', title: '아들일까 딸일까,\n표를 바르게 읽는 법', sub: '음력 나이·임신한 음력 달 자동 계산 · 2026·2027 표' },
   { key: 'test', kicker: '일간 테스트', title: '나는 열 가지 일간 중\n어떤 사람일까', sub: '12문항 · 갑목부터 계수까지' },
   { key: 'social', kicker: '사주첩', title: '여덟 글자에 담긴\n당신의 이야기', sub: '무료 사주풀이 · 오늘의 운세 · 궁합 · 2027 신년운세' },
   /* 영문 */

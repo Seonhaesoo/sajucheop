@@ -207,6 +207,9 @@ const EX = (() => {
 
 page('chinese-gender-calendar', {
   og: 'en-gender', overline: 'Chinese calendar',
+  extraStyle: `
+  <link rel="alternate" hreflang="en" href="${SITE}/en/chinese-gender-calendar/">
+  <link rel="alternate" hreflang="ko" href="${SITE}/jungguk-dallyeok/">`,
   title: `Chinese Gender Calendar ${DUE}: Chart & Lunar Age Calculator`,
   desc: `Chinese gender chart for babies due in ${DUE}. Enter your birth date and your conception or due date — both are converted to the Chinese lunar calendar for you.`,
   h1: `Chinese gender calendar ${DUE}`,
