@@ -26,6 +26,7 @@
   function profile() { try { var p = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null'); return p && p.year && p.month && p.day ? p : null; } catch (e) { return null; } }
   function profileLabel(p) { return (p.name ? p.name + ' · ' : '') + p.year + '년 ' + p.month + '월 ' + p.day + '일생'; }
   function track(name, p) { try { if (window.gtag) window.gtag('event', name, p || {}); } catch (e) { /* 무시 */ } }
+  function whereOf(box) { return (box && box.getAttribute('data-where')) || location.pathname.slice(0, 40); }
   function nameOf(slug) { for (var i = 0; i < DDI.length; i++) if (DDI[i][0] === slug) return DDI[i][1]; return ''; }
   function labelOf(s) { return s.mode === 'saju' ? '내 사주' : nameOf(s.ddi); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
@@ -142,18 +143,18 @@
     var tag = want.mode === 'saju' ? 'saju' : want.ddi;
     render(box, 'busy', '알림 허용을 눌러 주세요…');
     Promise.resolve().then(function () { return Notification.requestPermission(); }).then(function (perm) {
-      if (perm !== 'granted') { track('push_denied', { ddi: tag }); render(box, 'idle', '알림이 허용되지 않았어요. 브라우저 주소창의 자물쇠에서 알림을 허용하면 다시 켤 수 있어요.'); return; }
+      if (perm !== 'granted') { track('push_denied', { ddi: tag, where: whereOf(box) }); render(box, 'idle', '알림이 허용되지 않았어요. 브라우저 주소창의 자물쇠에서 알림을 허용하면 다시 켤 수 있어요.'); return; }
       render(box, 'busy', '등록하는 중…');
       return prepare(want).then(getToken).then(function (token) {
         return post('/subscribe', payload(want, token)).then(function (j) {
           if (j.time) want.time = j.time;
           save(saved(want, token));
-          track('push_subscribe', { ddi: tag, time: want.time });
+          track('push_subscribe', { ddi: tag, time: want.time, where: whereOf(box) });
           renderAll(box, firstMsg(want));
         });
       });
     }).catch(function (e) {
-      track('push_error', { ddi: tag, msg: String(e && e.message) });
+      track('push_error', { ddi: tag, msg: String(e && e.message), where: whereOf(box) });
       render(box, 'idle', '알림을 켜지 못했어요. 잠시 뒤 다시 눌러 주세요. (' + (e && e.message ? e.message : '오류') + ')');
     });
   }
@@ -176,6 +177,9 @@
       renderAll(box, what === 'time' ? '이제 매일 ' + want.time + '에 와요. 다음 알림은 ' + firstWhen(want.time) + '.' : '이제 ' + label + ' 운세로 와요.');
     }).catch(function () { render(box, 'idle', '바꾸지 못했어요. 잠시 뒤 다시 눌러 주세요.'); });
   }
+
+  /* app.js 가 사주를 저장하면(saju:profile) 상자를 다시 그려 '내 사주로' 선택지를 띄운다 */
+  document.addEventListener('saju:profile', function () { boxes.forEach(function (b) { if (!b.querySelector('[data-act="off"]') && b.textContent.indexOf('하는 중') < 0) render(b, 'idle'); }); });
 
   boxes.forEach(function (box) {
     render(box, 'idle');

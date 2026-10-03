@@ -157,6 +157,7 @@ function monthPage(y, m) {
     </div>
     ${gap}
     <p class="ga-lead">${esc(WOL_CHAR[S.branch])} ${esc(WOL_STEM[S.stem])}</p>
+    <div class="push-box" data-push data-where="wolun"><p class="push-text"><b>🔔 매일 아침 내 운세를 알림으로 받기</b></p></div>
     <div class="wo-two">
       <div><b class="h">운이 좋은 띠</b>${top.map((s) => `<a href="#${s.D.slug}">${name(s.b)}</a> ${s.score}점`).join(' · ')}</div>
       <div><b class="h">조심할 띠</b>${low.map((s) => `<a href="#${s.D.slug}">${name(s.b)}</a> ${s.score}점`).join(' · ')}</div>
@@ -182,7 +183,7 @@ function monthPage(y, m) {
       <p class="form-microcopy" style="margin-top: 10px;">점수는 띠 글자와 이달 글자의 관계(합은 더하고 충·형·해·원진·파는 빼고)에 오행 보정을 더해 55~96점으로 맞춘 참고값입니다.</p>
     </div>
   </article>`;
-  write(url, { rel, title, desc, canonical: SITE + url, nav: NAV(rel), og: `wolun-${monthKey(y, m)}`, ogTitle: `${y}년 ${m}월 띠별 운세 — ${kor}월, 12띠 점수와 좋은 날`, extraHead: STYLE + `
+  write(url, { rel, title, desc, canonical: SITE + url, nav: NAV(rel), og: `wolun-${monthKey(y, m)}`, ogTitle: `${y}년 ${m}월 띠별 운세 — ${kor}월, 12띠 점수와 좋은 날`, extraHead: '<script defer src="/js/push.js"></script>\n  ' + STYLE + `
   <link rel="alternate" hreflang="ko" href="${SITE}${url}">
   <link rel="alternate" hreflang="en" href="${SITE}/en/monthly/${monthKey(y, m)}/">`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '이달의 띠별 운세', url: SITE + '/wolun/' }, { name: `${y}년 ${m}월`, url: SITE + url }]), article(url, title, desc, published, modified), faqLd(faq)], body });
@@ -212,6 +213,7 @@ function hub(months) {
       <ul class="wo-list">
         ${items}
       </ul>
+      <div class="push-box" data-push data-where="wolun-hub"><p class="push-text"><b>🔔 매일 아침 내 띠 운세를 알림으로 받기</b></p></div>
       <h2>자주 묻는 질문</h2>
       ${faq.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${esc(a)}</p>`).join('\n      ')}
       <p class="callout"><a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}2027/">2027 신년운세 (월별 흐름)</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${rel}jeolgi/">절기 달력</a></p>
@@ -221,6 +223,7 @@ function hub(months) {
     </div>
   </article>`;
   write(url, { rel, title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: '이달의 띠별 운세 — 12띠 월운', extraHead: STYLE + `
+  <script defer src="/js/push.js"></script>
   <link rel="alternate" hreflang="ko" href="${SITE}${url}">
   <link rel="alternate" hreflang="en" href="${SITE}/en/monthly/">`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '이달의 띠별 운세', url: SITE + url }]), faqLd(faq)], body });

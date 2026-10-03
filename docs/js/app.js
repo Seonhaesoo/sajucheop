@@ -264,6 +264,7 @@
       };
       localStorage.setItem(PROFILE_KEY, JSON.stringify(prof));
       kvPut('profile', prof);
+      try { document.dispatchEvent(new CustomEvent('saju:profile')); } catch (e2) { /* 무시 */ }
     } catch (e) { /* 저장 불가 환경 — 무시 */ }
     renderResumeChip();
   }
