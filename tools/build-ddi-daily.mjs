@@ -145,7 +145,7 @@ function ddiPage(day, a, kind) {
       <p>${esc(f.work)}</p>
       <h2>건강</h2>
       <p>${esc(f.health)}</p>
-      <p class="callout"><b>2027년 ${D.animal}띠 운세 ${NY.score}점</b> — ${esc(NY.tail)}. 좋은 달 ${NY.good}, 조심할 달 ${NY.bad}. <a href="${rel}2027/ddi/${D.slug}/">열두 달 흐름·나이별 운세 보기 →</a></p>
+      <p class="callout"><b>2027년 ${D.animal}띠 운세 ${NY.score}점</b>: ${esc(NY.tail)}. 좋은 달 ${NY.good}, 조심할 달 ${NY.bad}. <a href="${rel}2027/ddi/${D.slug}/">열두 달 흐름·나이별 운세 보기 →</a></p>
 
       <h2>행운의 조각</h2>
       <div class="td-grid">
@@ -163,7 +163,7 @@ function ddiPage(day, a, kind) {
           <button type="button" class="btn-outline" id="fcard-save">이미지 저장</button>
           <button type="button" class="btn-primary" id="fcard-share" hidden>바로 공유</button>
         </div>
-        <p class="fcard-hint">1080×1350 카드 — 이미지를 길게 눌러 저장하거나, 버튼으로 저장·공유하세요. 모든 처리는 이 화면 안에서 끝납니다.</p>
+        <p class="fcard-hint">1080×1350 카드예요. 이미지를 길게 눌러 저장하거나 버튼으로 저장·공유하세요. 카드는 이 화면 안에서만 만들어져요.</p>
       </div>
 
       <h2>출생연도별 ${D.animal}띠</h2>
@@ -171,7 +171,7 @@ function ddiPage(day, a, kind) {
       <ul class="td-list">
         ${yrRows}
       </ul>
-      <p style="font-size: 13px;">출생연도별 2027년 운세 — ${years(a, day.y).filter((yy) => NY.years.includes(yy)).map((yy) => `<a href="${rel}2027/ddi/${D.slug}/${yy}/">${String(yy % 100).padStart(2, '0')}년생</a>`).join(' · ')}</p>
+      <p style="font-size: 13px;">출생연도별 2027년 운세: ${years(a, day.y).filter((yy) => NY.years.includes(yy)).map((yy) => `<a href="${rel}2027/ddi/${D.slug}/${yy}/">${String(yy % 100).padStart(2, '0')}년생</a>`).join(' · ')}</p>
 
       <h2>${label} 다른 띠는</h2>
       <div class="td-chips">${others.map((x) => `<a href="${rel}${kind}/ddi/${DDI[x.i].slug}/"${x.i === a ? ' class="on"' : ''}>${DDI[x.i].animal}띠 ${x.s}</a>`).join('')}</div>
@@ -181,7 +181,7 @@ function ddiPage(day, a, kind) {
 
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주로 ${label} 점수 보기</span></a>
-      <p class="form-microcopy" style="margin-top: 10px;">띠 운세는 태어난 해 한 글자로 보는 약식입니다. 생년월일시를 넣으면 여덟 글자로 본 ${label}의 흐름과 시간대별 점수가 나와요.</p>
+      <p class="form-microcopy" style="margin-top: 10px;">띠 운세는 태어난 해 한 글자로 보는 약식입니다. 생년월일시를 넣으면 여덟 글자로 본 ${label}의 흐름과 시간대별 점수가 나옵니다.</p>
     </div>
   </article>`;
   write(url.slice(1), shell({
@@ -215,8 +215,8 @@ function indexPage(day, kind, items) {
         <tr><th>띠</th><th>점수</th><th>한 줄</th><th>일진과의 관계</th></tr>
         ${rows}
       </table>
-      <p class="callout"><b>2027년 띠별 운세</b> — ${ny[0].animal}띠 ${ny[0].score}점부터 ${ny[11].animal}띠 ${ny[11].score}점까지, 12띠 점수와 좋은 달·나이별 운세. <a href="${rel}2027/ddi/">보러 가기 →</a></p>
-      <p class="callout"><b>${label}의 꿈해몽 · ${esc(dream.t)}</b> — ${esc(firstSent(dream.lead))} <a href="${DREAM_SITE}${dream.u}">꿈첩에서 상황별로 보기 →</a></p>
+      <p class="callout"><b>2027년 띠별 운세</b>: ${ny[0].animal}띠 ${ny[0].score}점부터 ${ny[11].animal}띠 ${ny[11].score}점까지, 12띠 점수와 좋은 달·나이별 운세. <a href="${rel}2027/ddi/">보러 가기 →</a></p>
+      <p class="callout"><b>${label}의 꿈해몽 · ${esc(dream.t)}</b>: ${esc(firstSent(dream.lead))} <a href="${DREAM_SITE}${dream.u}">꿈첩에서 상황별로 보기 →</a></p>
       <p class="callout">${kind === 'today' ? `<a href="${rel}tomorrow/ddi/">내일의 띠별 운세 →</a>` : `<a href="${rel}today/ddi/">← 오늘의 띠별 운세</a>`} · <a href="${rel}${wolunUrl(day).url}">${wolunUrl(day).m}월 띠별 운세</a> · <a href="${rel}day/${iso(day.y, day.m, day.d)}/">${day.m}월 ${day.d}일 일진 (일간별 흐름)</a> · <a href="${rel}ddi-gunghap/">띠 궁합표</a> · <a href="${rel}2027/">2027년 띠별 운세</a></p>
     </div>
     <div class="ga-cta">

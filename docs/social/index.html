@@ -80,26 +80,26 @@
     <div class="box-head"><b>데일리 영문 글 (쓰레드·인스타 EN)</b><span>매일 자정 갱신</span></div>
     <textarea id="dailyen" readonly>불러오는 중…</textarea>
     <button data-copy="dailyen">복사하기</button>
-    <p class="hint">영문 계정이나 영문 해시태그 게시용 — 링크는 sajucheop.com/en/ 으로 갑니다.</p>
+    <p class="hint">영문 계정이나 영문 해시태그로 올릴 때 써요. 링크는 sajucheop.com/en/ 으로 가요.</p>
   </div>
 
   <div class="box">
     <div class="box-head"><b>참여형 궁합 링크글 (쓰레드)</b><span>화·목·토 갱신</span></div>
     <textarea id="engage" readonly>불러오는 중…</textarea>
     <button data-copy="engage">복사하기</button>
-    <p class="hint">"이번 주 궁합 상대"와 몇 점인지 링크로 바로 참여하는 글 — 한글 + 영문 링크. 봇이 쓰레드에 자동 게시하고, 인스타에선 프로필 링크 → 홈 카드로 같은 참여가 됩니다.</p>
+    <p class="hint">"이번 주 궁합 상대"와 몇 점인지 링크로 바로 참여하는 글이에요(한글 + 영문 링크). 봇이 쓰레드에 자동 게시하고, 인스타에선 프로필 링크 → 홈 카드로 같은 참여가 돼요.</p>
   </div>
 
   <div class="box">
     <div class="box-head"><b>주간 리스트글 (쓰레드)</b><span>월·수·금 갱신</span></div>
     <textarea id="weekly" readonly>불러오는 중…</textarea>
     <button data-copy="weekly">복사하기</button>
-    <p class="hint">월·수·금에 인스타 캐러셀과 같은 주제의 쓰레드용 글이에요 — 교육·바이럴·후킹 순환.</p>
+    <p class="hint">월·수·금에 인스타 캐러셀과 같은 주제의 쓰레드용 글이에요. 교육·바이럴·후킹 순서로 돌아가요.</p>
   </div>
 
   <div class="box">
     <div class="box-head"><b>첩 시리즈 글 (쓰레드)</b><span>이틀에 한 번 저녁</span></div>
-    <p class="hint">타로첩(오늘의 타로) → 꿈첩(인기 꿈해몽부터) → 생일첩(오늘 생일인 사람의 별자리·탄생석) 순서로 이틀에 한 편(9/19 타로부터), 19:37 예약(실제 게시는 20~21시쯤). 날짜로 내용이 정해져 이 페이지엔 남지 않아요 — 쓰레드 계정에서 확인하세요. 꿈 목록·별자리 문구는 <code>tools/sister-data.json</code>(자매 사이트 데이터를 <code>node tools/build-sister-data.mjs</code> 로 묶음).</p>
+    <p class="hint">타로첩(오늘의 타로) → 꿈첩(인기 꿈해몽부터) → 생일첩(오늘 생일인 사람의 별자리·탄생석) 순서로 이틀에 한 편(9/19 타로부터), 19:37 예약(실제 게시는 20~21시쯤). 날짜로 내용이 정해져 이 페이지엔 남지 않으니 쓰레드 계정에서 확인하세요. 꿈 목록·별자리 문구는 <code>tools/sister-data.json</code>(자매 사이트 데이터를 <code>node tools/build-sister-data.mjs</code> 로 묶음).</p>
   </div>
 
   <div class="box">
@@ -114,7 +114,7 @@
     <div class="box-head"><b>주간 영문 리스트글 (쓰레드 EN)</b><span>월·수·금 갱신</span></div>
     <textarea id="weeklyen" readonly>불러오는 중…</textarea>
     <button data-copy="weeklyen">복사하기</button>
-    <p class="hint">한글 회차와 같은 순번의 영문 글 — 영문 사이트에 없는 도구를 다루는 회차는 영문권 주제로 바뀌어 있어요.</p>
+    <p class="hint">한글 회차와 같은 순번의 영문 글이에요. 영문 사이트에 없는 도구를 다루는 회차는 영문권 주제로 바뀌어 있어요.</p>
   </div>
 
   <div class="box">
@@ -132,7 +132,7 @@
     fetch(url, { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
       .then(function (t) { document.getElementById(id).value = t.trim(); })
-      .catch(function () { document.getElementById(id).value = '아직 생성 전이에요 — 다음 봇 실행 후에 생깁니다.'; });
+      .catch(function () { document.getElementById(id).value = '아직 생성 전이에요. 다음 봇 실행 후에 생겨요.'; });
   }
   load('daily', '../daily/thread.txt');
   load('dailyen', '../daily/thread-en.txt');

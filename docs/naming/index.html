@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="max-image-preview:large">
   <title>아기 이름 짓기 무료 — 81수리·발음오행·작명 한자 사전 | 사주첩</title>
-  <meta name="description" content="81수리 네 격, 발음오행, 사주에 부족한 오행을 채우는 글자까지 — 무료 작명 도구. 이름 평가와 추천, 획수·자원오행이 정리된 작명 한자 사전.">
+  <meta name="description" content="81수리 네 격, 발음오행, 사주에 부족한 오행을 채우는 글자까지 보는 무료 작명 도구. 이름 평가와 추천, 획수·자원오행을 정리한 작명 한자 사전.">
   <link rel="canonical" href="https://sajucheop.com/naming/">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -84,7 +84,7 @@
   <div class="card card-pad" style="margin-top: 14px;">
     <div class="section-head">
       <h3 class="section-title" style="font-size: 15px;">아기 정보</h3>
-      <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">생일은 선택 — 넣으면 오행 보완</span>
+      <span class="section-tag" style="color: #9A8F7E; font-weight: 400;">생일은 선택, 넣으면 오행 보완</span>
     </div>
     <div class="nm-row" role="radiogroup" aria-label="성별">
       <label class="nm-gender"><input type="radio" name="nmp-gender" value="M" checked><span>남자</span></label>
@@ -256,8 +256,8 @@
     $('#nmp-saju-line').innerHTML = !b
       ? '생년월일(양력)을 넣으면 명식을 분석해 부족한 오행을 채우는 글자를 먼저 골라드려요.'
       : (b.lack.length
-        ? '아기 명식에 부족한 오행 <b>' + b.lack.join(' · ') + '</b> — 이 기운을 채우는 글자를 먼저 추천해요.'
-        : '아기 명식은 오행이 고루 갖춰져 있어요. 수리·발음 좋은 이름을 추천합니다.');
+        ? '아기 명식에 <b>' + b.lack.join(' · ') + '</b> 기운이 부족해요. 이 기운을 채우는 글자를 먼저 추천해요.'
+        : '아기 명식은 오행이 고루 갖춰져 있어요. 수리·발음 좋은 이름을 추천해요.');
   }
   ['nmp-year', 'nmp-month', 'nmp-day', 'nmp-hour'].forEach(function (id) {
     $('#' + id).addEventListener('change', refreshSajuLine);
@@ -331,7 +331,7 @@
             return '<button type="button" class="nm-chip" data-ci="' + i + '">' + c.h +
               ' <small>' + c.s + '획 · ' + c.e + ' · ' + c.m + '</small></button>';
           }).join('')
-        : '<span class="nm-none">목록에 없는 음이에요 — 획수를 직접 넣으면 수리로 평가해요.</span>';
+        : '<span class="nm-none">목록에 없는 음이에요. 획수를 직접 넣으면 수리로 평가해요.</span>';
       chips.hidden = false;
       strokes.hidden = false;
       chips.querySelectorAll('.nm-chip').forEach(function (chipBtn) {
@@ -383,7 +383,7 @@
       ev.gyeok.map(function (g) {
         return '<div class="fortune-row"><span class="f-label" style="width: 88px;">' + g.name +
           ' <small style="color: #9A8F7E;">' + g.desc + '</small></span>' +
-          '<span class="f-text"><b>' + GYEOK_ICON[g.su.tier] + ' ' + g.su.v + '수 · ' + g.su.tier + '</b> — ' +
+          '<span class="f-text"><b>' + GYEOK_ICON[g.su.tier] + ' ' + g.su.v + '수 · ' + g.su.tier + '</b>: ' +
           g.su.label + '격</span></div>';
       }).join('') +
       '</div>' +

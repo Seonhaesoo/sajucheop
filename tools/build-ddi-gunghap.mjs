@@ -76,7 +76,7 @@ function pairPage(a, b) {
   const map = { A: name(a), B: name(b), ah: `${M.BRANCHES[a].kor}(${A.han})`, bh: `${M.BRANCHES[b].kor}(${B.han})`, ae: A.el, be: B.el, aeh: EL_HAN[A.el], beh: EL_HAN[B.el], group: p === 'samhap' ? SAMHAP_NAME[SAMHAP_G[a]] : p === 'banghap' ? BANGHAP_NAME[BANGHAP_G[a]] : '' };
   const relText = josa(fill(R.body, map));
   const elText = josa(fill(GH_EL[er], map));
-  const extra = rels.filter((r) => r !== p && r !== 'same').map((r) => `여기에 ${REL[r].label}(${REL[r].han})까지 겹쳐 ${REL[r].tone === 'good' ? '끌림이 더해집니다' : '마찰의 결도 함께 있습니다'}.`).join(' ');
+  const extra = rels.filter((r) => r !== p && r !== 'same').map((r) => `여기에 ${REL[r].label}(${REL[r].han})까지 겹쳐 ${REL[r].tone === 'good' ? '끌림이 더해집니다' : '마찰도 함께 생깁니다'}.`).join(' ');
   const title = a === b ? `${name(a)}끼리 궁합 — ${score}점 ${g.label}` : `${name(a)}와 ${name(b)} 궁합 — ${score}점 ${g.label} (${name(b)} ${name(a)} 궁합)`;
   const desc = `${name(a)}(${A.han})와 ${name(b)}(${B.han})의 띠 궁합은 ${score}점, ${g.label}. ${rels.length ? rels.map((r) => REL[r].label).join('·') + '의 관계에 ' : ''}${A.el}·${B.el} ${er === 'same' ? '같은 오행의' : (er === 'gen' || er === 'gen_by') ? '두 오행의 상생' : '두 오행의 상극'} 흐름. 연애·결혼·친구·가족으로 만났을 때와 잘 지내는 법.`;
   const partnersA = DDI.map((_, i) => ({ i, s: pairScore(a, i).score })).filter((x) => x.i !== b).sort((x, y) => y.s - x.s);
@@ -113,7 +113,7 @@ function pairPage(a, b) {
       <h2>친구·동료라면</h2>
       <p>${esc(R.friend)} 일에서 ${name(a)}는 ${esc(TRAIT[A.slug].work)} ${name(b)}는 ${esc(TRAIT[B.slug].work)}</p>
       <h2>부모·자식이라면</h2>
-      <p>${esc(R.family)} ${name(a)}의 약점은 ${esc(TRAIT[A.slug].weak)} ${name(b)}는 ${esc(TRAIT[B.slug].weak)} 서로의 약점을 알고 있으면 절반은 풀립니다.</p>
+      <p>${esc(R.family)} ${name(a)}는 ${esc(TRAIT[A.slug].weak)} ${name(b)}는 ${esc(TRAIT[B.slug].weak)} 서로의 약점을 알고 있으면 절반은 풀립니다.</p>
 
       <h2>잘 지내려면</h2>
       <ul class="dp-list">
@@ -155,9 +155,9 @@ function ddiPage(a) {
   const desc = `${name(a)}와 가장 잘 맞는 띠는 ${top.map(withScore).join('·')}, 가장 부딪히는 띠는 ${low.slice(0, 2).map(withScore).join('·')}. 12띠 궁합 점수 순위와 연애·결혼·친구로 만났을 때를 쉬운 말로 정리했어요.`;
   const pairHref = (x) => `${rel}ddi-gunghap/${pairUrl(a, x.i).split('/')[2]}/`;
   const faqs = [
-    [`${name(a)}와 잘 맞는 띠는?`, `${top.map((x) => `${name(x.i)}(${x.score}점, ${relWord(x)})`).join(', ')} 순입니다. 점수는 태어난 해의 글자(지지)끼리 짝을 이루는지(합), 부딪히는지(충·형·해)와 두 띠의 오행이 서로 돕는지로 매겼어요.`],
+    [`${name(a)}와 잘 맞는 띠는?`, `${top.map((x) => `${name(x.i)}(${x.score}점, ${relWord(x)})`).join(', ')} 순입니다. 점수는 태어난 해의 글자(지지)끼리 짝을 이루는지(합), 부딪히는지(충·형·해)와 두 띠의 오행이 서로 돕는지로 매겼습니다.`],
     [`${name(a)}와 안 맞는 띠는?`, `${low.map((x) => `${name(x.i)}(${x.score}점, ${relWord(x)})`).join(', ')} 순으로 점수가 낮아요. 생활 속도나 기준이 달라 부딪히기 쉬운 사이라는 뜻이지, 안 된다는 뜻은 아니에요. 다른 점을 미리 알고 만나면 충분히 맞춰 갈 수 있어요.`],
-    [`${name(a)}끼리 궁합은?`, `${self.score}점, ${grade(self.score).label}입니다. 같은 띠는 생각하는 방식이 비슷해 편한 대신, 약점도 같아서 함께 빠지기 쉬워요.`],
+    [`${name(a)}끼리 궁합은?`, `${self.score}점, ${grade(self.score).label}입니다. 같은 띠는 생각하는 방식이 비슷해 편한 대신, 약점도 같아서 함께 빠지기 쉽습니다.`],
   ];
   const rows = list.map((x) => { const g = grade(x.score); return `<tr><td><a href="${rel}ddi-gunghap/${pairUrl(a, x.i).split('/')[2]}/">${name(x.i)}</a></td><td class="sc ${g.tone === 'good' ? 'good' : g.tone === 'bad' || g.tone === 'warn' ? 'bad' : ''}">${x.score}점</td><td>${g.label}</td><td>${x.rels.map((r) => REL[r].label).join('·') || '무난'}</td></tr>`; }).join('\n        ');
   const body = `
@@ -177,9 +177,9 @@ function ddiPage(a) {
         ${rows}
       </table>
       <h2>${name(a)}는 어떤 사람</h2>
-      <p><b>연애</b> — ${esc(TRAIT[A.slug].love)}</p>
-      <p><b>일</b> — ${esc(TRAIT[A.slug].work)}</p>
-      <p><b>조심할 것</b> — ${esc(TRAIT[A.slug].weak)}</p>
+      <p><b>연애</b>: ${esc(TRAIT[A.slug].love)}</p>
+      <p><b>일</b>: ${esc(TRAIT[A.slug].work)}</p>
+      <p><b>조심할 것</b>: ${esc(TRAIT[A.slug].weak)}</p>
       <h2>${name(a)}의 합과 충</h2>
       <p>${josa(`${M.BRANCHES[a].kor}(${A.han})은`)} ${name(list.find((x) => x.rels.includes('yukhap')).i)}의 지지와 육합(六合), ${list.filter((x) => x.rels.includes('samhap')).map((x) => name(x.i)).join('·')}와 삼합(三合)을 이루고, ${name(list.find((x) => x.rels.includes('chung')).i)}와는 충(沖)입니다. 합은 끌림과 협력, 충은 변화와 마찰의 기운입니다.</p>
       <h2>자주 묻는 질문</h2>
@@ -220,12 +220,12 @@ function indexPage() {
       <div class="gh-chips">${DDI.map((d, a) => `<a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a>`).join('')}</div>
       <h2>관계 읽는 법</h2>
       <ul class="dp-list">
-        <li><b>육합(六合)</b> 자축·인해·묘술·진유·사신·오미 — 열두 지지가 짝을 이루는 자리. 가장 잘 맞는 궁합으로 봅니다.</li>
-        <li><b>삼합(三合)</b> 신자진·해묘미·인오술·사유축 — 같은 국(局)을 이루는 세 지지. 목표가 같을 때 힘이 배가 됩니다.</li>
-        <li><b>방합(方合)</b> 인묘진·사오미·신유술·해자축 — 같은 계절의 이웃. 결이 비슷해 편안합니다.</li>
-        <li><b>충(沖)</b> 자오·축미·인신·묘유·진술·사해 — 정반대 자리. 끌림과 마찰이 함께 있습니다.</li>
-        <li><b>형(刑)</b> 인사신·축술미·자묘, 자형 진오유해 — 서로를 다듬고 찌르는 자리.</li>
-        <li><b>해(害)·파(破)·원진(怨嗔)</b> — 작은 손해, 마무리의 틈, 이유 없는 서운함. 큰 흉은 아니지만 밀도를 조절할 관계.</li>
+        <li><b>육합(六合)</b> 자축·인해·묘술·진유·사신·오미: 열두 지지가 짝을 이루는 자리. 가장 잘 맞는 궁합으로 봅니다.</li>
+        <li><b>삼합(三合)</b> 신자진·해묘미·인오술·사유축: 같은 국(局)을 이루는 세 지지. 목표가 같을 때 힘이 배가 됩니다.</li>
+        <li><b>방합(方合)</b> 인묘진·사오미·신유술·해자축: 같은 계절의 이웃. 결이 비슷해 편안합니다.</li>
+        <li><b>충(沖)</b> 자오·축미·인신·묘유·진술·사해: 정반대 자리. 끌림과 마찰이 함께 있습니다.</li>
+        <li><b>형(刑)</b> 인사신·축술미·자묘, 자형 진오유해: 서로를 다듬고 찌르는 자리.</li>
+        <li><b>해(害)·파(破)·원진(怨嗔)</b> 작은 손해, 마무리의 틈, 이유 없는 서운함. 큰 흉은 아니지만 거리 조절이 필요한 관계.</li>
       </ul>
       <p class="callout">띠는 입춘(2월 4일 전후)을 기준으로 바뀝니다. 1월이나 2월 초에 태어났다면 앞 해의 띠일 수 있으니 <a href="${SAENGIL}/">생일 사전</a>에서 확인하세요. 두 사람의 생년월일을 모두 알면 <a href="${rel}gunghap/">일간 궁합</a>이 훨씬 정확합니다. <a href="${rel}en/zodiac/compatibility/" hreflang="en">English chart</a></p>
     </div>

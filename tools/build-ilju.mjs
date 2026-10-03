@@ -117,10 +117,10 @@ list.forEach((e, i) => {
     <div class="ga-body">
       <h2>어떤 사람인가</h2>
       <p>${esc(e.core)}</p>
-      <p>${st.kor}${st.el} 일간의 결은 <a href="${rel}guide/${GUIDE[e.s]}.html">${esc(ch.metaphor)}</a> — ${esc(ch.essence)}. ${josa(`여기에 일지 ${br.kor}(${br.han})가`)} 어떤 방을 내어주는지가 ${e.kor}일주만의 색을 만듭니다.</p>
+      <p>${st.kor}${st.el} 일간은 <a href="${rel}guide/${GUIDE[e.s]}.html">${esc(ch.metaphor)}</a>처럼 ${esc(ch.essence)}입니다. ${josa(`여기에 일지 ${br.kor}(${br.han})가`)} 어떤 방을 내어주느냐에 따라 ${e.kor}일주만의 색이 정해집니다.</p>
 
       <h2>${josa(`일지 ${br.kor}(${br.han})가`)} 말하는 것</h2>
-      <p>일지는 나의 안방이자 배우자 자리입니다. ${br.kor} 안에는 하늘 글자가 ${hidden.length}개 숨어 있어요(지장간):</p>
+      <p>일지는 나의 안방이자 배우자 자리입니다. ${br.kor} 안에는 하늘 글자가 ${hidden.length}개 숨어 있습니다(지장간):</p>
       <p>${hiddenHtml}</p>
       <p>${SPOUSE_LINE[mainSip]}</p>
       <p>${UN_LINE[e.un]}</p>
@@ -186,7 +186,7 @@ list.forEach((e, i) => {
     <div class="ga-overline">60일주 사전</div>
     <h1 class="ga-title">일주(日柱) 60가지 —<br>내가 태어난 날의 두 글자</h1>
     <p class="ga-meta">사주첩 서재 · 일간 10 × 일지 12의 조합 60</p>
-    <p class="ga-lead">사주의 주인공은 일간이지만, 그 일간이 어떤 자리에 앉았는지가 사람의 결을 정합니다. 같은 갑목이라도 물 위(갑자)와 바위 위(갑신)는 전혀 다른 나무가 되죠. 60가지 일주를 일간별로 묶었습니다 — 내 일주를 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나옵니다.</p>
+    <p class="ga-lead">사주의 주인공은 일간이지만, 그 일간이 어떤 자리에 앉았는지가 사람의 결을 정합니다. 같은 갑목이라도 물 위(갑자)와 바위 위(갑신)는 전혀 다른 나무가 됩니다. 60가지 일주를 일간별로 묶었습니다. 내 일주는 <a href="${rel}">생일만 넣으면 10초</a> 만에 확인할 수 있습니다.</p>
     <div class="ga-body">
       ${groups}
       <p class="callout"><a href="${rel}guide/ilgan.html">일간이란</a> · <a href="${rel}guide/jijanggan.html">지장간이란</a> · <a href="${rel}guide/sipseong.html">십성 한눈에</a></p>

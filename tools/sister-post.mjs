@@ -46,7 +46,7 @@ async function tarot({ y, m, d }, n) {
   const variant = ((Math.floor(n / 3) % 2) + 2) % 2;
   const head = variant === 0 ? `🔮 오늘의 타로 · ${m}월 ${d}일` : `${m}월 ${d}일, 오늘을 비추는 카드 한 장 🔮`;
   const body = variant === 0
-    ? [`${c.n} ${dir}`, first(rev ? c.rv : c.up), `오늘의 조언 — ${c.ad}`, '나도 직접 골라 뽑기 → tarot.sajucheop.com/draw/']
+    ? [`${c.n} ${dir}`, first(rev ? c.rv : c.up), `오늘의 조언: ${c.ad}`, '나도 직접 골라 뽑기 → tarot.sajucheop.com/draw/']
     : [`${c.n} ${dir} · ${kw}`, c.ad, '마음 가는 카드를 직접 골라 보세요 → tarot.sajucheop.com/draw/'];
   return [head].concat(body).join('\n');
 }
@@ -66,7 +66,7 @@ function birthday({ m, d }) {
     : (m > fm || (m === fm && d >= fd)) || (m < tm || (m === tm && d <= td))));
   const s = DATA.stones[m];
   if (!z || !s) throw new Error(`별자리·탄생석을 못 찾음: ${m}/${d}`);
-  return [`🎂 ${m}월 ${d}일, 오늘 생일인 분들 축하해요!`, `별자리 ${z.kor}(${z.sym}) · 탄생석 ${s.name}(${s.meaning})`, `${z.kor} — ${z.trait}`,
+  return [`🎂 ${m}월 ${d}일, 오늘 생일인 분들 축하해요!`, `별자리 ${z.kor}(${z.sym}) · 탄생석 ${s.name}(${s.meaning})`, `${z.kor}는 ${z.trait}`,
     `태어난 해의 요일·띠·일주까지 한눈에 → saengil.sajucheop.com/md/${pad(m)}-${pad(d)}/`].join('\n');
 }
 

@@ -117,7 +117,7 @@
         '<p class="push-note">시간을 바꾸면 바로 저장돼요(15분 단위, 이 기기의 시간 기준).</p>' + (msg ? '<p class="push-note">' + esc(msg) + '</p>' : '');
     } else {
       var can = supported && (!isIOS || standalone);
-      html = '<p class="push-text"><b>🔔 매일 내가 정한 시간에 ' + (fixed ? esc(fixedName) + ' 운세' : (p ? '내 운세' : '내 띠 운세')) + '를 알림으로 받기</b><br><span>점수와 한 줄 흐름이 뜨고, 누르면 그날 운세로 옵니다. 언제든 끌 수 있어요.</span></p>';
+      html = '<p class="push-text"><b>🔔 매일 내가 정한 시간에 ' + (fixed ? esc(fixedName) + ' 운세' : (p ? '내 운세' : '내 띠 운세')) + '를 알림으로 받기</b><br><span>점수와 한 줄 흐름이 뜨고, 누르면 그날 운세가 열려요. 언제든 끌 수 있어요.</span></p>';
       if (!fixed) html += '<label class="push-sel">' + (p ? '무엇으로 ' : '내 띠 ') + '<select data-sel>' + options(p ? 'saju' : '') + '</select></label>';
       if (can) {
         html += timeField(DEFAULT_TIME) +
@@ -154,7 +154,7 @@
       });
     }).catch(function (e) {
       track('push_error', { ddi: tag, msg: String(e && e.message) });
-      render(box, 'idle', '지금은 켜지지 않았어요. 잠시 뒤 다시 눌러 주세요. (' + (e && e.message ? e.message : '오류') + ')');
+      render(box, 'idle', '알림을 켜지 못했어요. 잠시 뒤 다시 눌러 주세요. (' + (e && e.message ? e.message : '오류') + ')');
     });
   }
   function turnOff(box) {

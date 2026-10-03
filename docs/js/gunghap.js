@@ -120,10 +120,10 @@
   };
 
   var BRANCH_TEXT = {
-    '육합': { title: '일지가 합(合)', body: '일상 리듬과 속정이 잘 붙는 사이입니다. 오래 같이 있어도 편안하고, 말하지 않아도 통하는 구석이 있어요.' },
-    '삼합': { title: '일지가 삼합(三合)', body: '함께 무언가를 벌일 때 시너지가 나는 사이입니다. 같은 목표가 생기면 빠르게 가까워져요.' },
-    '동일': { title: '일지가 같음', body: '닮은 생활 습관, 닮은 속마음 — 거울을 보는 듯한 사이입니다. 편안하지만 서로의 단점도 닮았을 수 있어요.' },
-    '충': { title: '일지가 충(沖)', body: '생활 패턴과 속마음이 자주 엇갈릴 수 있는 사이입니다. 각자의 시간과 공간을 존중하는 것이 오래 가는 비결이에요.' }
+    '육합': { title: '일지가 합(合)', body: '일상 리듬과 속정이 잘 붙는 사이예요. 오래 같이 있어도 편안하고, 말하지 않아도 통하는 구석이 있어요.' },
+    '삼합': { title: '일지가 삼합(三合)', body: '함께 무언가를 벌일 때 시너지가 나는 사이예요. 같은 목표가 생기면 빠르게 가까워져요.' },
+    '동일': { title: '일지가 같음', body: '생활 습관도 속마음도 닮아, 거울을 보는 듯한 사이예요. 편안하지만 서로의 단점도 닮았을 수 있어요.' },
+    '충': { title: '일지가 충(沖)', body: '생활 패턴과 속마음이 자주 엇갈릴 수 있는 사이예요. 각자의 시간과 공간을 존중하는 것이 오래 가는 비결이에요.' }
   };
 
   var EL_HAN = { '목': '木', '화': '火', '토': '土', '금': '金', '수': '水' };
@@ -196,32 +196,32 @@
       stemRel = {
         type: 'hap',
         title: '천간의 합(合) — 서로에게 끌리는 조합',
-        body: stA.kor + stA.el + '·' + stB.kor + stB.el + ' 두 천간은 열 개 가운데 서로 맞물리는 단 하나의 짝입니다. 두 기운이 만나 ' +
+        body: stA.kor + stA.el + '·' + stB.kor + stB.el + ' 두 천간은 열 개 가운데 서로 맞물리는 단 하나의 짝이에요. 두 기운이 만나 ' +
           hwa + '(' + EL_HAN[hwa] + ')의 기운으로 화(化)해, 함께 있을 때 없던 힘이 생겨요.'
       };
     } else if (STEM_CHUNG[sa] === sb) {
       stemRel = {
         type: 'chung',
         title: '천간의 충(沖) — 강하게 부딪히는 조합',
-        body: stA.kor + stA.el + '·' + stB.kor + stB.el + ' 두 천간은 정면으로 마주 서는 기운입니다. 밀어내는 만큼 서로를 성장시키는 자극이 되기도 해요. 거리와 예의가 이 관계의 기술입니다.'
+        body: stA.kor + stA.el + '·' + stB.kor + stB.el + ' 두 천간은 정면으로 마주 서는 기운이에요. 밀어내는 만큼 서로를 성장시키는 자극이 되기도 해요. 거리와 예의를 지키는 게 이 관계의 요령이에요.'
       };
     } else if (stA.el === stB.el) {
       stemRel = {
         type: 'bihwa',
         title: '비화(比和) — 같은 기운의 만남',
-        body: '같은 ' + stA.el + ' 기운끼리 만났습니다. 서로를 가장 잘 알아보는 동료 같은 사이 — 편안하고 빠르게 가까워지지만, 양보가 없으면 부딪히기도 해요.'
+        body: '같은 ' + stA.el + ' 기운끼리 만났어요. 서로를 가장 잘 알아보는 동료 같은 사이라, 편안하고 빠르게 가까워지지만 양보가 없으면 부딪히기도 해요.'
       };
     } else if (window.Manseryeok.elCycle.gen[stA.el] === stB.el) {
       stemRel = {
         type: 'saeng',
         title: '상생(相生) — ' + GEN_METAPHOR[stA.el + stB.el],
-        body: nA + '의 ' + stA.el + ' 기운이 ' + nB + '의 ' + stB.el + ' 기운을 살립니다. 한쪽이 든든히 밀어주는, 주고받음이 분명한 관계예요. 받는 쪽의 고마움 표현이 관계의 연료가 됩니다.'
+        body: nA + '의 ' + stA.el + ' 기운이 ' + nB + '의 ' + stB.el + ' 기운을 살려요. 한쪽이 든든히 밀어주는, 주고받음이 분명한 관계예요. 받는 쪽이 고마움을 표현할수록 관계가 오래가요.'
       };
     } else if (window.Manseryeok.elCycle.gen[stB.el] === stA.el) {
       stemRel = {
         type: 'saeng',
         title: '상생(相生) — ' + GEN_METAPHOR[stB.el + stA.el],
-        body: nB + '의 ' + stB.el + ' 기운이 ' + nA + '의 ' + stA.el + ' 기운을 살립니다. 한쪽이 든든히 밀어주는, 주고받음이 분명한 관계예요. 받는 쪽의 고마움 표현이 관계의 연료가 됩니다.'
+        body: nB + '의 ' + stB.el + ' 기운이 ' + nA + '의 ' + stA.el + ' 기운을 살려요. 한쪽이 든든히 밀어주는, 주고받음이 분명한 관계예요. 받는 쪽이 고마움을 표현할수록 관계가 오래가요.'
       };
     } else if (window.Manseryeok.elCycle.control[stA.el] === stB.el) {
       stemRel = {
@@ -251,7 +251,7 @@
     if (bRel && BRANCH_TEXT[bRel]) {
       branchRel = { type: bRel, title: BRANCH_TEXT[bRel].title, body: BRANCH_TEXT[bRel].body };
     } else {
-      branchRel = { type: null, title: '일지는 담백한 사이', body: '일상에서 크게 부딪히지도, 유난히 끈적이지도 않는 무난한 흐름입니다. 다른 관계 요소가 궁합의 색을 결정해요.' };
+      branchRel = { type: null, title: '일지는 담백한 사이', body: '일상에서 크게 부딪히지도, 유난히 끈적이지도 않는 무난한 흐름이에요. 궁합의 색깔은 다른 관계 요소가 정해요.' };
     }
 
     /* 4. 오행 보완 — 한쪽에 없는 오행을 상대가 하나라도 가지면 */

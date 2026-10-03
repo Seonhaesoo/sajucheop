@@ -141,7 +141,7 @@ function yearPage() {
       <p>하괘는 음력 생일에 ${FY}년 그 음력 날짜의 일진 수를 더해 3으로 나눈 나머지입니다(0이면 3). 칸마다 위는 생일, 아래 굵은 숫자가 하괘입니다. 30일생인데 ${FY}년 그 달이 29일에서 끝나면 29일로 보고(흐린 칸), 윤달생은 본달로 봅니다.</p>
       <div class="tj-months">${grids}</div>
       <h2>4. 괘 번호 읽기</h2>
-      <p>상괘가 백의 자리, 중괘가 십의 자리, 하괘가 일의 자리입니다. 예를 들어 음력 ${ex.y}년 ${ex.m}월 ${ex.d}일생은 ${FY}년 세는나이 ${exAge}세라 상괘 ${sangOf(ex.y)}, 음력 ${ex.m}월이라 중괘 ${MONTHS[ex.m - 1].jung}, ${ex.m}월 ${ex.d}일이라 하괘 ${HA_GRID[ex.m - 1][ex.d - 1].ha} — <b>제${exCode}괘 「${esc(exT.title)}」</b>입니다.</p>
+      <p>상괘가 백의 자리, 중괘가 십의 자리, 하괘가 일의 자리입니다. 예를 들어 음력 ${ex.y}년 ${ex.m}월 ${ex.d}일생은 ${FY}년 세는나이 ${exAge}세라 상괘 ${sangOf(ex.y)}, 음력 ${ex.m}월이라 중괘 ${MONTHS[ex.m - 1].jung}, ${ex.m}월 ${ex.d}일이라 하괘 ${HA_GRID[ex.m - 1][ex.d - 1].ha}입니다. 세 수를 이으면 <b>제${exCode}괘 「${esc(exT.title)}」</b>입니다.</p>
       <p>번호별 풀이는 <a href="${rel}tojeong/gwae/#g${exCode}">토정비결 144괘 풀이</a>에 모아 두었습니다. 상괘는 한 해의 바탕, 중괘는 전개, 하괘는 끝맺음을 말합니다.</p>
       <h2>${FY}년 음력 달 — 월별 흐름을 볼 때</h2>
       <p>토정비결의 달별 흐름은 음력 달로 봅니다. ${FY}년 음력 달이 양력으로 언제 시작하는지 정리했습니다.</p>
@@ -181,7 +181,7 @@ function gwaePage() {
     <h1 class="ga-title">토정비결 144괘 풀이 —<br>괘 번호로 읽는 한 해</h1>
     <p class="ga-meta">111괘부터 863괘까지 · 상괘 8 × 중괘 6 × 하괘 3</p>
     <p class="ga-lead">괘 번호 세 자리는 각각 상괘(백의 자리)·중괘(십의 자리)·하괘(일의 자리)입니다. 상괘는 한 해의 바탕, 중괘는 한 해가 펼쳐지는 모양, 하괘는 끝맺음을 말합니다. 번호표에서 내 괘를 찾고, 아래 풀이에서 세 부분을 이어 읽으면 됩니다.</p>
-    <div class="tj-box">아직 괘 번호를 모른다면 — <a href="${rel}tojeong/"><b>생년월일로 바로 뽑기 →</b></a> · <a href="${rel}tojeong/${FY}/">${FY}년 괘 찾기표</a></div>
+    <div class="tj-box">아직 괘 번호를 모른다면, <a href="${rel}tojeong/"><b>생년월일로 바로 뽑기 →</b></a> · <a href="${rel}tojeong/${FY}/">${FY}년 괘 찾기표</a></div>
     <div class="ga-body">
       <h2>144괘 번호표</h2>
       ${groups}

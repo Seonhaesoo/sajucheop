@@ -184,7 +184,7 @@
         var leapOn = $('#btn-leap').getAttribute('aria-pressed') === 'true';
         var conv = lunarToSolar(selY, selM, selD, leapOn);
         if (!conv) {
-          toast('해당 음력 날짜가 존재하지 않아요. 날짜를 확인해 주세요.');
+          toast('입력한 음력 날짜는 달력에 없어요. 날짜를 확인해 주세요.');
           return;
         }
         calInfo = { mode: 'lunar', ly: selY, lm: selM, ld: selD, leap: leapOn, sy: conv.y, sm: conv.m, sd: conv.d };
@@ -401,7 +401,7 @@
       list.push(snap);
       saveBookList(list);
       track('book_add', { count: list.length });
-      toast((snap.name ? snap.name + ' 님을' : '이 명식을') + ' 첩에 끼웠어요. 홈에서 오늘 흐름을 한눈에 봐요.');
+      toast((snap.name ? snap.name + ' 님을' : '이 명식을') + ' 첩에 끼웠어요. 홈에서 오늘 흐름을 한눈에 볼 수 있어요.');
     }
     renderBook();
     updateBookAddButton();
@@ -535,7 +535,7 @@
         var mIdx0 = Math.floor(n360(MI.solarLongitude(jd0) - 315) / 30);
         var mIdx1 = Math.floor(n360(MI.solarLongitude(jd0 + 1) - 315) / 30);
         if (mIdx0 !== mIdx1) {
-          notices.push('태어난 날은 절기가 바뀌는 날이에요. 출생 시각을 모르는 상태라, 실제 시각이 절기 전인지 후인지에 따라 월주가 달라질 수 있습니다.');
+          notices.push('태어난 날은 절기가 바뀌는 날이에요. 출생 시각을 몰라서, 실제 시각이 절기 전이었는지 후였는지에 따라 월주가 달라질 수 있어요.');
         }
       } catch (e) { /* 무시 */ }
     }
@@ -629,7 +629,7 @@
         '<p class="reading-body">' + baby.temper + '</p>' +
         '<div class="rp-kv"><span class="kv-label accent">양육</span><div class="kv-text">' + baby.care + '</div></div>' +
         '<div class="rp-kv"><span class="kv-label">이름</span><div class="kv-text">' + baby.nameHint + '</div></div>' +
-        '<p class="callout" style="margin-top: 14px;">아기의 건강과 발달에 관한 판단은 언제나 소아청소년과 의료진과 함께하세요. 이 풀이는 전통 명리 관점의 참고 정보입니다.</p>' +
+        '<p class="callout" style="margin-top: 14px;">아기의 건강과 발달은 언제나 소아청소년과 의료진과 상의해 판단하세요. 이 풀이는 전통 명리 관점의 참고 정보입니다.</p>' +
         '</div>';
     } else {
       $('#r-baby').innerHTML = '';
@@ -655,7 +655,7 @@
 
   function renderDaeun(r) {
     var list = r.daeun.list;
-    var who = state.name ? state.name + ' 님은' : '당신은';
+    var who = state.name ? state.name + ' 님은' : '이 사주는';
     var currentIdx = -1;
     list.forEach(function (dw, i) { if (dw.current) currentIdx = i; });
     var cur = currentIdx >= 0 ? list[currentIdx] : list[0];
@@ -808,7 +808,7 @@
     if (!inv) return;
     if (inv.persona) {
       $('#ib-title').textContent = '이번 주 궁합 상대 「' + inv.name + '」와 나는 몇 점?';
-      $('#invite-banner .ib-text span').textContent = '생일만 넣으면 점수와 궁합 풀이가 열려요 — 실제 인물이 아닌 이번 주의 캐릭터예요';
+      $('#invite-banner .ib-text span').textContent = '생일만 넣으면 점수와 궁합 풀이가 열려요. 실제 인물이 아닌, 이번 주의 캐릭터예요';
     } else {
       $('#ib-title').textContent = (inv.name ? inv.name + ' 님이' : '친구가') + ' 궁합을 청했어요';
       $('#invite-banner .ib-text span').textContent = '아래에 내 정보를 입력하면 두 사람의 궁합이 열립니다';
@@ -856,19 +856,19 @@
       stB.kor + stB.el + ' × ' + stA.kor + stA.el + ' 궁합 자세히 →</a>';
     $('#gh-sip').innerHTML =
       '<div class="fortune-row" style="padding: 12px 0 6px;"><span class="f-label" style="width: 52px;">상대는</span>' +
-      '<span class="f-text">나에게 <b>' + gh.sipseong.aboutA.name + '</b> — ' + gh.sipseong.aboutA.line + '</span></div>' +
+      '<span class="f-text">나에게 <b>' + gh.sipseong.aboutA.name + '</b>, ' + gh.sipseong.aboutA.line + '</span></div>' +
       '<div class="fortune-row" style="padding: 6px 0 0; border-top: 1px solid var(--line-soft);"><span class="f-label" style="width: 52px;">나는</span>' +
-      '<span class="f-text">상대에게 <b>' + gh.sipseong.aboutB.name + '</b> — ' + gh.sipseong.aboutB.line + '</span></div>';
+      '<span class="f-text">상대에게 <b>' + gh.sipseong.aboutB.name + '</b>, ' + gh.sipseong.aboutB.line + '</span></div>';
 
     $('#gh-branch-title').textContent = gh.branchRel.title;
     $('#gh-branch-body').textContent = gh.branchRel.body;
 
     var compLines = gh.complement.length
       ? gh.complement.join(' ')
-      : '서로의 빈 곳을 채우기보다, 닮은 균형을 나눠 가진 두 사람이에요.';
+      : '서로의 빈 곳을 채우는 사이라기보다 오행 균형이 닮은 두 사람입니다.';
     compLines += ' ' + (gh.yinyang
-      ? '음과 양이 만나 서로 다른 결이 하나로 완성됩니다.'
-      : '같은 극성끼리라 익숙하고 편안한 결입니다.');
+      ? '음과 양이 만나 서로 다른 결이 잘 어우러집니다.'
+      : '둘 다 음이거나 둘 다 양이라 익숙하고 편안한 사이입니다.');
     $('#gh-complement').innerHTML = compLines;
 
     state.gunghapPair = { a: partnerResult, b: myResult };
@@ -995,7 +995,7 @@
             '<span class="pd-main"><span class="pd-reason">' + g.kor + '일 · 두 사람 평균 ' + p.avg + '점' +
             (p.note ? ' — ' + p.note : '') + '</span>' +
             gcalLink(p.y, p.m, p.d, '둘 다 좋은 날 · ' + g.kor + '일',
-              '두 사람 평균 ' + p.avg + '점 — 사주첩 sajucheop.com', '+ 구글 캘린더') +
+              '두 사람 평균 ' + p.avg + '점 · 사주첩 sajucheop.com', '+ 구글 캘린더') +
             '</span></div>';
         }).join('')
       : '<p class="purpose-empty">앞으로 30일 안엔 둘 다 트이는 날이 드물어요. 다음 달에 다시 확인해 주세요.</p>';
@@ -1043,7 +1043,7 @@
     var url = location.origin + location.pathname + '#p=' + G.encodeProfile(payload);
     var sent = kakaoSend({
       title: (state.name ? state.name + '님이' : '누군가') + ' 궁합을 청했어요',
-      desc: '생일만 넣으면 10초 — 두 사람의 일간과 오행으로 보는 진짜 궁합.',
+      desc: '생일만 넣으면 10초. 두 사람의 일간과 오행으로 보는 진짜 궁합.',
       url: url,
       btn: '궁합 보러 가기'
     });
@@ -1081,7 +1081,7 @@
     track('gunghap_link');
     var payload = Object.assign({ name: state.name }, state.lastInput);
     var url = location.origin + location.pathname + '#p=' + G.encodeProfile(payload);
-    var text = (state.name ? state.name + ' — ' : '') + '우리 궁합 볼래? 생일만 넣으면 바로 나와.';
+    var text = (state.name ? state.name + ': ' : '') + '우리 궁합 볼래? 생일만 넣으면 바로 나와.';
     if (navigator.share) {
       navigator.share({ title: '사주첩 — 궁합', text: text, url: url }).catch(function () {});
     } else if (navigator.clipboard) {
@@ -1094,8 +1094,8 @@
   function shareGunghap() {
     var g = state.gunghap;
     if (!g) return;
-    var text = (g.myName || state.name || '나') + ' × ' + g.partnerName + ' 궁합 ' + g.score + '점 — ' +
-      g.tier + ' · 사주첩';
+    var text = (g.myName || state.name || '나') + ' × ' + g.partnerName + ' 궁합 ' + g.score + '점 「' +
+      g.tier + '」 · 사주첩';
     if (navigator.share) {
       var payload = { title: '사주첩 — 궁합 결과', text: text };
       if (state.gunghapUrl) payload.url = state.gunghapUrl;
@@ -1128,7 +1128,7 @@
       retCard.hidden = true;
       make.hidden = false;
       make.className = 'btn-primary';
-      make.textContent = '친구와 진짜 궁합 보기 — 내 링크 만들기';
+      make.textContent = '내 링크로 친구와 진짜 궁합 보기';
       mine.className = 'btn-outline';
       mine.textContent = '내 사주 전체 보기';
     } else {
@@ -1145,7 +1145,7 @@
   function returnBySms() {
     if (!state.gunghapUrl || !state.gunghap) return;
     track('gunghap_return_sms');
-    var body = '우리 궁합 ' + state.gunghap.score + '점 「' + state.gunghap.tier + '」 — 결과 바로 보기: ' + state.gunghapUrl;
+    var body = '우리 궁합 ' + state.gunghap.score + '점 「' + state.gunghap.tier + '」. 결과 바로 보기: ' + state.gunghapUrl;
     var sep = /iPhone|iPad|iPod/i.test(navigator.userAgent) ? '&' : '?';
     location.href = 'sms:' + sep + 'body=' + encodeURIComponent(body);
   }
@@ -1154,12 +1154,12 @@
     var g = state.gunghap;
     if (!g || !state.gunghapUrl) return;
     track('gunghap_return');
-    var text = '우리 궁합 결과 나왔어 — ' + g.score + '점 「' + g.tier + '」. 링크 열면 바로 보여!';
+    var text = '우리 궁합 결과 나왔어, ' + g.score + '점 「' + g.tier + '」. 링크 열면 바로 보여!';
     if (navigator.share) {
       navigator.share({ title: '사주첩 — 궁합 결과', text: text, url: state.gunghapUrl }).catch(function () {});
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(text + '\n' + state.gunghapUrl).then(function () {
-        toast('복사 완료! 카톡 대화방에 붙여넣기만 하면 끝 — 상대는 입력 없이 바로 봐요.');
+        toast('복사했어요. 카톡 대화방에 붙여넣기만 하면 돼요. 상대는 입력 없이 바로 볼 수 있어요.');
       });
     }
   }
@@ -1213,7 +1213,7 @@
     var list = loadGlog();
     sub.textContent = list.length
       ? '기록 ' + list.length + '명 · 1위 ' + list[0].name + ' ' + list[0].score + '점'
-      : '링크 하나 보내면 끝 — 10초면 나와요';
+      : '링크 하나 보내면 끝, 10초면 나와요';
   }
 
   function renderRanking() {
@@ -1222,7 +1222,7 @@
     var list = loadGlog();
     head.textContent = list.length ? '기록된 사람 ' + list.length + '명' : '아직 기록이 없어요';
     if (!list.length) {
-      wrap.innerHTML = '<p class="purpose-empty">아직 궁합 기록이 없어요. 친구에게 링크를 보내고 결과를 받으면 여기에 점수 순으로 쌓입니다.</p>';
+      wrap.innerHTML = '<p class="purpose-empty">아직 궁합 기록이 없어요. 친구에게 링크를 보내고 결과를 받으면 여기에 점수 순으로 쌓여요.</p>';
       return;
     }
     wrap.innerHTML = list.map(function (e, i) {
@@ -1289,11 +1289,11 @@
   var WK_FULL = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
   var WK_GROUP = { '비견': '비겁', '겁재': '비겁', '식신': '식상', '상관': '식상', '편재': '재성', '정재': '재성', '편관': '관성', '정관': '관성', '편인': '인성', '정인': '인성' };
   var WK_GROUP_LINE = {
-    '비겁': '내 힘으로 밀어붙이는 주 — 협업보다 주도, 남의 페이스보다 내 페이스가 맞습니다.',
-    '식상': '표현과 재능이 앞서는 주 — 말과 결과물로 승부하고, 만들고 내놓는 일에 운이 있어요.',
-    '재성': '돈과 실속이 도는 주 — 거래·계약·정산에 밝고, 씀씀이도 함께 커지니 계산은 두 번.',
-    '관성': '책임과 규율의 주 — 조직·서류·시험·공식 자리에 유리하고, 압박은 관리하면 됩니다.',
-    '인성': '배움과 정리의 주 — 공부·문서·어른의 도움이 잘 풀리고, 결정은 천천히 해도 좋아요.'
+    '비겁': '내 힘으로 밀어붙이는 주예요. 협업보다 주도, 남의 페이스보다 내 페이스가 맞아요.',
+    '식상': '표현과 재능이 앞서는 주예요. 말과 결과물로 승부하고, 만들고 내놓는 일에 운이 있어요.',
+    '재성': '돈과 실속이 도는 주예요. 거래·계약·정산에 밝고, 씀씀이도 함께 커지니 계산은 두 번 하세요.',
+    '관성': '책임과 규율의 주예요. 조직·서류·시험·공식 자리에 유리하고, 압박은 관리하면 돼요.',
+    '인성': '배움과 정리의 주예요. 공부·문서·어른의 도움이 잘 풀리고, 결정은 천천히 해도 좋아요.'
   };
   var WK_SIP_LINE = {
     '비견': '내 페이스대로 밀어붙이기 좋은 날', '겁재': '추진력은 오르지만 지출은 미루는 날',
@@ -1348,16 +1348,16 @@
       '<div class="wh-label">이번 주 흐름</div>' +
       '<div class="wh-main"><b>' + avg + '</b><span>점 평균 · ' + headline + '</span></div>' +
       '<div class="wh-sub">가장 트이는 날은 <b>' + WK_FULL[best.w] + '</b>(' + best.score + '점 · ' + best.sip + '), ' +
-      '쉬어갈 날은 <b>' + WK_FULL[care.w] + '</b>' + (care.rel === '충' ? ' — 충이 드는 날' : '(' + care.score + '점)') + '</div>';
+      '쉬어갈 날은 <b>' + WK_FULL[care.w] + '</b>' + (care.rel === '충' ? '(충이 드는 날)' : '(' + care.score + '점)') + '</div>';
 
     $('#wkr-summary').innerHTML =
-      '한 주의 결은 <b>' + dominant + '</b>이 이끕니다. ' + WK_GROUP_LINE[dominant] + ' ' +
+      '한 주의 흐름은 <b>' + dominant + '</b>이 이끌어요. ' + WK_GROUP_LINE[dominant] + ' ' +
       WK_FULL[best.w] + '에 ' + best.sip + josa(best.sip, '이', '가') + ' 들어 가장 밝으니 중요한 약속과 결정은 이날에, ' +
       (care.rel === '충'
-        ? WK_FULL[care.w] + '은 내 일지와 충이 드는 날이라 이동과 변경이 잦아요 — 서명과 큰 결정은 피하세요.'
+        ? WK_FULL[care.w] + '은 내 일지와 충이 드는 날이라 이동과 변경이 잦아요. 서명과 큰 결정은 피하세요.'
         : WK_FULL[care.w] + '은 흐름이 낮아 큰 결정을 미루는 편이 좋아요.') +
       (days.filter(function (d) { return d.rel === '육합' || d.rel === '삼합'; }).length
-        ? ' ' + days.filter(function (d) { return d.rel === '육합' || d.rel === '삼합'; }).map(function (d) { return WK_FULL[d.w]; }).join('·') + '엔 합이 들어 만남과 부탁이 순하게 풀립니다.'
+        ? ' ' + days.filter(function (d) { return d.rel === '육합' || d.rel === '삼합'; }).map(function (d) { return WK_FULL[d.w]; }).join('·') + '엔 합이 들어 만남과 부탁이 순하게 풀려요.'
         : '');
 
     $('#wkr-dominant').textContent = dominant + ' ' + counts[dominant] + '일 · 평균 ' + avg + '점';
@@ -1371,12 +1371,12 @@
 
     var sat = days[5], sun = days[6];
     var wkAvg = Math.round((sat.score + sun.score) / 2);
-    $('#wkr-weekend').textContent = '주말은 ' + (wkAvg >= 70 ? '흐름이 밝아요 — 미뤄둔 만남과 나들이에 좋습니다.' : wkAvg >= 55 ? '무난해요 — 쉬면서 다음 주를 준비하기 좋습니다.' : '조용히 쉬는 편이 좋아요 — 약속을 줄이고 체력을 아끼세요.') +
+    $('#wkr-weekend').textContent = '주말은 ' + (wkAvg >= 70 ? '흐름이 밝아요. 미뤄 둔 만남과 나들이에 좋아요.' : wkAvg >= 55 ? '무난해요. 쉬면서 다음 주를 준비하기 좋아요.' : '조용히 쉬는 편이 좋아요. 약속을 줄이고 체력을 아끼세요.') +
       ' 토요일 ' + sat.score + '점(' + sat.sip + '), 일요일 ' + sun.score + '점(' + sun.sip + ').';
     var nx = computeWeek(r, mon + 7);
     var nxAvg = Math.round(nx.reduce(function (s, d) { return s + d.score; }, 0) / 7);
     var nxBest = nx.reduce(function (a, b) { return b.score > a.score ? b : a; });
-    $('#wkr-next').textContent = '다음 주 미리보기 — ' + nx[0].m + '월 ' + nx[0].d + '일 월요일은 ' + nx[0].ganji + '일(' + nx[0].sip + ', ' + nx[0].score + '점). ' +
+    $('#wkr-next').textContent = '다음 주 미리보기: ' + nx[0].m + '월 ' + nx[0].d + '일 월요일은 ' + nx[0].ganji + '일(' + nx[0].sip + ', ' + nx[0].score + '점). ' +
       '평균 ' + nxAvg + '점으로 ' + (nxAvg > avg + 4 ? '이번 주보다 트입니다' : nxAvg < avg - 4 ? '이번 주보다 차분합니다' : '이번 주와 비슷합니다') + '. 가장 밝은 날은 ' + WK_FULL[nxBest.w] + '.';
 
     try { localStorage.setItem(WEEKLY_SEEN_KEY, weekKeyOf(t)); } catch (e) { /* 무시 */ }
@@ -1400,7 +1400,7 @@
     var w = state.weekly;
     if (!w) return;
     track('weekly_share');
-    var text = (state.name ? state.name + ' 님의 ' : '') + w.first.m + '월 ' + w.first.d + '일 주 운세 — ' + w.headline + ', 평균 ' + w.avg + '점. ' +
+    var text = (state.name ? state.name + ' 님의 ' : '') + w.first.m + '월 ' + w.first.d + '일 주 운세: ' + w.headline + ', 평균 ' + w.avg + '점. ' +
       '가장 트이는 날 ' + WK_FULL[w.best.w] + '(' + w.best.score + '점), 쉬어갈 날 ' + WK_FULL[w.care.w] + '. 사주첩 sajucheop.com';
     if (navigator.share) {
       navigator.share({ title: '사주첩 — 이번 주 운세', text: text }).catch(function () {});
@@ -1468,11 +1468,11 @@
     var sealed = window.Cinema && window.Cinema.isSealed(window.Cinema.key(c.input));
     if (sealed) {
       $('#ch-mini').innerHTML = window.Cinema.cardBackMini(36);
-      $('#ch-teaser-name').textContent = '나의 사주 캐릭터 — 아직 뒤집지 않은 카드';
+      $('#ch-teaser-name').textContent = '아직 뒤집지 않은 나의 사주 캐릭터 카드';
       $('#ch-teaser-sub').textContent = '눌러서 나를 닮은 캐릭터를 확인해 보세요';
     } else {
       $('#ch-mini').innerHTML = C.emblemSvg(c.han, 36, 'light');
-      $('#ch-teaser-name').textContent = '나의 사주 캐릭터 — ' + c.data.name;
+      $('#ch-teaser-name').textContent = '나의 사주 캐릭터는 ' + c.data.name;
       $('#ch-teaser-sub').textContent = c.data.metaphor + ' · ' + me.kor + me.el + ' · ' + c.strength;
     }
   }
@@ -1715,7 +1715,7 @@
         }
       }, 'image/png');
     }).catch(function () {
-      toast('이미지 생성에 실패했어요. 다시 시도해 주세요.');
+      toast('이미지를 만들지 못했어요. 다시 시도해 주세요.');
     });
   }
 
@@ -1766,7 +1766,7 @@
 
     /* 오늘의 운세 화면 */
     $('#t-date').textContent = t.m + '월 ' + t.d + '일 ' + WEEKDAYS[t.w];
-    $('#t-sub').textContent = '오늘의 일진은 ' + g.kor + '(' + g.han + ') — 내 일간 ' +
+    $('#t-sub').textContent = '오늘의 일진은 ' + g.kor + '(' + g.han + ')일, 내 일간 ' +
       me.kor + me.el + '에게 ' + info.stemSipseong +
       josa(info.stemSipseong, '이', '가') + ' 드는 날이에요.';
 
@@ -1860,7 +1860,7 @@
     $('#wk-range').textContent = '오늘부터 7일';
     $('#wk-note').textContent = '가장 트이는 날은 ' + (best.i === 0 ? '바로 오늘' : best.w + '요일') +
       '(' + best.score + '점), 한 템포 쉬어갈 날은 ' + (care.i === 0 ? '오늘' : care.w + '요일') +
-      (care.chung ? ' — 충이 드는 날이에요.' : '이에요.');
+      (care.chung ? '(충이 드는 날)이에요.' : '이에요.');
   }
 
   /* ---------- 내일 예고 ---------- */
@@ -1873,14 +1873,14 @@
     var info = M.todayInfo(r, cv.y, cv.m, cv.d);
     var g = M.ganjiName(info.pillar.stem, info.pillar.branch);
     var score = I.scoreDay(r, info);
-    title.textContent = '내일은 ' + g.kor + '(' + g.han + ')일 — 흐름 ' + score + '점';
+    title.textContent = '내일은 ' + g.kor + '(' + g.han + ')일 · 흐름 ' + score + '점';
     var relLine = info.relation === '충'
       ? ' 일지와 충이 드니, 중요한 결정은 오늘 마무리해 두는 게 좋아요.'
       : (info.relation === '육합' || info.relation === '삼합'
         ? ' 일지와 합이 들어 약속과 만남을 잡기 좋은 날이에요.'
         : '');
     $('#tmr-body').textContent = info.stemSipseong + josa(info.stemSipseong, '이', '가') +
-      ' 드는 날입니다.' + relLine;
+      ' 드는 날이에요.' + relLine;
   }
 
   /* ---------- 아침 알림 심기 (매일 반복 캘린더 일정) ---------- */
@@ -1910,7 +1910,7 @@
     var mode = deliverFile(blob, '사주첩-아침알림.ics', '사주첩 — 아침 알림', { download: true });
     track('morning_alarm', { mode: mode });
     if (mode === 'downloaded') {
-      toast('받은 파일을 누르면 매일 아침 8시 알림이 캘린더에 심어져요.');
+      toast('받은 파일을 누르면 매일 아침 8시 알림이 캘린더에 들어가요.');
     }
   }
 
@@ -1991,7 +1991,7 @@
       b.classList.toggle('selected', !!today && String(today.v) === b.getAttribute('data-jr'));
     });
     $('#jr-hint').textContent = today
-      ? '오늘 기록 완료 — 내일 밤에 또 만나요. (다시 누르면 취소)'
+      ? '오늘 기록을 마쳤어요. 내일 밤에 또 만나요. (다시 누르면 취소)'
       : '하루를 마치며, 오늘 흐름' + (state.todayFortune ? '(' + state.todayFortune.score + '점)' : '') +
         '이 실제 하루와 맞았는지 눌러보세요.';
     var s = journalStats();
@@ -2001,7 +2001,7 @@
         '<span class="jr-num"><b>' + s.n + '</b>일 기록</span>' +
         '<span class="jr-num">적중률 <b>' + s.rate + '%</b></span>' +
         (s.streak >= 2 ? '<span class="jr-num">연속 <b>' + s.streak + '</b>일</span>' : '') +
-        (s.best ? '<p class="jr-best">나에게 유난히 잘 맞는 날 — <b>' + s.best.sip + '</b> 드는 날 (' +
+        (s.best ? '<p class="jr-best">나에게 유난히 잘 맞는 날: <b>' + s.best.sip + '</b> 드는 날 (' +
           s.best.hit + '/' + s.best.n + ' 적중)</p>' : '') +
         (s.n >= 7 ? '<button type="button" class="btn-outline jr-share" id="btn-jr-share">내 적중률 공유하기</button>' : '');
       stats.hidden = false;
@@ -2036,7 +2036,7 @@
     var s = journalStats();
     if (!s.n) return;
     track('journal_share');
-    var text = '나는 운세를 믿는 대신 기록해봤다 — ' + s.n + '일 기록, 적중률 ' + s.rate + '% · 사주첩 sajucheop.com';
+    var text = '나는 운세를 믿는 대신 기록해 봤다. ' + s.n + '일 기록, 적중률 ' + s.rate + '% · 사주첩 sajucheop.com';
     if (navigator.share) {
       navigator.share({ title: '사주첩 — 적중 기록', text: text }).catch(function () {});
     } else if (navigator.clipboard) {
@@ -2085,7 +2085,7 @@
         if (purposeKey === 'move' && dd.son && dd.info.relation !== '충') {
           match = match
             ? { bonus: match.bonus + 8, reason: '손없는날 · ' + match.reason }
-            : { bonus: 8, reason: '손없는날 — 탈이 적다는 전통 이삿날' };
+            : { bonus: 8, reason: '손없는날, 탈이 적다는 전통 이삿날' };
         }
         return match ? { d: dd.d, score: dd.score + match.bonus, reason: match.reason, info: dd.info } : null;
       })
@@ -2143,19 +2143,19 @@
       var dd = days.filter(function (x) { return x.d === c.selected; })[0];
       if (dd) {
         var g = M.ganjiName(dd.info.pillar.stem, dd.info.pillar.branch);
-        var relNote = dd.info.relation === '충' ? ' · 일지와 충 — 큰 결정은 피하세요'
-          : (dd.info.relation === '육합' ? ' · 일지와 합 — 인연이 순조로워요' : '');
+        var relNote = dd.info.relation === '충' ? ' · 일지와 충이니 큰 결정은 피하세요'
+          : (dd.info.relation === '육합' ? ' · 일지와 합이라 인연이 순조로워요' : '');
         var evPrefix = dd.score >= 80 ? '○ 길일 · ' : (dd.info.relation === '충' ? '△ 충 주의 · ' : '');
         var lunLine = dd.lunar
           ? '<br><span class="cd-lunar">음력 ' + dd.lunar.month + '월 ' + dd.lunar.day + '일' +
-            (dd.son ? ' · <b>손없는날</b> — 이사·이전에 탈이 적다는 날' : '') + '</span>'
+            (dd.son ? ' · <b>손없는날</b>(이사·이전에 탈이 적다는 날)' : '') + '</span>'
           : '';
         detail.innerHTML = '<b>' + c.m + '월 ' + dd.d + '일 · ' + g.kor + '(' + g.han + ')일</b><br>' +
-          '흐름 ' + dd.score + '점 — ' + dd.info.stemSipseong +
+          '흐름 ' + dd.score + '점, ' + dd.info.stemSipseong +
           josa(dd.info.stemSipseong, '이', '가') + ' 드는 날' + relNote + lunLine + '<br>' +
           gcalLink(c.y, c.m, dd.d, evPrefix + g.kor + '일 · 흐름 ' + dd.score + '점',
             dd.info.stemSipseong + josa(dd.info.stemSipseong, '이', '가') + ' 드는 날' +
-            (dd.son ? ' · 손없는날' : '') + ' — 사주첩 sajucheop.com');
+            (dd.son ? ' · 손없는날' : '') + ' · 사주첩 sajucheop.com');
         detail.hidden = false;
       }
     } else {
@@ -2185,9 +2185,9 @@
             var dow = ['일', '월', '화', '수', '목', '금', '토'][new Date(c.y, c.m - 1, p.d).getDay()];
             return '<div class="purpose-day-row">' +
               '<span class="pd-date">' + c.m + '월 ' + p.d + '일 (' + dow + ')</span>' +
-              '<span class="pd-main"><span class="pd-reason">' + g.kor + '일 — ' + p.reason + '</span>' +
+              '<span class="pd-main"><span class="pd-reason">' + g.kor + '일 · ' + p.reason + '</span>' +
               gcalLink(c.y, c.m, p.d, pDef.label + ' 좋은 날 · ' + g.kor + '일',
-                p.reason + ' — 사주첩 sajucheop.com', '+ 구글 캘린더') +
+                p.reason + ' · 사주첩 sajucheop.com', '+ 구글 캘린더') +
               '</span></div>';
           }).join('')
         : '<p class="purpose-empty">이번 달 남은 날 중엔 꼭 맞는 날이 없어요. 다음 달을 봐주세요.</p>';
@@ -2233,7 +2233,7 @@
       return 'shared';
     }
     if (isInAppBrowser()) {
-      toast('인스타·카톡 안 브라우저에서는 저장이 막혀요. 오른쪽 위 ⋯ 메뉴 → 외부 브라우저로 열기 후 다시 시도해 주세요.');
+      toast('인스타·카톡 안 브라우저에서는 저장이 막혀요. 오른쪽 위 ⋯ 메뉴 → 외부 브라우저로 열기를 누른 뒤 다시 시도해 주세요.');
       return 'blocked';
     }
     var url = URL.createObjectURL(blob);
@@ -2357,7 +2357,7 @@
       var desc = (isGood
         ? d.info.stemSipseong + josa(d.info.stemSipseong, '이', '가') + ' 드는 날.'
         : '내 일지와 충(沖)이 드는 날. 중요한 결정과 서명은 미루는 게 좋아요.') +
-        ' 오늘의 흐름 ' + d.score + '점 — 자세히 보기 https://sajucheop.com';
+        ' 오늘의 흐름 ' + d.score + '점. 자세히 보기 https://sajucheop.com';
       lines.push(
         'BEGIN:VEVENT',
         'UID:sjsj-' + d.cv.y + pad(d.cv.m) + pad(d.cv.d) + '@sajucheop',
@@ -2386,7 +2386,7 @@
       var help = $('#ics-help');
       if (mode === 'downloaded') {
         toast(isMobileUA()
-          ? ics.count + '개 일정 파일을 받았어요. 다운로드된 파일을 누르면 캘린더가 열립니다.'
+          ? ics.count + '개 일정 파일을 받았어요. 내려받은 파일을 누르면 캘린더가 열려요.'
           : '30일치 ' + ics.count + '개 일정을 파일로 받았어요. 캘린더에 넣는 법은 아래 안내를 보세요.');
       }
       if (help && mode !== 'shared') help.open = true;
@@ -2400,8 +2400,8 @@
     var f = state.todayFortune, t = state.todayDate, info = state.todayInfo;
     if (!f) return;
     var g = M.ganjiName(info.pillar.stem, info.pillar.branch);
-    var text = t.m + '월 ' + t.d + '일 오늘의 운세 — ' + g.kor + '일 · 흐름 ' + f.score + '점(' +
-      f.weather + ') · ' + f.theme.title + ' — 사주첩';
+    var text = t.m + '월 ' + t.d + '일 오늘의 운세: ' + g.kor + '일 · 흐름 ' + f.score + '점(' +
+      f.weather + ') · ' + f.theme.title + ' · 사주첩';
     if (navigator.share) {
       navigator.share({ title: '사주첩 — 오늘의 운세', text: text }).catch(function () {});
     } else if (navigator.clipboard) {
@@ -2485,7 +2485,7 @@
         if (mode === 'downloaded') toast('오늘 카드를 저장했어요. 스토리에 올려보세요.');
       }, 'image/png');
     }).catch(function () {
-      toast('이미지 생성에 실패했어요. 다시 시도해 주세요.');
+      toast('이미지를 만들지 못했어요. 다시 시도해 주세요.');
     });
   }
 
@@ -2686,7 +2686,7 @@
         if (mode === 'downloaded') toast('명식 이미지를 저장했어요.');
       }, 'image/png');
     }).catch(function () {
-      toast('이미지 생성에 실패했어요. 다시 시도해 주세요.');
+      toast('이미지를 만들지 못했어요. 다시 시도해 주세요.');
     });
   }
 
@@ -2793,7 +2793,7 @@
         $('#tg-results').innerHTML = '';
         $('#tg-intro-text').innerHTML = wedding
           ? '두 사람 모두에게 좋은 기운이 드는 날을 찾아드립니다. 각자의 일간에 드는 <b>십성</b>과 일지의 <b>합·충</b>을 함께 채점하고, 어느 한쪽에 충이 드는 날은 후보에서 뺍니다.'
-          : '병원과 조율할 수 있는 범위 안에서, 아기가 <b>균형 잡힌 명식</b>을 갖는 날과 시간대를 찾아드립니다.';
+          : '병원과 조율할 수 있는 범위 안에서, 아기가 <b>균형 잡힌 명식</b>으로 태어나는 날과 시간대를 찾아드립니다.';
       });
     });
   }
@@ -2855,10 +2855,10 @@
             (c.reasons.length ? '<div class="pill-row" style="margin-top: 10px;">' +
               c.reasons.map(function (rs) { return '<span class="pill">' + rs + '</span>'; }).join('') + '</div>' : '') +
             '<div>' + gcalLink(c.y, c.m, c.d, '결혼 택일 후보 · ' + g.kor + '일',
-              '두 사람 평균 ' + c.score + '점 — 사주첩 sajucheop.com') + '</div>' +
+              '두 사람 평균 ' + c.score + '점 · 사주첩 sajucheop.com') + '</div>' +
             '</div>';
         }).join('') : '<p class="purpose-empty" style="margin: 20px;">조건에 맞는 날이 없어요. 기간을 넓히거나 주말만 보기를 꺼보세요.</p>') +
-        '<p class="form-microcopy" style="margin: 16px 20px 0;">후보 중 어느 한쪽 일지와 충이 드는 날 ' + excluded + '일은 제외했어요. 점수는 참고용 지수입니다.</p>';
+        '<p class="form-microcopy" style="margin: 16px 20px 0;">후보 중 어느 한쪽 일지와 충이 드는 날 ' + excluded + '일은 제외했어요. 점수는 참고용 지수예요.</p>';
       } catch (e) {
         toast('계산 중 문제가 생겼어요. 다시 시도해 주세요.');
         if (window.console) console.error(e);
@@ -2897,16 +2897,16 @@
             '<div class="pill-row" style="margin-top: 10px;">' +
             c.reasons.slice(0, 3).map(function (rs) { return '<span class="pill">' + rs + '</span>'; }).join('') +
             '</div>' +
-            (c.cautions.length ? '<div class="tg-caution">유의 — ' + c.cautions.join(' · ') + '</div>' : '') +
+            (c.cautions.length ? '<div class="tg-caution">유의: ' + c.cautions.join(' · ') + '</div>' : '') +
             '<div class="tg-hours">' + hours + '</div>' +
             '<div>' + gcalLink(c.y, c.m, c.d, '출산 택일 후보 · ' + g.kor + '일',
-              c.reasons.slice(0, 2).join(' · ') + ' — 사주첩 sajucheop.com') + '</div>' +
+              c.reasons.slice(0, 2).join(' · ') + ' · 사주첩 sajucheop.com') + '</div>' +
             '<button type="button" class="btn-outline tg-preview" style="height: 44px; margin-top: 12px; font-size: 13.5px;" ' +
             'data-y="' + c.y + '" data-m="' + c.m + '" data-d="' + c.d + '" data-h="' + c.bestHours[0].repHour + '">' +
             '이 날짜·시간의 아기 사주 미리 보기</button>' +
             '</div>';
         }).join('') +
-        '<p class="form-microcopy" style="margin: 16px 20px 0;">점수는 오행 균형·충 유무·강약 등을 지수화한 참고 값입니다. 후보 ' + list.length + '일 중 상위 5일을 보여드려요.</p>';
+        '<p class="form-microcopy" style="margin: 16px 20px 0;">점수는 오행 균형·충 유무·강약 등을 지수화한 참고 값이에요. 후보 ' + list.length + '일 중 상위 5일을 보여드려요.</p>';
 
         $('#tg-results').querySelectorAll('.tg-preview').forEach(function (btn) {
           btn.addEventListener('click', function () {
@@ -2989,7 +2989,7 @@
         '<p class="rp-line">' + baby.temper + '</p>' +
         '<div class="rp-kv"><span class="kv-label accent">양육</span><div class="kv-text">' + baby.care + '</div></div>' +
         '<div class="rp-kv"><span class="kv-label">이름</span><div class="kv-text">' + baby.nameHint + '</div></div>' +
-        '<p class="rp-line" style="color: #9A8F7E;">아기의 건강·발달 판단은 언제나 소아청소년과 의료진과 함께하세요.</p></div>';
+        '<p class="rp-line" style="color: #9A8F7E;">아기의 건강·발달은 언제나 소아청소년과 의료진과 상의해 판단하세요.</p></div>';
     }
 
     var basisNotes = [
@@ -3087,7 +3087,7 @@
     };
     img.onerror = function () {
       URL.revokeObjectURL(url);
-      toast('이미지 저장에 실패했어요. 다시 시도해 주세요.');
+      toast('이미지를 저장하지 못했어요. 다시 시도해 주세요.');
     };
     img.src = url;
   }
@@ -3098,7 +3098,7 @@
     var r = state.result;
     if (!r) return;
     var p = r.pillars;
-    var text = (state.name ? state.name + ' 님의' : '나의') + ' 사주 — ' +
+    var text = (state.name ? state.name + ' 님의' : '나의') + ' 사주: ' +
       M.ganjiName(p.year.stem, p.year.branch).kor + '년 ' +
       M.ganjiName(p.month.stem, p.month.branch).kor + '월 ' +
       M.ganjiName(p.day.stem, p.day.branch).kor + '일' +

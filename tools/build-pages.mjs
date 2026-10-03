@@ -21,45 +21,45 @@ const iso = (y, m, d) => `${y}-${pad(m)}-${pad(d)}`;
 
 /* ---------- 절기 24 (황경 15° 간격, idx = 황경/15) ---------- */
 const TERMS = [
-  { i: 0, name: '춘분', han: '春分', slug: 'chunbun', kind: '중기', approx: [3, 20], desc: '낮과 밤의 길이가 같아지는 날. 이 날을 지나면 낮이 길어지기 시작해 봄이 완연해집니다.', tip: '균형의 절기입니다. 한쪽으로 기운 생활 리듬을 되돌리기 좋은 때예요.' },
-  { i: 1, name: '청명', han: '淸明', slug: 'cheongmyeong', kind: '절', month: 4, approx: [4, 5], desc: '하늘이 맑고 밝아진다는 뜻. 농사가 시작되고 성묘·나들이가 많은 절기입니다.', tip: '진월(辰月)이 열립니다. 새로 심는 일, 땅과 관련한 일을 시작하기에 좋은 달의 문턱이에요.' },
-  { i: 2, name: '곡우', han: '穀雨', slug: 'gogu', kind: '중기', approx: [4, 20], desc: '곡식을 살찌우는 비가 내린다는 절기. 봄의 마지막 중기입니다.', tip: '뿌린 것에 물을 주는 시기 — 시작한 일을 꾸준히 돌보는 데 마음을 두세요.' },
-  { i: 3, name: '입하', han: '立夏', slug: 'ipha', kind: '절', month: 5, approx: [5, 5], desc: '여름이 시작되는 날. 사주에서는 이 시각부터 사월(巳月)로 넘어갑니다.', tip: '불의 계절이 열립니다. 화(火) 일간은 기운이 오르고, 금(金) 일간은 더위를 대비할 때예요.' },
-  { i: 4, name: '소만', han: '小滿', slug: 'soman', kind: '중기', approx: [5, 21], desc: '만물이 점차 생장하여 가득 차기 시작한다는 뜻. 보리가 익어가는 절기입니다.', tip: '아직 완전히 차지는 않은 때 — 성급한 수확보다 기다림이 어울립니다.' },
+  { i: 0, name: '춘분', han: '春分', slug: 'chunbun', kind: '중기', approx: [3, 20], desc: '낮과 밤의 길이가 같아지는 날. 이 날을 지나면 낮이 길어지기 시작해 봄이 완연해집니다.', tip: '균형의 절기입니다. 한쪽으로 기운 생활 리듬을 되돌리기 좋은 때입니다.' },
+  { i: 1, name: '청명', han: '淸明', slug: 'cheongmyeong', kind: '절', month: 4, approx: [4, 5], desc: '하늘이 맑고 밝아진다는 뜻. 농사가 시작되고 성묘·나들이가 많은 절기입니다.', tip: '진월(辰月)이 열립니다. 새로 심는 일, 땅과 관련한 일을 시작하기에 좋은 달의 문턱입니다.' },
+  { i: 2, name: '곡우', han: '穀雨', slug: 'gogu', kind: '중기', approx: [4, 20], desc: '곡식을 살찌우는 비가 내린다는 절기. 봄의 마지막 중기입니다.', tip: '뿌린 것에 물을 주는 시기입니다. 시작한 일을 꾸준히 돌보는 데 마음을 두세요.' },
+  { i: 3, name: '입하', han: '立夏', slug: 'ipha', kind: '절', month: 5, approx: [5, 5], desc: '여름이 시작되는 날. 사주에서는 이 시각부터 사월(巳月)로 넘어갑니다.', tip: '불의 계절이 열립니다. 화(火) 일간은 기운이 오르고, 금(金) 일간은 더위를 대비할 때입니다.' },
+  { i: 4, name: '소만', han: '小滿', slug: 'soman', kind: '중기', approx: [5, 21], desc: '만물이 점차 생장하여 가득 차기 시작한다는 뜻. 보리가 익어가는 절기입니다.', tip: '아직 다 차지 않은 때라 서둘러 거두기보다 기다리는 편이 어울립니다.' },
   { i: 5, name: '망종', han: '芒種', slug: 'mangjong', kind: '절', month: 6, approx: [6, 6], desc: '까끄라기 있는 곡식의 씨를 뿌린다는 절기. 사주의 오월(午月)이 이 시각에 시작됩니다.', tip: '한 해 중 양(陽)의 기운이 가장 강한 달의 문턱. 결단과 추진에 힘이 실립니다.' },
-  { i: 6, name: '하지', han: '夏至', slug: 'haji', kind: '중기', approx: [6, 21], desc: '일 년 중 낮이 가장 긴 날. 이 날부터 밤이 조금씩 길어집니다.', tip: '정점은 곧 전환점 — 가장 밝을 때 다음 계절을 준비하는 지혜가 필요해요.' },
-  { i: 7, name: '소서', han: '小暑', slug: 'soseo', kind: '절', month: 7, approx: [7, 7], desc: '본격적인 더위가 시작되는 절기. 사주에서는 미월(未月)이 열리는 시각입니다.', tip: '토(土)의 달로 들어섭니다. 열기를 품은 흙처럼, 쌓아둔 것을 숙성시키는 달이에요.' },
-  { i: 8, name: '대서', han: '大暑', slug: 'daeseo', kind: '중기', approx: [7, 23], desc: '일 년 중 가장 더운 절기. 장마가 끝나고 무더위가 절정에 이릅니다.', tip: '무리하지 않는 것이 실력인 때. 체력 안배가 곧 운입니다.' },
+  { i: 6, name: '하지', han: '夏至', slug: 'haji', kind: '중기', approx: [6, 21], desc: '일 년 중 낮이 가장 긴 날. 이 날부터 밤이 조금씩 길어집니다.', tip: '정점이 곧 전환점입니다. 가장 밝을 때 다음 계절을 준비해 두세요.' },
+  { i: 7, name: '소서', han: '小暑', slug: 'soseo', kind: '절', month: 7, approx: [7, 7], desc: '본격적인 더위가 시작되는 절기. 사주에서는 미월(未月)이 열리는 시각입니다.', tip: '토(土)의 달로 들어섭니다. 열기를 품은 흙처럼, 쌓아 둔 것을 숙성시키는 달입니다.' },
+  { i: 8, name: '대서', han: '大暑', slug: 'daeseo', kind: '중기', approx: [7, 23], desc: '일 년 중 가장 더운 절기. 장마가 끝나고 무더위가 절정에 이릅니다.', tip: '무리하지 않는 게 실력인 때입니다. 체력을 잘 나눠 쓰면 운도 따라옵니다.' },
   { i: 9, name: '입추', han: '立秋', slug: 'ipchu', kind: '절', month: 8, approx: [8, 7], desc: '가을이 시작되는 날. 더위 속에서도 사주의 계절은 이 시각부터 신월(申月), 금(金)의 계절로 바뀝니다.', tip: '금(金) 일간은 힘을 얻고, 목(木) 일간은 결실을 다듬을 때. 정리와 마무리가 어울리는 달의 문턱이에요.' },
-  { i: 10, name: '처서', han: '處暑', slug: 'cheoseo', kind: '중기', approx: [8, 23], desc: '더위가 물러간다는 뜻. 아침저녁으로 선선한 바람이 불기 시작합니다.', tip: '식히는 절기 — 달아올랐던 일과 관계를 한 김 식혀 보세요.' },
+  { i: 10, name: '처서', han: '處暑', slug: 'cheoseo', kind: '중기', approx: [8, 23], desc: '더위가 물러간다는 뜻. 아침저녁으로 선선한 바람이 불기 시작합니다.', tip: '식히는 절기입니다. 달아올랐던 일과 관계를 한 김 식혀 보세요.' },
   { i: 11, name: '백로', han: '白露', slug: 'baekro', kind: '절', month: 9, approx: [9, 8], desc: '흰 이슬이 맺힌다는 절기. 사주에서는 유월(酉月)이 시작되는 시각입니다.', tip: '가장 예리한 금(金)의 달. 판단이 선명해지는 대신 말이 날카로워지기 쉬워요.' },
   { i: 12, name: '추분', han: '秋分', slug: 'chubun', kind: '중기', approx: [9, 23], desc: '낮과 밤의 길이가 다시 같아지는 날. 이 날을 지나면 밤이 길어집니다.', tip: '거두는 균형의 절기. 반년의 결산을 해보기 좋은 때입니다.' },
-  { i: 13, name: '한로', han: '寒露', slug: 'hanro', kind: '절', month: 10, approx: [10, 8], desc: '찬 이슬이 맺히는 절기. 사주의 술월(戌月)이 이 시각에 열립니다.', tip: '가을의 토(土) — 창고를 채우는 달. 모으고 갈무리하는 일에 힘이 붙어요.' },
-  { i: 14, name: '상강', han: '霜降', slug: 'sanggang', kind: '중기', approx: [10, 23], desc: '서리가 내리기 시작하는 절기. 가을의 마지막 중기입니다.', tip: '마지막 수확의 때 — 미뤄둔 결정을 서리 내리기 전에 끝내세요.' },
+  { i: 13, name: '한로', han: '寒露', slug: 'hanro', kind: '절', month: 10, approx: [10, 8], desc: '찬 이슬이 맺히는 절기. 사주의 술월(戌月)이 이 시각에 열립니다.', tip: '가을의 흙, 토(土)가 창고를 채우는 달입니다. 모으고 갈무리하는 일에 힘이 붙습니다.' },
+  { i: 14, name: '상강', han: '霜降', slug: 'sanggang', kind: '중기', approx: [10, 23], desc: '서리가 내리기 시작하는 절기. 가을의 마지막 중기입니다.', tip: '마지막으로 거두는 때입니다. 미뤄 둔 결정은 서리가 내리기 전에 끝내세요.' },
   { i: 15, name: '입동', han: '立冬', slug: 'ipdong', kind: '절', month: 11, approx: [11, 7], desc: '겨울이 시작되는 날. 사주에서는 해월(亥月), 수(水)의 계절이 이 시각부터 시작됩니다.', tip: '수(水) 일간은 기운이 오르고, 화(火) 일간은 불씨를 지킬 때. 안으로 모으는 계절의 문턱이에요.' },
   { i: 16, name: '소설', han: '小雪', slug: 'soseol', kind: '중기', approx: [11, 22], desc: '첫눈이 내린다는 절기. 땅이 얼기 시작하고 겨울 채비를 하는 때입니다.', tip: '겉으로 드러나는 일보다 안살림을 살피는 절기입니다.' },
   { i: 17, name: '대설', han: '大雪', slug: 'daeseol', kind: '절', month: 12, approx: [12, 7], desc: '큰 눈이 내린다는 절기. 사주의 자월(子月)이 이 시각에 열립니다.', tip: '한 해 중 음(陰)이 가장 깊은 달의 문턱. 생각이 깊어지고 결정은 신중해집니다.' },
-  { i: 18, name: '동지', han: '冬至', slug: 'dongji', kind: '중기', approx: [12, 22], desc: '일 년 중 밤이 가장 긴 날. 팥죽을 먹고 이 날부터 낮이 다시 길어집니다.', tip: '가장 어두운 날이 곧 빛이 돌아오는 날 — 새 계획의 씨앗을 심기 좋은 때예요.' },
+  { i: 18, name: '동지', han: '冬至', slug: 'dongji', kind: '중기', approx: [12, 22], desc: '일 년 중 밤이 가장 긴 날. 팥죽을 먹는 날이고, 이 날부터 낮이 다시 길어집니다.', tip: '가장 어두운 날이 곧 빛이 돌아오는 날이에요. 새 계획의 씨앗을 심기 좋은 때예요.' },
   { i: 19, name: '소한', han: '小寒', slug: 'sohan', kind: '절', month: 1, approx: [1, 5], desc: '작은 추위라는 이름과 달리 한 해 중 가장 추운 무렵. 사주의 축월(丑月)이 이 시각에 시작됩니다.', tip: '얼어붙은 흙의 달. 움직임보다 다짐이 어울리고, 준비한 사람이 봄에 앞서갑니다.' },
-  { i: 20, name: '대한', han: '大寒', slug: 'daehan', kind: '중기', approx: [1, 20], desc: '24절기의 마지막. 큰 추위라는 뜻이지만 봄이 멀지 않았다는 신호이기도 합니다.', tip: '한 해의 마지막 중기 — 사주의 새해(입춘)를 앞두고 묵은 것을 정리하세요.' },
+  { i: 20, name: '대한', han: '大寒', slug: 'daehan', kind: '중기', approx: [1, 20], desc: '24절기의 마지막. 큰 추위라는 뜻이지만 봄이 멀지 않았다는 신호이기도 합니다.', tip: '한 해의 마지막 중기입니다. 사주의 새해(입춘)를 앞두고 묵은 것을 정리하세요.' },
   { i: 21, name: '입춘', han: '立春', slug: 'ipchun', kind: '절', month: 2, approx: [2, 4], desc: '봄이 시작되는 날이자 사주의 새해. 이 시각부터 년주(年柱)와 월주(月柱)가 함께 바뀝니다. 띠가 바뀌는 기준도 설날이 아니라 입춘입니다.', tip: '입춘 전에 태어났다면 사주에서는 전년도 띠와 년주로 계산됩니다. 1월생·2월 초 출생자는 꼭 확인하세요.' },
-  { i: 22, name: '우수', han: '雨水', slug: 'usu', kind: '중기', approx: [2, 19], desc: '눈이 비로 바뀌고 얼음이 녹기 시작하는 절기입니다.', tip: '풀리는 절기 — 얼어 있던 관계와 계획도 이때 녹기 시작합니다.' },
+  { i: 22, name: '우수', han: '雨水', slug: 'usu', kind: '중기', approx: [2, 19], desc: '눈이 비로 바뀌고 얼음이 녹기 시작하는 절기입니다.', tip: '풀리는 절기입니다. 얼어 있던 관계와 계획도 이때 녹기 시작합니다.' },
   { i: 23, name: '경칩', han: '驚蟄', slug: 'gyeongchip', kind: '절', month: 3, approx: [3, 5], desc: '겨울잠 자던 벌레가 깨어나는 절기. 사주의 묘월(卯月)이 이 시각에 열립니다.', tip: '목(木)의 기운이 가장 부드럽게 퍼지는 달. 시작한 것을 키우기 좋은 문턱이에요.' }
 ];
 const MONTH_BRANCH = { 2: '寅', 3: '卯', 4: '辰', 5: '巳', 6: '午', 7: '未', 8: '申', 9: '酉', 10: '戌', 11: '亥', 12: '子', 1: '丑' };
 
 /* ---------- 오늘 천간이 각 일간에게 드는 십성 → 한 줄 ---------- */
 const SIP_LINE = {
-  '비견': '닮은 기운이 드는 날 — 내 페이스대로 밀어붙이기 좋아요. 고집만 한 뼘 줄이면 됩니다.',
-  '겁재': '경쟁의 기운 — 추진력은 오르지만 돈과 약속은 나눠 갖게 되기 쉬워요. 큰 지출은 미루세요.',
-  '식신': '표현과 여유의 날 — 말과 손에서 좋은 것이 나옵니다. 맛있는 것, 만드는 것에 운이 있어요.',
-  '상관': '번뜩이는 날 — 아이디어와 말이 앞섭니다. 윗사람 앞에선 한 박자 늦게 말하세요.',
-  '편재': '판이 커지는 날 — 기회와 씀씀이가 함께 옵니다. 즐기되 계산은 두 번.',
-  '정재': '실속의 날 — 숫자와 계획이 맞아떨어집니다. 미뤄둔 정산과 정리를 끝내기 좋아요.',
-  '편관': '압박이 드는 날 — 할 일이 몰리고 시험대에 서기 쉬워요. 단단히, 그러나 무리 없이.',
-  '정관': '틀이 잡히는 날 — 책임과 규칙이 힘이 됩니다. 공식적인 자리와 문서에 유리해요.',
-  '편인': '생각이 깊어지는 날 — 공부와 연구, 혼자만의 시간이 값져요. 결정은 내일로.',
-  '정인': '기댈 곳이 생기는 날 — 배우고 정리하고 문서를 챙기기 좋아요. 어른의 조언이 답입니다.'
+  '비견': '닮은 기운이 드는 날이라 내 속도대로 밀어붙이기 좋아요. 고집만 한 뼘 줄이면 돼요.',
+  '겁재': '경쟁의 기운이 드는 날이에요. 추진력은 오르지만 돈과 약속은 남과 나눠 갖기 쉬워요. 큰 지출은 미루세요.',
+  '식신': '표현과 여유의 날이에요. 말과 손에서 좋은 것이 나와요. 맛있는 것, 만드는 것에 운이 있어요.',
+  '상관': '번뜩이는 날이라 아이디어와 말이 앞서요. 윗사람 앞에선 한 박자 늦게 말하세요.',
+  '편재': '판이 커지는 날이라 기회와 씀씀이가 함께 와요. 즐기되 계산은 두 번 하세요.',
+  '정재': '실속을 챙기는 날이에요. 숫자와 계획이 맞아떨어지니 미뤄 둔 정산과 정리를 끝내기 좋아요.',
+  '편관': '압박이 드는 날이라 할 일이 몰리고 시험대에 서기 쉬워요. 단단히 버티되 무리하지는 마세요.',
+  '정관': '틀이 잡히는 날이라 책임과 규칙이 힘이 돼요. 공식적인 자리와 문서에 유리해요.',
+  '편인': '생각이 깊어지는 날이라 공부와 연구, 혼자만의 시간이 값져요. 결정은 내일로 미루세요.',
+  '정인': '기댈 곳이 생기는 날이라 배우고 정리하고 문서를 챙기기 좋아요. 어른의 조언을 들어 보세요.'
 };
 const STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
 const STEM_CHUNG = { 0: 6, 6: 0, 1: 7, 7: 1, 2: 8, 8: 2, 3: 9, 9: 3 };
@@ -168,7 +168,7 @@ function buildDay(info) {
   const lunTxt = info.lun ? `음력 ${info.lun.leap ? '윤' : ''}${info.lun.m}월 ${info.lun.d}일` : '';
   const sonTxt = info.lun ? (info.lun.son ? '손없는날' : '손없는날 아님') : '';
   const title = `${y}년 ${m}월 ${d}일 일진 — ${info.g.kor}(${info.g.han})일${info.lun && info.lun.son ? ' · 손없는날' : ''}`;
-  const desc = `${y}년 ${m}월 ${d}일 ${WD[info.w]}의 일진은 ${info.g.kor}(${info.g.han})일. ${lunTxt}${sonTxt ? ', ' + sonTxt : ''}. ${st.kor}${st.el}의 기운이 흐르는 날 — 열 가지 일간별 오늘의 흐름과 합·충, 절기까지.`;
+  const desc = `${y}년 ${m}월 ${d}일 ${WD[info.w]}의 일진은 ${info.g.kor}(${info.g.han})일. ${lunTxt}${sonTxt ? ', ' + sonTxt : ''}. ${st.kor}${st.el}의 기운이 흐르는 날입니다. 열 가지 일간별 오늘의 흐름과 합·충, 절기까지 담았습니다.`;
 
   /* 십성 10줄 */
   const rows = M.STEMS.map((s, i) => {
@@ -181,12 +181,12 @@ function buildDay(info) {
   /* 일지 관계 */
   const chungB = M.BRANCHES.map((b, i) => i).filter((i) => M.branchRelation(info.branch, i) === '충').map((i) => M.BRANCHES[i]);
   const hapB = M.BRANCHES.map((b, i) => i).filter((i) => M.branchRelation(info.branch, i) === '육합').map((i) => M.BRANCHES[i]);
-  const branchNote = josa(`일지(태어난 날의 지지)가 <b>${chungB.map((b) => b.kor + '(' + b.han + ')').join('·')}</b>인 분은 오늘 ${br.kor}(${br.han})와 충(沖)이 듭니다 — 이동과 계획 변경이 잦은 날이니 중요한 서명은 미루세요. 반대로 일지가 <b>${hapB.map((b) => b.kor + '(' + b.han + ')').join('·')}</b>인 분은 합(合)이 드는 날, 만남과 부탁이 순하게 풀립니다.`);
+  const branchNote = josa(`일지(태어난 날의 지지)가 <b>${chungB.map((b) => b.kor + '(' + b.han + ')').join('·')}</b>인 분은 오늘 ${br.kor}(${br.han})와 충(沖)이 듭니다. 이동과 계획 변경이 잦은 날이니 중요한 서명은 미루세요. 반대로 일지가 <b>${hapB.map((b) => b.kor + '(' + b.han + ')').join('·')}</b>인 분은 합(合)이 드는 날이라 만남과 부탁이 순하게 풀립니다.`);
 
   /* 절기 */
   let termHtml;
   if (info.terms.length) {
-    termHtml = info.terms.map((t) => `오늘 <b>${pad(t.hh)}:${pad(t.mm)}</b>에 <a href="${rel}jeolgi/${t.y}/${t.slug}/">${t.name}(${t.han})</a> 절기가 듭니다${t.kind === '절' ? ` — 이 시각부터 월주가 ${MONTH_BRANCH[t.month]}월로 바뀝니다${t.slug === 'ipchun' ? ' (년주도 함께 바뀌는 사주의 새해)' : ''}` : ''}.`).join(' ');
+    termHtml = info.terms.map((t) => `오늘 <b>${pad(t.hh)}:${pad(t.mm)}</b>에 <a href="${rel}jeolgi/${t.y}/${t.slug}/">${t.name}(${t.han})</a> 절기가 듭니다${t.kind === '절' ? `. 이 시각부터 월주가 ${MONTH_BRANCH[t.month]}월로 바뀝니다${t.slug === 'ipchun' ? ' (년주도 함께 바뀌는 사주의 새해)' : ''}` : ''}.`).join(' ');
   } else {
     const nt = nextTermAfter(y, m, d);
     /* 범위(Y0~Y1) 밖 해의 절기 페이지는 없다 — 12월 말엔 다음 해 소한이라 글자만 */
@@ -198,17 +198,17 @@ function buildDay(info) {
     <div class="ga-overline"><a href="${rel}day/" style="color: inherit; text-decoration: none;">날짜별 일진</a> · <a href="${rel}son/${y}-${pad(m)}/" style="color: inherit; text-decoration: none;">${y}년 ${m}월</a></div>
     <h1 class="ga-title">${y}년 ${m}월 ${d}일 ${WD[info.w]} —<br><span class="dp-han">${info.g.kor}(${info.g.han})일</span></h1>
     <p class="ga-meta">${lunTxt}${sonTxt ? ' · ' + (info.lun.son ? '<b style="color: var(--seal);">손없는날</b>' : sonTxt) : ''} · ${info.yp.kor}년 ${info.mp.kor}월 ${info.g.kor}일</p>
-    <p class="ga-lead">「 ${esc(ch.metaphor)} 」 — ${st.kor}${st.el}(${st.han})의 기운이 흐르는 ${br.kor}(${br.han})의 날. ${esc(quote)}</p>
+    <p class="ga-lead">「 ${esc(ch.metaphor)} 」 ${st.kor}${st.el}(${st.han})의 기운이 흐르는 ${br.kor}(${br.han})의 날. ${esc(quote)}</p>
 
     <div class="ga-body">
       <h2>이 날의 기둥</h2>
       <table class="dp-table">
         <tr><th>년주</th><td class="dp-han">${info.yp.kor}(${info.yp.han})</td><th>월주</th><td class="dp-han">${info.mp.kor}(${info.mp.han})</td><th>일주</th><td class="dp-han"><b>${info.g.kor}(${info.g.han})</b></td></tr>
       </table>
-      <p>${termHtml} ${info.lun && info.lun.son ? `오늘은 음력 ${info.lun.d}일, 손(損)이 하늘로 올라가 쉬는 <b>손없는날</b>입니다 — 이사·개업·계약을 잡기 좋은 날로 전해집니다. <a href="${rel}son/${y}-${pad(m)}/">이 달의 손없는날 전체 보기</a>` : ''}</p>
+      <p>${termHtml} ${info.lun && info.lun.son ? `오늘은 음력 ${info.lun.d}일, 손(損)이 하늘로 올라가 쉬는 <b>손없는날</b>입니다. 이사·개업·계약을 잡기 좋은 날로 전해집니다. <a href="${rel}son/${y}-${pad(m)}/">이 달의 손없는날 전체 보기</a>` : ''}</p>
 
       <h2>일간별 오늘의 흐름</h2>
-      <p>오늘의 천간 ${st.kor}${st.el}의 기운이 내 일간에게 어떤 십성으로 드는지에 따라 하루의 결이 달라집니다. 내 일간을 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나와요.</p>
+      <p>오늘의 천간 ${st.kor}${st.el}의 기운이 내 일간에게 어떤 십성으로 드는지에 따라 하루의 결이 달라집니다. 내 일간을 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나옵니다.</p>
       <ul class="dp-list">
         ${rows}
       </ul>
@@ -221,7 +221,7 @@ function buildDay(info) {
 
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주로 오늘 점수 보기</span></a>
-      <p class="form-microcopy" style="margin-top: 10px;">이 페이지는 모두에게 같은 일진입니다. 내 여덟 글자와 겹쳐 보면 오늘 점수와 시간대별 흐름이 나와요.</p>
+      <p class="form-microcopy" style="margin-top: 10px;">이 페이지는 모두에게 같은 일진입니다. 내 여덟 글자와 겹쳐 보면 오늘 점수와 시간대별 흐름이 나옵니다.</p>
     </div>
   </article>`;
 
@@ -259,14 +259,14 @@ function buildMonth(y, m, days) {
     <div class="ga-overline"><a href="${rel}son/" style="color: inherit; text-decoration: none;">월별 손없는날</a> · ${y}년</div>
     <h1 class="ga-title">${y}년 ${m}월 손없는날 —<br>이사·개업·계약 좋은 날</h1>
     <p class="ga-meta">${m}월의 손없는날 ${sons.length}일 · 일진표 · 절기 ${terms.map((t) => t.name).join('·')}</p>
-    <p class="ga-lead">${y}년 ${m}월의 손없는날은 <b>${sons.map((x) => x.d + '일(' + WD[x.w].slice(0, 1) + ')').join(', ')}</b>입니다. 음력 끝자리가 9·0인 날 — 손(損)이 하늘로 올라가 사람을 해치지 않는다고 전해져, 이사와 개업, 결혼과 계약을 잡는 날로 오래 쓰여 왔습니다.</p>
+    <p class="ga-lead">${y}년 ${m}월의 손없는날은 <b>${sons.map((x) => x.d + '일(' + WD[x.w].slice(0, 1) + ')').join(', ')}</b>입니다. 음력 끝자리가 9·0인 날입니다. 손(損)이 하늘로 올라가 사람을 해치지 않는다고 전해져, 이사와 개업, 결혼과 계약을 잡는 날로 오래 쓰여 왔습니다.</p>
 
     <div class="ga-body">
       <h2>${m}월 손없는날</h2>
       <ul class="dp-list">
         ${sonList}
       </ul>
-      <p>"모두의 손없는날"이 "나의 길일"과 같지는 않습니다. 내 일지와 충(沖)이 드는 날이면 손없는날이어도 흔들리는 날이에요. <a href="${rel}">내 사주를 넣으면</a> 손없는날 중 나에게도 트이는 날만 골라 드립니다.</p>
+      <p>"모두의 손없는날"이 "나의 길일"과 같지는 않습니다. 내 일지와 충(沖)이 드는 날이면 손없는날이어도 흔들리는 날입니다. <a href="${rel}">내 사주를 넣으면</a> 손없는날 중 나에게도 트이는 날만 골라 드립니다.</p>
 
       <h2>${m}월 일진표</h2>
       <table class="dp-table">
@@ -285,7 +285,7 @@ function buildMonth(y, m, days) {
 
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주 기준 이 달의 길일 찾기</span></a>
-      <p class="form-microcopy" style="margin-top: 10px;">운세 캘린더가 손없는날과 나만의 길일이 겹치는 날을 표시해 줍니다. 캘린더 앱으로 내보내기도 돼요.</p>
+      <p class="form-microcopy" style="margin-top: 10px;">운세 캘린더가 손없는날과 나만의 길일이 겹치는 날을 표시해 줍니다. 캘린더 앱으로 내보낼 수도 있습니다.</p>
     </div>
   </article>`;
 
@@ -310,23 +310,23 @@ function buildTerm(y, t, list) {
   const wdShort = WD[weekday(t.y, t.m, t.d)].slice(0, 1);
   const eun = (t.name.charCodeAt(t.name.length - 1) - 0xAC00) % 28 ? '은' : '는';   /* 입춘은 · 한로는 */
   const title = `${y}년 ${t.name}${eun} ${t.m}월 ${t.d}일(${wdShort}) — 뜻·시각·풍습·먹는 음식`;
-  const desc = `${y}년 ${t.name}(${t.han})은 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]} ${pad(t.hh)}:${pad(t.mm)}에 들어요. ${t.desc} 이 무렵 풍습과 먹는 음식(${lore.food.replace(/\.$/, '')}), 속담, 사주에서 ${t.name}이 하는 일까지 쉬운 말로.`;
+  const desc = `${y}년 ${t.name}(${t.han})${eun} ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]} ${pad(t.hh)}:${pad(t.mm)}에 듭니다. ${t.desc} 이 무렵 풍습과 먹는 음식(${lore.food.replace(/\.$/, '')}), 속담, 사주에서 ${t.name} 절기가 하는 일까지 쉬운 말로.`;
   const faq = [
-    [`${y}년 ${t.name}${eun} 언제인가요?`, `${y}년 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]}이고, 정확한 시각은 ${pad(t.hh)}:${pad(t.mm)}(한국 시간)입니다. 절기는 태양의 위치(황경 ${t.i * 15}°)로 정해져서 해마다 하루쯤 앞뒤로 움직여요.`],
+    [`${y}년 ${t.name}${eun} 언제인가요?`, `${y}년 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]}이고, 정확한 시각은 ${pad(t.hh)}:${pad(t.mm)}(한국 시간)입니다. 절기는 태양의 위치(황경 ${t.i * 15}°)로 정해져서 해마다 하루쯤 앞뒤로 움직입니다.`],
     [`${t.name}${eun} 무슨 뜻인가요?`, `${t.desc} ${lore.nature}`],
     [`${t.name}에는 무엇을 먹나요?`, `${lore.food} ${lore.custom.split(/(?<=[.요다])\s/)[0]}`],
-    [`${t.name}${eun} 사주에서 어떤 날인가요?`, t.kind === '절' ? `열두 절(節) 중 하나예요. 사주에서 달은 1일이 아니라 절이 드는 시각에 바뀌어서, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}부터 월주가 ${MONTH_BRANCH[t.month]}월로 넘어갑니다.${t.slug === 'ipchun' ? ' 입춘은 년주와 띠까지 바뀌는 사주의 새해예요.' : ''}` : `열두 중기(中氣) 중 하나예요. 중기에는 사주의 기둥이 바뀌지 않고, 계절의 한가운데를 알리는 절기입니다.`]
+    [`${t.name}${eun} 사주에서 어떤 날인가요?`, t.kind === '절' ? `열두 절(節) 중 하나예요. 사주에서 달은 1일이 아니라 절이 드는 시각에 바뀌어서, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}부터 월주가 ${MONTH_BRANCH[t.month]}월로 넘어가요.${t.slug === 'ipchun' ? ' 입춘은 년주와 띠까지 바뀌는 사주의 새해예요.' : ''}` : `열두 중기(中氣) 중 하나예요. 계절의 한가운데를 알리는 절기로, 중기에는 사주의 기둥이 바뀌지 않아요.`]
   ];
   const roleHtml = t.kind === '절'
-    ? `<p>${t.name} 절기는 열두 절(節) 중 하나입니다. 사주에서 달은 1일이 아니라 절이 드는 <b>시각</b>에 바뀌므로, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}을 기점으로 월주(月柱)의 지지가 <b class="dp-han">${MONTH_BRANCH[t.month]}</b>로 넘어갑니다.${t.slug === 'ipchun' ? ' 입춘은 특별히 <b>년주(年柱)까지 바뀌는 사주의 새해</b>입니다 — 띠도 이 시각을 기준으로 바뀝니다.' : ''}</p>
+    ? `<p>${t.name} 절기는 열두 절(節) 중 하나입니다. 사주에서 달은 1일이 아니라 절이 드는 <b>시각</b>에 바뀌므로, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}을 기점으로 월주(月柱)의 지지가 <b class="dp-han">${MONTH_BRANCH[t.month]}</b>로 넘어갑니다.${t.slug === 'ipchun' ? ' 입춘은 특별히 <b>년주(年柱)까지 바뀌는 사주의 새해</b>입니다. 띠도 이 시각을 기준으로 바뀝니다.' : ''}</p>
       <p>이 시각 앞뒤로 두 시간 안에 태어났다면 월주가 경계에 걸립니다. 출생 시각이 확실하면 <a href="${rel}manse/">절기 시각까지 계산하는 만세력</a>으로 확인하세요.</p>`
-    : `<p>${t.name} 절기는 열두 중기(中氣) 중 하나로, 계절의 한가운데를 알리는 절기입니다. 중기에는 사주의 기둥이 바뀌지 않습니다 — 월주가 바뀌는 것은 절(節)이 드는 시각이에요.</p>`;
+    : `<p>${t.name} 절기는 열두 중기(中氣) 중 하나로, 계절의 한가운데를 알리는 절기입니다. 중기에는 사주의 기둥이 바뀌지 않습니다. 월주는 절(節)이 드는 시각에 바뀝니다.</p>`;
 
   const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}jeolgi/" style="color: inherit; text-decoration: none;">절기</a> · <a href="${rel}jeolgi/${y}/" style="color: inherit; text-decoration: none;">${y}년</a></div>
     <h1 class="ga-title">${y}년 ${t.name}(${t.han})${eun} ${t.m}월 ${t.d}일 —<br>${pad(t.hh)}:${pad(t.mm)}, 뜻과 풍습</h1>
-    <p class="ga-meta">${WD[weekday(t.y, t.m, t.d)]} · 황경 ${t.i * 15}° · ${t.kind === '절' ? '절(節) — 월주가 바뀌는 절기' : '중기(中氣)'} · 그날의 일진 <a href="${rel}day/${iso(t.y, t.m, t.d)}/">${dayI.kor}(${dayI.han})일</a></p>
+    <p class="ga-meta">${WD[weekday(t.y, t.m, t.d)]} · 황경 ${t.i * 15}° · ${t.kind === '절' ? '절(節), 월주가 바뀌는 절기' : '중기(中氣)'} · 그날의 일진 <a href="${rel}day/${iso(t.y, t.m, t.d)}/">${dayI.kor}(${dayI.han})일</a></p>
     <p class="ga-lead">${t.desc}</p>
 
     <div class="ga-body">
@@ -374,7 +374,7 @@ function buildTermYear(y, list) {
   const rows = list.map((t) => `<tr><td><b><a href="${rel}jeolgi/${y}/${t.slug}/">${t.name}</a></b> <span class="dp-han term">${t.han}</span></td><td><a href="${rel}day/${iso(t.y, t.m, t.d)}/">${t.m}월 ${t.d}일</a> ${WD[weekday(t.y, t.m, t.d)].slice(0, 1)}</td><td>${pad(t.hh)}:${pad(t.mm)}</td><td>${t.kind === '절' ? '<span class="son">절</span> → ' + MONTH_BRANCH[t.month] + '월' : '중기'}</td></tr>`).join('\n        ');
   const ipchun = list.find((t) => t.slug === 'ipchun');
   const title = `${y}년 24절기 날짜와 시각 — 입춘 ${ipchun.m}월 ${ipchun.d}일 ${pad(ipchun.hh)}:${pad(ipchun.mm)}`;
-  const desc = `${y}년 24절기의 정확한 날짜와 시각(한국 시간). 입춘 ${ipchun.m}월 ${ipchun.d}일 ${pad(ipchun.hh)}:${pad(ipchun.mm)}부터 동지까지 — 사주의 월주가 바뀌는 열두 절과 열두 중기.`;
+  const desc = `${y}년 24절기의 정확한 날짜와 시각(한국 시간). 입춘 ${ipchun.m}월 ${ipchun.d}일 ${pad(ipchun.hh)}:${pad(ipchun.mm)}부터 동지까지, 사주의 월주가 바뀌는 열두 절과 열두 중기를 담았습니다.`;
   const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}jeolgi/" style="color: inherit; text-decoration: none;">절기</a></div>
@@ -426,7 +426,7 @@ function buildDayIndex(byMonth) {
     <div class="ga-overline">날짜별 일진</div>
     <h1 class="ga-title">오늘의 일진 —<br><span class="dp-han">${todayInfo ? todayInfo.g.kor + '(' + todayInfo.g.han + ')일' : ''}</span></h1>
     <p class="ga-meta">${today.y}년 ${today.m}월 ${today.d}일 ${todayInfo ? WD[todayInfo.w] : ''} · 손없는날은 붉게 표시</p>
-    <p class="ga-lead">날마다 두 글자의 기운이 바뀝니다. 날짜를 누르면 그날의 일진과 음력, 손없는날, 열 가지 일간별 흐름이 열려요.${todayInfo ? ` <a href="${rel}day/${iso(today.y, today.m, today.d)}/">오늘 일진 자세히 보기 →</a>` : ''}</p>
+    <p class="ga-lead">날마다 두 글자의 기운이 바뀝니다. 날짜를 누르면 그날의 일진과 음력, 손없는날, 열 가지 일간별 흐름이 열립니다.${todayInfo ? ` <a href="${rel}day/${iso(today.y, today.m, today.d)}/">오늘 일진 자세히 보기 →</a>` : ''}</p>
     <div class="ga-body">
       ${grids}
       <p class="callout"><a href="${rel}son/">월별 손없는날</a> · <a href="${rel}jeolgi/${today.y}/">${today.y}년 절기</a> · <a href="${rel}manse/">만세력 달력</a></p>
@@ -453,12 +453,12 @@ function buildSonIndex(byMonth) {
     <div class="ga-overline">손없는날</div>
     <h1 class="ga-title">월별 손없는날 —<br>이사·개업 좋은 날</h1>
     <p class="ga-meta">${Y0}년 · ${Y1}년 · 음력 9·10·19·20·29·30일</p>
-    <p class="ga-lead">손없는날은 음력 끝자리가 9와 0인 날 — 열흘에 이틀꼴로 옵니다. 손(損)이 하늘로 올라가 쉬는 날이라 이사와 개업, 계약을 잡는 날로 오래 쓰여 왔어요. 달을 누르면 날짜별 일진표와 절기까지 나옵니다.</p>
+    <p class="ga-lead">손없는날은 음력 끝자리가 9와 0인 날로, 열흘에 이틀꼴로 옵니다. 손(損)이 하늘로 올라가 쉬는 날이라 이사와 개업, 계약을 잡는 날로 오래 쓰여 왔습니다. 달을 누르면 날짜별 일진표와 절기까지 나옵니다.</p>
     <div class="ga-body">
       <ul class="dp-list">
         ${items}
       </ul>
-      <p>모두의 손없는날이 나의 길일은 아닙니다. 내 일지와 충이 드는 날은 손없는날이어도 흔들려요. <a href="${rel}">내 사주를 넣으면</a> 손없는날 중 나에게도 트이는 날만 골라 드립니다.</p>
+      <p>모두의 손없는날이 나의 길일은 아닙니다. 내 일지와 충이 드는 날은 손없는날이어도 흔들립니다. <a href="${rel}">내 사주를 넣으면</a> 손없는날 중 나에게도 트이는 날만 골라 드립니다.</p>
       <p class="callout"><a href="${rel}day/">날짜별 일진</a> · <a href="${rel}jeolgi/${Y0}/">${Y0}년 절기</a> · <a href="${rel}lunar/">음력 기념일 변환</a></p>
     </div>
     <div class="ga-cta">
@@ -485,23 +485,23 @@ function buildTermIndex() {
     return `<tr><td><b><a href="${rel}jeolgi/${c.y}/${t.slug}/">${t.name}</a></b> <span class="dp-han term">${t.han}</span></td><td>${SEASON(i)}</td><td>${t.kind === '절' ? '<span class="son">절</span>' : '중기'}</td><td>${t.approx[0]}월 ${t.approx[1]}일쯤</td><td>${t.desc.split(/(?<=[.다요])\s/)[0]}</td></tr>`;
   }).join('\n        ');
   const faq = [
-    ['24절기는 어떻게 정해지나요?', '태양이 하늘을 도는 길(황도)을 15도씩 스물네 칸으로 나누고, 태양이 각 칸에 들어서는 순간을 절기로 삼습니다. 그래서 절기는 양력 날짜와 거의 맞고, 해마다 하루쯤만 앞뒤로 움직여요. 음력과는 관계가 없습니다.'],
+    ['24절기는 어떻게 정해지나요?', '태양이 하늘을 도는 길(황도)을 15도씩 스물네 칸으로 나누고, 태양이 각 칸에 들어서는 순간을 절기로 삼습니다. 그래서 절기는 양력 날짜와 거의 맞고, 해마다 하루쯤만 앞뒤로 움직입니다. 음력과는 관계가 없습니다.'],
     ['절(節)과 중기(中氣)는 무엇이 다른가요?', '스물네 절기를 번갈아 절과 중기로 부릅니다. 입춘·경칩·청명·입하·망종·소서·입추·백로·한로·입동·대설·소한 열두 절은 사주에서 달이 바뀌는 문턱이고, 우수·춘분·곡우 같은 열두 중기는 계절의 한가운데를 알립니다.'],
-    ['절기 시각이 왜 중요한가요?', '사주는 달을 1일이 아니라 절이 드는 시각에 바꿉니다. 같은 날이라도 절기 시각 앞에 태어났으면 앞달의 월주, 뒤에 태어났으면 새 달의 월주가 되고, 입춘은 년주와 띠까지 바꿔요. 그래서 사주첩은 분 단위 시각을 씁니다.'],
-    ['절기 시각은 어디서 나온 값인가요?', '한국천문연구원이 발표한 시각(한국 시간)을 쓰고, 아직 발표되지 않은 해는 같은 천문 계산으로 구한 값을 씁니다. 발표값과 계산값은 보통 몇 분 안에서 맞아요.']
+    ['절기 시각이 왜 중요한가요?', '사주는 달을 1일이 아니라 절이 드는 시각에 바꿉니다. 같은 날이라도 절기 시각 앞에 태어났으면 앞달의 월주, 뒤에 태어났으면 새 달의 월주가 되고, 입춘은 년주와 띠까지 바꿉니다. 그래서 사주첩은 분 단위 시각을 씁니다.'],
+    ['절기 시각은 어디서 나온 값인가요?', '한국천문연구원이 발표한 시각(한국 시간)을 쓰고, 아직 발표되지 않은 해는 같은 천문 계산으로 구한 값을 씁니다. 발표값과 계산값은 보통 몇 분 안에서 맞습니다.']
   ];
   const body = `
   <article class="guide-article">
     <div class="ga-overline">절기</div>
     <h1 class="ga-title">24절기 —<br>날짜와 시각</h1>
     <p class="ga-meta">${termSource(yearTerms(Y0).concat(yearTerms(Y1)))} · 한국 시간</p>
-    <p class="ga-lead">사주는 음력도 양력도 아닌 절기력을 씁니다. 열두 절(節)이 드는 시각에 월주가 바뀌고, 입춘에는 년주까지 바뀌어요. 연도를 누르면 24절기 전체 표가 열립니다.</p>
+    <p class="ga-lead">사주는 음력도 양력도 아닌 절기력을 씁니다. 열두 절(節)이 드는 시각에 월주가 바뀌고, 입춘에는 년주까지 바뀝니다. 연도를 누르면 24절기 전체 표가 열립니다.</p>
     <div class="ga-body">
       <ul class="dp-list">
         ${years}
       </ul>
       <h2>24절기 한눈에 — 순서·뜻·대략 날짜</h2>
-      <p>한 해는 소한에서 시작해 동지로 끝납니다. 절기마다 뜻과 풍습, 먹는 음식은 이름을 누르면 올해 페이지에서 볼 수 있어요.</p>
+      <p>한 해는 소한에서 시작해 동지로 끝납니다. 절기마다 뜻과 풍습, 먹는 음식은 이름을 누르면 올해 페이지에서 볼 수 있습니다.</p>
       <div class="tw"><table class="dp-table">
         <tr><th>절기</th><th>계절</th><th>구분</th><th>날짜</th><th>뜻</th></tr>
         ${termRows}

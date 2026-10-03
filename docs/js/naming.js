@@ -214,10 +214,10 @@
     var sumRel = rels.reduce(function (a, b) { return a + b; }, 0);
     var soundScore = minRel === 0 ? 0 : (sumRel >= rels.length * 2 ? 14 : (sumRel > rels.length ? 10 : 6));
     var soundLine = minRel === 0
-      ? '초성 오행이 ' + els.join('·') + ' — 상극이 끼어 소리 흐름이 부딪혀요.'
-      : (soundScore >= 14 ? '초성 오행이 ' + els.join('·') + ' — 서로를 살리는 상생의 소리예요.'
-        : (soundScore >= 10 ? '초성 오행이 ' + els.join('·') + ' — 무난하게 이어지는 소리예요.'
-          : '초성 오행이 ' + els.join('·') + ' — 같은 기운으로 나란한 소리예요.'));
+      ? '초성 오행(' + els.join('·') + ')에 상극이 끼어 소리 흐름이 부딪혀요.'
+      : (soundScore >= 14 ? '초성 오행(' + els.join('·') + ')이 서로를 살리는 상생으로 이어져요.'
+        : (soundScore >= 10 ? '초성 오행(' + els.join('·') + ')이 무난하게 이어져요.'
+          : '초성 오행(' + els.join('·') + ')이 같은 기운으로 나란히 이어져요.'));
 
     /* 자원오행 — 사주 보완 */
     var jawonScore = 0, jawonLine = null;
@@ -228,7 +228,7 @@
       });
       jawonScore = Math.min(10, jawonScore);
       jawonLine = matched.length
-        ? matched.join(', ') + ' — 명식에 부족한 ' + lackEls.join('·') + ' 기운을 글자가 채워줘요.'
+        ? '명식에 부족한 ' + lackEls.join('·') + ' 기운을 ' + matched.join(', ') + ' 글자가 채워줘요.'
         : '이 글자들은 명식에 부족한 ' + lackEls.join('·') + ' 기운을 직접 채우진 않아요.';
     }
 
@@ -241,7 +241,7 @@
     var warns = [];
     chars.forEach(function (c) {
       if (c.h && isBulyong(c.h)) {
-        warns.push(c.h + ' — 전통 작명에서 피하는 글자예요 (뜻이 너무 크거나, 흉하거나, 스러지는 상). 절대 금지는 아니에요.');
+        warns.push(c.h + ' 자는 전통 작명에서 피하는 글자예요 (뜻이 너무 크거나, 흉하거나, 스러지는 상). 절대 금지는 아니에요.');
       }
     });
 

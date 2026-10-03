@@ -111,7 +111,8 @@ function monthPage(y, m) {
     const g = wolGrade(score);
     const vars = WOL_REL[p];
     const relText = fill(vars[(abs + b) % vars.length], { D: name(b) });
-    const extras = rels.filter((r) => r !== p && r !== 'same' && WOL_EXTRA[r]).map((r) => '다만 ' + WOL_EXTRA[r]);
+    const flip = (r) => (GOOD.includes(p) && BAD.includes(r)) || (BAD.includes(p) && GOOD.includes(r));   /* 결이 반대일 때만 '다만' */
+    const extras = rels.filter((r) => r !== p && r !== 'same' && WOL_EXTRA[r]).map((r) => (flip(r) ? '다만 ' : '') + WOL_EXTRA[r]);
     const elText = josa(fill(WOL_EL[er][(abs + b) % 2], { D: name(b), E: elName(st.el), SE: elName(D.el) }));
     const best = S.days.filter((d) => YUKHAP[b] === d.branch || (d.branch !== b && SAMHAP_G[d.branch] === SAMHAP_G[b]));
     const care = S.days.filter((d) => CHUNG[b] === d.branch);
@@ -127,19 +128,19 @@ function monthPage(y, m) {
   const ranked = signs.slice().sort((x, z) => z.score - x.score || x.b - z.b);
   const top = ranked.slice(0, 3), low = ranked.slice(-3).reverse();
   const grid = signs.map((s) => `<a href="#${s.D.slug}" class="${s.tone}"><b>${s.D.han}</b>${name(s.b)} <i>${s.score}</i></a>`).join('');
-  const dm = M.STEMS.map((x, s) => { const sip = M.sipseongOf(s, S.stem); return `<li><a href="${rel}guide/ilgan-${ILGAN_SLUG[s]}.html"><b>${x.kor}${x.el}(${x.han})</b></a> 일간 — ${sip}, ${MONTH_SIP[sip]} 달</li>`; }).join('\n        ');
+  const dm = M.STEMS.map((x, s) => { const sip = M.sipseongOf(s, S.stem); return `<li><a href="${rel}guide/ilgan-${ILGAN_SLUG[s]}.html"><b>${x.kor}${x.el}(${x.han})</b></a> 일간: ${sip}, ${MONTH_SIP[sip]} 달</li>`; }).join('\n        ');
   const [py, pm] = prevMonth(y, m), [ny, nm] = nextMonth(y, m);
   const hasPrev = fs.existsSync(path.join(DOCS, 'wolun', monthKey(py, pm), 'index.html')) || LIST.some(([a, c]) => a === py && c === pm);
   const hasNext = LIST.some(([a, c]) => a === ny && c === nm);
   const yearHan = M.STEMS[S.yearStem].han + M.BRANCHES[S.yearBranch].han, yearKor = M.STEMS[S.yearStem].kor + M.BRANCHES[S.yearBranch].kor;
   const title = `${y}년 ${m}월 띠별 운세 — 12띠 이달의 흐름과 좋은 날 (${kor}월)`;
-  const desc = `${y}년 ${m}월 띠별 운세. ${S.start.m}월 ${S.start.d}일 ${JIE_NAME[m]}부터 ${kor}월(${han}) — 운이 좋은 띠는 ${top.map((s) => name(s.b)).join('·')}, 조심할 띠는 ${low.map((s) => name(s.b)).join('·')}. 12띠 점수와 좋은 날·조심할 날, 일간별 한 줄까지 쉬운 말로.`;
+  const desc = `${y}년 ${m}월 띠별 운세. ${S.start.m}월 ${S.start.d}일 ${JIE_NAME[m]}부터 ${kor}월(${han})입니다. 운이 좋은 띠는 ${top.map((s) => name(s.b)).join('·')}, 조심할 띠는 ${low.map((s) => name(s.b)).join('·')}. 12띠 점수와 좋은 날·조심할 날, 일간별 한 줄까지 쉬운 말로.`;
   const published = iso(S.start);
-  const gap = S.start.d > 1 ? `<p class="callout">${m}월 1일~${S.start.d - 1}일은 아직 절기상 지난달(${M.STEMS[(S.stem + 9) % 10].kor}${M.BRANCHES[(S.branch + 11) % 12].kor}월)이라 ${hasPrev ? `<a href="${rel}wolun/${monthKey(py, pm)}/">${pm}월 운세</a>` : `${pm}월 운세`}의 흐름입니다. ${m}월의 기운은 ${S.start.d}일 ${hm(S.start)} ${JIE_NAME[m]}부터 들어와요.</p>` : '';
+  const gap = S.start.d > 1 ? `<p class="callout">${m}월 1일~${S.start.d - 1}일은 아직 절기상 지난달(${M.STEMS[(S.stem + 9) % 10].kor}${M.BRANCHES[(S.branch + 11) % 12].kor}월)이라 ${hasPrev ? `<a href="${rel}wolun/${monthKey(py, pm)}/">${pm}월 운세</a>` : `${pm}월 운세`}의 흐름입니다. ${m}월의 기운은 ${S.start.d}일 ${hm(S.start)} ${JIE_NAME[m]}부터 들어옵니다.</p>` : '';
   const faq = [
     [`${y}년 ${m}월 운세는 언제부터 언제까지인가요?`, `사주에서 달은 1일이 아니라 절기로 바뀝니다. ${y}년 ${m}월의 ${kor}월(${han})은 ${S.start.m}월 ${S.start.d}일 ${hm(S.start)} ${JIE_NAME[m]}부터 ${S.end.m}월 ${S.end.d}일까지이고, 다음 달은 ${S.nextStart.m}월 ${S.nextStart.d}일 ${JIE_NAME[S.nextStart.m]}에 시작합니다.`],
-    [`${y}년 ${m}월에 운이 좋은 띠는?`, `${top.map((s) => `${name(s.b)}(${s.score}점)`).join(', ')} 순입니다. 이달의 글자 ${br.kor}(${br.han})와 띠의 글자가 짝을 이루거나 한 무리가 되고, 달의 오행이 띠를 돕는 쪽일수록 점수가 높아요.`],
-    [`${y}년 ${m}월에 조심할 띠는?`, `${low.map((s) => `${name(s.b)}(${s.score}점)`).join(', ')}입니다. 점수가 낮은 달은 일정이 흔들리거나 말이 엇갈리기 쉬운 달이라는 뜻이지, 나쁜 일이 생긴다는 뜻은 아니에요. 페이지의 조심할 날에 큰 결정을 피하면 충분합니다.`],
+    [`${y}년 ${m}월에 운이 좋은 띠는?`, `${top.map((s) => `${name(s.b)}(${s.score}점)`).join(', ')} 순입니다. 이달의 글자 ${br.kor}(${br.han})와 띠의 글자가 짝을 이루거나 한 무리가 되고, 달의 오행이 띠를 돕는 쪽일수록 점수가 높습니다.`],
+    [`${y}년 ${m}월에 조심할 띠는?`, `${low.map((s) => `${name(s.b)}(${s.score}점)`).join(', ')}입니다. 점수가 낮은 달은 일정이 흔들리거나 말이 엇갈리기 쉬운 달이라는 뜻이지, 나쁜 일이 생긴다는 뜻은 아닙니다. 띠별로 적은 조심할 날에 큰 결정을 피하면 충분합니다.`],
     [`${m}월의 월주(달의 간지)는 무엇인가요?`, `${kor}(${han})입니다. 윗글자 ${st.kor}${st.el}(${st.han})가 달의 분위기를, 아랫글자 ${br.kor}(${br.han}, ${mon.animal})가 띠별로 맞는 정도를 정합니다. ${yearKor}년(${yearHan}) 안의 한 달입니다.`]
   ].map(([q, a]) => [q, josa(a)]);
   const body = `
@@ -160,12 +161,12 @@ function monthPage(y, m) {
     </div>
     <div class="ga-body">
       <h2>12띠 ${m}월 운세</h2>
-      <p>${josa(`띠마다 두 가지로 읽었습니다. 이달의 아랫글자 ${br.kor}(${br.han})가 내 띠 글자와 짝을 이루는지 부딪히는지, 그리고 윗글자 ${st.kor}${st.el}(${st.han})의 오행이 내 띠의 오행을 돕는지 누르는지입니다.`)} 좋은 날은 그날의 글자가 내 띠와 짝을 이루는 날, 조심할 날은 정면으로 부딪히는 날이에요.</p>
+      <p>${josa(`띠마다 두 가지로 읽었습니다. 이달의 아랫글자 ${br.kor}(${br.han})가 내 띠 글자와 짝을 이루는지 부딪히는지, 그리고 윗글자 ${st.kor}${st.el}(${st.han})의 오행이 내 띠의 오행을 돕는지 누르는지입니다.`)} 좋은 날은 그날의 글자가 내 띠와 짝을 이루는 날, 조심할 날은 정면으로 부딪히는 날입니다.</p>
       <div class="wo-grid">${grid}</div>
       ${signs.map((s) => s.html).join('\n')}
 
       <h2>일간별로 보는 ${m}월</h2>
-      <p>띠는 여덟 글자 중 한 글자입니다. ${josa(`태어난 날의 윗글자인 일간으로 보면 이달의 윗글자 ${st.kor}${st.el}(${st.han})가 사람마다 다른 별(십성)로 옵니다.`)} 내 일간은 <a href="${rel}">생년월일만 넣으면</a> 바로 나와요.</p>
+      <p>띠는 여덟 글자 중 한 글자입니다. ${josa(`태어난 날의 윗글자인 일간으로 보면 이달의 윗글자 ${st.kor}${st.el}(${st.han})가 사람마다 다른 별(십성)로 옵니다.`)} 내 일간은 <a href="${rel}">생년월일만 넣으면</a> 바로 나옵니다.</p>
       <ul class="wo-list">
         ${dm}
       </ul>
@@ -195,16 +196,16 @@ function hub(months) {
   const title = '이달의 띠별 운세 — 12띠 월운, 달마다 좋은 날과 조심할 날';
   const desc = `12띠의 달별 운세를 절기 기준으로. ${cur.y}년 ${cur.m}월(${cur.kor}월)부터 ${months[months.length - 1].y}년 ${months[months.length - 1].m}월까지, 띠마다 이달의 점수와 풀이, 좋은 날·조심할 날을 쉬운 말로 정리했어요.`;
   const faq = [
-    ['왜 달이 1일이 아니라 4~8일쯤 바뀌나요?', '사주에서 한 달은 절기(節)에서 다음 절기까지입니다. 입춘·경칩·청명 같은 열두 절기가 양력 4~8일 사이에 들어서, 그날부터 그달의 기운으로 봅니다. 그래서 각 달 페이지 맨 위에 그 달이 시작하는 날짜와 시각을 적어 두었어요.'],
-    ['좋은 날과 조심할 날은 어떻게 고르나요?', '날마다 60갑자 중 하나의 글자가 듭니다. 그날의 아랫글자가 내 띠 글자와 짝(육합)을 이루거나 한 무리(삼합)가 되는 날을 좋은 날, 정면으로 부딪히는(충) 날을 조심할 날로 골랐어요. 오늘의 띠별 운세와 같은 기준입니다.'],
-    ['띠 운세와 내 사주 운세는 다른가요?', '띠는 여덟 글자 중 태어난 해의 한 글자입니다. 그래서 같은 띠라도 사람마다 이달이 다르게 옵니다. 생년월일을 넣으면 일간을 기준으로 한 이달의 흐름을 볼 수 있어요.']
+    ['왜 달이 1일이 아니라 4~8일쯤 바뀌나요?', '사주에서 한 달은 절기(節)에서 다음 절기까지입니다. 입춘·경칩·청명 같은 열두 절기가 양력 4~8일 사이에 들어서, 그날부터 그달의 기운으로 봅니다. 그래서 각 달 페이지 맨 위에 그 달이 시작하는 날짜와 시각을 적어 두었습니다.'],
+    ['좋은 날과 조심할 날은 어떻게 고르나요?', '날마다 60갑자 중 하나의 글자가 듭니다. 그날의 아랫글자가 내 띠 글자와 짝(육합)을 이루거나 한 무리(삼합)가 되는 날을 좋은 날, 정면으로 부딪히는(충) 날을 조심할 날로 골랐습니다. 오늘의 띠별 운세와 같은 기준입니다.'],
+    ['띠 운세와 내 사주 운세는 다른가요?', '띠는 여덟 글자 중 태어난 해의 한 글자입니다. 그래서 같은 띠라도 사람마다 이달이 다르게 옵니다. 생년월일을 넣으면 일간을 기준으로 한 이달의 흐름을 볼 수 있습니다.']
   ];
   const body = `
   <article class="guide-article">
     <div class="ga-overline">이달의 띠별 운세</div>
     <h1 class="ga-title">이달의 띠별 운세 —<br>12띠, 달마다 한 장</h1>
     <p class="ga-meta">${months.length}달 · ${months[0].y}년 ${months[0].m}월 ~ ${months[months.length - 1].y}년 ${months[months.length - 1].m}월 · 달은 절기에서 바뀝니다</p>
-    <p class="ga-lead">사주에서 한 달은 양력 1일이 아니라 절기에서 시작합니다. 달마다 두 글자(월주)가 있어서, 그 달의 아랫글자가 내 띠와 짝을 이루는지 부딪히는지로 열두 띠의 한 달을 읽을 수 있어요.${cur ? ` 지금은 <a href="${rel}wolun/${monthKey(cur.y, cur.m)}/">${cur.y}년 ${cur.m}월 ${cur.kor}월</a>입니다.` : ''}</p>
+    <p class="ga-lead">사주에서 한 달은 양력 1일이 아니라 절기에서 시작합니다. 달마다 두 글자(월주)가 있어서, 그 달의 아랫글자가 내 띠와 짝을 이루는지 부딪히는지로 열두 띠의 한 달을 읽을 수 있습니다.${cur ? ` 지금은 <a href="${rel}wolun/${monthKey(cur.y, cur.m)}/">${cur.y}년 ${cur.m}월 ${cur.kor}월</a>입니다.` : ''}</p>
     <div class="ga-body">
       <ul class="wo-list">
         ${items}

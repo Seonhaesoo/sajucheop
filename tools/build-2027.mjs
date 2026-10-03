@@ -189,12 +189,12 @@ function monthPicks(myBranch) {
 const monthName = (it) => `${it.lab.yearNote}${it.lab.name} ${it.lab.ganji}월(${it.lab.range})`;
 function monthPickHtml(myBranch, who) {
   const p = monthPicks(myBranch);
-  const li = (it) => `<li><b>${it.lab.yearNote}${it.lab.name} ${it.lab.ganji}월</b> <small>${it.lab.range}</small> — ${REL_KO[it.rel]}, ${MONTH_WHY[it.rel]}.</li>`;
+  const li = (it) => `<li><b>${it.lab.yearNote}${it.lab.name} ${it.lab.ganji}월</b> <small>${it.lab.range}</small>: ${REL_KO[it.rel]}, ${MONTH_WHY[it.rel]}.</li>`;
   return `<div class="ny-two">
         <div><h3>좋은 달</h3><ul>${p.good.map(li).join('')}</ul></div>
         <div><h3>조심할 달</h3><ul>${p.bad.map(li).join('')}</ul></div>
       </div>
-      <p style="font-size: 12.5px; color: var(--muted);">${josa(`${who}와 월지가 합(육합·삼합·방합)이면 좋은 달, 충·형·해·원진·파이면 조심할 달로 골랐습니다.`)}${p.same.length ? ` ${p.same.map(monthName).join('·')}은 내 기운이 겹치는 달이라 자신감은 오르고 고집도 세지는 달입니다.` : ''} 달의 경계는 절기 시각입니다.</p>`;
+      <p style="font-size: 12.5px; color: var(--muted);">${josa(`${who}와 월지가 합(육합·삼합·방합)이면 좋은 달, 충·형·해·원진·파이면 조심할 달로 골랐습니다.`)}${p.same.length ? ` ${p.same.map(monthName).join('·')}은 내 기운이 겹쳐 자신감은 오르고 고집도 세지는 달입니다.` : ''} 달의 경계는 절기 시각입니다.</p>`;
 }
 const monthPickDesc = (myBranch) => { const p = monthPicks(myBranch); return { good: p.good.map((it) => `${it.lab.yearNote}${it.lab.name}`).join('·'), bad: p.bad.map((it) => `${it.lab.yearNote}${it.lab.name}`).join('·') }; };
 /* 제목·설명용 짧은 달 목록 — 4월·8월·11월·2028년 1월 → 4·8·11월·2028년 1월 */
@@ -230,8 +230,8 @@ function yearMonthRows(myBranch, birthStem, offset) {
     const line = variants[(k - 1 + offset) % variants.length];
     const head = `${lab.yearNote}${lab.name} <b>${lab.ganji}</b>월 <small>${lab.range}</small>`;
     const tag = `<span class="ny-tag ${relTone(rel)}">${MONTH_PLAIN[rel]}</span>`;
-    const note = STEM_HAP[birthStem] === mo.stem ? josa(`태어난 해의 ${bs.kor}(${bs.han})과 이달 천간 ${ms.kor}(${ms.han})이 합을 이루는 달 — 사람·약속으로 묶이기 좋아요.`)
-      : STEM_CHUNG[birthStem] === mo.stem ? josa(`태어난 해의 ${bs.kor}(${bs.han})과 이달 천간 ${ms.kor}(${ms.han})이 부딪히는(충) 달 — 계획을 한 번 더 점검하세요.`) : '';
+    const note = STEM_HAP[birthStem] === mo.stem ? josa(`태어난 해의 ${bs.kor}(${bs.han})과 이달 천간 ${ms.kor}(${ms.han})이 합을 이루는 달이라 사람·약속으로 묶이기 좋아요.`)
+      : STEM_CHUNG[birthStem] === mo.stem ? josa(`태어난 해의 ${bs.kor}(${bs.han})과 이달 천간 ${ms.kor}(${ms.han})이 부딪히는(충) 달이니 계획을 한 번 더 점검하세요.`) : '';
     return `<li><div class="ny-m-head">${head} ${tag}</div>${note ? `<span class="ny-sip">${note}</span>` : ''}<div class="ny-m-line">${line}</div></li>`;
   }).join('\n        ');
 }
@@ -336,7 +336,7 @@ DDI.forEach((d, b) => {
   const yearRows = years.slice().reverse().map((y) => {
     const g = ganjiOfYear(y), st = M.STEMS[g.s];
     const age = Y - y + 1, key = stemRelKey(st.el);
-    return `<li><a href="${rel}2027/ddi/${d.slug}/${y}/">${y}년생</a> <small>${yy2(y)}년생 · ${COLOR[g.s]} ${d.animal}띠 · ${st.kor}${M.BRANCHES[g.b].kor}년(${st.han}${M.BRANCHES[g.b].han}) · 세는나이 ${age}세(만 ${age - 2}~${age - 1}세)</small><span>${STEM_REL_TEXT[key].plain} — ${STEM_LINE[key]}</span></li>`;
+    return `<li><a href="${rel}2027/ddi/${d.slug}/${y}/">${y}년생</a> <small>${yy2(y)}년생 · ${COLOR[g.s]} ${d.animal}띠 · ${st.kor}${M.BRANCHES[g.b].kor}년(${st.han}${M.BRANCHES[g.b].han}) · 세는나이 ${age}세(만 ${age - 2}~${age - 1}세)</small><span>${STEM_REL_TEXT[key].plain}: ${STEM_LINE[key]}</span></li>`;
   }).join('\n        ');
   const others = DDI.map((x, i) => `<a href="${rel}2027/ddi/${x.slug}/"${i === b ? ' class="cur"' : ''}><b>${x.han}</b><small>${x.animal}띠 <i>${SCORES[i]}</i><br>${REL[x.rel].label}</small></a>`).join('\n        ');
   const body = `
@@ -351,8 +351,8 @@ DDI.forEach((d, b) => {
     <div class="ga-body">
       <h2>총운 — ${R.label}의 해, ${score}점</h2>
       <p>${esc(T.overall)}</p>
-      <p>${esc(DDI_EL_LINE[d.el])} ${d.animal}띠는 ${esc(TR.key)} — ${esc(TR.short)} 조심할 결도 있습니다 — ${esc(TR.weak)}</p>
-      ${samjae ? `<p class="callout"><b>${d.samjae}</b> — ${esc(samjae)} <a href="${rel}samjae/">내 삼재 기간 계산하기</a></p>` : ''}
+      <p>${esc(DDI_EL_LINE[d.el])} ${d.animal}띠는 ${esc(TR.key)}입니다. ${esc(TR.short)} 조심할 점도 있습니다. ${esc(TR.weak)}</p>
+      ${samjae ? `<p class="callout"><b>${d.samjae}</b>: ${esc(samjae)} <a href="${rel}samjae/">내 삼재 기간 계산하기</a></p>` : ''}
       <h2>재물운</h2>
       <p>${esc(T.money)}</p>
       <h2>직장·사업운</h2>
@@ -428,7 +428,7 @@ DDI.forEach((d, b) => {
     <h1 class="ga-title">${yy}년생 ${d.animal}띠 2027년 운세 —<br>${S.plain}</h1>
     <div class="ny-meta"><span>연주 <b>${ganjiKor}(${st.han}${br.han})</b></span><span>연간 <b>${st.kor}${st.el}</b></span><span>2027년 <b>세는나이 ${age}세 · 만 ${age - 2}~${age - 1}세</b></span><span>띠 관계 <b>${R.label} · ${score}점</b></span></div>
     <p class="ga-meta">사주첩 · 2027 신년운세 · ${d.animal}띠 ${y}년생</p>
-    <p class="ga-lead">${y}년에 태어난 ${d.animal}띠는 연주가 ${ganjiKor}(${st.han}${br.han}), 오행 색으로는 ${COLOR[g.s]} ${d.animal}입니다. ${josa(`태어난 해의 천간 ${st.kor}${st.el}(${st.han})이`)} 2027년의 정화(丁火)를 어떻게 맞는지가 같은 띠 안에서 이 해를 다르게 만듭니다.</p>
+    <p class="ga-lead">${y}년에 태어난 ${d.animal}띠는 연주가 ${ganjiKor}(${st.han}${br.han}), 오행 색으로는 ${COLOR[g.s]} ${d.animal}입니다. ${josa(`태어난 해의 천간 ${st.kor}${st.el}(${st.han})이`)} 2027년의 정화(丁火)를 어떻게 맞느냐에 따라 같은 띠라도 이 해가 달라집니다.</p>
 
     <div class="ga-body">
       <h2>${S.name} — ${josa(`${st.kor}${st.el}(${st.han})과`)} 정화(丁火)</h2>
@@ -436,7 +436,7 @@ DDI.forEach((d, b) => {
       <h2>${d.animal}띠로 보는 정미년 — ${R.label}, ${score}점</h2>
       <p>${esc(d.opener)}</p>
       <p>${esc(TY.overall)} <a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027년 운세 전체와 월별 흐름 보기</a></p>
-      ${samjae ? `<p class="callout"><b>${d.samjae}</b> — ${esc(firstSentence(samjae))} 자세한 내용은 <a href="${rel2}samjae/">삼재 계산</a>에서.</p>` : ''}
+      ${samjae ? `<p class="callout"><b>${d.samjae}</b>: ${esc(firstSentence(samjae))} 자세한 내용은 <a href="${rel2}samjae/">삼재 계산</a>에서.</p>` : ''}
       <h2>재물운</h2>
       <p>${esc(S.money)}</p>
       <p>${esc(TY.money)}</p>
@@ -449,7 +449,7 @@ DDI.forEach((d, b) => {
       <p>${esc(TY.health)}</p>
 
       <h2>월별 운세 — ${yy}년생 ${d.animal}띠의 열두 달</h2>
-      <p>${josa(`띠 글자 ${br.kor}(${br.han})와 그달의 글자가 잘 맞으면 순한 달, 부딪히면 조심할 달로 봤습니다. 태어난 해의 천간 ${st.kor}(${st.han})과 그달 천간이 합을 이루거나 부딪히는 달은 따로 적었어요.`)} 달의 경계는 1일이 아니라 절기라서 날짜를 함께 적었습니다.</p>
+      <p>${josa(`띠 글자 ${br.kor}(${br.han})와 그달의 글자가 잘 맞으면 순한 달, 부딪히면 조심할 달로 봤습니다. 태어난 해의 천간 ${st.kor}(${st.han})과 그달 천간이 합을 이루거나 부딪히는 달은 따로 표시했습니다.`)} 달의 경계는 1일이 아니라 절기라서 날짜를 함께 적었습니다.</p>
       <ul class="ny-months">
         ${yearMonthRows(b, g.s, 1 + yi)}
       </ul>
@@ -535,7 +535,7 @@ iljuList.forEach((e, i) => {
       <p>${esc(UN_TEXT[un])}</p>
 
       <h2>월별 흐름 — 열두 달의 결</h2>
-      <p>정미년 열두 달의 월건(月建)을 ${e.kor}일주 기준으로 읽었습니다. ${josa(`월간은 일간 ${st.kor}${st.el} 기준 십성이고, 월지는 그달의 지지가 일지 ${br.kor}(${br.han})와 맺는 관계입니다.`)} 달의 경계는 절기라 날짜를 함께 적었어요.</p>
+      <p>정미년 열두 달의 월건(月建)을 ${e.kor}일주 기준으로 읽었습니다. ${josa(`월간은 일간 ${st.kor}${st.el} 기준 십성이고, 월지는 그달의 지지가 일지 ${br.kor}(${br.han})와 맺는 관계입니다.`)} 달의 경계는 절기라 날짜를 함께 적었습니다.</p>
       <ul class="ny-months">
         ${monthRows(e.b, e.s)}
       </ul>
@@ -593,7 +593,7 @@ iljuList.forEach((e, i) => {
     ${hero('2 0 2 7 · 丁未年', '十二支', '띠별로 보는 정미년 — 미(未)와의 관계 기준')}
     <h1 class="ga-title">2027년 띠별 운세 —<br>열두 띠가 맞는 붉은 양의 해</h1>
     <p class="ga-meta">사주첩 · 2027 신년운세</p>
-    <p class="ga-lead">띠는 태어난 해의 지지 한 글자입니다. 2027년의 미(未)와 그 글자가 합하는지, 부딪히는지, 무심히 지나가는지가 띠별 운세의 뼈대예요. 육합인 말띠와 삼합인 토끼·돼지띠에 인연과 결실의 기운이, 축미충인 소띠에 변동이, 본명년인 양띠에 책임이 듭니다. ${ipchunLine}</p>
+    <p class="ga-lead">띠는 태어난 해의 지지 한 글자입니다. 2027년의 미(未)와 그 글자가 합하는지, 부딪히는지, 무심히 지나가는지가 띠별 운세의 뼈대입니다. 육합인 말띠와 삼합인 토끼·돼지띠에 인연과 결실의 기운이, 축미충인 소띠에 변동이, 본명년인 양띠에 책임이 듭니다. ${ipchunLine}</p>
     <div class="ga-body">
       <h2>12띠 2027년 운세</h2>
       <div class="ny-grid four">
@@ -638,7 +638,7 @@ iljuList.forEach((e, i) => {
     return `<div class="ny-group"><h2>${st.kor}${st.el}(${st.han}) 일간 <span class="ny-tag good">정화 ${G.sip}</span> <span class="ny-tag">미토 ${G.bsip}</span> <span class="ny-tag">${G.pattern}</span></h2><div class="ny-grid">\n        ${cells}\n      </div></div>`;
   }).join('\n');
   const title = '2027년 60일주 운세 — 내 일주로 보는 정미년 신년운세·월별 흐름';
-  const desc = checkDesc(url, '태어난 날의 두 글자(일주) 60가지로 읽는 2027 정미년 운세. 내 일주에게 2027년이 돈의 해인지, 공부의 해인지, 책임의 해인지 — 재물·직장·가정과 좋은 달·조심할 달, 열두 달 흐름까지 무료로.');
+  const desc = checkDesc(url, '태어난 날의 두 글자(일주) 60가지로 읽는 2027 정미년 운세. 내 일주에게 2027년이 돈의 해인지, 공부의 해인지, 책임의 해인지 봅니다. 재물·직장·가정과 좋은 달·조심할 달, 열두 달 흐름까지 무료로.');
   const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}2027/" style="color: inherit; text-decoration: none;">2027 정미년 운세</a> · 일주별</div>

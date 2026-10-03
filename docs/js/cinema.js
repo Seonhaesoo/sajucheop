@@ -282,15 +282,18 @@
   }
   function countUp(node, to, ms, done) {
     if (!node || !(to >= 0)) { if (done) done(); return; }
-    var t0 = 0;
+    var t0 = 0, over = false;
+    var end = function () { if (over) return; over = true; node.textContent = String(to); if (done) done(); };
     var step = function (now) {
+      if (over) return;
       if (!t0) t0 = now;
       var k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3);
       node.textContent = String(Math.round(to * e));
-      if (k < 1) requestAnimationFrame(step); else if (done) done();
+      if (k < 1) requestAnimationFrame(step); else end();
     };
     node.textContent = '0';
     requestAnimationFrame(step);
+    setTimeout(end, ms + 700);   /* 화면이 가려져 그리기가 멈춰도 최종 점수는 나온다 */
   }
 
   /* ---------- 매화 꽃잎 ---------- */

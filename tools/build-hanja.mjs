@@ -132,9 +132,9 @@ function sylPage(g, idx) {
   const title = `이름 한자 '${g.s}' — ${g.items.slice(0, 6).map((x) => x.h).join('·')} 뜻·원획·자원오행`;
   const desc = `이름에 쓰는 '${g.s}' 한자 ${g.items.length}자(${g.items.slice(0, 8).map((x) => `${x.h} ${x.mean}`).join(', ')}…)의 뜻과 원획, 자원오행을 한 표로. 모두 인명용 한자이고, '${g.s}'의 발음오행은 ${soundEl}(${EL_HAN[soundEl]})입니다.`;
   const faq = [
-    [`이름 한자 '${g.s}'에는 어떤 글자가 있나요?`, `인명용 한자 중 이름에 자주 쓰는 ${g.items.length}자를 모았습니다: ${listText}. 뜻과 획수, 자원오행은 표에 정리했어요.`],
-    [`'${g.s}'의 발음오행은 무엇인가요?`, `첫소리 ${cho}은 훈민정음 오음으로 ${soundEl}(${EL_HAN[soundEl]})입니다. 발음오행은 한자와 상관없이 소리로 정해지고, 자원오행은 한자의 부수로 정해져서 같은 '${g.s}'라도 한자마다 자원오행이 다릅니다.`],
-    [`'${g.s}' 한자 중 자원오행이 ${byEl.map((x) => x.e).join('·')}인 글자는?`, byEl.map((x) => `${x.e}(${EL_HAN[x.e]}) — ${x.list.map((y) => y.h).join('·')}`).join(' / ') + '.']
+    [`이름 한자 '${g.s}'에는 어떤 글자가 있나요?`, `인명용 한자 중 이름에 자주 쓰는 ${g.items.length}자를 모았습니다: ${listText}. 뜻과 획수, 자원오행은 표에 정리했습니다.`],
+    [`'${g.s}'의 발음오행은 무엇인가요?`, `첫소리 ${cho}은 훈민정음 오음으로 ${soundEl}(${EL_HAN[soundEl]})입니다. 발음오행은 한자와 상관없이 소리로 정해지고, 자원오행은 한자의 부수로 정해져서 같은 '${g.s}' 음이라도 한자마다 자원오행이 다릅니다.`],
+    [`'${g.s}' 한자 중 자원오행이 ${byEl.map((x) => x.e).join('·')}인 글자는?`, byEl.map((x) => `${x.e}(${EL_HAN[x.e]}): ${x.list.map((y) => y.h).join('·')}`).join(' / ') + '.']
   ];
   const others = groups.map((o) => `<a href="${rel}naming/hanja/${slugOf(o)}/"${o === g ? ' class="cur"' : ''}><b>${o.s}</b><small>${o.items.length}자</small></a>`).join('');
   const body = `
@@ -142,7 +142,7 @@ function sylPage(g, idx) {
     <div class="ga-overline"><a href="${rel}naming/hanja/" style="color: inherit; text-decoration: none;">이름 한자 사전</a> · ${g.s}</div>
     <h1 class="ga-title">이름 한자 '${g.s}' —<br>${g.items.length}자의 뜻·원획·자원오행</h1>
     <div class="hj-meta"><span>발음오행 <b>${soundEl}(${EL_HAN[soundEl]})</b></span><span>자리 <b>${POS_KO[g.pos]}</b></span><span>느낌 <b>${G_KO[g.g]}</b></span><span>한자 <b>${g.items.length}자</b></span></div>
-    <p class="ga-lead">'${g.s}'는 이름에 ${g.pop >= 3 ? '아주 자주' : g.pop === 2 ? '자주' : '종종'} 쓰는 음이에요. 같은 '${g.s}'라도 어떤 한자를 고르느냐에 따라 뜻과 획수, 자원오행이 달라집니다. 아래 ${g.items.length}자는 모두 대법원 인명용 한자(교육용 기초한자 포함)에 드는 글자예요.${dictNote.length ? ` 사전 음이 ${dictNote.map((d) => `'${d}'`).join('·')}인 글자는 이름 첫소리에서 두음법칙에 따라 '${g.s}'로 읽습니다.` : ''}</p>
+    <p class="ga-lead">'${g.s}' 음은 이름에 ${g.pop >= 3 ? '아주 자주' : g.pop === 2 ? '자주' : '종종'} 쓰여요. 같은 '${g.s}' 음이라도 어떤 한자를 고르느냐에 따라 뜻과 획수, 자원오행이 달라져요. 아래 ${g.items.length}자는 모두 대법원 인명용 한자(교육용 기초한자 포함)에 드는 글자예요.${dictNote.length ? ` 사전 음이 ${dictNote.map((d) => `'${d}'`).join('·')}인 글자는 이름 첫소리에서 두음법칙에 따라 '${g.s}' 음으로 읽어요.` : ''}</p>
     <div class="ga-body">
       <h2>'${g.s}' 한자 ${g.items.length}자</h2>
       <table class="hj-table">
@@ -152,14 +152,14 @@ function sylPage(g, idx) {
       <h2>자원오행으로 고르기</h2>
       <p>사주에 부족한 오행이 있으면 그 오행의 한자를 고르는 것이 작명의 기본입니다. '${g.s}' 한자를 자원오행별로 나누면:</p>
       <ul>
-        ${byEl.map((x) => `<li><b>${x.e}(${EL_HAN[x.e]})</b> — ${x.list.map((y) => `${y.h}(${esc(y.mean)})`).join(', ')}</li>`).join('\n        ')}
+        ${byEl.map((x) => `<li><b>${x.e}(${EL_HAN[x.e]})</b>: ${x.list.map((y) => `${y.h}(${esc(y.mean)})`).join(', ')}</li>`).join('\n        ')}
       </ul>
       <p>내 사주에 어떤 오행이 부족한지는 <a href="${rel}">생년월일로 사주</a>를 풀면 오행 분포로 바로 보이고, <a href="${rel}naming/">이름 짓기 도구</a>에서 성과 이름 두 글자를 넣으면 81수리 네 격과 발음오행까지 함께 풀어 줍니다.</p>
       <h2>자주 묻는 질문</h2>
       ${faq.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${esc(a)}</p>`).join('\n      ')}
       <h2>다른 음의 이름 한자</h2>
       <div class="hj-grid">${others}</div>
-      <p class="callout">원획은 성명학에서 쓰는 강희자전 부수 원형 기준입니다(氵은 水 4획, 艹은 艸 6획, 王은 玉 5획, 阝은 阜 8획·邑 7획으로 셈). 쓰는 획수와 다르면 함께 적었어요. 자전·유파에 따라 한두 획 다르게 세는 글자도 있습니다.</p>
+      <p class="callout">원획은 성명학에서 쓰는 강희자전 부수 원형 기준입니다(氵은 水 4획, 艹은 艸 6획, 王은 玉 5획, 阝은 阜 8획·邑 7획으로 셈). 쓰는 획수와 다르면 함께 적었습니다. 자전·유파에 따라 한두 획 다르게 세는 글자도 있습니다.</p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}naming/"><span class="seal-dot" aria-hidden="true"></span><span>이 한자로 이름 풀어 보기</span></a>
@@ -183,8 +183,8 @@ function hub() {
   const title = '이름 한자 사전 — 인명용 한자의 뜻·원획·자원오행 (음별)';
   const desc = `이름에 쓰는 인명용 한자 ${total}자를 음별로. 서·연·윤·지·준·현·민·하·은처럼 이름에 자주 쓰는 ${groups.length}개 음의 한자마다 뜻, 원획, 자원오행을 한 표로 정리했어요. 발음오행과 두음법칙도 함께.`;
   const faq = [
-    ['자원오행이란 무엇인가요?', '한자가 가진 오행입니다. 보통 부수로 정해서 氵(물)이 들어가면 수, 木이 들어가면 목, 日·火가 들어가면 화, 土·山이 들어가면 토, 金·玉이 들어가면 금으로 봅니다. 사주에 부족한 오행을 이름 한자로 채울 때 씁니다.'],
-    ['원획은 쓰는 획수와 어떻게 다른가요?', '성명학은 부수를 원래 글자의 획수로 셉니다. 氵은 水의 4획, 艹은 艸의 6획, 王(玉)은 5획, 왼쪽 阝은 阜의 8획, 오른쪽 阝은 邑의 7획, 辶은 辵의 7획으로 세서 쓰는 획수보다 많아질 수 있어요. 81수리는 이 원획으로 계산합니다.'],
+    ['자원오행이란 무엇인가요?', '한자마다 정해진 오행입니다. 보통 부수로 정해서 氵(물)이 들어가면 수, 木이 들어가면 목, 日·火가 들어가면 화, 土·山이 들어가면 토, 金·玉이 들어가면 금으로 봅니다. 사주에 부족한 오행을 이름 한자로 채울 때 씁니다.'],
+    ['원획은 쓰는 획수와 어떻게 다른가요?', '성명학은 부수를 원래 글자의 획수로 셉니다. 氵은 水의 4획, 艹은 艸의 6획, 王(玉)은 5획, 왼쪽 阝은 阜의 8획, 오른쪽 阝은 邑의 7획, 辶은 辵의 7획으로 세서 쓰는 획수보다 많아질 수 있습니다. 81수리는 이 원획으로 계산합니다.'],
     ['여기 있는 한자는 모두 이름에 쓸 수 있나요?', '네. 유니코드 한자 데이터베이스(Unihan)에서 그 음으로 교육용 기초한자나 대법원 인명용 한자에 드는 글자만 실었습니다. 인명용 한자표는 개정될 수 있으니 출생신고 전에는 대법원 전자가족관계등록시스템에서 한 번 더 확인하세요.']
   ];
   const body = `
@@ -192,7 +192,7 @@ function hub() {
     <div class="ga-overline"><a href="${rel}naming/" style="color: inherit; text-decoration: none;">이름 짓기</a> · 이름 한자 사전</div>
     <h1 class="ga-title">이름 한자 사전 —<br>${groups.length}개 음, ${total}자</h1>
     <p class="ga-meta">인명용 한자 · 뜻 · 원획(강희자전 부수 원형) · 자원오행 · 발음오행</p>
-    <p class="ga-lead">이름에 자주 쓰는 음마다 인명용 한자를 모아 뜻과 원획, 자원오행을 정리했습니다. 음을 누르면 그 음의 한자가 한 표로 나와요. 한자를 고른 뒤에는 <a href="${rel}naming/">이름 짓기 도구</a>에서 81수리와 발음오행까지 풀어 볼 수 있어요.</p>
+    <p class="ga-lead">이름에 자주 쓰는 음마다 인명용 한자를 모아 뜻과 원획, 자원오행을 정리했어요. 음을 누르면 그 음의 한자가 한 표로 나와요. 한자를 고른 뒤에는 <a href="${rel}naming/">이름 짓기 도구</a>에서 81수리와 발음오행까지 풀어 볼 수 있어요.</p>
     <div class="ga-body">
       <h2>음으로 찾기</h2>
       <div class="hj-grid">${cells}</div>
