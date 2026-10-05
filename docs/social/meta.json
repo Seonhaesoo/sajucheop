@@ -1,12 +1,9 @@
 {
-  "seq": 13,
-  "type": "viral",
-  "date": "2026-10-02",
-  "slug": "teuk-muto",
-  "title": "무토 특",
+  "seq": 14,
+  "type": "hook",
+  "date": "2026-10-05",
+  "slug": "hook-excess-el",
+  "title": "사주에 이 오행이 너무 많으면",
   "cards": 7,
-  "en": {
-    "title": "Great Mountain things",
-    "cards": 7
-  }
+  "en": null
 }
