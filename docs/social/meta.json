@@ -1,9 +1,12 @@
 {
-  "seq": 14,
-  "type": "hook",
-  "date": "2026-10-05",
-  "slug": "hook-excess-el",
-  "title": "사주에 이 오행이 너무 많으면",
+  "seq": 15,
+  "type": "edu",
+  "date": "2026-10-07",
+  "slug": "chung",
+  "title": "충(沖)이 떴다고 무서워하지 마세요",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "A clash day is not a bad day",
+    "cards": 7
+  }
 }
