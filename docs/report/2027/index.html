@@ -46,7 +46,18 @@
     .rp-cmp th, .rp-cmp td { border-bottom: 1px solid var(--line); padding: 9px 6px; text-align: left; vertical-align: top; }
     .rp-cmp th { font-size: 13px; color: var(--muted); font-weight: 500; }
     .rp-steps { padding-left: 20px; } .rp-steps li { margin: 6px 0; }
-    @media (max-width: 560px) { .rp-toc { grid-template-columns: 1fr; } .rp-gal { grid-template-columns: repeat(2, 1fr); } .rp-price .btn-primary, .rp-soon { margin-left: 0; } }
+    .rp-hero { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 22px; align-items: center; margin: 6px 0 20px; padding: 22px; border-radius: 18px; background: #211C15; color: #F6F1E8; }
+    .rp-hero-cover { width: 100%; height: auto; border-radius: 4px; border: 1px solid #5A4C38; box-shadow: 0 10px 24px rgba(0,0,0,.35); box-sizing: border-box; }
+    .rp-hero .ga-overline { color: #E3B04B; }
+    .rp-hero .ga-title { margin-top: 6px; font-size: 25px; line-height: 1.35; color: #F6F1E8; word-break: keep-all; }
+    .rp-hero-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 10px 0 14px; }
+    .rp-hero-price b { font-family: var(--serif); font-size: 24px; color: #F6F1E8; }
+    .rp-hero-price span { font-size: 13px; color: #CFC6B4; }
+    .rp-hero .btn-primary { background: #F6F1E8; color: #211C15; }
+    .rp-hero .btn-primary:hover { background: #fff; }
+    .rp-hero .rp-soon { margin: 0; color: #E3B04B; }
+    .rp-hero a:not(.btn-primary) { color: #E8DFC9; }
+    @media (max-width: 560px) { .rp-toc { grid-template-columns: 1fr; } .rp-gal { grid-template-columns: repeat(2, 1fr); } .rp-price .btn-primary, .rp-soon { margin-left: 0; } .rp-hero { grid-template-columns: 108px minmax(0, 1fr); gap: 16px; padding: 16px; } .rp-hero .ga-title { font-size: 20px; } .rp-hero-price b { font-size: 20px; } }
   </style>
   <link rel="alternate" hreflang="ko" href="https://sajucheop.com/report/2027/">
   <link rel="alternate" hreflang="en" href="https://sajucheop.com/en/report/2027/">
@@ -72,11 +83,17 @@
 
 
   <article class="guide-article">
-    <div class="ga-overline">유료 리포트</div>
-    <h1 class="ga-title">2027 정미년 개인 리포트</h1>
+    <div class="rp-hero">
+      <img class="rp-hero-cover" src="../../report/2027/img/ko-p01.png" width="1240" height="1754" alt="2027 개인 리포트 표지 (가상 인물 샘플)" fetchpriority="high">
+      <div class="rp-hero-text">
+        <div class="ga-overline">유료 리포트</div>
+        <h1 class="ga-title">2027 정미년 개인 리포트</h1>
+        <p class="rp-hero-price"><b>9,900원</b><span>PDF 35쪽 안팎 · 결제하면 바로 만들어져요</span></p>
+        <a class="btn-primary" href="https://sajucheop.gumroad.com/l/saju-2027-report" target="_blank" rel="noopener" data-track="report_order"><span class="seal-dot" aria-hidden="true"></span><span>구매하기</span></a>
+        <p style="margin: 4px 0 0; font-size: 13.5px;"><a href="make/">이미 구매했다면 리포트 만들기 →</a></p>
+      </div>
+    </div>
     <p class="ga-lead">생년월일시 여덟 글자로 2027년을 처음부터 끝까지 풀어 쓴 35쪽 PDF예요. 띠나 일주 하나로 보는 무료 운세와 달리 여덟 글자 전체와 지금 지나는 10년 운(대운)을 함께 읽고, 2027년 365일에 하루하루 점수를 매겨 좋은 날을 골라 드려요.</p>
-    <div class="rp-price"><b class="amt">9,900원</b><span>PDF 35쪽 안팎 · 결제하면 바로 만들어져요</span><a class="btn-primary" href="https://sajucheop.gumroad.com/l/saju-2027-report" target="_blank" rel="noopener" data-track="report_order"><span class="seal-dot" aria-hidden="true"></span><span>구매하기</span></a></div>
-    <p style="margin: 4px 0 0; font-size: 13.5px;"><a href="make/">이미 구매했다면 리포트 만들기 →</a></p>
     <div class="ga-body">
       <h2>무엇이 들어 있나요</h2>
       <ol class="rp-toc">
@@ -95,7 +112,6 @@
       </ol>
       <h2>샘플 미리보기</h2>
       <div class="rp-gal">
-        <img src="../../report/2027/img/ko-p01.png" width="1240" height="1754" loading="lazy" decoding="async" alt="샘플 미리보기 01">
         <img src="../../report/2027/img/ko-p03.png" width="1240" height="1754" loading="lazy" decoding="async" alt="샘플 미리보기 03">
         <img src="../../report/2027/img/ko-p05.png" width="1240" height="1754" loading="lazy" decoding="async" alt="샘플 미리보기 05">
         <img src="../../report/2027/img/ko-p15.png" width="1240" height="1754" loading="lazy" decoding="async" alt="샘플 미리보기 15">

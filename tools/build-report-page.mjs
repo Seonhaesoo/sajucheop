@@ -34,7 +34,18 @@ const STYLE = `
     .rp-cmp th, .rp-cmp td { border-bottom: 1px solid var(--line); padding: 9px 6px; text-align: left; vertical-align: top; }
     .rp-cmp th { font-size: 13px; color: var(--muted); font-weight: 500; }
     .rp-steps { padding-left: 20px; } .rp-steps li { margin: 6px 0; }
-    @media (max-width: 560px) { .rp-toc { grid-template-columns: 1fr; } .rp-gal { grid-template-columns: repeat(2, 1fr); } .rp-price .btn-primary, .rp-soon { margin-left: 0; } }
+    .rp-hero { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 22px; align-items: center; margin: 6px 0 20px; padding: 22px; border-radius: 18px; background: #211C15; color: #F6F1E8; }
+    .rp-hero-cover { width: 100%; height: auto; border-radius: 4px; border: 1px solid #5A4C38; box-shadow: 0 10px 24px rgba(0,0,0,.35); box-sizing: border-box; }
+    .rp-hero .ga-overline { color: #E3B04B; }
+    .rp-hero .ga-title { margin-top: 6px; font-size: 25px; line-height: 1.35; color: #F6F1E8; word-break: keep-all; }
+    .rp-hero-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 10px 0 14px; }
+    .rp-hero-price b { font-family: var(--serif); font-size: 24px; color: #F6F1E8; }
+    .rp-hero-price span { font-size: 13px; color: #CFC6B4; }
+    .rp-hero .btn-primary { background: #F6F1E8; color: #211C15; }
+    .rp-hero .btn-primary:hover { background: #fff; }
+    .rp-hero .rp-soon { margin: 0; color: #E3B04B; }
+    .rp-hero a:not(.btn-primary) { color: #E8DFC9; }
+    @media (max-width: 560px) { .rp-toc { grid-template-columns: 1fr; } .rp-gal { grid-template-columns: repeat(2, 1fr); } .rp-price .btn-primary, .rp-soon { margin-left: 0; } .rp-hero { grid-template-columns: 108px minmax(0, 1fr); gap: 16px; padding: 16px; } .rp-hero .ga-title { font-size: 20px; } .rp-hero-price b { font-size: 20px; } }
   </style>`;
 
 const T = {
@@ -105,11 +116,17 @@ function build(lang) {
   const madeLink = `<p style="margin: 4px 0 0; font-size: 13.5px;"><a href="make/">${t.made} →</a></p>`;
   const body = `
   <article class="guide-article">
-    <div class="ga-overline">${t.overline}</div>
-    <h1 class="ga-title">${t.h1}</h1>
+    <div class="rp-hero">
+      ${gal.length ? `<img class="rp-hero-cover" src="${rel}report/2027/img/${gal[0]}" width="1240" height="1754" alt="${lang === 'ko' ? '2027 개인 리포트 표지 (가상 인물 샘플)' : '2027 report cover (sample)'}" fetchpriority="high">` : ''}
+      <div class="rp-hero-text">
+        <div class="ga-overline">${t.overline}</div>
+        <h1 class="ga-title">${t.h1}</h1>
+        <p class="rp-hero-price"><b>${PRICE[lang]}</b><span>${t.meta}</span></p>
+        ${buy}
+        ${live ? madeLink : ''}
+      </div>
+    </div>
     <p class="ga-lead">${t.lead}</p>
-    <div class="rp-price"><b class="amt">${PRICE[lang]}</b><span>${t.meta}</span>${buy}</div>
-    ${live ? madeLink : ''}
     <div class="ga-body">
       <h2>${t.tocH}</h2>
       <ol class="rp-toc">
@@ -117,7 +134,7 @@ function build(lang) {
       </ol>
 ${gal.length ? `      <h2>${t.galH}</h2>
       <div class="rp-gal">
-        ${gal.map((f) => `<img src="${rel}report/2027/img/${f}" width="1240" height="1754" loading="lazy" decoding="async" alt="${esc(t.galH)} ${f.replace(/\D/g, '')}">`).join('\n        ')}
+        ${gal.slice(1).map((f) => `<img src="${rel}report/2027/img/${f}" width="1240" height="1754" loading="lazy" decoding="async" alt="${esc(t.galH)} ${f.replace(/\D/g, '')}">`).join('\n        ')}
       </div>
       <p style="font-size: 12.5px; color: var(--muted);">${t.galNote}</p>` : ''}
       <h2>${t.cmpH}</h2>

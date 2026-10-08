@@ -350,7 +350,7 @@ DDI.forEach((d, b) => {
     <div class="ny-meta"><span>띠 지지 <b>${d.han} ${M.BRANCHES[b].kor}${d.el}</b></span><span>세운 <b>丁未 정미</b></span><span>관계 <b>${R.label}</b></span><span>점수 <b>${score}점 · ${grade.label}</b></span><span>삼재 <b>${d.samjae || '해당 없음'}</b></span></div>
     <p class="ga-meta">사주첩 · 2027 신년운세 · ${d.animal}띠 · ${recent.map((y) => y + '년생').join('·')} 등</p>
     <p class="ga-lead">${esc(d.opener)}</p>
-    <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-ddi"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>${reportPromo(rel, '2027-ddi')}
+    ${reportPromo(rel, '2027-ddi')}
 
     <div class="ga-body">
       <h2>총운 — ${R.label}의 해, ${score}점</h2>
@@ -391,6 +391,7 @@ DDI.forEach((d, b) => {
       <p class="callout"><a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
     </div>
 
+    <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-ddi" style="margin: 24px 0 0;"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>
     ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>띠 말고 내 사주 여덟 글자로 2027 보기</span></a>
       <p class="form-microcopy" style="margin-top: 10px;">띠는 태어난 해 한 글자입니다. 생년월일을 넣으면 일간·일지까지 반영한 정밀 흐름이 나옵니다.</p>
@@ -437,7 +438,7 @@ DDI.forEach((d, b) => {
     <div class="ga-body">
       <h2>${S.name} — ${josa(`${st.kor}${st.el}(${st.han})과`)} 정화(丁火)</h2>
       <p>${esc(S.overall)}</p>
-      <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-year"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>${reportPromo(rel2, '2027-year')}
+    ${reportPromo(rel2, '2027-year')}
       <h2>${d.animal}띠로 보는 정미년 — ${R.label}, ${score}점</h2>
       <p>${esc(d.opener)}</p>
       <p>${esc(TY.overall)} <a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027년 운세 전체와 월별 흐름 보기</a></p>
@@ -471,6 +472,7 @@ DDI.forEach((d, b) => {
       <p class="callout"><a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027 운세 (월별·좋은 달)</a> · <a href="${rel2}tojeong/2027/">2027 토정비결</a> · <a href="${rel2}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel2}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel2}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel2}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel2}2027/">정미년 운세 허브</a></p>
     </div>
 
+    <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-year" style="margin: 24px 0 0;"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>
     ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel2}"><span class="seal-dot" aria-hidden="true"></span><span>${y}년생 내 생일로 일주까지 보기</span></a>
       <p class="form-microcopy" style="margin-top: 10px;">연주는 여덟 글자 중 두 글자입니다. 생년월일을 넣으면 일간 기준의 2027 세운 십성이 나옵니다.</p>
@@ -604,7 +606,7 @@ iljuList.forEach((e, i) => {
       <div class="ny-grid four">
         ${cells}
       </div>
-      <div class="push-box" data-push data-where="2027-hub"><p class="push-text"><b>🔔 매일 아침 내 띠 운세를 알림으로 받기</b></p></div>${reportPromo(rel, '2027-hub')}
+    ${reportPromo(rel, '2027-hub')}
       <h2>점수 순으로 보기</h2>
       <table class="ny-years">
         <thead><tr><th>띠</th><th>점수</th><th>미(未)와</th><th>한 줄</th></tr></thead>
@@ -625,6 +627,7 @@ iljuList.forEach((e, i) => {
       </table>
       <p class="callout"><a href="${rel}2027/">정미년 운세 허브</a> · <a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${SAENGIL}/ddi/">생일첩 띠별 해 목록</a></p>
     </div>
+    <div class="push-box" data-push data-where="2027-hub" style="margin: 24px 0 0;"><p class="push-text"><b>🔔 매일 아침 내 띠 운세를 알림으로 받기</b></p></div>
     ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>띠 말고 내 사주로 2027 보기</span></a>
     </div>
