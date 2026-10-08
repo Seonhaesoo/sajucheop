@@ -189,7 +189,7 @@ function buildMake(lang) {
       <label>${t.name}<input name="name" required maxlength="24" placeholder="${esc(t.namePh)}"></label>
       <fieldset><legend>${t.gender}</legend><label class="in"><input type="radio" name="gender" value="F" required> ${t.F}</label><label class="in"><input type="radio" name="gender" value="M"> ${t.Mm}</label></fieldset>
       <fieldset><legend>${t.cal}</legend><label class="in"><input type="radio" name="cal" value="solar" checked> ${t.solar}</label><label class="in"><input type="radio" name="cal" value="lunar"> ${t.lunar}</label><label class="in" id="mk-leap" hidden><input type="checkbox" name="leap"> ${t.leap}</label></fieldset>
-      <label>${t.date}<input type="date" name="date" required min="1930-01-01" max="2026-12-31"></label>
+      <label>${t.date}<input type="date" name="date" required min="1910-01-01" max="2026-12-31"></label>
       <div class="mk-row"><label>${t.time}<input type="time" name="time"></label><label class="in"><input type="checkbox" name="notime"> ${t.noTime}</label></div>
       <fieldset><legend>${t.lang}</legend><label class="in"><input type="radio" name="lang" value="ko"${lang === 'ko' ? ' checked' : ''}> ${t.ko}</label><label class="in"><input type="radio" name="lang" value="en"${lang === 'en' ? ' checked' : ''}> ${t.en}</label></fieldset>
       <button class="btn-primary" type="submit"><span class="seal-dot" aria-hidden="true"></span><span>${t.go}</span></button>
