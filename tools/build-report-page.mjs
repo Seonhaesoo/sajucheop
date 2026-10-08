@@ -115,7 +115,7 @@ function build(lang) {
   const rel = t.rel;
   const gal = imgs(lang);
   const buy = live
-    ? `<a class="btn-primary" href="${esc(STORE[lang])}" target="_blank" rel="noopener" data-track="report_order"><span class="seal-dot" aria-hidden="true"></span><span>${t.buy}</span></a>`
+    ? `<a class="btn-primary" href="${esc(STORE[lang])}" target="_blank" rel="noopener" data-track="report_order" onclick="try{gtag('event','report_order',{lang:'${lang}',where:'report'})}catch(e){}"><span class="seal-dot" aria-hidden="true"></span><span>${t.buy}</span></a>`
     : `<span class="rp-soon">${t.soon}</span>`;
   const madeLink = `<p style="margin: 4px 0 0; font-size: 13.5px;"><a href="make/">${t.made} →</a></p>`;
   const body = `
@@ -181,7 +181,7 @@ function buildSample(lang) {
   const pages = fs.existsSync(SAMPLE_DIR) ? fs.readdirSync(SAMPLE_DIR).filter((f) => f.startsWith(lang + '-p') && f.endsWith('.webp')).sort() : [];
   if (!pages.length) return `${t.url}sample/ 없음`;
   const url = t.url + 'sample/', rel = t.rel + '../';
-  const buy = STORE[lang] ? `<a class="btn-primary" href="${esc(STORE[lang])}" target="_blank" rel="noopener" data-track="report_order"><span class="seal-dot" aria-hidden="true"></span><span>${t.buy} · ${PRICE[lang]}</span></a>` : '';
+  const buy = STORE[lang] ? `<a class="btn-primary" href="${esc(STORE[lang])}" target="_blank" rel="noopener" data-track="report_order" onclick="try{gtag('event','report_order',{lang:'${lang}',where:'sample'})}catch(e){}"><span class="seal-dot" aria-hidden="true"></span><span>${t.buy} · ${PRICE[lang]}</span></a>` : '';
   const body = `
   <article class="guide-article">
     <div class="ga-overline">${t.overline}</div>
