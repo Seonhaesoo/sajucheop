@@ -190,7 +190,7 @@ sitePage('about', {
 sitePage('privacy', {
   title: 'Privacy Policy — Sajucheop',
   desc: 'Sajucheop’s privacy policy: birth dates never leave your browser. What analytics, ads and cookies do, and how to opt out.',
-  h1: 'Privacy policy', overline: 'Policy', meta: `Effective ${fmtDate(MODIFIED)}`, noindex: true,
+  h1: 'Privacy policy', overline: 'Policy', meta: 'Effective October 8, 2026 (paid report section added; first effective September 13, 2026)', noindex: true,
   body: `    <div class="ga-body">
       <p>Sajucheop (sajucheop.com, “the service”) respects your privacy. This policy explains what information the service handles and how. It is the English version of our <a href="../../privacy.html" hreflang="ko">Korean privacy policy</a>.</p>
 
@@ -198,6 +198,7 @@ sitePage('privacy', {
       <ul>
         <li>The names, birth dates, birth times and genders you enter for saju calculations are <strong>not sent to or stored on any server</strong>. Every calculation and reading runs inside your browser, on your device.</li>
         <li>There is no sign-up. We do not collect accounts, passwords or contact details.</li>
+        <li>The one exception is the paid report you buy and make yourself, described in section 8.</li>
       </ul>
 
       <h2>2. What stays on your device</h2>
@@ -228,10 +229,13 @@ sitePage('privacy', {
       <h2>7. Children</h2>
       <p>The service is not directed at children under 13 and does not knowingly collect personal information from them. Because saju entries are never collected, there is no separate parental-consent process.</p>
 
-      <h2>8. Changes to this policy</h2>
+      <h2>8. Paid report (2027 personal report)</h2>
+      <p>When you make a paid report, the purchase code, name, gender, birth date and birth time you enter are sent to the server that makes the report (Cloudflare Workers). The report is made on the spot and returned to you; your name, birth details and the report itself are not stored. To stop one code being shared, we keep only a hash of the purchase code, a one-way signature (HMAC) derived from the birth date, time and gender, and how many times and when a report was made; these are deleted automatically 13 months after the last report. Purchase codes are checked with our payment provider, Gumroad. Payments are handled by Gumroad and we never receive your card details; personal data in the checkout is covered by Gumroad’s privacy policy.</p>
+
+      <h2>9. Changes to this policy</h2>
       <p>If this policy changes, we will update this page, and announce important changes before they take effect.</p>
 
-      <h2>9. Contact</h2>
+      <h2>10. Contact</h2>
       <p>For privacy questions, send a direct message to ${IG} on Instagram and we will answer as fully as we can.</p>
     </div>`
 });
