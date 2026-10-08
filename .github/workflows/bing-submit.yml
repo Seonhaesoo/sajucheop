@@ -1,0 +1,24 @@
+name: bing-submit
+
+# 빙 URL 제출 — 사이트마다 하루 100개 (tools/bing-submit.mjs). ChatGPT 검색이 빙 색인을 쓴다.
+# 키는 저장소 Settings → Secrets and variables → Actions 의 BING_API_KEY (빙 웹마스터 → 설정 → API 액세스). 없으면 건너뛴다.
+on:
+  schedule:
+    - cron: '40 17 * * *' # 매일 02:40 KST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: 빙에 오늘 몫 제출
+        env:
+          BING_API_KEY: ${{ secrets.BING_API_KEY }}
+        run: node tools/bing-submit.mjs
