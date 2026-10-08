@@ -60,6 +60,8 @@ const T = {
     buy: '구매하기', soon: '판매 준비 중이에요. 곧 열려요.', made: '이미 구매했다면 리포트 만들기',
     tocH: '무엇이 들어 있나요',
     toc: [['한눈에 보는 2027년', '올해를 두 쪽으로'], ['내 여덟 글자', '사주표 · 다섯 가지 기운 · 역할'], ['나라는 사람', '성격과 강점'], ['사주 속 관계와 특별한 기운', '잘 맞는 글자, 부딪히는 글자'], ['10년마다 바뀌는 큰 운', '지금과 다음 10년'], ['2027년 전체 흐름', '올해의 기운과 내 사주'], ['분야별 2027년', '일 · 돈 · 사랑 · 건강 · 공부'], ['달마다 보기', '2027년 2월부터 2028년 1월까지 열두 달'], ['2027년 달력', '좋은 날과 조심할 날'], ['일의 종류별 좋은 날', '계약 · 이사 · 거래 · 만남'], ['2027년 실천 가이드', '힘이 되는 것 · 할 일 · 피할 일'], ['부록', '용어 풀이와 계산 기준']],
+    full: '샘플 35쪽 전체 넘겨 보기 →', fullH: '샘플 35쪽 전체', fullLead: '가상 인물 김하늘 님(1995년 8월 12일 오후 2시 20분, 여성)으로 만든 2027 리포트 35쪽을 그대로 보여 드려요. 실제 리포트는 내 생년월일시로 같은 짜임에 내 풀이가 들어가요.',
+    giftH: '선물로 주기', gift: ['부모님이나 친구의 생년월일로 만들어 선물할 수 있어요. 구매 코드 하나에 한 사람이라, 받는 분의 생년월일로 만들면 그분만의 리포트가 돼요.', '방법은 두 가지예요. 직접 만들어 PDF로 저장해 보내거나, 아직 쓰지 않은 구매 코드를 그대로 전해 주면 받는 분이 직접 만들 수 있어요.', '새해 인사와 함께 보내기 좋아요. 설날 전에 미리 준비해 두세요.'],
     galH: '샘플 미리보기', galNote: '가상 인물 김하늘 님(1995년 8월 12일 14시 20분, 여성)으로 만든 샘플의 일부예요.',
     cmpH: '무료 운세와 무엇이 다른가요',
     cmp: [['', '사주첩 무료 운세', '2027 개인 리포트'], ['기준', '띠나 일주 하나', '여덟 글자 전체와 지금의 10년 운'], ['같은 띠·일주끼리', '같은 내용', '사람마다 다른 내용'], ['날짜', '오늘·이번 달 중심', '2027년 365일 점수와 일의 종류별 좋은 날'], ['형태', '웹페이지', '이름이 들어간 35쪽 PDF, 인쇄용 판형']],
@@ -87,6 +89,8 @@ const T = {
     buy: 'Buy the report', soon: 'Coming soon. Orders open shortly.', made: 'Already bought? Make your report',
     tocH: 'What is inside',
     toc: [['Your 2027 at a glance', 'The year in two pages'], ['Your eight characters', 'Chart · five elements · roles'], ['Who you are', 'Character and strengths'], ['Connections and special stars', 'What gets along, what clashes'], ['Your 10-year luck cycles', 'This decade and the next'], ['The shape of 2027', 'This year’s energy meets your chart'], ['2027 by area', 'Work · money · love · health · study'], ['Month by month', 'February 2027 to January 2028'], ['Your 2027 calendar', 'Good days and days to watch'], ['Good days for big plans', 'Contracts · moving · deals · dates'], ['Your 2027 action guide', 'What helps · what to do · what to avoid'], ['Appendix', 'Glossary and how it is calculated']],
+    full: 'Flip through all 35 sample pages →', fullH: 'All 35 sample pages', fullLead: 'The full 35-page 2027 report made for a fictional reader, Haneul Kim (born August 12, 1995, 2:20 pm, female). Your report has the same structure, written from your own birth chart.',
+    giftH: 'Give it as a gift', gift: ['Make it with a parent\'s or friend\'s birth details and send them the PDF. One code covers one person, so the report is truly theirs.', 'Or forward an unused purchase code and let them make it themselves in a minute.', 'A thoughtful gift for Lunar New Year 2027, which falls on February 6.'],
     galH: 'Sample pages', galNote: 'Pages from a sample made for a fictional reader, Haneul Kim (born August 12, 1995, 2:20 pm, female).',
     cmpH: 'How it differs from the free readings',
     cmp: [['', 'Free readings on Sajucheop', '2027 personal report'], ['Based on', 'One zodiac animal or day pillar', 'All eight characters plus your current luck cycle'], ['Two people with the same sign', 'Same text', 'Different reports'], ['Dates', 'Today and this month', 'All 365 days of 2027 scored, good days by purpose'], ['Format', 'Web page', 'A 35-page PDF with your name, print-ready']],
@@ -136,7 +140,10 @@ ${gal.length ? `      <h2>${t.galH}</h2>
       <div class="rp-gal">
         ${gal.slice(1).map((f) => `<img src="${rel}report/2027/img/${f}" width="1240" height="1754" loading="lazy" decoding="async" alt="${esc(t.galH)} ${f.replace(/\D/g, '')}">`).join('\n        ')}
       </div>
-      <p style="font-size: 12.5px; color: var(--muted);">${t.galNote}</p>` : ''}
+      <p style="font-size: 12.5px; color: var(--muted);">${t.galNote}</p>
+      <p><a href="sample/"><b>${t.full}</b></a></p>` : ''}
+      <h2>${t.giftH}</h2>
+      ${t.gift.map((x) => `<p>${esc(x)}</p>`).join('\n      ')}
       <h2>${t.cmpH}</h2>
       <table class="rp-cmp">
         ${t.cmp.map((r, i) => `<tr>${r.map((c) => i === 0 ? `<th>${esc(c)}</th>` : `<td>${esc(c)}</td>`).join('')}</tr>`).join('\n        ')}
@@ -165,6 +172,36 @@ ${gal.length ? `      <h2>${t.galH}</h2>
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), html);
   return `${t.url} ${live ? '판매 중' : '준비 중(noindex)'} · 샘플 그림 ${gal.length}장`;
+}
+
+/* ---------- 샘플 35쪽 전체 (/report/2027/sample/) — 그림만이라 검색에서는 뺀다 ---------- */
+const SAMPLE_DIR = path.join(DOCS, 'report', '2027', 'sample');
+function buildSample(lang) {
+  const t = T[lang];
+  const pages = fs.existsSync(SAMPLE_DIR) ? fs.readdirSync(SAMPLE_DIR).filter((f) => f.startsWith(lang + '-p') && f.endsWith('.webp')).sort() : [];
+  if (!pages.length) return `${t.url}sample/ 없음`;
+  const url = t.url + 'sample/', rel = t.rel + '../';
+  const buy = STORE[lang] ? `<a class="btn-primary" href="${esc(STORE[lang])}" target="_blank" rel="noopener" data-track="report_order"><span class="seal-dot" aria-hidden="true"></span><span>${t.buy} · ${PRICE[lang]}</span></a>` : '';
+  const body = `
+  <article class="guide-article">
+    <div class="ga-overline">${t.overline}</div>
+    <h1 class="ga-title">${t.fullH}</h1>
+    <p class="ga-lead">${t.fullLead}</p>
+    ${buy}
+    <div class="rp-full">
+      ${pages.map((f, i) => `<img src="${rel}report/2027/sample/${f}" width="900" height="1273" ${i < 2 ? '' : 'loading="lazy" '}decoding="async" alt="${esc(t.fullH)} ${i + 1}">`).join('\n      ')}
+    </div>
+    ${buy}
+    <p style="margin-top: 14px;"><a href="../">${lang === 'ko' ? '← 리포트 안내로' : '← Back to the report page'}</a></p>
+  </article>`;
+  const html = shell({
+    rel, lang, title: `${t.fullH} — ${t.h1}`, desc: t.fullLead, canonical: SITE + url, noindex: true, ogTitle: t.h1,
+    extraHead: STYLE + `\n  <style>.rp-full { display: grid; gap: 14px; margin: 18px 0; } .rp-full img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 2px 10px rgba(33,28,21,.08); background: #fff; }</style>`,
+    body,
+  });
+  fs.mkdirSync(path.join(DOCS, url), { recursive: true });
+  fs.writeFileSync(path.join(DOCS, url, 'index.html'), html);
+  return `${url} ${pages.length}쪽`;
 }
 
 /* ---------- 리포트 만들기 (구매 코드 + 생년월일 → 생성 서버 → 새 창에 리포트) ---------- */
@@ -258,6 +295,7 @@ function buildMake(lang) {
 }
 
 console.log('리포트 만들기:', buildMake('ko'), buildMake('en'));
+console.log('샘플 전체:', buildSample('ko'), '|', buildSample('en'));
 
 console.log('유료 리포트 안내:', build('ko'), '|', build('en'), '| 수정', MODIFIED);
 
