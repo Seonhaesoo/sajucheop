@@ -78,7 +78,7 @@ ${body}
       ${faqHtml}
       <p class="callout"><a href="${rel}en/korean-age/">Korean age calculator</a> · <a href="${rel}en/lunar-birthday/">Lunar birthday calculator</a> · <a href="${rel}en/lunar-age/">Lunar age calculator</a> · <a href="${rel}en/chinese-gender-calendar/">Chinese gender calendar</a> · <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year dates</a> · <a href="${rel}en/chinese-calendar/">Chinese calendar</a> · <a href="${rel}en/day/">Day pillar calendar</a></p>
     </div>
-    <div class="ga-cta">
+    ${slug === 'lunar-new-year' ? `<a class="rp-promo" href="${rel}en/report/2027/" onclick="try{gtag('event','report_promo',{where:'en-lny-gift'})}catch(e){}"><b>A Lunar New Year gift: their 2027, read from their own chart</b><span>A 35-page personal BaZi report made from a parent’s or friend’s birth details. Make it for them and send the PDF, or forward an unused code · $9</span><i>See the report and all 35 sample pages →</i></a>` : ''}<div class="ga-cta">
       <a class="btn-primary" href="${rel}${cta.href}"><span class="seal-dot" aria-hidden="true"></span><span>${cta.label}</span></a>
     </div>
   </article>
