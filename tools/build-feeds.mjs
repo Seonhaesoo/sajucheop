@@ -66,9 +66,27 @@ fs.writeFileSync(path.join(DOCS, 'rss.xml'), rss);
 
 const robots = fs.readFileSync(path.join(DOCS, 'robots.txt'), 'utf8');
 const maps = [...robots.matchAll(/^\s*Sitemap:\s*(\S+)/gim)].map((m) => m[1]).filter((u) => !u.endsWith('/sitemap-index.xml'));
+/* 구글 제외 목록(tools/google-noindex.json) 주소는 사이트맵에서 뺀다 — 빌더가 사이트맵을 다시 써도 매일 봇 마지막 단계인 여기서 다시 거른다 */
+let gDropped = 0;
+{
+  const j = JSON.parse(fs.readFileSync(path.join(ROOT_DIR, 'tools', 'google-noindex.json'), 'utf8'));
+  const drop = new Set();
+  for (const [p, xs] of Object.entries(j.groups)) for (const v of xs) drop.add('https://sajucheop.com' + p + v + '/');
+  for (const u of maps) {
+    const f = path.join(DOCS, new URL(u).pathname);
+    if (!fs.existsSync(f)) continue;
+    const xml = fs.readFileSync(f, 'utf8');
+    const out = xml.replace(/[ \t]*<url>[\s\S]*?<\/url>\r?\n?/g, (m) => {
+      const loc = (m.match(/<loc>\s*([^<\s]+)\s*<\/loc>/) || [])[1];
+      if (loc && drop.has(loc)) { gDropped++; return ''; }
+      return m;
+    });
+    if (out !== xml) fs.writeFileSync(f, out);
+  }
+}
 fs.writeFileSync(path.join(DOCS, 'sitemap-index.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${maps.map((u) => `  <sitemap><loc>${x(u)}</loc><lastmod>${todayIso}</lastmod></sitemap>`).join('\n')}
 </sitemapindex>
 `);
-console.log(`feeds — rss.xml ${top.length}개(날짜 있는 글 ${items.length}개 중, 가장 새 글 ${top[0] ? top[0].date : '-'}) · sitemap-index.xml 사이트맵 ${maps.length}개`);
+console.log(`feeds — rss.xml ${top.length}개(날짜 있는 글 ${items.length}개 중, 가장 새 글 ${top[0] ? top[0].date : '-'}) · sitemap-index.xml 사이트맵 ${maps.length}개 · 구글 제외로 사이트맵에서 뺀 주소 ${gDropped}개`);

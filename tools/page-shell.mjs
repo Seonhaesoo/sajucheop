@@ -1,5 +1,15 @@
 /* 정적 문서 페이지 공용 셸 — 서재(guide) 문서와 같은 .app.doc 스타일을 쓴다.
  * 경로 깊이에 맞춰 상대 경로(rel)를 넘긴다: 'docs/day/2026-09-04/' 이면 rel = '../../' */
+/* 구글에만 검색 제외할 주소(tools/google-noindex.json, 2026-10-08 스팸 업데이트 뒤 정리) — googlebot noindex, follow. 네이버·빙은 그대로 색인 */
+const GOOGLE_NOINDEX = (() => {
+  try {
+    const j = JSON.parse(fs.readFileSync(new URL('./google-noindex.json', import.meta.url), 'utf8'));
+    const s = new Set();
+    for (const [p, xs] of Object.entries(j.groups)) for (const x of xs) s.add(p + x + '/');
+    return s;
+  } catch (e) { return new Set(); }
+})();
+export const isGoogleNoindex = (urlPath) => GOOGLE_NOINDEX.has(urlPath);
 
 export const GA = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
   <script>if(location.hostname.indexOf('localhost')<0&&location.hostname.indexOf('127.0.0.1')<0&&location.protocol!=='file:'){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');}</script>
@@ -72,7 +82,7 @@ export function shell(o) {
   <title>${esc(o.title)}</title>
   <meta name="description" content="${esc(o.desc)}">
   <link rel="canonical" href="${esc(o.canonical)}">
-  ${o.noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="max-image-preview:large">'}
+  ${o.noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="max-image-preview:large">'}${!o.noindex && GOOGLE_NOINDEX.has(String(o.canonical || '').replace(/^https?:\/\/[^/]+/, '')) ? '\n  <meta name="googlebot" content="noindex, follow">' : ''}
   <link rel="icon" type="image/svg+xml" href="${o.rel}favicon.svg">
   <link rel="manifest" href="${lang === 'en' ? '/en/manifest.webmanifest' : lang === 'ja' ? '/ja/manifest.webmanifest' : '/manifest.webmanifest'}">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">

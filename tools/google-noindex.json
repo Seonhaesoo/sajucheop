@@ -1,0 +1,32 @@
+{
+  "note": "2026-10-08 구글 9월 스팸 업데이트(대량 생성 페이지 판단) 뒤 정리. 서치콘솔 sc-domain:sajucheop.com 사주첩 본 도메인 페이지(2026-09-01~10-08) 노출이 0회였던 '틀로 찍은' 페이지만 모았다(손으로 쓴 서재·도구·구역 첫 페이지·2027 띠 대표 12장·일주 사전·오늘/내일 띠 운세·일본어는 제외). page-shell.mjs 가 이 주소에 googlebot noindex, follow 를 달고(네이버·빙은 그대로 색인), build-feeds.mjs 가 구글용 사이트맵에서 뺀다. 시즌(12~2월) 수요가 생기면 다시 넣을 것.",
+  "groups": {
+    "/2027/ddi/dog/": ["1946", "1958", "1970", "1982", "1994", "2006"],
+    "/2027/ddi/dragon/": ["1952", "1964", "1976", "1988", "2000"],
+    "/2027/ddi/goat/": ["1955", "1967", "1979", "1991"],
+    "/2027/ddi/horse/": ["1954", "1966", "1978", "1990", "2002"],
+    "/2027/ddi/monkey/": ["1956", "1968", "1980", "1992", "2004"],
+    "/2027/ddi/ox/": ["1997"],
+    "/2027/ddi/pig/": ["1947", "1959", "1971", "1983", "1995", "2007"],
+    "/2027/ddi/rabbit/": ["1951", "1963", "1975", "1999"],
+    "/2027/ddi/rat/": ["1960", "1984"],
+    "/2027/ddi/rooster/": ["1945", "1957", "1981", "1993", "2005"],
+    "/2027/ddi/snake/": ["1953", "1965", "1989", "2001"],
+    "/2027/ddi/tiger/": ["1950", "1962", "1974", "1986", "1998", "2010"],
+    "/2027/ilju/": ["byeongin", "byeongjin", "byeongsin", "eulchuk", "eulmi", "eulsa", "euryu", "gabin", "gapja", "gapjin", "gapsul", "gichuk", "gimyo", "gisa", "gyechuk", "gyehae", "gyemi", "gyeongin", "gyeongsin", "gyeongsul", "gyeyu", "imja", "imo", "jeongmi", "jeongyu", "musul", "sinchuk", "sinmi", "sinmyo", "sinsa"],
+    "/ddi-gunghap/": ["horse-dog", "horse-goat", "horse-horse", "horse-rooster", "monkey-pig", "ox-ox", "pig-pig", "rabbit-pig", "rabbit-rabbit", "rat-pig", "rooster-pig", "rooster-rooster", "snake-pig", "tiger-dog", "tiger-pig", "tiger-tiger"],
+    "/en/2027/day-master/": ["yang-fire", "yang-metal", "yang-water", "yang-wood", "yin-wood"],
+    "/en/2027/day-pillar/": ["bing-chen", "bing-shen", "bing-wu", "bing-xu", "bing-yin", "bing-zi", "ding-chou", "ding-hai", "ding-mao", "ding-si", "ding-wei", "ding-you", "geng-chen", "geng-shen", "geng-wu", "geng-xu", "geng-yin", "geng-zi", "gui-chou", "gui-hai", "gui-si", "gui-wei", "gui-you", "ji-chou", "ji-hai", "ji-mao", "ji-si", "ji-wei", "ji-you", "jia-shen", "jia-wu", "jia-xu", "jia-zi", "ren-chen", "ren-shen", "ren-wu", "ren-xu", "wu-chen", "wu-shen", "wu-wu", "wu-xu", "wu-yin", "wu-zi", "xin-chou", "xin-hai", "xin-mao", "xin-si", "xin-wei", "xin-you", "yi-chou", "yi-hai", "yi-si", "yi-wei", "yi-you"],
+    "/en/chinese-calendar/2026/": ["05", "07", "09"],
+    "/en/chinese-calendar/2027/": ["01", "02", "03", "05", "06", "07", "08", "09", "10", "12"],
+    "/en/monthly/": ["2026-10", "2026-11", "2026-12", "2027-01", "2027-02", "2027-03", "2027-04", "2027-05", "2027-06", "2027-07", "2027-08", "2027-09", "2027-10", "2027-11", "2027-12"],
+    "/en/zodiac/compatibility/": ["ox-rooster", "rabbit-pig", "rat-rooster", "snake-monkey"],
+    "/en/zodiac/year/": ["1932", "1934", "1939", "1944", "1993", "2004", "2012", "2017", "2031"],
+    "/gunghap/": ["byeonghwa-eulmok", "byeonghwa-gyesu", "byeonghwa-imsu", "byeonghwa-jeonghwa", "byeonghwa-muto", "eulmok-gapmok", "eulmok-imsu", "eulmok-muto", "gapmok-byeonghwa", "gapmok-gito", "gapmok-jeonghwa", "gapmok-singeum", "gito-gapmok", "gito-gito", "gito-gyesu", "gito-muto", "gyeonggeum-eulmok", "gyeonggeum-gapmok", "gyeonggeum-gito", "gyeonggeum-gyeonggeum", "gyeonggeum-imsu", "gyeonggeum-muto", "gyesu-imsu", "gyesu-jeonghwa", "gyesu-singeum", "imsu-byeonghwa", "jeonghwa-byeonghwa", "jeonghwa-gito", "jeonghwa-jeonghwa", "jeonghwa-muto", "jeonghwa-singeum", "muto-byeonghwa", "muto-gyeonggeum", "muto-gyesu", "singeum-gyesu", "singeum-imsu"],
+    "/jeolgi/2026/": ["cheongmyeong", "cheoseo", "chunbun", "daehan", "gogu", "haji", "sanggang", "soman", "soseo"],
+    "/jeolgi/2027/": ["baekro", "cheongmyeong", "cheoseo", "chubun", "chunbun", "daehan", "daeseo", "daeseol", "dongji", "gogu", "gyeongchip", "haji", "hanro", "ipchu", "ipchun", "ipdong", "ipha", "mangjong", "sanggang", "sohan", "soman", "soseo", "soseol", "usu"],
+    "/naming/hanja/": ["do", "ga", "geon", "hwon", "hyang", "i", "in", "ji", "ram", "ri", "yeong", "yong", "yul"],
+    "/son/": ["2026-01", "2026-02", "2026-03", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-11", "2026-12", "2027-01", "2027-02", "2027-03", "2027-04", "2027-05", "2027-06", "2027-07", "2027-08", "2027-09", "2027-10", "2027-11", "2027-12"],
+    "/wolun/": ["2026-10", "2026-11", "2026-12", "2027-01", "2027-02", "2027-03", "2027-04", "2027-05", "2027-06", "2027-07", "2027-08", "2027-09", "2027-10", "2027-11", "2027-12"]
+  }
+}
