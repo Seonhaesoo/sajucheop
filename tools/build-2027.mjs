@@ -241,6 +241,12 @@ function yearMonthRows(myBranch, birthStem, offset) {
 
 /* ---------- 공용 ---------- */
 const STYLE = `<style>
+    .ny-glance { list-style: none; margin: 12px 0 6px; padding: 0; display: grid; gap: 6px; }
+    .ny-glance li { display: flex; gap: 12px; align-items: baseline; padding: 9px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+    .ny-glance b { flex: none; width: 92px; font-size: 13px; color: var(--muted); }
+    .ny-glance span { font-weight: 600; word-break: keep-all; }
+    .ny-allies { margin: 10px 0; padding-left: 18px; display: grid; gap: 8px; }
+    .ny-allies small { color: var(--muted); }
     .ny-hero { margin: 0 0 18px; padding: 24px 20px; background: #221D17; border-radius: 14px; text-align: center; color: #F6F1E8; }
     .ny-hero .ny-over { font-size: 12px; letter-spacing: 4px; color: #E0B04A; }
     .ny-hero .ny-han { font-family: 'Noto Serif KR', serif; font-size: 44px; font-weight: 700; letter-spacing: 6px; margin: 8px 0 2px; }
@@ -312,6 +318,23 @@ const scoreHtml = (score) => `<div class="ny-score">${score}<span>점</span></di
 const relBadge = (key) => `<span class="ny-tag ${REL[key].badge}">${REL[key].label}</span>`;
 const yearsOf = (b) => { const ys = []; for (let y = BIRTH_FROM; y <= BIRTH_TO; y++) if (((y - 4) % 12 + 12) % 12 === b) ys.push(y); return ys; };
 const ganjiOfYear = (y) => ({ s: ((y - 4) % 10 + 10) % 10, b: ((y - 4) % 12 + 12) % 12 });
+/* 2026-10-08 보강 — 정화(丁火)·미토(未土)의 해에 띠 오행이 기대면 좋은 오행(영문 LEAN27 과 같은 규칙: 억부의 약식) */
+const LEAN27 = { 목: '수', 화: '수', 토: '금', 금: '토', 수: '금' };
+const LEAN27_KO = {
+  목: '불과 흙이 강한 해라 나무 기운이 땔감과 밭일로 많이 쓰입니다. 물이 나무를 채우고 한 해의 열기를 식혀 주니 물 기운에 기대면 좋습니다.',
+  화: '불의 해에 불의 띠가 만나 너무 달아오르기 쉽습니다. 물이 열을 식히고 중심을 잡아 주니 물 기운에 기대면 좋습니다.',
+  토: '불이 흙을 키우고 양(未)이 흙을 더해 한 해가 무겁고 느리게 느껴질 수 있습니다. 흙이 낳는 쇠가 그 무게를 덜어 주니 쇠 기운에 기대면 좋습니다.',
+  금: '한 해의 불이 쇠를 누르고 흙이 받쳐 줍니다. 받쳐 주는 흙에 기대면 누르는 힘이 단단함으로 바뀝니다.',
+  수: '물에게 불은 재물, 흙은 책임이라 기회와 의무가 함께 옵니다. 쇠가 물을 낳으니 쇠 기운에 기대면 좋습니다.',
+};
+const LEAN_COR = {
+  목: { name: '나무', color: '초록·청록', dir: '동쪽', nums: '3·8' },
+  화: { name: '불', color: '빨강·주황·보라', dir: '남쪽', nums: '2·7' },
+  토: { name: '흙', color: '노랑·베이지·갈색', dir: '가운데', nums: '5·10' },
+  금: { name: '쇠', color: '흰색·은색·금색', dir: '서쪽', nums: '4·9', wa: '와' },
+  수: { name: '물', color: '검정·남색', dir: '북쪽', nums: '1·6' },
+};
+const ddiPairUrl = (a, b) => (a <= b ? `/ddi-gunghap/${DDI[a].slug}-${DDI[b].slug}/` : `/ddi-gunghap/${DDI[b].slug}-${DDI[a].slug}/`);
 const ipchunLine = `정미년은 ${IPCHUN.y}년 ${IPCHUN.m}월 ${IPCHUN.d}일 ${pad2(IPCHUN.hh)}:${pad2(IPCHUN.mm)} 입춘부터 ${MONTHS[11].end.y}년 ${MONTHS[11].end.m}월 ${MONTHS[11].end.d}일 입춘 전까지입니다. 그 전(1월 1일~2월 3일)은 아직 병오년(丙午) 기운으로 봅니다.`;
 const kwChips = (arr) => `<div class="ny-kw">${arr.map((k) => `<span>#${esc(k)}</span>`).join('')}</div>`;
 /* 검색은 '72년생 쥐띠 운세'처럼 두 자리로 많이 한다 — 제목·목록에 두 자리도 함께 */
@@ -333,6 +356,19 @@ DDI.forEach((d, b) => {
   const score = SCORES[b], grade = yearGrade(score), one = DDI_ONE[d.slug];
   const mp = monthPickDesc(b), ms = monthPickShort(b);
   const url = `/2027/ddi/${d.slug}/`;
+  /* 보강: 힘이 되는 띠·부딪히는 띠, 기댈 기운, 화면에도 보이는 자주 묻는 질문(구조화 데이터와 같은 내용) */
+  const withRel = (key) => DDI.map((_, i) => i).filter((i) => i !== b && relations(b, i).includes(key));
+  const yuk = withRel('yukhap'), sam = withRel('samhap'), chung = withRel('chung'), hyeong = withRel('hyeong');
+  const ally = (i) => `<a href="${rel}2027/ddi/${DDI[i].slug}/">${DDI[i].animal}띠</a> <small>(<a href="${rel}${ddiPairUrl(b, i).slice(1)}">${d.animal}띠와 궁합</a>)</small>`;
+  const friends = yuk.concat(sam).map((i) => DDI[i].animal + '띠');
+  const lean = LEAN_COR[LEAN27[d.el]];
+  const faqList = [
+    [`2027년 ${d.animal}띠 운세는 어떤가요?`, `${d.animal}띠(${d.han})는 정미년의 미(未)와 ${R.label} 관계로 ${score}점, ${grade.label}입니다. ${one}. ${firstSentence(T.overall)}`],
+    [`${d.animal}띠에게 2027년 좋은 달과 조심할 달은?`, josa(`${M.BRANCHES[b].kor}(${d.han})와 월지의 관계로 보면 좋은 달은 ${mp.good}, 조심할 달은 ${mp.bad}입니다. 달의 경계는 절기 시각이라 1일과 다를 수 있습니다.`)],
+    [`${d.animal}띠는 2027년에 삼재인가요?`, d.samjae ? `네. 해묘미(돼지·토끼·양) 그룹의 삼재 3년 중 마지막 해인 날삼재입니다. 나가는 삼재라 마무리와 정리에 좋다고 보며, 건강과 계약을 꼼꼼히 챙기면 됩니다.` : `아니요. 2027년 정미년의 삼재는 해묘미(돼지·토끼·양) 띠의 날삼재입니다. ${d.animal}띠는 해당하지 않습니다.`],
+    [`${d.animal}띠가 2027년에 기대면 좋은 기운은?`, `${lean.name} 기운입니다. ${LEAN27_KO[d.el]} 전통 대응으로는 ${lean.color}, ${lean.dir}, 숫자 ${lean.nums}${lean.wa || '과'} 이어집니다.`],
+    [`${d.animal}띠 2027년 운세는 언제부터 적용되나요?`, ipchunLine],
+  ];
   const tail = ddiTail(d.slug);
   const title = `2027년 ${d.animal}띠 운세 — ${mainYears(b).map(yy2).join('·')}년생 나이별·월별 총정리`;
   const desc = checkDesc(url, `2027년 ${d.animal}띠 운세 ${score}점, ${one}. 좋은 달 ${ms.good}, 조심할 달 ${ms.bad}. 총운·재물·직장·연애·건강과 ${years[0]}~${years[years.length - 1]}년생 나이별 운세를 쉬운 말로 풀었어요.`);
@@ -353,6 +389,16 @@ DDI.forEach((d, b) => {
     ${reportPromo(rel, '2027-ddi')}
 
     <div class="ga-body">
+      <h2>한눈에 보는 2027</h2>
+      <ul class="ny-glance">
+        <li><b>점수</b><span>${score}점 · ${grade.label}</span></li>
+        <li><b>정미년과 관계</b><span>${R.label}</span></li>
+        <li><b>삼재</b><span>${d.samjae || '해당 없음'}</span></li>
+        <li><b>좋은 달</b><span>${ms.good}</span></li>
+        <li><b>조심할 달</b><span>${ms.bad}</span></li>
+        <li><b>힘이 되는 띠</b><span>${friends.length ? friends.join(' · ') : '정해진 짝 없음'}</span></li>
+        <li><b>기댈 기운</b><span>${lean.name} · ${lean.color}</span></li>
+      </ul>
       <h2>총운 — ${R.label}의 해, ${score}점</h2>
       <p>${esc(T.overall)}</p>
       <p>${esc(DDI_EL_LINE[d.el])} ${d.animal}띠는 ${esc(TR.key)}입니다. ${esc(TR.short)} 조심할 점도 있습니다. ${esc(TR.weak)}</p>
@@ -377,6 +423,18 @@ DDI.forEach((d, b) => {
       <h2>좋은 달·조심할 달</h2>
       ${monthPickHtml(b, `${d.animal}띠 지지 ${M.BRANCHES[b].kor}(${d.han})`)}
 
+      <h2>2027년에 힘이 되는 띠·부딪히는 띠</h2>
+      <p>${d.animal}띠와 가까운 띠, 부딪히기 쉬운 띠입니다. 함께하는 사람이 좋은 해를 보내고 있으면 같이 세운 계획도 힘을 받습니다.</p>
+      <ul class="ny-allies">
+        ${yuk.length ? `<li><b>짝 띠(육합)</b> ${yuk.map(ally).join(', ')}. 일대일로 가장 잘 맞는다고 보는 관계입니다.</li>` : ''}
+        ${sam.length ? `<li><b>같은 편(삼합)</b> ${sam.map(ally).join(', ')}. 같은 방향을 보는 띠라 함께 일하면 힘이 커집니다.</li>` : ''}
+        ${chung.length ? `<li><b>맞은편(충)</b> ${chung.map(ally).join(', ')}. 끌림도 크고 부딪힘도 잦으니 역할을 먼저 나누면 좋습니다.</li>` : ''}
+        ${hyeong.length ? `<li><b>형(刑)</b> ${hyeong.map(ally).join(', ')}. 말과 약속을 꼼꼼히 하면 마찰이 줄어듭니다.</li>` : ''}
+      </ul>
+
+      <h2>기댈 기운 — 색·방향·숫자</h2>
+      <p>${LEAN27_KO[d.el]} 전통 대응으로 ${lean.name} 기운은 ${lean.color}, ${lean.dir}, 숫자 ${lean.nums}${lean.wa || '과'} 이어집니다. 부적처럼 믿기보다 한 해를 버티는 작은 습관으로 쓰면 충분합니다. 띠는 여덟 글자 중 한 글자라, 내 사주에 실제로 필요한 기운은 <a href="${rel}">생년월일시로 따로</a> 봐야 정확합니다.</p>
+
       <h2>${d.animal}띠 나이별 한 줄 — 출생연도로 보는 2027</h2>
       <p>같은 ${d.animal}띠라도 태어난 해의 천간이 달라 정화(丁火)를 다르게 맞습니다. 출생연도를 누르면 나이·연주(年柱)·정미년과의 오행 관계를 이어서 봅니다.</p>
       <ul class="ny-yrs">
@@ -388,6 +446,9 @@ DDI.forEach((d, b) => {
       <div class="ny-grid four">
         ${others}
       </div>
+
+      <h2>자주 묻는 질문</h2>
+      ${faqList.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${esc(a)}</p>`).join('\n      ')}
       <p class="callout"><a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
     </div>
 
@@ -400,12 +461,7 @@ DDI.forEach((d, b) => {
   write(url.slice(1), shell({
     rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `\n  <script defer src="/js/push.js"></script>\n  <link rel="alternate" hreflang="ko" href="${SITE}${url}">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/2027/${d.slug}/">\n  <link rel="alternate" hreflang="ja" href="${SITE}/ja/2027/${d.slug}/">`, og: `2027-${d.slug}`, ogTitle: `2027년 ${d.animal}띠 운세 ${score}점 — ${tail}`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: `${d.animal}띠`, url: SITE + url }]), article({ title, desc, url }),
-      faq([
-        [`2027년 ${d.animal}띠 운세는 어떤가요?`, `${d.animal}띠(${d.han})는 정미년의 미(未)와 ${R.label} 관계로 ${score}점, ${grade.label}입니다. ${one}. ${firstSentence(T.overall)}`],
-        [`${d.animal}띠에게 2027년 좋은 달과 조심할 달은?`, josa(`${M.BRANCHES[b].kor}(${d.han})와 월지의 관계로 보면 좋은 달은 ${mp.good}, 조심할 달은 ${mp.bad}입니다. 달의 경계는 절기 시각이라 페이지의 날짜 범위를 확인하세요.`)],
-        [`${d.animal}띠는 2027년에 삼재인가요?`, d.samjae ? `네. 해묘미(돼지·토끼·양) 그룹의 삼재 3년 중 마지막 해인 날삼재입니다. 나가는 삼재라 마무리와 정리에 좋다고 보며, 2028년 입춘부터 삼재가 끝납니다.` : `아닙니다. 2027년 삼재는 돼지띠·토끼띠·양띠(날삼재)이고 ${d.animal}띠는 해당하지 않습니다.`],
-        [`${d.animal}띠 2027년 운세는 언제부터 적용되나요?`, ipchunLine]
-      ])],
+      faq(faqList)],
     body
   }));
   urls.push(SITE + url);
