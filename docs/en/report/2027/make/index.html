@@ -69,6 +69,11 @@
     .mk-row { display: flex; gap: 14px; align-items: end; flex-wrap: wrap; }
     .mk-msg { margin: 0; font-size: 14px; min-height: 1.4em; }
     .mk-msg.bad { color: var(--seal); }
+    .mk-inapp { display: grid; gap: 8px; margin: 16px 0 0; padding: 14px 16px; border: 1px solid #E7C9C3; border-radius: 12px; background: #FBF1EE; }
+    .mk-inapp b { font-size: 15px; }
+    .mk-inapp p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-body, #40372B); }
+    .mk-inapp .btn-primary[hidden], .mk-inapp p[hidden] { display: none; }
+    .mk-in-ios { font-weight: 700; }
   </style>
 </head>
 <body>
@@ -93,6 +98,7 @@
     <div class="ga-overline">Paid report</div>
     <h1 class="ga-title">Make your 2027 report</h1>
     <p class="ga-lead">Enter the purchase code from your receipt page or email along with your birth details. Your report opens on this page within seconds. Your birth details are used only while the report is being made and are not stored.</p>
+    <div id="mk-inapp" class="mk-inapp" hidden><b id="mk-in-h"></b><p>Saving the finished report as a PDF may not work here. Please open this page in Chrome or Safari. Your purchase code is in your receipt email.</p><a id="mk-ext" class="btn-primary" href="#">Open in my browser</a><p id="mk-in-ios" class="mk-in-ios" hidden>Tap the ··· menu and choose 'Open in Safari' (or 'Open in browser').</p></div>
     <form id="mk" class="mk" autocomplete="off">
       <label>Purchase code<input name="key" required maxlength="80" placeholder="Paste the code from your receipt email"></label>
       <label>Name (printed on the report)<input name="name" required maxlength="24" placeholder="e.g. Haneul Kim"></label>
@@ -109,8 +115,21 @@
   </article>
   <script>
   (function () {
+    function track(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
     var API = "https://sajucheop-report.sajucheop-push.workers.dev", T = {"busy":"Making your report. This takes a few seconds.","ok":"Your report opened in a new window. Press <b>Save as PDF</b> at the top to keep it. You can make it again any time with the same code and birth details.","blocked":"The new window was blocked. Open your report below.","open":"Open report","err":"Connection problem. Please try again in a moment."};
     var f = document.getElementById('mk'), msg = document.getElementById('mk-msg');
+    /* 앱 안 브라우저 — 인쇄(PDF 저장)가 막히는 경우가 많아 기본 브라우저로 보낸다. 구매 코드는 주소에 싣지 않는다(분석 도구로 새지 않게) */
+    (function () {
+      var ua = navigator.userAgent || '', A = {"kakao":"KakaoTalk","naver":"Naver app","insta":"Instagram","fb":"Facebook","line":"LINE","daum":"Daum app","etc":"app"};
+      var u = ua.toLowerCase(), has = function (x) { return u.indexOf(x) >= 0; }; var hit = has('kakaotalk') ? 'kakao' : (has('naver(inapp') || has('naver/')) ? 'naver' : has('instagram') ? 'insta' : (has('fban') || has('fbav') || has('fb_iab')) ? 'fb' : has(' line/') ? 'line' : has('daumapps') ? 'daum' : has('; wv)') ? 'etc' : '';
+      if (!hit) return;
+      var box = document.getElementById('mk-inapp'), btn = document.getElementById('mk-ext'), here = location.origin + location.pathname;
+      document.getElementById('mk-in-h').textContent = "You are in the {app} in-app browser".replace('{app}', A[hit]);
+      if (hit === 'kakao') btn.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(here);
+      else if (has('android')) btn.href = 'intent://' + location.host + location.pathname + '#Intent;scheme=https;package=com.android.chrome;end';
+      else { btn.hidden = true; document.getElementById('mk-in-ios').hidden = false; }
+      box.hidden = false; track('report_inapp', { app: hit });
+    })();
     try { var q = new URLSearchParams(location.search).get('key'); if (q) f.key.value = q; } catch (e) {}
     f.addEventListener('change', function () { document.getElementById('mk-leap').hidden = f.cal.value !== 'lunar'; f.time.disabled = f.notime.checked; });
     function track(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }

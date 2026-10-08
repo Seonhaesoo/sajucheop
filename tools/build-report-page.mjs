@@ -217,6 +217,8 @@ const MK = {
     note: '구매 코드 하나에 한 사람의 생년월일로 만들 수 있어요. 이름은 자유롭게 고칠 수 있고, 생년월일을 잘못 넣었다면 두 번까지 바꿀 수 있어요. 태어난 시각을 모르면 "모름"을 고르세요.',
     back: '<a href="../">리포트 안내로 돌아가기</a> · 문제가 생기면 인스타그램 <a href="https://www.instagram.com/sajucheop/" target="_blank" rel="noopener">@sajucheop</a>',
     err: '연결이 원활하지 않아요. 잠시 뒤 다시 해 주세요.',
+    inH: '지금은 {app} 안의 브라우저예요', inP: '이 화면에서는 완성된 리포트를 PDF로 저장하지 못할 수 있어요. 크롬이나 사파리 같은 기본 브라우저에서 열어 주세요. 구매 코드는 결제 확인 메일에 있어요.', inBtn: '기본 브라우저로 열기', inIos: '화면의 ··· 메뉴에서 \'Safari로 열기\'(또는 \'다른 브라우저로 열기\')를 눌러 주세요.',
+    apps: { kakao: '카카오톡', naver: '네이버 앱', insta: '인스타그램', fb: '페이스북', line: '라인', daum: '다음 앱', etc: '앱' },
   },
   en: {
     url: '/en/report/2027/make/', rel: '../../../../', title: 'Make your 2027 personal report — enter your purchase code', h1: 'Make your 2027 report',
@@ -229,6 +231,8 @@ const MK = {
     note: 'One code covers one person. You can change the name freely and fix a mistyped birth date up to two times. If you do not know the birth time, tick "Unknown".',
     back: '<a href="../">Back to the report page</a> · Need help? Instagram <a href="https://www.instagram.com/sajucheop/" target="_blank" rel="noopener">@sajucheop</a>',
     err: 'Connection problem. Please try again in a moment.',
+    inH: 'You are in the {app} in-app browser', inP: 'Saving the finished report as a PDF may not work here. Please open this page in Chrome or Safari. Your purchase code is in your receipt email.', inBtn: 'Open in my browser', inIos: 'Tap the ··· menu and choose \'Open in Safari\' (or \'Open in browser\').',
+    apps: { kakao: 'KakaoTalk', naver: 'Naver app', insta: 'Instagram', fb: 'Facebook', line: 'LINE', daum: 'Daum app', etc: 'app' },
   },
 };
 function buildMake(lang) {
@@ -238,6 +242,7 @@ function buildMake(lang) {
     <div class="ga-overline">${lang === 'ko' ? '유료 리포트' : 'Paid report'}</div>
     <h1 class="ga-title">${t.h1}</h1>
     <p class="ga-lead">${t.lead}</p>
+    <div id="mk-inapp" class="mk-inapp" hidden><b id="mk-in-h"></b><p>${t.inP}</p><a id="mk-ext" class="btn-primary" href="#">${t.inBtn}</a><p id="mk-in-ios" class="mk-in-ios" hidden>${t.inIos}</p></div>
     <form id="mk" class="mk" autocomplete="off">
       <label>${t.key}<input name="key" required maxlength="80" placeholder="${esc(t.keyPh)}"></label>
       <label>${t.name}<input name="name" required maxlength="24" placeholder="${esc(t.namePh)}"></label>
@@ -254,8 +259,21 @@ function buildMake(lang) {
   </article>
   <script>
   (function () {
+    function track(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
     var API = ${JSON.stringify(API)}, T = ${JSON.stringify({ busy: t.busy, ok: t.ok, blocked: t.blocked, open: t.open, err: t.err })};
     var f = document.getElementById('mk'), msg = document.getElementById('mk-msg');
+    /* 앱 안 브라우저 — 인쇄(PDF 저장)가 막히는 경우가 많아 기본 브라우저로 보낸다. 구매 코드는 주소에 싣지 않는다(분석 도구로 새지 않게) */
+    (function () {
+      var ua = navigator.userAgent || '', A = ${JSON.stringify(t.apps)};
+      var u = ua.toLowerCase(), has = function (x) { return u.indexOf(x) >= 0; }; var hit = has('kakaotalk') ? 'kakao' : (has('naver(inapp') || has('naver/')) ? 'naver' : has('instagram') ? 'insta' : (has('fban') || has('fbav') || has('fb_iab')) ? 'fb' : has(' line/') ? 'line' : has('daumapps') ? 'daum' : has('; wv)') ? 'etc' : '';
+      if (!hit) return;
+      var box = document.getElementById('mk-inapp'), btn = document.getElementById('mk-ext'), here = location.origin + location.pathname;
+      document.getElementById('mk-in-h').textContent = ${JSON.stringify(t.inH)}.replace('{app}', A[hit]);
+      if (hit === 'kakao') btn.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(here);
+      else if (has('android')) btn.href = 'intent://' + location.host + location.pathname + '#Intent;scheme=https;package=com.android.chrome;end';
+      else { btn.hidden = true; document.getElementById('mk-in-ios').hidden = false; }
+      box.hidden = false; track('report_inapp', { app: hit });
+    })();
     try { var q = new URLSearchParams(location.search).get('key'); if (q) f.key.value = q; } catch (e) {}
     f.addEventListener('change', function () { document.getElementById('mk-leap').hidden = f.cal.value !== 'lunar'; f.time.disabled = f.notime.checked; });
     function track(n, p) { try { if (window.gtag) gtag('event', n, p || {}); } catch (e) {} }
@@ -286,6 +304,11 @@ function buildMake(lang) {
     .mk-row { display: flex; gap: 14px; align-items: end; flex-wrap: wrap; }
     .mk-msg { margin: 0; font-size: 14px; min-height: 1.4em; }
     .mk-msg.bad { color: var(--seal); }
+    .mk-inapp { display: grid; gap: 8px; margin: 16px 0 0; padding: 14px 16px; border: 1px solid #E7C9C3; border-radius: 12px; background: #FBF1EE; }
+    .mk-inapp b { font-size: 15px; }
+    .mk-inapp p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-body, #40372B); }
+    .mk-inapp .btn-primary[hidden], .mk-inapp p[hidden] { display: none; }
+    .mk-in-ios { font-weight: 700; }
   </style>`;
   const html = shell({ rel: t.rel, lang, title: t.title, desc: t.lead, canonical: SITE + t.url, noindex: true, ogTitle: t.h1, extraHead: STYLE + style, body });
   const dir = path.join(DOCS, t.url);
