@@ -24,6 +24,8 @@ const DUE = 2027;                      /* the year in titles: babies due in … 
 const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/today/', label: 'Today' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel + 'en/zodiac/', label: 'Zodiac' }, { href: rel + 'en/guide/', label: 'Library' }, { href: rel, label: '한국어' }];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+/* 본문을 마지막으로 고친 날(MODIFIED)을 사람이 읽는 꼴로 — 페이지 머리에 보여 준다 */
+const updatedLine = () => { const [y, m, d] = MODIFIED.split('-').map(Number); return `Updated ${MONTH[m - 1]} ${d}, ${y}`; };
 const ANIMAL = ['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'];
 const SLUG = ['rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake', 'horse', 'goat', 'monkey', 'rooster', 'dog', 'pig'];
 const ELEM = ['Wood', 'Wood', 'Fire', 'Fire', 'Earth', 'Earth', 'Metal', 'Metal', 'Water', 'Water'];
@@ -163,13 +165,14 @@ function page(slug, { title, desc, h1, lead, calc = '', body, faq, script = '', 
     rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + extraStyle, og,
     jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, ...crumbs.map((c) => ({ name: c.name, url: SITE + c.url })), { name: h1, url: SITE + url }]),
       app
-        ? { '@context': 'https://schema.org', '@type': 'WebApplication', name: h1, url: SITE + url, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Any', inLanguage: 'en', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }
+        ? { '@context': 'https://schema.org', '@type': 'WebApplication', name: h1, url: SITE + url, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Any', inLanguage: 'en', datePublished: MODIFIED, dateModified: MODIFIED, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }
         : { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: MODIFIED, dateModified: MODIFIED, inLanguage: 'en', author: { '@type': 'Organization', name: 'Sajucheop', url: SITE + '/en/about/' }, publisher: { '@type': 'Organization', name: 'Sajucheop', url: SITE + '/en/' }, mainEntityOfPage: SITE + url },
       { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: strip(q), acceptedAnswer: { '@type': 'Answer', text: strip(a) } })) }],
     body: `
   <article class="guide-article">
     <div class="ga-overline">${overline}</div>
     <h1 class="ga-title">${h1}</h1>
+    <p class="ga-meta"><time datetime="${MODIFIED}">${updatedLine()}</time></p>
     <p class="ga-lead">${lead}</p>
     <p class="callout ko-hint" lang="ko" hidden>한국어로 보기: ${slug === 'chinese-gender-calendar' ? `<a href="${rel}jungguk-dallyeok/">중국 황실 달력 성별 계산기</a> · ` : ''}<a href="${rel}jungguk-dallyeok/">중국달력 음력 달 날짜</a> · <a href="${rel}lunar/">음력 날짜 계산</a> · <a href="${rel}manse/">만세력</a></p>
     <script>try{if((navigator.languages||[navigator.language]).some(function(l){return /^ko/i.test(l)}))document.querySelector('.ko-hint').hidden=false}catch(e){}</script>

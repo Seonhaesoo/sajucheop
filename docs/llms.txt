@@ -22,6 +22,13 @@
 - 만세력: https://sajucheop.com/manse/ · 음력 날짜 계산: https://sajucheop.com/lunar/ · 삼재 계산: https://sajucheop.com/samjae/ · 손없는날: https://sajucheop.com/son/
 - 서재(명리 설명 글, 신살·12운성·용신·세운 월운 등): https://sajucheop.com/guide/
 
+## Key facts for citation (English)
+- Chinese New Year: February 17, 2026 (Year of the Fire Horse, 丙午) · February 6, 2027 (Fire Goat, 丁未) · January 26, 2028 (Earth Monkey, 戊申). Neither 2026 nor 2027 has a leap month.
+- In a Four Pillars (BaZi) chart the year turns at the Start of Spring (立春), not on January 1 or at Chinese New Year: February 4, 2027, 09:46 Beijing time (10:46 Korea and Japan time).
+- Lunar age starts at 1 on the day of birth and goes up by one at every Chinese New Year. Quick rule: Chinese year of the date minus Chinese year of birth, plus 1 (a January or February birthday before New Year belongs to the previous Chinese year).
+- Chinese gender chart: read the mother's lunar age at conception against the lunar month of conception. Conception is about 266 days before the due date. Of the chart's 336 cells, 164 say boy and 172 say girl. It is a folk tradition with no scientific basis, roughly a coin toss.
+- Worked example used on the site: mother born January 20, 1995, due June 26, 2027 → conception about October 3, 2026 (8th lunar month of 2026), lunar age 33 → the chart says boy.
+
 ## English pages
 - BaZi calculator (Four Pillars, Day Master, Ten Gods, Luck Pillars): https://sajucheop.com/en/bazi-calculator/
 - Chinese calendar 2026 and 2027 (lunar dates for every day, month pages): https://sajucheop.com/en/chinese-calendar/
@@ -33,6 +40,7 @@
 
 ## 日本語
 - 四柱推命 命式計算: https://sajucheop.com/ja/ · 2027年 十二支別の運勢: https://sajucheop.com/ja/2027/
+- 2027年は丁未（ひのとひつじ）年。四柱推命の年の境は立春で、2027年2月4日10時46分（日本時間）。
 
 ## Feeds
 - 사이트맵 색인: https://sajucheop.com/sitemap-index.xml · RSS: https://sajucheop.com/rss.xml
