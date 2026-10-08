@@ -243,3 +243,20 @@ function buildMake(lang) {
 console.log('리포트 만들기:', buildMake('ko'), buildMake('en'));
 
 console.log('유료 리포트 안내:', build('ko'), '|', build('en'), '| 수정', MODIFIED);
+
+/* 판매 중일 때만 사이트맵(sitemap-report.xml)에 안내 페이지 두 장, sitemap-index·robots 에 한 줄 */
+const LIVE = STORE.ko || STORE.en;
+const smFile = path.join(DOCS, 'sitemap-report.xml');
+if (LIVE) {
+  const urls = [['/report/2027/', '/en/report/2027/'], ['/en/report/2027/', '/report/2027/']].filter(([u]) => STORE[u.startsWith('/en/') ? 'en' : 'ko']);
+  fs.writeFileSync(smFile, ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
+    .concat(urls.map(([u, alt]) => `  <url><loc>${SITE}${u}</loc><lastmod>${MODIFIED}</lastmod><xhtml:link rel="alternate" hreflang="${u.startsWith('/en/') ? 'en' : 'ko'}" href="${SITE}${u}"/><xhtml:link rel="alternate" hreflang="${alt.startsWith('/en/') ? 'en' : 'ko'}" href="${SITE}${alt}"/></url>`))
+    .concat(['</urlset>', '']).join('\n'));
+  const idx = path.join(DOCS, 'sitemap-index.xml'), line = `  <sitemap><loc>${SITE}/sitemap-report.xml</loc><lastmod>${MODIFIED}</lastmod></sitemap>`;
+  const x = fs.readFileSync(idx, 'utf8');
+  if (!x.includes('sitemap-report.xml')) fs.writeFileSync(idx, x.replace('</sitemapindex>', line + '\n</sitemapindex>'));
+  const rb = path.join(DOCS, 'robots.txt'), r = fs.readFileSync(rb, 'utf8');
+  if (!r.includes('sitemap-report.xml')) fs.writeFileSync(rb, r.trimEnd() + `\nSitemap: ${SITE}/sitemap-report.xml\n`);
+  console.log('sitemap-report.xml', urls.length);
+}
+
