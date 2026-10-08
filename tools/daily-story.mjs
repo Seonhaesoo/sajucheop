@@ -1,5 +1,6 @@
 /* 데일리 스토리 카드 생성 — Playwright로 daily-card.html을 열어 JPEG 추출 */
 import { chromium } from 'playwright';
+import { REPORT } from './report-config.mjs';
 import fs from 'node:fs';
 
 const url = process.env.CARD_URL || 'https://sajucheop.com/daily-card.html?bot=1';
@@ -42,7 +43,9 @@ if (meta) {
       (meta.chungKor ? ', 한 템포 쉬어갈 일간은 ' + meta.chungKor + '.' : '.'),
     '일지가 ' + meta.chungBranchKor + '인 분은 변동만 조심하세요.',
     '',
-    '내 일간이 뭔지 모른다면, 생일만 넣으면 10초 → sajucheop.com'
+    (REPORT.live && +meta.date.slice(-2) % 2 === 0)
+      ? '내 여덟 글자로 쓴 2027 리포트(35쪽) → sajucheop.com/report/2027/'
+      : '내 일간이 뭔지 모른다면, 생일만 넣으면 10초 → sajucheop.com'
   ];
   fs.writeFileSync('docs/daily/thread.txt', lines.join('\n') + '\n');
   console.log('docs/daily/thread.txt 저장 완료');
@@ -63,7 +66,9 @@ if (meta) {
     'Gentlest on ' + hapEn + ' Day Masters' + (chungEn ? '; a slower lane for ' + chungEn + '.' : '.'),
     'If your Day Branch is the ' + chungBrEn + ', keep today\'s plans flexible.',
     '',
-    'Find your Day Master in 10 seconds → sajucheop.com/en/'
+    (REPORT.live && +meta.date.slice(-2) % 2 === 0)
+      ? 'Your 2027, read from your own chart (35 pages) → sajucheop.com/en/report/2027/'
+      : 'Find your Day Master in 10 seconds → sajucheop.com/en/'
   ];
   fs.writeFileSync('docs/daily/thread-en.txt', enLines.join('\n') + '\n');
   console.log('docs/daily/thread-en.txt 저장 완료');

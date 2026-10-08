@@ -5,6 +5,7 @@
  *  - 허브 /2027/index.html 의 <!-- ny:ddi-cards --> · <!-- ny:ilju-grid --> 구간을 갱신한다
  * 사용: node tools/build-2027.mjs */
 import fs from 'node:fs';
+import { reportPromo } from './report-config.mjs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
@@ -348,7 +349,7 @@ DDI.forEach((d, b) => {
     <div class="ny-meta"><span>띠 지지 <b>${d.han} ${M.BRANCHES[b].kor}${d.el}</b></span><span>세운 <b>丁未 정미</b></span><span>관계 <b>${R.label}</b></span><span>점수 <b>${score}점 · ${grade.label}</b></span><span>삼재 <b>${d.samjae || '해당 없음'}</b></span></div>
     <p class="ga-meta">사주첩 · 2027 신년운세 · ${d.animal}띠 · ${recent.map((y) => y + '년생').join('·')} 등</p>
     <p class="ga-lead">${esc(d.opener)}</p>
-    <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-ddi"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>
+    <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-ddi"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>${reportPromo(rel, '2027-ddi')}
 
     <div class="ga-body">
       <h2>총운 — ${R.label}의 해, ${score}점</h2>
@@ -435,7 +436,7 @@ DDI.forEach((d, b) => {
     <div class="ga-body">
       <h2>${S.name} — ${josa(`${st.kor}${st.el}(${st.han})과`)} 정화(丁火)</h2>
       <p>${esc(S.overall)}</p>
-      <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-year"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>
+      <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-year"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>${reportPromo(rel2, '2027-year')}
       <h2>${d.animal}띠로 보는 정미년 — ${R.label}, ${score}점</h2>
       <p>${esc(d.opener)}</p>
       <p>${esc(TY.overall)} <a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027년 운세 전체와 월별 흐름 보기</a></p>
@@ -555,7 +556,7 @@ iljuList.forEach((e, i) => {
       <p class="callout">← <a href="${rel}2027/ilju/${prev.slug}/">${prev.kor}일주</a> · <a href="${rel}2027/ilju/${next.slug}/">${next.kor}일주</a> → · <a href="${rel}2027/ilju/">60일주 2027 운세 전체</a> · <a href="${rel}ilju/${e.slug}/">${e.kor}일주 성격·연애·궁합</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a></p>
     </div>
 
-    <div class="ga-cta">
+    ${reportPromo(rel, '2027-ilju')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 일주가 ${e.kor}일주인지 확인하기</span></a>
       <p class="form-microcopy" style="margin-top: 10px;">생년월일만 넣으면 10초. 절기 시각과 야자시까지 반영한 만세력으로 일주를 세우고, 2027 세운을 여덟 글자 전체로 읽습니다.</p>
     </div>
@@ -602,7 +603,7 @@ iljuList.forEach((e, i) => {
       <div class="ny-grid four">
         ${cells}
       </div>
-      <div class="push-box" data-push data-where="2027-hub"><p class="push-text"><b>🔔 매일 아침 내 띠 운세를 알림으로 받기</b></p></div>
+      <div class="push-box" data-push data-where="2027-hub"><p class="push-text"><b>🔔 매일 아침 내 띠 운세를 알림으로 받기</b></p></div>${reportPromo(rel, '2027-hub')}
       <h2>점수 순으로 보기</h2>
       <table class="ny-years">
         <thead><tr><th>띠</th><th>점수</th><th>미(未)와</th><th>한 줄</th></tr></thead>

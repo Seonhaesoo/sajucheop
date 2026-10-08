@@ -3,6 +3,7 @@
  * 표로 찾은 괘가 도구의 compute() 와 같은지 무작위 생일 500개로 확인한다. sitemap-tojeong.xml 을 만들고 robots.txt 에 등록.
  * 해를 바꾸려면 FY 만 고치면 된다(풀이 본문은 해마다 같고, 찾기표만 해마다 달라진다). */
 import fs from 'node:fs';
+import { reportPromo } from './report-config.mjs';
 import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
@@ -150,7 +151,7 @@ function yearPage() {
       <h2>토정비결은</h2>
       <p>조선 중기 학자 토정 이지함의 이름을 빌려 전해 오는 신수 풀이로, 실제로 누가 지었는지는 분명하지 않습니다. 144괘로 한 해를 가늠하는 가벼운 풍습이라, 정초에 가족끼리 서로의 괘를 찾아보며 한 해의 마음가짐을 나누는 데 쓰였습니다. 사주첩의 풀이 본문은 옛 괘의 뜻을 오늘의 말로 새로 쓴 것입니다.</p>
       <p class="callout"><a href="${rel}tojeong/gwae/">144괘 풀이</a> · <a href="${rel}tojeong/">생년월일로 토정비결 보기</a> · <a href="${rel}2027/">${FY} 신년운세</a> · <a href="${rel}samjae/">삼재 계산</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a></p>
-    </div>
+    </div>${reportPromo(rel, 'tojeong-2027')}
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}tojeong/"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 ${FY} 토정비결 보기</span></a>
     </div>

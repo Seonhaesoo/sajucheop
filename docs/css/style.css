@@ -2755,3 +2755,10 @@ body.invite-mode .resume-chip { display: none !important; }
   .cine-wait { opacity: 1 !important; transform: none !important; }
 }
 /* ==================== /연출 ==================== */
+
+/* 유료 리포트 홍보 상자 (tools/report-config.mjs) */
+.rp-promo { display: grid; gap: 3px; margin: 16px 0; padding: 13px 16px; border: 1px solid #E7C9C3; border-radius: 12px; background: #FBF1EE; color: var(--ink); text-decoration: none; }
+.rp-promo b { font-family: var(--serif); font-size: 15.5px; }
+.rp-promo span { font-size: 13px; color: var(--muted); line-height: 1.55; }
+.rp-promo i { font-style: normal; font-size: 13px; color: var(--seal); font-weight: 700; }
+.rp-promo[hidden] { display: none; }

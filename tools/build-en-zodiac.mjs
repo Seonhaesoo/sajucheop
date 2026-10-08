@@ -13,6 +13,7 @@ import { SIGNS27 } from './en-2027-signs.mjs';
 import { publishedTime } from './solar-terms-data.mjs';
 import { STEM_PINYIN, BRANCH_PINYIN } from './en-ilju-data.mjs';
 import { zodiacSpan, lunarNewYear, koreaTz } from './cny.mjs';
+import { reportPromo } from './report-config.mjs';
 
 const { M, I } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -680,7 +681,7 @@ function year27Page(b) {
       <h2>FAQ</h2>
       ${faq27.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
       <p class="callout"><a href="${rel}en/2027/">All twelve signs in 2027</a> · <a href="${rel}en/monthly/">Month by month</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">A Fire Goat baby in 2027</a> ·<a href="${rel}${aUrl(b).slice(1)}">${A.name} years and personality</a> · <a href="${rel}${pairUrl(b, 7).slice(1)}">${A.name} and Goat compatibility</a> · <a href="${rel}2027/ddi/${A.slug}/" hreflang="ko">2027년 ${A.ko} 운세 (한국어)</a></p>
-    </div>
+    </div>${reportPromo(rel, '2027-en', 'en')}
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>See 2027 in your full chart</span></a>
     </div>
@@ -730,7 +731,7 @@ function year27Hub() {
       ${hubFaq.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
       <p class="callout">Your sign is one character of eight — read 2027 by <a href="${rel}en/2027/day-master/">Day Master</a> (ten readings) or by <a href="${rel}en/2027/day-pillar/">day pillar</a> (sixty).</p>
       <p class="callout">Find your sign first: <a href="${rel}en/zodiac/">Chinese zodiac calculator</a> · <a href="${rel}en/zodiac/compatibility/">compatibility chart</a> · <a href="${rel}${yUrl(2027).slice(1)}">2027 Fire Goat year page</a> · <a href="${rel}en/guide/fire-goat-baby-2027/">Having a baby in 2027?</a> · <a href="${rel}en/lunar-new-year/">Lunar New Year 2027 dates</a> · <a href="${rel}en/2027/lucky-colors/">Lucky colors for 2027</a> · <a href="${rel}en/chinese-calendar/2027/">Chinese calendar 2027</a> · <a href="${rel}en/monthly/">Month-by-month horoscope</a></p>
-    </div>
+    </div>${reportPromo(rel, '2027-en', 'en')}
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>See 2027 in your full chart</span></a>
     </div>
