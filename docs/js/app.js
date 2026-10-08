@@ -421,7 +421,7 @@
     if (!btn) return;
     var snap = currentProfileSnapshot();
     var inBook = snap && bookIndexOf(loadBook(), snap) >= 0;
-    btn.textContent = inBook ? '명식첩에 있어요 ✓' : '이 명식, 첩에 끼워두기';
+    btn.textContent = inBook ? '첩에 있어요' : '첩에 끼워 두기';
     btn.disabled = !!inBook;
   }
 
@@ -2530,6 +2530,7 @@
     var st = M.STEMS[p.stem];
     $('#db-text').textContent = window.DailyQuotes.pick(p.stem, idx60);
     $('#db-tag').textContent = st.kor + st.el + '의 날 · ' + t.m + '월 ' + t.d + '일';
+    el.setAttribute('data-ganji', st.han + M.BRANCHES[p.branch].han);
     var stEl = $('#db-streak');
     if (streak >= 2) {
       stEl.textContent = '연속 ' + streak + '일째 만나는 아침';
