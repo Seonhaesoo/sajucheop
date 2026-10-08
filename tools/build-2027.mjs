@@ -15,6 +15,7 @@ import { ILJU_EN } from './en-ilju-data.mjs';   /* 영문 2027 일주 페이지 
 import { TRAIT, josa, ddiDreamLink, DREAM_SITE } from './ddi-data.mjs';
 import { publishedTime, NAME_INDEX } from './solar-terms-data.mjs';
 import { YEAR, DDI, REL, DDI_TEXT, DDI_TEXT_MORE, DDI_EL_LINE, DDI_ONE, SAMJAE_TEXT, STEM_REL_TEXT, STEM_LINE, AGE_TEXT, MONTH_LINE, MONTH_LINE_PLAIN, MONTH_SIP, MONTH_WHY, ILGAN_SEUN, ILJI_TEXT, ILJI_EL_MONEY, UN_TEXT, UN_WORK, UN_STRENGTH, STRENGTH_LINE, SIP_GROUP, SEUN_GROUP_VAR, SIP_KW, REL_KW, REL_KW_NONE, UN_KW, YEAR_REL_SCORE, YEAR_EL_ADJ, SAMJAE_ADJ, yearGrade } from './newyear-2027-data.mjs';
+import { coupangBox } from './coupang.mjs';
 
 const { M } = loadEngine();
 const I = M._internals;
@@ -390,7 +391,7 @@ DDI.forEach((d, b) => {
       <p class="callout"><a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
     </div>
 
-    <div class="ga-cta">
+    ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>띠 말고 내 사주 여덟 글자로 2027 보기</span></a>
       <p class="form-microcopy" style="margin-top: 10px;">띠는 태어난 해 한 글자입니다. 생년월일을 넣으면 일간·일지까지 반영한 정밀 흐름이 나옵니다.</p>
     </div>
@@ -470,7 +471,7 @@ DDI.forEach((d, b) => {
       <p class="callout"><a href="${rel2}2027/ddi/${d.slug}/">${d.animal}띠 2027 운세 (월별·좋은 달)</a> · <a href="${rel2}tojeong/2027/">2027 토정비결</a> · <a href="${rel2}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel2}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel2}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel2}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel2}2027/">정미년 운세 허브</a></p>
     </div>
 
-    <div class="ga-cta">
+    ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel2}"><span class="seal-dot" aria-hidden="true"></span><span>${y}년생 내 생일로 일주까지 보기</span></a>
       <p class="form-microcopy" style="margin-top: 10px;">연주는 여덟 글자 중 두 글자입니다. 생년월일을 넣으면 일간 기준의 2027 세운 십성이 나옵니다.</p>
     </div>
@@ -624,7 +625,7 @@ iljuList.forEach((e, i) => {
       </table>
       <p class="callout"><a href="${rel}2027/">정미년 운세 허브</a> · <a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${SAENGIL}/ddi/">생일첩 띠별 해 목록</a></p>
     </div>
-    <div class="ga-cta">
+    ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>띠 말고 내 사주로 2027 보기</span></a>
     </div>
   </article>`;

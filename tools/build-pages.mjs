@@ -9,6 +9,7 @@ import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { TERM_LORE } from './jeolgi-data.mjs';
 import { josa } from './ddi-data.mjs';
 import { publishedTime, PUBLISHED } from './solar-terms-data.mjs';
+import { coupangBox } from './coupang.mjs';
 
 const { M, I, C, Q, Lunar } = loadEngine();
 const SITE = 'https://sajucheop.com';
@@ -283,7 +284,7 @@ function buildMonth(y, m, days) {
       <p class="callout">${pv.y >= Y0 ? `← <a href="${rel}son/${pv.y}-${pad(pv.m)}/">${pv.y}년 ${pv.m}월</a> · ` : ''}${nx.y <= Y1 ? `<a href="${rel}son/${nx.y}-${pad(nx.m)}/">${nx.y}년 ${nx.m}월</a> → · ` : ''}<a href="${rel}jeolgi/${y}/">${y}년 절기 전체</a> · <a href="${rel}lunar/">음력 기념일 변환</a></p>
     </div>
 
-    <div class="ga-cta">
+    ${coupangBox('son')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주 기준 이 달의 길일 찾기</span></a>
       <p class="form-microcopy" style="margin-top: 10px;">운세 캘린더가 손없는날과 나만의 길일이 겹치는 날을 표시해 줍니다. 캘린더 앱으로 내보낼 수도 있습니다.</p>
     </div>
@@ -461,7 +462,7 @@ function buildSonIndex(byMonth) {
       <p>모두의 손없는날이 나의 길일은 아닙니다. 내 일지와 충이 드는 날은 손없는날이어도 흔들립니다. <a href="${rel}">내 사주를 넣으면</a> 손없는날 중 나에게도 트이는 날만 골라 드립니다.</p>
       <p class="callout"><a href="${rel}day/">날짜별 일진</a> · <a href="${rel}jeolgi/${Y0}/">${Y0}년 절기</a> · <a href="${rel}lunar/">음력 기념일 변환</a></p>
     </div>
-    <div class="ga-cta">
+    ${coupangBox('son')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주 기준 길일 찾기</span></a>
     </div>
   </article>`;
