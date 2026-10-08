@@ -3,7 +3,7 @@
  * docs/index.html 의 data-report-promo 두 곳에서 hidden 을 지운다. Threads 매일 글(daily-story)은 다음 실행부터 따라간다.
  * 생성기·서버는 공개 저장소 밖(SAZU-REPORT)에 있다. */
 export const REPORT = {
-  live: false,
+  live: true,
   ko: '/report/2027/',
   en: '/en/report/2027/',
   price: '9,900원',
