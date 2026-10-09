@@ -6,7 +6,7 @@
  * 사용: node tools/bing-submit.mjs [--dry]   (--dry: 고른 주소만 보여 주고 보내지 않음) */
 import fs from 'node:fs';
 
-const KEY = process.env.BING_API_KEY || '';
+const KEY = (process.env.BING_API_KEY || '').trim();
 const DRY = process.argv.includes('--dry');
 const API = 'https://ssl.bing.com/webmaster/api.svc/json';
 const SITES = ['https://sajucheop.com/', 'https://dream.sajucheop.com/', 'http://saengil.sajucheop.com/', 'https://donpyo.com/', 'https://bodyzip.com/'];
