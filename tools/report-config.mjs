@@ -1,6 +1,6 @@
 /* 유료 2027 개인 리포트 — 출시 스위치와 홍보 상자
  * 출시하는 날: live 를 true 로 바꾸고 build-report-page·build-2027·build-tojeong·build-en-zodiac 를 다시 실행,
- * docs/index.html 의 data-report-promo 두 곳에서 hidden 을 지운다. Threads 매일 글(daily-story)은 다음 실행부터 따라간다.
+ * docs/index.html 의 data-report-promo 두 곳에서 hidden 을 지운다. Threads 글에는 리포트를 직접 올리지 않는다(사용자 2026-10-11).
  * 생성기·서버는 공개 저장소 밖(SAZU-REPORT)에 있다. */
 export const REPORT = {
   live: true,
