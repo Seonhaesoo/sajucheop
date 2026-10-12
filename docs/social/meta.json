@@ -1,12 +1,9 @@
 {
-  "seq": 16,
-  "type": "viral",
-  "date": "2026-10-09",
-  "slug": "teuk-gito",
-  "title": "기토 특",
+  "seq": 17,
+  "type": "hook",
+  "date": "2026-10-12",
+  "slug": "hook-hap-pairs",
+  "title": "만나면 헤어지기 힘든 조합 5",
   "cards": 7,
-  "en": {
-    "title": "Fertile Field things",
-    "cards": 7
-  }
+  "en": null
 }
