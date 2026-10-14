@@ -1,9 +1,12 @@
 {
-  "seq": 17,
-  "type": "hook",
-  "date": "2026-10-12",
-  "slug": "hook-hap-pairs",
-  "title": "만나면 헤어지기 힘든 조합 5",
+  "seq": 18,
+  "type": "edu",
+  "date": "2026-10-14",
+  "slug": "no-birth-time",
+  "title": "태어난 시간을 몰라도 됩니다",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "You don't need your birth hour",
+    "cards": 7
+  }
 }
