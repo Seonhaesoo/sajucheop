@@ -2868,3 +2868,39 @@ body.invite-mode .resume-chip { display: none !important; }
 #view-home .footer-row { flex-direction: column; align-items: flex-start; gap: 14px; padding-top: 18px; border-top: 1px solid var(--hairline); }
 #view-home .footer-row .footer-links { margin-left: 0; justify-content: flex-start; gap: 6px 16px; }
 #view-home .footer-note { margin-top: 12px; font-size: 12px; color: var(--faint); word-break: keep-all; }
+
+/* ===== PC 첫 화면 (2026-10-16, 시안 A · 서첩 2단) — 1024px 이상에서만 넓게. 휴대폰은 묶음 div 가 display:contents 라 순서·모양 그대로 ===== */
+.home-top, .ht-left, .ht-right, .home-mid, .hm-a, .hm-b, .hm-c, .hi-col { display: contents; }
+.desk-nav, .desk-trust { display: none; }
+@media (min-width: 1024px) {
+  .app:has(#view-home.active) { max-width: 1240px; }
+  #view-home .site-header { padding: 14px 40px; }
+  .desk-nav { display: flex; gap: 26px; margin: 0 auto 0 36px; }
+  .desk-nav a { font-size: 15px; font-weight: 500; color: var(--ink); text-decoration: none; }
+  .desk-nav a:hover { color: var(--seal); }
+  .desk-nav a[aria-current] { font-weight: 700; }
+  .desk-nav .dn-season { color: var(--seal); }
+  .home-top { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(400px, 0.92fr); gap: 56px; align-items: start; padding: 24px 40px 64px; border-top: 1px solid var(--hairline); }
+  .ht-left, .ht-right { display: flex; flex-direction: column; min-width: 0; }
+  .ht-right { gap: 14px; padding-top: 28px; }
+  #view-home .hero { padding: 48px 0 0; }
+  #view-home .hero-overline { font-size: 13px; }
+  #view-home .hero-title { font-size: 56px; line-height: 1.26; }
+  #view-home .hero-sub { font-size: 18px; line-height: 1.75; }
+  #view-home .hero-vertical { display: none; }
+  .desk-trust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; list-style: none; margin: 40px 0 0; padding: 22px 0 0; border-top: 1px solid var(--line); }
+  .desk-trust li { font-size: 14px; line-height: 1.6; color: var(--ink-body); }
+  .desk-trust b { display: block; font-size: 15px; color: var(--ink); }
+  #view-home .trust { display: none; }
+  #view-home .ht-right .form-card, #view-home .ht-right .invite-banner, #view-home .ht-right .resume-chip { margin-left: 0; margin-right: 0; margin-top: 0; }
+  #view-home .ht-right .form-card { box-shadow: 0 18px 40px -24px rgba(33, 28, 21, 0.35); }
+  .home-mid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; align-items: start; padding: 0 40px; }
+  .hm-a, .hm-b, .hm-c { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+  #view-home .home-mid .daily-bit, #view-home .home-mid .book-strip, #view-home .home-mid .gh-home, #view-home .home-mid .home-push, #view-home .home-mid .home-report { margin: 0; }
+  #view-home .home-intro { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; margin: 64px 40px 0; }
+  #view-home .home-intro > .hi-label, #view-home .home-intro > h2, #view-home .home-intro > .hi-steps, #view-home .home-intro > .hi-about { grid-column: 1 / -1; }
+  #view-home .hi-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+  .hi-col { display: block; min-width: 0; }
+  #view-home .site-footer { padding: 36px 40px 44px; }
+  #view-home .footer-links-wide { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}

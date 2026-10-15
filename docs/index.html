@@ -61,6 +61,15 @@
         </svg>
         <div class="brand-name">사주첩</div>
       </div>
+      <nav class="desk-nav" aria-label="주 메뉴">
+        <a href="./" aria-current="page">사주 보기</a>
+        <a href="2027/" class="dn-season">2027 신년운세</a>
+        <a href="today/ddi/">띠별 운세</a>
+        <a href="ddi-gunghap/">궁합</a>
+        <a href="ilju/">일주 사전</a>
+        <a href="tojeong/">토정비결</a>
+        <a href="guide/">서재</a>
+      </nav>
       <div class="menu-wrap">
         <a class="lang-chip" href="en/" aria-label="English version">EN</a>
         <a class="lang-chip" href="ja/" aria-label="日本語版" hreflang="ja">JA</a>
@@ -105,6 +114,8 @@
       </div>
     </header>
 
+    <div class="home-top">
+    <div class="ht-left">
     <div class="hero rise">
       <div class="hero-ink" aria-hidden="true">
         <span class="hi-sun"></span>
@@ -121,6 +132,13 @@
         <div class="v-rule"></div>
       </div>
     </div>
+    <ul class="desk-trust" aria-label="사주첩의 계산 기준">
+      <li><b>절기 시각까지</b>달과 해의 경계를 천문 계산으로</li>
+      <li><b>진태양시 보정</b>1954~61년 표준시 변경도 반영</li>
+      <li><b>기기 안에서만</b>생년월일은 서버로 가지 않아요</li>
+    </ul>
+    </div>
+    <div class="ht-right">
 
     <div class="invite-banner rise" id="invite-banner" hidden>
       <span class="ib-mark" aria-hidden="true">
@@ -220,7 +238,11 @@
       </div>
 
     </form>
+    </div>
+    </div>
 
+    <div class="home-mid">
+    <div class="hm-a">
     <!-- 오늘의 한 문장 — 매일 바뀌는 명리 한 조각 -->
     <div class="daily-bit rise" id="daily-bit" hidden>
       <div class="db-rule" aria-hidden="true"></div>
@@ -246,6 +268,8 @@
       <div class="book-cards" id="book-cards"></div>
     </div>
 
+    </div>
+    <div class="hm-b">
     <!-- 더 읽기 — 궁합·이번 주 상대·2027·띠별 운세·꿈해몽 (A 개편: 카드 대신 가는 줄 목록) -->
     <div class="card rise gh-home" id="gh-home">
       <p class="home-sec-label">더 읽기</p>
@@ -292,6 +316,8 @@
       </a>
     </div>
 
+    </div>
+    <div class="hm-c">
     <div class="push-box rise home-push" data-push><p class="push-text"><b>🔔 매일 내가 정한 시간에 내 운세를 알림으로 받기</b></p></div>
 
     <!-- 2027 리포트 — 홈 (A 개편) -->
@@ -299,6 +325,8 @@
       <span class="hr-cover" aria-hidden="true"><i></i><b>2027</b><small>개인 신년 리포트</small></span>
       <span class="hr-text"><em>새 리포트</em><b>내 사주로 쓴 2027 리포트</b><span>35쪽 · 365일 좋은 날 달력 · 9,900원</span><u>샘플 보고 결정하기</u></span>
     </a>
+    </div>
+    </div>
 
     <div class="trust rise">
       <div class="trust-item">
@@ -334,6 +362,7 @@
         <li><i aria-hidden="true">三</i><div><b>풀이마다 근거를 보여 줘요</b><p>결과는 명식과 오행 분포에서 시작해 십성, 10년 단위 대운, 오늘의 운세, 궁합, 좋은 날로 이어져요. 풀이 문장은 명리학의 규칙(십성·합충·신강약)을 조건에 따라 옮긴 것이고, 근거가 된 글자를 함께 보여 줘요.</p></div></li>
       </ol>
 
+      <div class="hi-col">
       <h3 class="hi-sub">처음이라면 읽어 볼 글</h3>
       <ul class="hi-links">
         <li><a href="guide/saju-basics.html"><span><b>사주팔자 보는 법</b><small>처음이라면 이 순서대로</small></span></a></li>
@@ -343,12 +372,15 @@
         <li><a href="guide/dohwasal.html"><span><b>도화살·역마살·화개살</b><small>겁먹지 않고 읽기</small></span></a></li>
       </ul>
       <a class="hi-more" href="guide/">서재 전체 보기</a>
+      </div>
+      <div class="hi-col">
 
       <h3 class="hi-sub">자주 묻는 질문</h3>
       <div class="hi-faq">
         <details><summary>태어난 시간을 모르면요?</summary><p>'시간을 몰라요'를 누르면 년·월·일 세 기둥으로 풀어요. 일간과 오행, 대운의 큰 흐름은 그대로 볼 수 있어요.</p></details>
         <details><summary>띠가 설날 기준과 다르게 나와요.</summary><p>사주는 입춘을 새해로 봐요. 1월이나 2월 초에 태어났다면 띠와 년주가 전년도로 나올 수 있어요. <a href="guide/jeolgi.html">왜 입춘인가</a></p></details>
         <details><summary>궁합 링크에 내 정보가 저장되나요?</summary><p>생년월일은 링크 주소 끝(#)에만 담기고 서버에는 남지 않아요.</p></details>
+      </div>
       </div>
       <a class="hi-about" href="about/"><b>사주첩 소개</b><small>계산 기준과 풀이 원칙</small></a>
     </section>
