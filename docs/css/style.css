@@ -2904,3 +2904,12 @@ body.invite-mode .resume-chip { display: none !important; }
   #view-home .site-footer { padding: 36px 40px 44px; }
   #view-home .footer-links-wide { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
+
+/* ===== PC 결과·안쪽 화면 (2026-10-16) — 1024px 이상에서 읽기 폭 760px. 첫 화면은 위의 1,240px ===== */
+@media (min-width: 1024px) {
+  .app:has(.view.active:not(#view-home)) { max-width: 760px; }
+  /* 그래프는 폭에 맞춰 커지는 SVG 라 글자가 너무 커지지 않게 가운데 600px 까지만 */
+  #d-graph { max-width: 600px; margin: 0 auto; }
+  /* 사주 계산기 밖의 페이지(2027·띠별 운세·서재·일주 사전 등)도 PC 에서 같은 읽기 폭 */
+  .app:not(:has(.view)) { max-width: 760px; }
+}
