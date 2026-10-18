@@ -1,12 +1,9 @@
 {
-  "seq": 19,
-  "type": "viral",
-  "date": "2026-10-16",
-  "slug": "teuk-gyeonggeum",
-  "title": "경금 특",
+  "seq": 20,
+  "type": "hook",
+  "date": "2026-10-19",
+  "slug": "hook-chung-pairs",
+  "title": "매일 싸우는데 못 헤어지는 조합",
   "cards": 7,
-  "en": {
-    "title": "Raw Blade things",
-    "cards": 7
-  }
+  "en": null
 }
