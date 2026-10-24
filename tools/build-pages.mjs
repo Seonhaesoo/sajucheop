@@ -312,10 +312,9 @@ function buildTerm(y, t, list) {
   const eun = (t.name.charCodeAt(t.name.length - 1) - 0xAC00) % 28 ? '은' : '는';   /* 입춘은 · 한로는 */
   const title = `${y}년 ${t.name}${eun} ${t.m}월 ${t.d}일(${wdShort}) — 뜻·시각·풍습·먹는 음식`;
   const desc = `${y}년 ${t.name}(${t.han})${eun} ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]} ${pad(t.hh)}:${pad(t.mm)}에 듭니다. ${t.desc} 이 무렵 풍습과 먹는 음식(${lore.food.replace(/\.$/, '')}), 속담, 사주에서 ${t.name} 절기가 하는 일까지 쉬운 말로.`;
+  /* '무슨 뜻'·'무엇을 먹나요'는 본문 첫 문단·풍습·음식 절을 그대로 되풀이해 뺐다 (2026-10-24 감사: 틀 반복 문장) */
   const faq = [
     [`${y}년 ${t.name}${eun} 언제인가요?`, `${y}년 ${t.m}월 ${t.d}일 ${WD[weekday(t.y, t.m, t.d)]}이고, 정확한 시각은 ${pad(t.hh)}:${pad(t.mm)}(한국 시간)입니다. 절기는 태양의 위치(황경 ${t.i * 15}°)로 정해져서 해마다 하루쯤 앞뒤로 움직입니다.`],
-    [`${t.name}${eun} 무슨 뜻인가요?`, `${t.desc} ${lore.nature}`],
-    [`${t.name}에는 무엇을 먹나요?`, `${lore.food} ${lore.custom.split(/(?<=[.요다])\s/)[0]}`],
     [`${t.name}${eun} 사주에서 어떤 날인가요?`, t.kind === '절' ? `열두 절(節) 중 하나예요. 사주에서 달은 1일이 아니라 절이 드는 시각에 바뀌어서, ${y}년 ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)}부터 월주가 ${MONTH_BRANCH[t.month]}월로 넘어가요.${t.slug === 'ipchun' ? ' 입춘은 년주와 띠까지 바뀌는 사주의 새해예요.' : ''}` : `열두 중기(中氣) 중 하나예요. 계절의 한가운데를 알리는 절기로, 중기에는 사주의 기둥이 바뀌지 않아요.`]
   ];
   const roleHtml = t.kind === '절'

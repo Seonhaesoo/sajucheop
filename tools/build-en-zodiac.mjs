@@ -435,9 +435,11 @@ function yearPage(y) {
   const cnyBeforeIp = cmp(x.span.start, x.ip) < 0;
   const gapFrom = cnyBeforeIp ? x.span.start : x.ip, gapTo = dayBefore(cnyBeforeIp ? x.ip : x.span.start);
   const gapOne = cmp(gapFrom, gapTo) === 0;
+  /* 하루뿐이면 "Feb 3 to Feb 3" 가 되므로 "on" 으로 쓴다 */
+  const gapText = gapOne ? `on ${fmtMD(gapFrom)}` : `from ${fmtMD(gapFrom)} to ${fmtMD(gapTo)}`;
   const sajuNote = cnyBeforeIp
-    ? `A birthday from ${fmtMD(gapFrom)} to ${fmtMD(gapTo)}, ${y} is already ${an(A.name)} by Lunar New Year but still ${prev.han} (${prev.name}) in a saju chart.`
-    : `A birthday from ${fmtMD(gapFrom)}${gapOne ? '' : ` to ${fmtMD(gapTo)}`}, ${y} is already ${x.han} (${x.name}) in a saju chart but still ${an(prev.A.name)} by Lunar New Year.`;
+    ? `A birthday ${gapText}, ${y} is already ${an(A.name)} by Lunar New Year but still ${prev.han} (${prev.name}) in a saju chart.`
+    : `A birthday ${gapText}, ${y} is already ${x.han} (${x.name}) in a saju chart but still ${an(prev.A.name)} by Lunar New Year.`;
   const seollalDiff = cmp(x.seollal, x.span.start) !== 0;
   const age = (t) => t - y;
   const same60 = [y - 60, y + 60].filter((t) => t >= 1900 && t <= 2100);

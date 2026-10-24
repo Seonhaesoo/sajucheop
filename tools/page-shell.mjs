@@ -63,7 +63,7 @@ export function shell(o) {
     ? `<a href="${o.rel}en/">Chart</a><a href="${o.rel}en/guide/">Library</a><a href="${o.rel}en/about/">About</a><a href="${o.rel}en/privacy/">Privacy</a><a href="${o.rel}en/terms/">Terms</a>`
     : lang === 'ja'
       ? `<a href="${o.rel}ja/">命式計算</a><a href="${o.rel}ja/2027/">2027年の運勢</a><a href="${o.rel}en/about/">About（英語）</a><a href="${o.rel}en/privacy/">Privacy</a><a href="${o.rel}en/terms/">Terms</a><a href="${o.rel}en/">English</a><a href="${o.rel}">한국어</a>`
-      : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}about/">소개</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a><a href="https://donpyo.com/">돈표</a><a href="https://bodyzip.com/">바디집</a>`;
+      : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}about/">소개</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a>`; /* 주제가 다른 돈표·바디집은 소개 페이지에만 (2026-10-24, 사이트 전체 상호 링크가 링크 묶음으로 읽히지 않게) */
   const footerNote = o.footerNote || (lang === 'en'
     ? 'For reflection and entertainment. Important decisions are always yours to make.'
     : lang === 'ja'
