@@ -1,9 +1,12 @@
 {
-  "seq": 23,
-  "type": "hook",
-  "date": "2026-10-26",
-  "slug": "hook-goegang",
-  "title": "괴강일주면 소름 돋는 이유",
+  "seq": 24,
+  "type": "edu",
+  "date": "2026-10-28",
+  "slug": "ilgan-intro",
+  "title": "내 사주의 주인공은 따로 있습니다",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "Your chart has one main character",
+    "cards": 7
+  }
 }
