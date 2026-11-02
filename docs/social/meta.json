@@ -1,12 +1,9 @@
 {
-  "seq": 25,
-  "type": "viral",
-  "date": "2026-10-30",
-  "slug": "teuk-imsu",
-  "title": "임수 특",
+  "seq": 26,
+  "type": "hook",
+  "date": "2026-11-02",
+  "slug": "hook-yangin",
+  "title": "양인일주 특 — 병오 · 무오 · 임자",
   "cards": 7,
-  "en": {
-    "title": "Open Sea things",
-    "cards": 7
-  }
+  "en": null
 }
