@@ -5,7 +5,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
-import { shell, esc, breadcrumb } from './page-shell.mjs';
+import { shell, esc, breadcrumb, picker, PICKER_STYLE, isGoogleNoindex } from './page-shell.mjs';
 import { DDI, REL, relations, elRelation, SAMHAP_G, BANGHAP_G } from './ddi-data.mjs';
 import { YEAR_REL_SCORE, YEAR_EL_ADJ, SAMJAE_ADJ } from './newyear-2027-data.mjs';
 import { ANIMALS, EL, GEN_METAPHOR, CTL_METAPHOR, SAMHAP_EN, BANGHAP_EN, REL_EN, EL_REL_EN, gradeEn, Y27_OPENER, Y27_REL, Y27_EL, SAMJAE_EN, Y27_MONTH } from './en-zodiac-data.mjs';
@@ -20,6 +20,7 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-11', MODIFIED = '2026-09-13';
 const MODIFIED_27 = '2026-09-19';   /* /en/2027/ — lucky colors, 제목을 검색어 꼴로 (2026-09-19) */
+const MODIFIED_HUB = '2026-11-02';   /* /en/zodiac/compatibility/ only — the 144-cell linked matrix became a plain matrix + picker; trine chips are plain text (fewer links from an indexable hub to googlebot-noindexed pair pages). Pair pages unchanged */
 const MODIFIED_ZY = '2026-09-18';   /* 해 108·동물 12·궁합 78 — 맨 위 요약 표, 자주 묻는 질문 (2026-09-18) */
 const Y0 = 1924, Y1 = 2031, NOW = 2026;
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -178,7 +179,7 @@ const STYLE = `<style>
     .zd-matrix { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; min-width: 520px; }
     .zd-matrix th, .zd-matrix td { padding: 5px 2px; text-align: center; border: 1px solid var(--line-soft); }
     .zd-matrix th { font-weight: 500; color: var(--faint); font-size: 11px; }
-    .zd-matrix a { text-decoration: none; color: inherit; display: block; }
+    .zd-matrix a, .zd-matrix span { text-decoration: none; color: inherit; display: block; }
     .zd-matrix .g3 { background: #E9F3EC; } .zd-matrix .g2 { background: #F4F7F0; } .zd-matrix .g1 { background: #FBF3E6; } .zd-matrix .g0 { background: #F8E7E2; }
     .zd-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
     .zd-chips a { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: inherit; background: #FFFDF9; }
@@ -315,7 +316,14 @@ function compatIndex() {
   const url = '/en/zodiac/compatibility/', rel = '../../../';
   const cls = (s) => (s >= 85 ? 'g3' : s >= 75 ? 'g2' : s >= 62 ? 'g1' : 'g0');
   const head = ANIMALS.map((A, b) => `<th>${han(b)}<br>${A.name}</th>`).join('');
-  const rows = ANIMALS.map((A, a) => `<tr><th>${han(a)} ${A.name}</th>${ANIMALS.map((B, b) => { const s = PAIR[a + '-' + b].score; return `<td class="${cls(s)}"><a href="${rel}${pairUrl(a, b).slice(1)}" title="${A.name} × ${B.name}: ${s}">${s}</a></td>`; }).join('')}</tr>`).join('\n        ');
+  const rows = ANIMALS.map((A, a) => `<tr><th>${han(a)} ${A.name}</th>${ANIMALS.map((B, b) => { const s = PAIR[a + '-' + b].score; return `<td class="${cls(s)}"><span title="${A.name} × ${B.name}: ${s}">${s}</span></td>`; }).join('')}</tr>`).join('\n        ');
+  /* 2026-11-02: the 144 matrix cells no longer link (all pair pages are googlebot-noindexed); a picker takes people to the pair, and only the six harmonies and six clashes keep direct links */
+  const pick = picker({ id: 'zd-pick', title: 'Pick two signs', button: 'Read the pairing',
+    selects: [{ name: 'a', label: 'Your sign', options: ANIMALS.map((A, b) => [String(b), `${A.name} ${han(b)}`]) }, { name: 'b', label: 'Their sign', options: ANIMALS.map((A, b) => [String(b), `${A.name} ${han(b)}`]) }],
+    go: `(function(){var SL=${JSON.stringify(ANIMALS.map((A) => A.slug))};var a=+v.a,b=+v.b;return './'+SL[Math.min(a,b)]+'-'+SL[Math.max(a,b)]+'/';})()`,
+    note: `The chart is symmetric, so either order opens the same page. Not sure of a sign? The <a href="${rel}en/zodiac/">zodiac calculator</a> checks the Lunar New Year boundary for you.`,
+    fallback: 'URLs follow /en/zodiac/compatibility/sign-sign/ in cycle order, for example /en/zodiac/compatibility/rat-ox/.' });
+  const pairsText = (key) => { const out = []; for (let a = 0; a < 12; a++) for (let b = a + 1; b < 12; b++) if (PAIR[a + '-' + b].rels.includes(key)) out.push(`${ANIMALS[a].name} & ${ANIMALS[b].name}`); return out.join(' · '); };
   const pairsOf = (key) => { const out = []; for (let a = 0; a < 12; a++) for (let b = a + 1; b < 12; b++) if (PAIR[a + '-' + b].rels.includes(key)) out.push(`<a href="${rel}${pairUrl(a, b).slice(1)}">${ANIMALS[a].name} & ${ANIMALS[b].name}</a>`); return out.join(''); };
   const title = 'Chinese Zodiac Compatibility Chart — All 78 Pairings Scored';
   const desc = 'Every Chinese zodiac pairing scored out of 100: secret friends, trines, clashes and harms between the twelve animals, with a reading for each pair.';
@@ -323,19 +331,20 @@ function compatIndex() {
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}en/zodiac/" style="color: inherit; text-decoration: none;">Chinese zodiac</a> · Compatibility</div>
     <h1 class="ga-title">Chinese zodiac compatibility — <br>twelve signs, seventy-eight pairings</h1>
-    <p class="ga-meta">Rows and columns are birth-year animals · green = strong match · red = clashing pair · tap a score for the full reading</p>
+    <p class="ga-meta">Rows and columns are birth-year animals · green = strong match · red = clashing pair · pick two signs below for the full reading</p>
     <p class="ga-lead">Zodiac compatibility compares the branches of two birth years. Branches that harmonize pull people together; branches that clash or punish rub against each other. The score adds the elements of the two animals on top — the same numbers our Korean 띠 궁합 table uses.</p>
     <div class="ga-body">
       <div class="zd-wrap"><table class="zd-matrix">
         <tr><th></th>${head}</tr>
         ${rows}
       </table></div>
+      ${pick}
       <h2>Secret friends — Six Harmony (六合)</h2>
       <p>Six pairs of branches that recognize each other as partners. Tradition counts them among the best matches for marriage.</p>
       <div class="zd-chips">${pairsOf('yukhap')}</div>
       <h2>Natural allies — the four trines (三合)</h2>
       <p>${SAMHAP_EN.map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join('; ')}. Signs in the same trine face the same direction and multiply each other’s strength.</p>
-      <div class="zd-chips">${pairsOf('samhap')}</div>
+      <p>${pairsText('samhap')}.</p>
       <h2>Opposites — the six clashes (沖)</h2>
       <p>Signs directly across the wheel from each other. Strong chemistry, frequent collisions — a relationship that works through a division of labor rather than sameness.</p>
       <div class="zd-chips">${pairsOf('chung')}</div>
@@ -348,8 +357,8 @@ function compatIndex() {
       <a class="btn-primary" href="${rel}en/match/"><span class="seal-dot" aria-hidden="true"></span><span>Compare two full birth charts</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: 'Chinese zodiac compatibility — 78 pairings', extraHead: STYLE + alt(url, '/ddi-gunghap/'),
-    jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], ['Compatibility', url]]), article(url, title, desc)], body }));
+  write(url, shell({ rel, lang: 'en', title, desc, canonical: SITE + url, nav: NAV(rel), ogTitle: 'Chinese zodiac compatibility — 78 pairings', extraHead: STYLE + PICKER_STYLE + alt(url, '/ddi-gunghap/'),
+    jsonld: [crumbs([['Chinese Zodiac', '/en/zodiac/'], ['Compatibility', url]]), article(url, title, desc, MODIFIED_HUB)], body }));
 }
 
 /* ---------- animal pages ---------- */
@@ -517,7 +526,8 @@ function hub() {
   const data = [];
   for (let y = Y0; y <= Y1 + 1; y++) { const x = YI[y]; data.push([y, iso(x.span.start), x.b, x.s, iso(x.ip)]); }
   const cells = ANIMALS.map((A, b) => { const ys = yearsOf(b).filter((x) => x.y >= 1960).map((x) => x.y); return `<a href="${rel}${aUrl(b).slice(1)}"${b === YI[NOW].b ? ' class="cur"' : ''}><b>${han(b)}</b><span>${A.name}</span><small>${ys.slice(-4).join(' ')}</small></a>`; }).join('');
-  const rows = []; for (let y = Y1; y >= Y0; y--) { const x = YI[y]; rows.push(`<tr${y === NOW ? ' class="cur"' : ''}><td><a href="${rel}${yUrl(y).slice(1)}">${y}</a></td><td>${x.name} <small>${x.han}</small></td><td>${fmtMD(x.span.start)}</td><td>${fmtD(x.span.end)}</td></tr>`); }
+  /* 2026-11-02: years before 1950 and after 2026 are googlebot-noindexed, so the hub lists them without links (each sign page still links all of its years) */
+  const rows = []; for (let y = Y1; y >= Y0; y--) { const x = YI[y]; rows.push(`<tr${y === NOW ? ' class="cur"' : ''}><td>${isGoogleNoindex(yUrl(y)) ? String(y) : `<a href="${rel}${yUrl(y).slice(1)}">${y}</a>`}</td><td>${x.name} <small>${x.han}</small></td><td>${fmtMD(x.span.start)}</td><td>${fmtD(x.span.end)}</td></tr>`); }
   const title = 'Chinese Zodiac Calculator: What Is My Animal Sign?';
   const desc = 'Find your Chinese zodiac animal and element from your birth date, using the real Lunar New Year boundary, not January 1. Years 1924–2031 and every sign.';
   const body = `
@@ -856,7 +866,7 @@ ANIMALS.forEach((_, b) => year27Page(b));
 luckyColors27();
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-zodiac.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${(/^\/en\/zodiac\/(year\/\d{4}|[a-z]+|compatibility\/[a-z]+-[a-z]+)\/$/.test(u) && u !== '/en/zodiac/compatibility/') ? MODIFIED_ZY : u.startsWith('/en/2027/') ? MODIFIED_27 : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${u === '/en/zodiac/compatibility/' ? MODIFIED_HUB : (/^\/en\/zodiac\/(year\/\d{4}|[a-z]+|compatibility\/[a-z]+-[a-z]+)\/$/.test(u) && u !== '/en/zodiac/compatibility/') ? MODIFIED_ZY : u.startsWith('/en/2027/') ? MODIFIED_27 : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-zodiac.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-zodiac.xml\n');

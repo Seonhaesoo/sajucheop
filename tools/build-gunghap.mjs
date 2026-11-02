@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
-import { shell, esc, breadcrumb } from './page-shell.mjs';
+import { shell, esc, breadcrumb, picker, PICKER_STYLE } from './page-shell.mjs';
 import { josa } from './ddi-data.mjs';
 import { DAY_MASTERS } from './en-daymaster-data.mjs';
 
@@ -13,6 +13,7 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-05';
 const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod */
+const MODIFIED_HUB = '2026-11-02';   /* /gunghap/ 인덱스만 — 100칸 링크 표를 고르기 상자 + 천간합 10쌍 링크로 (구글 제외 페이지로 가는 링크 묶음 줄이기). 짝 100장은 그대로 */
 const SLUG = ['gapmok', 'eulmok', 'byeonghwa', 'jeonghwa', 'muto', 'gito', 'gyeonggeum', 'singeum', 'imsu', 'gyesu'];
 const GUIDE = SLUG.map((s) => 'ilgan-' + s);
 const STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
@@ -121,12 +122,15 @@ const STYLE = `<style>
     .gp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
     .gp-table th, .gp-table td { padding: 5px 2px; text-align: center; border-bottom: 1px solid var(--line-soft); }
     .gp-table th { font-family: 'Noto Serif KR', serif; font-weight: 600; color: var(--muted); }
-    .gp-table td a { display: block; text-decoration: none; color: inherit; padding: 4px 0; border-radius: 6px; }
-    .gp-table td a.hap { background: #FBEAE7; color: var(--seal); font-weight: 700; }
-    .gp-table td a.chung { background: #EFEAE0; color: var(--ink); }
-    .gp-table td a.saeng { background: #EEF4EA; }
-    .gp-table td a.bihwa { background: #F3EEE4; }
-    .gp-table td a.geuk { color: var(--faint); }
+    .gp-table td a, .gp-table td span { display: block; text-decoration: none; color: inherit; padding: 4px 0; border-radius: 6px; }
+    .gp-table td .hap { background: #FBEAE7; color: var(--seal); font-weight: 700; }
+    .gp-table td .chung { background: #EFEAE0; color: var(--ink); }
+    .gp-table td .saeng { background: #EEF4EA; }
+    .gp-table td .bihwa { background: #F3EEE4; }
+    .gp-table td .geuk { color: var(--faint); }
+    .gp-hap { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+    .gp-hap a { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: inherit; background: #FFFDF9; }
+    .gp-hap a small { color: var(--faint); }
   </style>`;
 const NAV = (rel) => [{ href: rel, label: '사주 보기' }, { href: rel + 'ilju/', label: '일주 사전' }, { href: rel + 'guide/', label: '서재' }];
 
@@ -215,7 +219,15 @@ for (let a = 0; a < 10; a++) {
   const rel = '../';
   const head = M.STEMS.map((s) => `<th>${s.han}<br><span style="font-size: 10px; font-weight: 400;">${s.kor}${s.el}</span></th>`).join('');
   const rows = M.STEMS.map((sa, a) => `<tr><th>${sa.han}<br><span style="font-size: 10px; font-weight: 400;">${sa.kor}${sa.el}</span></th>` +
-    M.STEMS.map((sb, b) => { const k = relOf(a, b).key; const cls = k === 'hap' ? 'hap' : k === 'chung' ? 'chung' : k === 'bihwa' ? 'bihwa' : k.startsWith('saeng') ? 'saeng' : 'geuk'; const w = { hap: '합', chung: '충', bihwa: '비화', saeng: '생', geuk: '극' }[cls]; return `<td><a class="${cls}" href="${rel}gunghap/${SLUG[a]}-${SLUG[b]}/" title="${sa.kor}${sa.el} × ${sb.kor}${sb.el}">${w}</a></td>`; }).join('') + '</tr>').join('\n        ');
+    M.STEMS.map((sb, b) => { const k = relOf(a, b).key; const cls = k === 'hap' ? 'hap' : k === 'chung' ? 'chung' : k === 'bihwa' ? 'bihwa' : k.startsWith('saeng') ? 'saeng' : 'geuk'; const w = { hap: '합', chung: '충', bihwa: '비화', saeng: '생', geuk: '극' }[cls]; return `<td><span class="${cls}" title="${sa.kor}${sa.el} × ${sb.kor}${sb.el}">${w}</span></td>`; }).join('') + '</tr>').join('\n        ');
+  /* 2026-11-02: 표 100칸의 링크를 빼고(구글 제외 짝 페이지로 가는 링크 묶음) 고르기 상자와 천간합 다섯 쌍(양쪽 시점 10장) 링크만 둔다 */
+  const stemOpts = M.STEMS.map((s, k) => [SLUG[k], `${s.kor}${s.el}(${s.han})`]);
+  const pick = picker({ id: 'gp-pick', title: '두 사람의 일간으로 조합 보기', button: '궁합 보기',
+    selects: [{ name: 'me', label: '나의 일간', options: stemOpts }, { name: 'them', label: '상대의 일간', options: stemOpts }],
+    go: `'./' + v.me + '-' + v.them + '/'`,
+    note: `일간을 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나옵니다. 조합 100가지는 모두 페이지가 있고, 상대 시점은 두 일간을 바꿔 고르면 됩니다.`,
+    fallback: '주소는 /gunghap/나의일간-상대일간/ 꼴입니다. 예: /gunghap/gapmok-gito/' });
+  const hapLinks = M.STEMS.map((sa, a) => { const b = STEM_HAP[a]; const hwa = HAPHWA[[Math.min(a, b), Math.max(a, b)].join('')]; return `<a href="${rel}gunghap/${SLUG[a]}-${SLUG[b]}/">${sa.kor}${sa.el} × ${M.STEMS[b].kor}${M.STEMS[b].el} <small>· ${hwa}로 화</small></a>`; }).join('');
   const title = '일간 궁합표 — 갑목·을목·병화… 열 가지 일간의 100가지 조합';
   const desc = '나의 일간과 상대의 일간으로 보는 궁합 100가지. 천간의 합·충·상생·비화·상극과 서로에게 드는 십성으로 첫인상, 연애, 일, 오래 가는 법을 풀었습니다.';
   const body = `
@@ -231,21 +243,25 @@ for (let a = 0; a < 10; a++) {
         ${rows}
       </table>
       </div>
-      <p>표의 칸을 누르면 그 조합의 첫인상·연애·일·조언이 열립니다. 같은 조합이라도 <b>내 시점</b>과 <b>상대 시점</b>이 다르게 읽히니, 두 페이지를 나란히 보세요.</p>
+      <p>표는 관계의 종류만 보여 줍니다. 아래에서 두 일간을 고르면 그 조합의 첫인상·연애·일·조언이 열립니다. 같은 조합이라도 <b>내 시점</b>과 <b>상대 시점</b>이 다르게 읽히니, 두 페이지를 나란히 보세요.</p>
+      ${pick}
+      <h2>천간합 — 열 개 중 서로 맞물리는 다섯 쌍</h2>
+      <p>갑기·을경·병신·정임·무계는 만나면 새 오행으로 화(化)하는 짝입니다. 가장 많이 찾는 조합이라 바로 가는 길을 두었습니다.</p>
+      <div class="gp-hap">${hapLinks}</div>
       <p class="callout"><a href="${rel}guide/hapchung.html">합과 충이란</a> · <a href="${rel}guide/sipseong.html">십성 한눈에</a> · <a href="${rel}ilju/">60일주 사전</a></p>
     </div>
     <div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 실제 궁합 보기</span></a>
     </div>
   </article>`;
-  write('gunghap', shell({ rel, title, desc, canonical: SITE + '/gunghap/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/gunghap/">
+  write('gunghap', shell({ rel, title, desc, canonical: SITE + '/gunghap/', nav: NAV(rel), extraHead: STYLE + PICKER_STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/gunghap/">
   <link rel="alternate" hreflang="ja" href="${SITE}/ja/match/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/compatibility/">`, ogTitle: '일간 궁합표 100',
     jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '일간 궁합', url: SITE + '/gunghap/' }]), body }));
   urls.unshift(SITE + '/gunghap/');
 }
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-gunghap.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${u === SITE + '/gunghap/' ? MODIFIED_HUB : MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-gunghap.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-gunghap.xml\n');

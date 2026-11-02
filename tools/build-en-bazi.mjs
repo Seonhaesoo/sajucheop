@@ -2,13 +2,57 @@
  * Prose: tools/en-bazi-text.mjs · logic: docs/js/en-bazi.js (hand-written). Listed in docs/sitemap.xml.  Usage: node tools/build-en-bazi.mjs */
 import fs from 'node:fs';
 import path from 'node:path';
-import { ROOT_DIR } from './engine.mjs';
+import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { TEXT } from './en-bazi-text.mjs';
+import { TEN_GOD_EN, STEM_PINYIN, BRANCH_PINYIN, STEM_EN, BRANCH_ANIMAL } from './en-ilju-data.mjs';
 
+const { M, I } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
-const MODIFIED = '2026-09-15';
+const MODIFIED = '2026-11-02';   /* 2026-11-02: static worked example (the form's default birth data run through the engine at build time) so the page has a real chart without JavaScript — before: 2026-09-15 */
+
+/* ---------- worked example — the form's default input (15 June 1990, 12:00, UTC+8, female, no solar-time correction) ---------- */
+const EX = { y: 1990, m: 6, d: 15, hh: 12, mm: 0, tz: 480, gender: 'F' };
+const ex = M.compute({ year: EX.y, month: EX.m, day: EX.d, hour: EX.hh, minute: EX.mm, gender: EX.gender, applySolarTime: false, tzOffsetMinutes: EX.tz });
+const P = ex.pillars, dm = P.day.stem;
+const tg = (k) => TEN_GOD_EN[k].name;
+const stemCell = (s) => `<td class="han">${M.STEMS[s].han}<small>${STEM_PINYIN[s]} · ${STEM_EN[s]}</small></td>`;
+const branchCell = (b) => `<td class="han">${M.BRANCHES[b].han}<small>${BRANCH_PINYIN[b]} · ${BRANCH_ANIMAL[b]}</small></td>`;
+const hiddenCell = (b) => { const h = M.JIJANGGAN[b]; return `<td>${h.map((s, i) => (i === h.length - 1 ? `<b>${M.STEMS[s].han}</b>` : M.STEMS[s].han)).join(' ')}<small style="display:block;color:var(--faint);font-size:11px;">main ${STEM_PINYIN[h[h.length - 1]]} → ${tg(M.branchSipseong(dm, b))}</small></td>`; };
+const cols = [['Year', P.year, ex.sipseong.yearStem], ['Month', P.month, ex.sipseong.monthStem], ['Day', P.day, 'Day Master'], ['Hour', P.hour, ex.sipseong.hourStem]];
+const EL_EN = { '목': 'Wood', '화': 'Fire', '토': 'Earth', '금': 'Metal', '수': 'Water' };
+const elLine = ['목', '화', '토', '금', '수'].map((k) => `${EL_EN[k]} ${ex.elements[k] || 0}`).join(' · ');
+const STRENGTH_EN = { '신강': 'strong', '중화': 'balanced', '신약': 'weak' };
+/* the jie that opened the example's month and the one that closes it — engine values in the birthplace's zone (no published table for 1990) */
+const jieAt = (deg, approxJd) => I.findTermJd(deg, approxJd - 20, approxJd + 20);
+const toZone = (jd) => { const t = jd - I.JDN_EPOCH + 0.5 + EX.tz / 1440, dn = Math.floor(t), c = I.civilFromDays(dn), mins = Math.round((t - dn) * 1440); return { ...c, hh: Math.floor(mins / 60), mm: mins % 60 }; };
+const birthJd = I.daysFromCivil(EX.y, EX.m, EX.d) + I.JDN_EPOCH - 0.5 + (EX.hh * 60 + EX.mm - EX.tz) / 1440;
+const monthStartDeg = (315 + ex.monthIdx * 30) % 360;
+const mzJd = jieAt(monthStartDeg, birthJd), nextJd = jieAt((monthStartDeg + 30) % 360, birthJd + 30);
+const mz = toZone(mzJd), nx = toZone(nextJd);
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const fmt = (c) => `${c.d} ${MON[c.m - 1]} ${c.y}, ${String(c.hh).padStart(2, '0')}:${String(c.mm).padStart(2, '0')}`;
+const TERM_EN = ['Li Chun 立春', 'Jing Zhe 驚蟄', 'Qing Ming 清明', 'Li Xia 立夏', 'Mang Zhong 芒種', 'Xiao Shu 小暑', 'Li Qiu 立秋', 'Bai Lu 白露', 'Han Lu 寒露', 'Li Dong 立冬', 'Da Xue 大雪', 'Xiao Han 小寒'];
+const luck = ex.daeun.list.slice(0, 4);
+const exampleHtml = `
+      <h2>A worked example</h2>
+      <p>This is what the calculator returns for its default entry — a woman born on ${EX.d} June ${EX.y} at ${String(EX.hh).padStart(2, '0')}:${String(EX.mm).padStart(2, '0')} in the UTC+8 zone, without the solar-time correction. The numbers below were produced by the same engine that runs in your browser, so you can check your own result against them.</p>
+      <div style="overflow-x: auto;"><table class="bz-table">
+        <tr><th></th>${cols.map(([n]) => `<th>${n}</th>`).join('')}</tr>
+        <tr><th>Ten God of the stem</th>${cols.map(([, , k]) => `<td>${k === 'Day Master' ? '<b>Day Master</b>' : tg(k)}</td>`).join('')}</tr>
+        <tr><th>Heavenly Stem</th>${cols.map(([, p]) => stemCell(p.stem)).join('')}</tr>
+        <tr><th>Earthly Branch</th>${cols.map(([, p]) => branchCell(p.branch)).join('')}</tr>
+        <tr><th>Hidden stems</th>${cols.map(([, p]) => hiddenCell(p.branch)).join('')}</tr>
+      </table></div>
+      <ul>
+        <li><b>Day Master</b>: ${M.STEMS[dm].han} ${STEM_PINYIN[dm]}, ${STEM_EN[dm]}. Counting the stems and the main hidden stem of each branch, the chart holds ${elLine} — the Day Master is <b>${STRENGTH_EN[ex.strength.label]}</b> (${Math.round(ex.strength.ratio * 100)}% of the other characters support it), born in ${ex.season.name === '여름' ? 'summer' : ex.season.name === '봄' ? 'spring' : ex.season.name === '가을' ? 'autumn' : 'winter'}, when Fire is in season.</li>
+        <li><b>Why the month is ${M.BRANCHES[P.month.branch].han} ${BRANCH_PINYIN[P.month.branch]}</b>: the Sun reached ${monthStartDeg}° of longitude (${TERM_EN[ex.monthIdx]}) on ${fmt(mz)} local time, and the next jie (${TERM_EN[(ex.monthIdx + 1) % 12]}) came on ${fmt(nx)}. Any birth between those two moments shares this month pillar; the calendar month is irrelevant.</li>
+        <li><b>Why the year is ${M.STEMS[P.year.stem].han}${M.BRANCHES[P.year.branch].han}</b>: ${EX.y}'s Li Chun had passed, so the year pillar is simply ${EX.y}'s. A birth on 20 January ${EX.y} would still carry ${EX.y - 1}'s pillar.</li>
+        <li><b>Hour</b>: ${String(EX.hh).padStart(2, '0')}:${String(EX.mm).padStart(2, '0')} falls in the ${M.BRANCHES[P.hour.branch].han} ${BRANCH_PINYIN[P.hour.branch]} hour (${String((P.hour.branch * 2 + 23) % 24).padStart(2, '0')}:00–${String((P.hour.branch * 2) % 24).padStart(2, '0')}:59); its stem ${M.STEMS[P.hour.stem].han} ${STEM_PINYIN[P.hour.stem]} follows from the day stem by the hour-stem rule.</li>
+        <li><b>Luck Pillars</b>: a ${ex.daeun.forward ? 'yang-year man or yin-year woman counts forward' : 'yin-year man or yang-year woman counts backward'}; here they run <b>${ex.daeun.forward ? 'forward' : 'backward'}</b> from the month pillar. The gap from birth to the ${ex.daeun.forward ? 'next' : 'previous'} jie, divided by three, gives a starting age of ${ex.daeun.su}, so the first four pillars are ${luck.map((l) => `${M.STEMS[l.stem].han}${M.BRANCHES[l.branch].han} ${STEM_PINYIN[l.stem]} ${BRANCH_PINYIN[l.branch]} (ages ${l.startAge}–${l.endAge}, ${tg(l.sipseong)})`).join(', ')}.</li>
+      </ul>
+      <p>Switch on true solar time, change the zone, or enter your own date in the form above and every one of these lines is recomputed the same way.</p>`;
 const rel = '../../', url = '/en/bazi-calculator/';
 const NAV = [{ href: rel + 'en/', label: 'Saju' }, { href: rel + 'en/today/', label: 'Today' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel + 'en/zodiac/', label: 'Zodiac' }, { href: rel + 'en/guide/', label: 'Library' }];
 const title = 'BaZi Calculator — Free Four Pillars Chart & Luck Pillars';
@@ -116,6 +160,7 @@ const html = shell({
     ${calc}
     <div class="ga-body">
 ${TEXT.intro.map((p) => `      <p>${esc(p)}</p>`).join('\n')}
+${exampleHtml}
 ${sectionsHtml}
       <h2>Glossary</h2>
 ${glossHtml}
@@ -132,7 +177,8 @@ ${faqHtml}
 <script src="${rel}js/en-daymaster.js"></script>
 <script src="${rel}js/en-pillar-slugs.js"></script>
 <script src="${rel}js/shensha.js"></script>
-<script src="${rel}js/en-bazi.js"></script>`
+<script src="${rel}js/en-bazi.js"></script>
+<script src="${rel}js/cinema.js" defer></script>`   /* 명식 펼침 연출(window.Cinema) — 전에는 docs 쪽 HTML에만 손으로 넣어 두어 다시 만들면 빠졌다(2026-11-02 빌더에 반영) */
 });
 const file = path.join(DOCS, 'en', 'bazi-calculator', 'index.html');
 fs.mkdirSync(path.dirname(file), { recursive: true });

@@ -300,6 +300,51 @@ function buildMonth(y, m, days) {
   addUrl(url);
 }
 
+/* ---------- 절기 페이지의 경계 계산 (2026-11-02) ----------
+ * 페이지마다 엔진으로 직접 뽑는 값: 그 시각 한 시간 앞·뒤 출생의 년주·월주, 절이 여는 달의 범위(다음 절까지), 중기가 든 달의 며칠째인지,
+ * 발표 시각을 쓴 해에는 엔진 계산값과 몇 분 다른지. 틀 문장이 아니라 수치가 절기마다 달라 48장이 서로 다른 내용을 갖는다. */
+const MODIFIED_TERM = '2026-11-02';   /* 절기 48장 — 경계 출생 예시·달의 범위·계산값 비교 절을 더함. 날짜별 일진·손없는날 페이지는 건드리지 않음 */
+const gjOf = (p) => { const g = M.ganjiName(p.stem, p.branch); return `${g.kor}(${g.han})`; };
+const iga = (name) => ((name.charCodeAt(name.length - 1) - 0xAC00) % 28 ? '이' : '가');
+/* 간지 이름 뒤 (으)로 — 받침이 없거나 ㄹ이면 '로' (병오로·정미로·신축으로) */
+const gjRo = (p) => { const g = M.ganjiName(p.stem, p.branch); const fin = (g.kor.charCodeAt(g.kor.length - 1) - 0xAC00) % 28; return `${g.kor}(${g.han})${fin === 0 || fin === 8 ? '로' : '으로'}`; };
+/* y-m-d 0시부터 totalMin 분 뒤(음수·1440 이상이면 날짜를 넘김)에 태어난 명식 — 절기 판정은 표준시 그대로이므로 진태양시 보정은 끈다 */
+function bornAt(y, m, d, totalMin) {
+  const dn = I.daysFromCivil(y, m, d) + Math.floor(totalMin / 1440), mm = ((totalMin % 1440) + 1440) % 1440, c = I.civilFromDays(dn);
+  return { c, hh: Math.floor(mm / 60), mm: mm % 60, r: M.compute({ year: c.y, month: c.m, day: c.d, hour: Math.floor(mm / 60), minute: mm % 60, gender: 'M', applySolarTime: false }) };
+}
+function termEdgeHtml(y, t, rel) {
+  const jies = yearTerms(y - 1).concat(yearTerms(y), yearTerms(y + 1)).filter((x) => x.kind === '절').sort((a, b) => a.jd - b.jd);
+  const nextJie = jies.find((x) => x.jd > t.jd + 1e-6);
+  const prevJie = jies.filter((x) => x.jd <= t.jd + 1e-6).pop();
+  const when = (x) => `${x.m}월 ${x.d}일 ${pad(x.hh)}:${pad(x.mm)}`;
+  const span = (a, b) => { const days = Math.floor(b.jd - a.jd), hours = Math.round((b.jd - a.jd - days) * 24); return hours ? `${days}일 ${hours}시간` : `${days}일`; };
+  const base = t.hh * 60 + t.mm;
+  const before = bornAt(t.y, t.m, t.d, base - 60), after = bornAt(t.y, t.m, t.d, base + 60);
+  const clock = (b) => `${b.c.m}월 ${b.c.d}일 ${pad(b.hh)}:${pad(b.mm)}`;
+  const parts = [];
+  if (t.kind === '절') {
+    const sameYear = before.r.pillars.year.stem === after.r.pillars.year.stem && before.r.pillars.year.branch === after.r.pillars.year.branch;
+    parts.push(`<p>경계가 분 단위라 같은 날이라도 결과가 갈립니다. ${clock(before)}에 태어나면 ${sameYear ? '' : `년주 ${gjOf(before.r.pillars.year)}·`}월주 <b class="dp-han">${gjOf(before.r.pillars.month)}</b>이고, 한 시간 뒤인 ${clock(after)}에 태어나면 ${sameYear ? '' : `년주 ${gjOf(after.r.pillars.year)}·`}월주 <b class="dp-han">${gjOf(after.r.pillars.month)}</b>입니다.${sameYear ? ' 년주는 두 경우 모두 ' + gjRo(after.r.pillars.year) + ' 같습니다.' : ' 입춘은 년주까지 함께 바뀌는 유일한 절이라 띠도 이 시각을 기준으로 갈립니다.'} 이 판정에는 진태양시 보정을 적용하지 않고 시계 시각(한국 표준시)을 그대로 씁니다.</p>`);
+    if (nextJie) parts.push(`<p>${t.name}${iga(t.name)} 여는 <b class="dp-han">${MONTH_BRANCH[t.month]}</b>월(월주 ${gjOf(after.r.pillars.month)})은 ${when(t)}부터 다음 절인 ${nextJie.name} ${when(nextJie)} 직전까지 ${span(t, nextJie)} 동안 이어집니다. 이 사이에 태어난 사람은 시각과 관계없이 모두 같은 월주를 갖습니다.</p>`);
+  } else {
+    const dayN = Math.floor(t.jd - prevJie.jd) + 1;
+    parts.push(`<p>${t.name}${iga(t.name) === '이' ? '은' : '는'} ${prevJie.name}(${when(prevJie)})이 연 <b class="dp-han">${MONTH_BRANCH[prevJie.month]}</b>월의 ${dayN}일째에 듭니다. 이 달은 ${nextJie ? `${nextJie.name} ${when(nextJie)} 직전까지 ${span(prevJie, nextJie)} 동안` : '다음 절까지'} 이어지고, 그 사이 태어난 사람의 월주는 모두 <b class="dp-han">${gjOf(after.r.pillars.month)}</b>입니다. 그래서 ${t.name} 당일 ${pad(before.hh)}:${pad(before.mm)}에 태어나도 ${pad(after.hh)}:${pad(after.mm)}에 태어나도 월주는 같고, 년주도 ${gjRo(after.r.pillars.year)} 같습니다.</p>`);
+    parts.push(`<p>중기는 기둥을 바꾸지 않지만 황경 ${t.i * 15}°라는 위치 자체는 쓸모가 있습니다. 대운이 몇 살에 시작하는지 셀 때 출생 시각에서 앞뒤 절까지의 날수를 쓰는데, ${t.name} 무렵 출생이면 ${prevJie.name}까지 ${dayN - 1}일, ${nextJie ? `${nextJie.name}까지 ${Math.floor(nextJie.jd - t.jd)}일` : ''}이 그 기준이 됩니다(날수 ÷ 3이 대운수).</p>`);
+  }
+  if (t.published) {
+    const approx = midnightJd(y, t.approx[0], t.approx[1]);
+    const jd = I.findTermJd(t.i * 15, approx - 6, approx + 6);
+    const tk = jd - I.JDN_EPOCH + 0.5 + 9 / 24, dn = Math.floor(tk), cv = I.civilFromDays(dn);
+    let hh = Math.floor((tk - dn) * 24), mm = Math.round(((tk - dn) * 24 - hh) * 60); if (mm === 60) { hh += 1; mm = 0; }
+    const diff = Math.round((t.jd - jd) * 1440);
+    parts.push(`<p>이 페이지의 ${pad(t.hh)}:${pad(t.mm)}은 한국천문연구원 발표 시각입니다. 사주첩 엔진이 태양 황경으로 직접 계산하면 ${cv.m}월 ${cv.d}일 ${pad(hh)}:${pad(mm)}이라 발표값보다 ${diff === 0 ? '차이가 없고' : `${Math.abs(diff)}분 ${diff > 0 ? '이르고' : '늦고'}`}, 계산기에서도 발표값을 우선 씁니다. 공식과 출처는 <a href="${rel}about/method/">계산 방법</a>에 있습니다.</p>`);
+  } else {
+    parts.push(`<p>이 시각은 한국천문연구원 발표값이 아직 없어 사주첩 엔진이 태양 황경으로 직접 계산한 값입니다. 발표값보다 몇 분 이를 수 있으니 경계에 가까운 출생은 발표 뒤 다시 확인해 주세요(<a href="${rel}about/method/">계산 방법</a>).</p>`);
+  }
+  return parts.join('\n      ');
+}
+
 /* ---------- 절기 페이지 ---------- */
 function buildTerm(y, t, list) {
   const rel = '../../../';
@@ -333,6 +378,9 @@ function buildTerm(y, t, list) {
       <h2>${t.name} 절기가 사주에서 하는 일</h2>
       ${roleHtml}
 
+      <h2>${t.kind === '절' ? `${t.name} 시각 앞뒤에 태어났다면` : `${t.name}${iga(t.name) === '이' ? '은' : '는'} 사주의 어느 달에 드나`}</h2>
+      ${termEdgeHtml(y, t, rel)}
+
       <h2>이 절기의 결</h2>
       <p>${t.tip}</p>
 
@@ -362,11 +410,11 @@ function buildTerm(y, t, list) {
   write(url.slice(1), shell({
     rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${y}년 ${t.name}${eun} ${t.m}월 ${t.d}일 ${pad(t.hh)}:${pad(t.mm)} — 뜻·풍습·음식`,
     jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '절기', url: SITE + '/jeolgi/' }, { name: `${y}년`, url: SITE + `/jeolgi/${y}/` }, { name: t.name, url: SITE + url }]),
-      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: iso(t.y, t.m, t.d), inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url },
+      { '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: iso(t.y, t.m, t.d), dateModified: MODIFIED_TERM >= iso(t.y, t.m, t.d) ? MODIFIED_TERM : undefined /* 아직 오지 않은 절기는 발행일(그 날)이 수정일보다 뒤라 수정일을 적지 않는다 */, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url },
       { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }],
     body
   }));
-  addUrl(url);
+  addUrl(url, MODIFIED_TERM);
 }
 
 function buildTermYear(y, list) {

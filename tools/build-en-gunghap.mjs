@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
-import { shell, esc, breadcrumb } from './page-shell.mjs';
+import { shell, esc, breadcrumb, picker, PICKER_STYLE } from './page-shell.mjs';
 import { DAY_MASTERS } from './en-daymaster-data.mjs';
 import { TEN_GOD_EN, STEM_PINYIN } from './en-ilju-data.mjs';
 
@@ -12,6 +12,7 @@ const { M } = loadEngine();
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-06', MODIFIED = '2026-09-13';
+const MODIFIED_HUB = '2026-11-02';   /* index only — the 100-cell linked table became a plain table + picker + the five combining pairs (fewer links from an indexable hub to googlebot-noindexed pages). Pair pages unchanged */
 const KO_SLUG = ['gapmok', 'eulmok', 'byeonghwa', 'jeonghwa', 'muto', 'gito', 'gyeonggeum', 'singeum', 'imsu', 'gyesu'];
 const STEM_HAP = { 0: 5, 5: 0, 1: 6, 6: 1, 2: 7, 7: 2, 3: 8, 8: 3, 4: 9, 9: 4 };
 const HAPHWA = { '05': 'Earth', '16': 'Metal', '27': 'Water', '38': 'Wood', '49': 'Fire' };
@@ -118,12 +119,15 @@ const STYLE = `<style>
     .gp-table { width: 100%; border-collapse: collapse; font-size: 11px; }
     .gp-table th, .gp-table td { padding: 5px 2px; text-align: center; border-bottom: 1px solid var(--line-soft); }
     .gp-table th { font-family: 'Noto Serif KR', serif; font-weight: 600; color: var(--muted); }
-    .gp-table td a { display: block; text-decoration: none; color: inherit; padding: 4px 0; border-radius: 6px; }
-    .gp-table td a.hap { background: #FBEAE7; color: var(--seal); font-weight: 700; }
-    .gp-table td a.chung { background: #EFEAE0; color: var(--ink); }
-    .gp-table td a.saeng { background: #EEF4EA; }
-    .gp-table td a.bihwa { background: #F3EEE4; }
-    .gp-table td a.geuk { color: var(--faint); }
+    .gp-table td a, .gp-table td span { display: block; text-decoration: none; color: inherit; padding: 4px 0; border-radius: 6px; }
+    .gp-table td .hap { background: #FBEAE7; color: var(--seal); font-weight: 700; }
+    .gp-table td .chung { background: #EFEAE0; color: var(--ink); }
+    .gp-table td .saeng { background: #EEF4EA; }
+    .gp-table td .bihwa { background: #F3EEE4; }
+    .gp-table td .geuk { color: var(--faint); }
+    .gp-hap { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+    .gp-hap a { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: inherit; background: #FFFDF9; }
+    .gp-hap a small { color: var(--faint); }
   </style>`;
 const NAV = (rel) => [{ href: rel + 'en/', label: 'Chart' }, { href: rel + 'en/zodiac/', label: 'Zodiac' }, { href: rel + 'en/guide/', label: 'Library' }, { href: rel + 'en/match/', label: 'Match' }, { href: rel, label: '한국어' }];
 
@@ -212,7 +216,15 @@ for (let a = 0; a < 10; a++) {
   const rel = '../../../';
   const head = M.STEMS.map((s, k) => `<th>${s.han}<br><span style="font-size: 9px; font-weight: 400;">${DAY_MASTERS[k].name.replace(' ', '<br>')}</span></th>`).join('');
   const rows = M.STEMS.map((sa, a) => `<tr><th>${sa.han}<br><span style="font-size: 9px; font-weight: 400;">${DAY_MASTERS[a].name.replace(' ', '<br>')}</span></th>` +
-    M.STEMS.map((sb, b) => { const k = relOf(a, b).key; const cls = k === 'hap' ? 'hap' : k === 'chung' ? 'chung' : k === 'bihwa' ? 'bihwa' : k.startsWith('saeng') ? 'saeng' : 'geuk'; const w = { hap: '합', chung: '충', bihwa: '=', saeng: '+', geuk: '−' }[cls]; return `<td><a class="${cls}" href="${rel}en/guide/compatibility/${slugOf(a, b)}/" title="${DAY_MASTERS[a].name} × ${DAY_MASTERS[b].name}">${w}</a></td>`; }).join('') + '</tr>').join('\n        ');
+    M.STEMS.map((sb, b) => { const k = relOf(a, b).key; const cls = k === 'hap' ? 'hap' : k === 'chung' ? 'chung' : k === 'bihwa' ? 'bihwa' : k.startsWith('saeng') ? 'saeng' : 'geuk'; const w = { hap: '합', chung: '충', bihwa: '=', saeng: '+', geuk: '−' }[cls]; return `<td><span class="${cls}" title="${DAY_MASTERS[a].name} × ${DAY_MASTERS[b].name}">${w}</span></td>`; }).join('') + '</tr>').join('\n        ');
+  /* 2026-11-02: no links in the 100 cells (they all point to googlebot-noindexed pair pages); a picker and the five combining pairs instead */
+  const dmOpts = M.STEMS.map((st, k) => [DAY_MASTERS[k].slug, `${DAY_MASTERS[k].name} ${st.han}`]);
+  const pick = picker({ id: 'gp-pick', title: 'Pick two Day Masters', button: 'Read the pairing',
+    selects: [{ name: 'me', label: 'Your Day Master', options: dmOpts }, { name: 'them', label: 'Their Day Master', options: dmOpts }],
+    go: `'./' + v.me + '-' + v.them + '/'`,
+    note: `Don't know yours? <a href="${rel}en/">Your birth date is enough</a>. Every one of the 100 pairings has a page; swap the two to read it from the other side.`,
+    fallback: 'URLs follow /en/guide/compatibility/yours-theirs/ — for example /en/guide/compatibility/yang-wood-yin-earth/.' });
+  const hapLinks = M.STEMS.map((sa, a) => { const b = STEM_HAP[a]; const hwa = HAPHWA[[Math.min(a, b), Math.max(a, b)].join('')]; return `<a href="${rel}en/guide/compatibility/${slugOf(a, b)}/">${DAY_MASTERS[a].name} × ${DAY_MASTERS[b].name} <small>· becomes ${hwa}</small></a>`; }).join('');
   const title = 'Day Master Compatibility Table — All 100 Saju Pairings';
   const desc = 'Every pairing of the ten Day Masters, read from your side: combine, clash, same element, nourish or shape, plus what you are to each other in the Ten Gods.';
   const body = `
@@ -228,7 +240,11 @@ for (let a = 0; a < 10; a++) {
         ${rows}
       </table>
       </div>
-      <p>Tap a cell for first impression, love, work and advice. The same pairing reads differently from <b>your</b> side and <b>theirs</b> — read both pages side by side.</p>
+      <p>The table shows only the kind of relationship. Pick two Day Masters below for first impression, love, work and advice. The same pairing reads differently from <b>your</b> side and <b>theirs</b> — read both pages side by side.</p>
+      ${pick}
+      <h2>The five combining pairs (天干合)</h2>
+      <p>Jia–Ji, Yi–Geng, Bing–Xin, Ding–Ren and Wu–Gui are the stems that merge into a new element when they meet — the pairings people look up most, so they get a direct link.</p>
+      <div class="gp-hap">${hapLinks}</div>
       <p class="callout"><a href="${rel}en/guide/">The ten Day Masters</a> · <a href="${rel}en/guide/day-pillar/">60 Day Pillars</a> · <a href="${rel}en/zodiac/compatibility/">Birth-year animal compatibility (12 × 12)</a> · <a href="${rel}gunghap/" hreflang="ko">한국어 궁합표</a></p>
     </div>
     <div class="ga-cta">
@@ -236,13 +252,13 @@ for (let a = 0; a < 10; a++) {
     </div>
   </article>`;
   write('en/guide/compatibility', shell({ rel, lang: 'en', title, desc, canonical: SITE + '/en/guide/compatibility/', nav: NAV(rel), ogTitle: 'Day Master compatibility — 100 pairings',
-    extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/compatibility/">\n  <link rel="alternate" hreflang="ko" href="${SITE}/gunghap/">`,
+    extraHead: STYLE + PICKER_STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}/en/guide/compatibility/">\n  <link rel="alternate" hreflang="ko" href="${SITE}/gunghap/">`,
     jsonld: breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: 'Library', url: SITE + '/en/guide/' }, { name: 'Compatibility', url: SITE + '/en/guide/compatibility/' }]), body }));
   urls.unshift(SITE + '/en/guide/compatibility/');
 }
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-compat.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${u === SITE + '/en/guide/compatibility/' ? MODIFIED_HUB : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-compat.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-compat.xml\n');

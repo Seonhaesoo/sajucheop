@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
-import { shell, esc, breadcrumb } from './page-shell.mjs';
+import { shell, esc, breadcrumb, picker, PICKER_STYLE } from './page-shell.mjs';
 import { ILJU } from './ilju-data.mjs';
 import { ILJU_EN, STAGE_EN } from './en-ilju-data.mjs';
 import { DAY_MASTERS } from './en-daymaster-data.mjs';
@@ -18,6 +18,7 @@ const PILLARS27 = Object.assign({}, PA, PB);
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-15', MODIFIED = '2026-09-15';
+const MODIFIED_HUB = '2026-11-02';   /* hub only — the 60-cell linked grid became a plain grid + picker, plus the ten Day Master links (fewer links from an indexable hub to googlebot-noindexed pages). Pillar pages unchanged */
 const YS = 3, YB = 7;
 const PY_S = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'];
 const PY_B = ['Zi', 'Chou', 'Yin', 'Mao', 'Chen', 'Si', 'Wu', 'Wei', 'Shen', 'You', 'Xu', 'Hai'];
@@ -72,9 +73,9 @@ const STYLE = `<style>
     .pl-table td.han { font-family: var(--serif); font-size: 17px; white-space: nowrap; } .pl-table td.han small { display: block; font-family: var(--sans); font-size: 11px; color: var(--faint); }
     .pl-table tr.good td { background: #EEF6EF; } .pl-table tr.bad td { background: #FBECE8; }
     .pl-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 12px 0 18px; }
-    .pl-grid a { display: block; text-align: center; padding: 8px 2px 6px; border: 1px solid var(--line-soft); border-radius: 8px; background: #fff; text-decoration: none; color: var(--ink); font-size: 10.5px; line-height: 1.3; }
-    .pl-grid a b { display: block; font-family: var(--serif); font-size: 18px; }
-    .pl-grid a small { display: block; color: var(--faint); font-size: 9.5px; }
+    .pl-grid a, .pl-grid span.pl-cell { display: block; text-align: center; padding: 8px 2px 6px; border: 1px solid var(--line-soft); border-radius: 8px; background: #fff; text-decoration: none; color: var(--ink); font-size: 10.5px; line-height: 1.3; }
+    .pl-grid a b, .pl-grid span.pl-cell b { display: block; font-family: var(--serif); font-size: 18px; }
+    .pl-grid a small, .pl-grid span.pl-cell small { display: block; color: var(--faint); font-size: 9.5px; }
     @media (max-width: 480px) { .pl-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; } .pl-hero .han { font-size: 46px; } }
   </style>`;
 
@@ -150,7 +151,14 @@ pillars.forEach((p) => {
 /* hub */
 {
   const url = '/en/2027/day-pillar/', rel = '../../../';
-  const cells = pillars.map((p) => `<a href="${rel}${pUrl(p).slice(1)}"><b><span class="el-${M.STEMS[p.s].el}">${M.STEMS[p.s].han}</span><span class="el-${M.BRANCHES[p.b].el}">${M.BRANCHES[p.b].han}</span></b>${PY_S[p.s]} ${PY_B[p.b]}<small>${TG[M.sipseongOf(p.s, YS)]}</small></a>`).join('');
+  const cells = pillars.map((p) => `<span class="pl-cell"><b><span class="el-${M.STEMS[p.s].el}">${M.STEMS[p.s].han}</span><span class="el-${M.BRANCHES[p.b].el}">${M.BRANCHES[p.b].han}</span></b>${PY_S[p.s]} ${PY_B[p.b]}<small>${TG[M.sipseongOf(p.s, YS)]}</small></span>`).join('');
+  /* 2026-11-02: the sixty grid cells no longer link (all googlebot-noindexed); a picker opens the pillar, and the ten Day Master readings keep direct links */
+  const pick = picker({ id: 'pl-pick', title: 'Pick your day pillar', button: 'Read 2027 for this pillar',
+    selects: [{ name: 'p', label: 'Day pillar (stem + branch)', options: pillars.map((p) => [pUrl(p).split('/').filter(Boolean).pop(), `${PY_S[p.s]} ${PY_B[p.b]} ${M.STEMS[p.s].han}${M.BRANCHES[p.b].han} — ${TG[M.sipseongOf(p.s, YS)]} year`]) }],
+    go: `'./' + v.p + '/'`,
+    note: `The calculator shows your day pillar in the Day column; no birth time is needed for it. Each of the sixty pillars has its own page.`,
+    fallback: 'URLs follow /en/2027/day-pillar/stem-branch/ in pinyin, for example /en/2027/day-pillar/jia-zi/.' });
+  const dmLinks = M.STEMS.map((st, k) => `<a href="${rel}en/2027/day-master/${DAY_MASTERS[k].slug}/">${DAY_MASTERS[k].name} ${st.han} <small>· ${TG[M.sipseongOf(k, YS)]}</small></a>`).join('');
   const faq = [
     ['What is a day pillar?', 'The stem and branch of your birth day — one of sixty pairs (Jia Zi to Gui Hai). The stem is your Day Master; the branch is the spouse palace and your inner ground. Together they are the single most personal unit of a Four Pillars chart.'],
     ['How is this different from the Day Master pages?', 'The Day Master pages read 2027 from the stem alone (ten readings). These sixty pages add the day branch: how 未 Wei, the year branch, meets your own branch — harmony, clash, punishment or nothing — and which twelve-stage your Day Master reaches on it.'],
@@ -164,8 +172,12 @@ pillars.forEach((p) => {
     <h1 class="ga-title">2027 by day pillar</h1>
     <p class="ga-lead">Sixty readings, one per day pillar. Each starts from the same year — 丁 Ding over 未 Wei — and asks two questions your zodiac sign cannot: what Ten God this year is to your Day Master, and how the year's branch meets the branch you were born on.</p>
     <div class="ga-body">
-      <p>Find your pillar below (the calculator shows it in the Day column). The badge under each pillar is the Ten God that 丁 Ding plays for its Day Master — the headline of the year. The page itself adds the day-branch relation, the twelve-stage on 未, and the twelve solar months.</p>
+      <p>Pick your pillar below (the calculator shows it in the Day column). In the grid, the badge under each pillar is the Ten God that 丁 Ding plays for its Day Master — the headline of the year. The page itself adds the day-branch relation, the twelve-stage on 未, and the twelve solar months.</p>
+      ${pick}
       <div class="pl-grid">${cells}</div>
+      <h2>Start from the Day Master</h2>
+      <p>Ten readings of 2027 from the stem alone, one per Day Master — the frame each group of six pillars shares.</p>
+      <div class="pl-dm">${dmLinks}</div>
       <h2>FAQ</h2>
       ${faq.map(([q, a], i) => `<details class="ics-help"${i === 0 ? ' open' : ''}><summary>${esc(q)}</summary><div class="ih-body"><p>${esc(a)}</p></div></details>`).join('\n      ')}
       <p class="callout"><a href="${rel}en/2027/day-master/">2027 by Day Master</a> · <a href="${rel}en/2027/">2027 by zodiac sign</a> · <a href="${rel}en/guide/day-pillar/">The sixty day pillars</a> · <a href="${rel}en/monthly/">Month by month</a> · <a href="${rel}2027/ilju/" hreflang="ko">한국어 60일주 2027</a></p>
@@ -174,11 +186,11 @@ pillars.forEach((p) => {
       <a class="btn-primary" href="${rel}en/"><span class="seal-dot" aria-hidden="true"></span><span>Find my day pillar</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, lang: 'en', title: '2027 Horoscope by Day Pillar — Sixty Pillars, Fire Goat Year', desc, canonical: SITE + url, nav: NAV(rel), ogTitle: '2027 by day pillar', extraHead: STYLE + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/2027/ilju/">`,
-    jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: '2027 by day pillar', url: SITE + url }]), article(url, title, desc), faqLd(faq)], body }));
+  write(url, shell({ rel, lang: 'en', title: '2027 Horoscope by Day Pillar — Sixty Pillars, Fire Goat Year', desc, canonical: SITE + url, nav: NAV(rel), ogTitle: '2027 by day pillar', extraHead: STYLE + PICKER_STYLE + `<style>.pl-dm { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; } .pl-dm a { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: inherit; background: #FFFDF9; } .pl-dm a small { color: var(--faint); }</style>` + `\n  <link rel="alternate" hreflang="en" href="${SITE}${url}">\n  <link rel="alternate" hreflang="ko" href="${SITE}/2027/ilju/">`,
+    jsonld: [breadcrumb([{ name: 'Sajucheop', url: SITE + '/en/' }, { name: '2027 by day pillar', url: SITE + url }]), { ...article(url, title, desc), dateModified: MODIFIED_HUB }, faqLd(faq)], body }));
 }
 fs.writeFileSync(path.join(DOCS, 'sitemap-en-2027-pillars.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${MODIFIED}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${u === SITE + '/en/2027/day-pillar/' ? MODIFIED_HUB : MODIFIED}</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-en-2027-pillars.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-en-2027-pillars.xml\n');

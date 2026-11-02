@@ -11,6 +11,13 @@ const GOOGLE_NOINDEX = (() => {
 })();
 export const isGoogleNoindex = (urlPath) => GOOGLE_NOINDEX.has(urlPath);
 
+/* 운영자 표기 — 소개(/about/)·계산 방법(/about/method/) 페이지와 구조화 데이터(Organization)에 쓴다.
+ * 실명이나 단체명을 쓰려면 이 한 줄만 바꾸고 build-about.mjs 를 다시 돌리면 된다. 사람 이름·경력은 지어 넣지 않는다. */
+export const SITE_OPERATOR = '사주첩 운영자';
+export const SITE_CONTACT_URL = 'https://www.instagram.com/sajucheop/';
+/* 계산 방법 페이지를 마지막으로 점검한 날 — 본문·구조화 데이터·사이트맵 lastmod 가 같은 값을 쓴다. 내용이 실제로 바뀐 날만 고친다 */
+export const METHOD_REVIEWED = '2026-11-02';
+
 export const GA = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-JCDJSNZX4J"></script>
   <script>if(location.hostname.indexOf('localhost')<0&&location.hostname.indexOf('127.0.0.1')<0&&location.protocol!=='file:'&&!navigator.webdriver&&!/bot|crawl|spider|slurp|yeti|daumoa|bingpreview|headless|lighthouse|scrap|facebookexternalhit|compatible;|mediapartners|adsbot/i.test(navigator.userAgent)){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-JCDJSNZX4J');}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9924140539322407" crossorigin="anonymous"></script>`;
@@ -63,7 +70,7 @@ export function shell(o) {
     ? `<a href="${o.rel}en/">Chart</a><a href="${o.rel}en/guide/">Library</a><a href="${o.rel}en/about/">About</a><a href="${o.rel}en/privacy/">Privacy</a><a href="${o.rel}en/terms/">Terms</a>`
     : lang === 'ja'
       ? `<a href="${o.rel}ja/">命式計算</a><a href="${o.rel}ja/2027/">2027年の運勢</a><a href="${o.rel}en/about/">About（英語）</a><a href="${o.rel}en/privacy/">Privacy</a><a href="${o.rel}en/terms/">Terms</a><a href="${o.rel}en/">English</a><a href="${o.rel}">한국어</a>`
-      : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}about/">소개</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a>`; /* 주제가 다른 돈표·바디집은 소개 페이지에만 (2026-10-24, 사이트 전체 상호 링크가 링크 묶음으로 읽히지 않게) */
+      : `<a href="${o.rel}guide/">서재</a><a href="${o.rel}about/">소개</a><a href="${o.rel}about/method/">계산 방법</a><a href="${o.rel}terms.html">이용약관</a><a href="${o.rel}privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a>${o.footerExtra || ''}`; /* 주제가 다른 돈표·바디집은 소개 페이지에만(footerExtra, 2026-10-24: 사이트 전체 상호 링크가 링크 묶음으로 읽히지 않게). 계산 방법 링크는 2026-11-02 */
   const footerNote = o.footerNote || (lang === 'en'
     ? 'For reflection and entertainment. Important decisions are always yours to make.'
     : lang === 'ja'
@@ -135,6 +142,29 @@ ${shareCard}
 </html>
 `;
 }
+
+/* 고르기 상자 — 조합형 페이지(궁합 짝, 2027 출생연도·일주…)로 가는 길을 링크 수십 개 대신 <select> 로 낸다(2026-11-02).
+ * 허브에서 구글 제외 페이지로 가는 링크 묶음을 줄이되 네이버 이용자는 그대로 갈 수 있게. 자바스크립트가 없으면 안내문(o.fallback)만 보인다.
+ * o: { id, title, note, selects: [{ name, label, options: [[value, label]] }], go: 'JS 식 — v.name 으로 값을 읽어 상대 주소 문자열을 돌려준다', button, fallback } */
+export function picker(o) {
+  const sel = (s) => `<label>${esc(s.label)}<select name="${esc(s.name)}">${s.options.map(([v, l]) => `<option value="${esc(v)}">${esc(l)}</option>`).join('')}</select></label>`;
+  return `<form class="pick" id="${esc(o.id)}" action="." onsubmit="return false;">
+        ${o.title ? `<div class="pick-title">${o.title}</div>` : ''}
+        <div class="pick-row">${o.selects.map(sel).join('\n          ')}<button type="submit">${esc(o.button || '보기')}</button></div>
+        ${o.note ? `<p class="pick-note">${o.note}</p>` : ''}
+        ${o.fallback ? `<noscript><p class="pick-note">${o.fallback}</p></noscript>` : ''}
+      </form>
+      <script>(function(){var f=document.getElementById(${JSON.stringify(o.id)});if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();var v={};for(var i=0;i<f.elements.length;i++){var el=f.elements[i];if(el.name)v[el.name]=el.value;}var to=(function(v){return ${o.go};})(v);if(to)location.href=to;});})();</script>`;
+}
+export const PICKER_STYLE = `<style>
+    .pick { margin: 10px 0 16px; padding: 14px 16px; background: #FFFDF9; border: 1px solid var(--line); border-radius: 12px; }
+    .pick-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+    .pick-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+    .pick-row label { flex: 1 1 140px; font-size: 12px; font-weight: 700; color: var(--muted); }
+    .pick-row select { display: block; width: 100%; margin-top: 5px; font: inherit; font-size: 15px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+    .pick-row button { flex: none; font: inherit; font-weight: 700; font-size: 14px; padding: 9px 18px; border: 0; border-radius: 8px; background: var(--seal); color: #F6F1E8; cursor: pointer; }
+    .pick-note { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; line-height: 1.55; }
+  </style>`;
 
 export function breadcrumb(items) {
   return {

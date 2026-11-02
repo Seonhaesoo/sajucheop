@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="../../css/style.css">
-  <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"사주첩","item":"https://sajucheop.com/"},{"@type":"ListItem","position":2,"name":"2027 정미년 운세","item":"https://sajucheop.com/2027/"},{"@type":"ListItem","position":3,"name":"띠별 운세","item":"https://sajucheop.com/2027/ddi/"}]},{"@context":"https://schema.org","@type":"Article","headline":"2027년 띠별 운세 총정리 — 12띠 점수·좋은 달·나이별 운세","description":"2027 정미년 12띠 운세를 한눈에. 말띠 95점부터 소띠 60점까지 점수 순위와 띠별 좋은 달·조심할 달, 삼재(돼지·토끼·양띠), 1945~2010년생 나이별 운세표까지 쉬운 말로 정리했어요.","datePublished":"2026-09-06","dateModified":"2026-10-03","inLanguage":"ko","author":{"@type":"Organization","name":"사주첩"},"publisher":{"@type":"Organization","name":"사주첩"},"mainEntityOfPage":"https://sajucheop.com/2027/ddi/","image":["https://sajucheop.com/og/2027.jpg"]}]</script>
+  <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"사주첩","item":"https://sajucheop.com/"},{"@type":"ListItem","position":2,"name":"2027 정미년 운세","item":"https://sajucheop.com/2027/"},{"@type":"ListItem","position":3,"name":"띠별 운세","item":"https://sajucheop.com/2027/ddi/"}]},{"@context":"https://schema.org","@type":"Article","headline":"2027년 띠별 운세 총정리 — 12띠 점수·좋은 달·나이별 운세","description":"2027 정미년 12띠 운세를 한눈에. 말띠 95점부터 소띠 60점까지 점수 순위와 띠별 좋은 달·조심할 달, 삼재(돼지·토끼·양띠), 1945~2010년생 나이별 운세표까지 쉬운 말로 정리했어요.","datePublished":"2026-09-06","dateModified":"2026-11-02","inLanguage":"ko","author":{"@type":"Organization","name":"사주첩"},"publisher":{"@type":"Organization","name":"사주첩"},"mainEntityOfPage":"https://sajucheop.com/2027/ddi/","image":["https://sajucheop.com/og/2027.jpg"]}]</script>
   <meta property="og:title" content="2027년 띠별 운세">
   <meta property="og:description" content="2027 정미년 12띠 운세를 한눈에. 말띠 95점부터 소띠 60점까지 점수 순위와 띠별 좋은 달·조심할 달, 삼재(돼지·토끼·양띠), 1945~2010년생 나이별 운세표까지 쉬운 말로 정리했어요.">
   <meta property="og:image" content="https://sajucheop.com/og/2027.jpg">
@@ -68,10 +68,10 @@
     .ny-two li { font-size: 13px; line-height: 1.55; padding: 5px 0; border-top: 1px solid var(--line-soft); color: var(--ink-body); }
     .ny-two li b { font-family: 'Noto Serif KR', serif; } .ny-two li small { color: var(--faint); }
     .ny-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 18px; }
-    .ny-grid a { display: block; padding: 10px 8px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; text-align: center; }
-    .ny-grid a b { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; }
-    .ny-grid a small { display: block; font-size: 11px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
-    .ny-grid a small i { font-style: normal; color: var(--seal); font-weight: 700; }
+    .ny-grid a, .ny-grid span { display: block; padding: 10px 8px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; text-align: center; }
+    .ny-grid a b, .ny-grid span b { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; }
+    .ny-grid a small, .ny-grid span small { display: block; font-size: 11px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
+    .ny-grid a small i, .ny-grid span small i { font-style: normal; color: var(--seal); font-weight: 700; }
     .ny-grid a.cur { border-color: var(--seal); background: #FBF3E6; }
     .ny-grid.four { grid-template-columns: repeat(4, 1fr); }
     .ny-years { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 14px; }
@@ -85,6 +85,14 @@
     .ny-yrs li span { display: block; color: var(--ink-body); }
     .ny-group { margin-top: 22px; } .ny-group h2 a { text-decoration: none; }
     @media (max-width: 480px) { .ny-grid.four { grid-template-columns: repeat(3, 1fr); } .ny-hero .ny-han { font-size: 36px; } .ny-two { grid-template-columns: 1fr; } }
+  </style><style>
+    .pick { margin: 10px 0 16px; padding: 14px 16px; background: #FFFDF9; border: 1px solid var(--line); border-radius: 12px; }
+    .pick-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+    .pick-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+    .pick-row label { flex: 1 1 140px; font-size: 12px; font-weight: 700; color: var(--muted); }
+    .pick-row select { display: block; width: 100%; margin-top: 5px; font: inherit; font-size: 15px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+    .pick-row button { flex: none; font: inherit; font-weight: 700; font-size: 14px; padding: 9px 18px; border: 0; border-radius: 8px; background: var(--seal); color: #F6F1E8; cursor: pointer; }
+    .pick-note { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; line-height: 1.55; }
   </style>
   <script defer src="/js/push.js"></script>
 </head>
@@ -156,76 +164,83 @@
       <h2>2027년 삼재</h2>
       <p>삼재는 12년 주기 가운데 3년을 조심하는 민속 관념으로, 해묘미(돼지·토끼·양) 그룹은 2025년 들삼재, 2026년 눌삼재, 2027년 날삼재를 지납니다. 날삼재는 나가는 삼재라 예부터 마무리와 정리에 좋다고 봤습니다. 겁낼 것은 아니고, 3년간 벌여 둔 것을 정리하고 새 판은 2028년 입춘 이후로 두는 정도로 참고하면 충분합니다. 삼재는 명리학의 본론이 아니라 민속 참고 항목입니다. <a href="../../samjae/">내 삼재 기간 계산하기</a></p>
       <h2>출생연도별 2027년 운세</h2>
-      <p>같은 띠라도 태어난 해의 천간이 다르면 정화(丁火)를 다르게 맞습니다. 내 출생연도로 바로 들어가세요.</p>
+      <p>같은 띠라도 태어난 해의 천간이 다르면 정화(丁火)를 다르게 맞습니다. 아래에서 태어난 해를 고르면 그 해의 페이지가 열리고, 표에서는 띠·연주·세는나이를 한눈에 볼 수 있습니다.</p>
+      <form class="pick" id="ny-year-pick" action="." onsubmit="return false;">
+        <div class="pick-title">출생연도로 2027년 운세 보기</div>
+        <div class="pick-row"><label>태어난 해<select name="y"><option value="2010">2010년생 · 호랑이띠</option><option value="2009">2009년생 · 소띠</option><option value="2008">2008년생 · 쥐띠</option><option value="2007">2007년생 · 돼지띠</option><option value="2006">2006년생 · 개띠</option><option value="2005">2005년생 · 닭띠</option><option value="2004">2004년생 · 원숭이띠</option><option value="2003">2003년생 · 양띠</option><option value="2002">2002년생 · 말띠</option><option value="2001">2001년생 · 뱀띠</option><option value="2000">2000년생 · 용띠</option><option value="1999">1999년생 · 토끼띠</option><option value="1998">1998년생 · 호랑이띠</option><option value="1997">1997년생 · 소띠</option><option value="1996">1996년생 · 쥐띠</option><option value="1995">1995년생 · 돼지띠</option><option value="1994">1994년생 · 개띠</option><option value="1993">1993년생 · 닭띠</option><option value="1992">1992년생 · 원숭이띠</option><option value="1991">1991년생 · 양띠</option><option value="1990">1990년생 · 말띠</option><option value="1989">1989년생 · 뱀띠</option><option value="1988">1988년생 · 용띠</option><option value="1987">1987년생 · 토끼띠</option><option value="1986">1986년생 · 호랑이띠</option><option value="1985">1985년생 · 소띠</option><option value="1984">1984년생 · 쥐띠</option><option value="1983">1983년생 · 돼지띠</option><option value="1982">1982년생 · 개띠</option><option value="1981">1981년생 · 닭띠</option><option value="1980">1980년생 · 원숭이띠</option><option value="1979">1979년생 · 양띠</option><option value="1978">1978년생 · 말띠</option><option value="1977">1977년생 · 뱀띠</option><option value="1976">1976년생 · 용띠</option><option value="1975">1975년생 · 토끼띠</option><option value="1974">1974년생 · 호랑이띠</option><option value="1973">1973년생 · 소띠</option><option value="1972">1972년생 · 쥐띠</option><option value="1971">1971년생 · 돼지띠</option><option value="1970">1970년생 · 개띠</option><option value="1969">1969년생 · 닭띠</option><option value="1968">1968년생 · 원숭이띠</option><option value="1967">1967년생 · 양띠</option><option value="1966">1966년생 · 말띠</option><option value="1965">1965년생 · 뱀띠</option><option value="1964">1964년생 · 용띠</option><option value="1963">1963년생 · 토끼띠</option><option value="1962">1962년생 · 호랑이띠</option><option value="1961">1961년생 · 소띠</option><option value="1960">1960년생 · 쥐띠</option><option value="1959">1959년생 · 돼지띠</option><option value="1958">1958년생 · 개띠</option><option value="1957">1957년생 · 닭띠</option><option value="1956">1956년생 · 원숭이띠</option><option value="1955">1955년생 · 양띠</option><option value="1954">1954년생 · 말띠</option><option value="1953">1953년생 · 뱀띠</option><option value="1952">1952년생 · 용띠</option><option value="1951">1951년생 · 토끼띠</option><option value="1950">1950년생 · 호랑이띠</option><option value="1949">1949년생 · 소띠</option><option value="1948">1948년생 · 쥐띠</option><option value="1947">1947년생 · 돼지띠</option><option value="1946">1946년생 · 개띠</option><option value="1945">1945년생 · 닭띠</option></select></label><button type="submit">보기</button></div>
+        <p class="pick-note">1945~2010년생, 띠마다 다섯·여섯 해가 있습니다. 1월·2월 초 출생은 입춘 전이면 앞 해의 띠로 보세요.</p>
+        <noscript><p class="pick-note">주소는 /2027/ddi/띠/출생연도/ 꼴이고, 띠별 페이지 아래의 나이별 목록에서도 갈 수 있습니다.</p></noscript>
+      </form>
+      <script>(function(){var f=document.getElementById("ny-year-pick");if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();var v={};for(var i=0;i<f.elements.length;i++){var el=f.elements[i];if(el.name)v[el.name]=el.value;}var to=(function(v){return (function(){var SL=["rat","ox","tiger","rabbit","dragon","snake","horse","goat","monkey","rooster","dog","pig"];var y=+v.y;return './'+SL[((y-4)%12+12)%12]+'/'+y+'/';})();})(v);if(to)location.href=to;});})();</script>
       <table class="ny-years">
         <thead><tr><th>출생연도</th><th>띠·연주</th><th>2027년 나이</th><th>미(未)와</th></tr></thead>
         <tbody>
-          <tr><td><a href="../../2027/ddi/tiger/2010/">2010년생</a></td><td>흰 호랑이띠 <small>경인년</small></td><td>세는나이 18세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/ox/2009/">2009년생</a></td><td>황금 소띠 <small>기축년</small></td><td>세는나이 19세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rat/2008/">2008년생</a></td><td>황금 쥐띠 <small>무자년</small></td><td>세는나이 20세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/pig/2007/">2007년생</a></td><td>붉은 돼지띠 <small>정해년</small></td><td>세는나이 21세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dog/2006/">2006년생</a></td><td>붉은 개띠 <small>병술년</small></td><td>세는나이 22세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rooster/2005/">2005년생</a></td><td>푸른 닭띠 <small>을유년</small></td><td>세는나이 23세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/monkey/2004/">2004년생</a></td><td>푸른 원숭이띠 <small>갑신년</small></td><td>세는나이 24세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/goat/2003/">2003년생</a></td><td>검은 양띠 <small>계미년</small></td><td>세는나이 25세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/horse/2002/">2002년생</a></td><td>검은 말띠 <small>임오년</small></td><td>세는나이 26세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/snake/2001/">2001년생</a></td><td>흰 뱀띠 <small>신사년</small></td><td>세는나이 27세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dragon/2000/">2000년생</a></td><td>흰 용띠 <small>경진년</small></td><td>세는나이 28세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rabbit/1999/">1999년생</a></td><td>황금 토끼띠 <small>기묘년</small></td><td>세는나이 29세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/tiger/1998/">1998년생</a></td><td>황금 호랑이띠 <small>무인년</small></td><td>세는나이 30세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/ox/1997/">1997년생</a></td><td>붉은 소띠 <small>정축년</small></td><td>세는나이 31세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rat/1996/">1996년생</a></td><td>붉은 쥐띠 <small>병자년</small></td><td>세는나이 32세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/pig/1995/">1995년생</a></td><td>푸른 돼지띠 <small>을해년</small></td><td>세는나이 33세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dog/1994/">1994년생</a></td><td>푸른 개띠 <small>갑술년</small></td><td>세는나이 34세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rooster/1993/">1993년생</a></td><td>검은 닭띠 <small>계유년</small></td><td>세는나이 35세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/monkey/1992/">1992년생</a></td><td>검은 원숭이띠 <small>임신년</small></td><td>세는나이 36세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/goat/1991/">1991년생</a></td><td>흰 양띠 <small>신미년</small></td><td>세는나이 37세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/horse/1990/">1990년생</a></td><td>흰 말띠 <small>경오년</small></td><td>세는나이 38세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/snake/1989/">1989년생</a></td><td>황금 뱀띠 <small>기사년</small></td><td>세는나이 39세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dragon/1988/">1988년생</a></td><td>황금 용띠 <small>무진년</small></td><td>세는나이 40세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rabbit/1987/">1987년생</a></td><td>붉은 토끼띠 <small>정묘년</small></td><td>세는나이 41세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/tiger/1986/">1986년생</a></td><td>붉은 호랑이띠 <small>병인년</small></td><td>세는나이 42세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/ox/1985/">1985년생</a></td><td>푸른 소띠 <small>을축년</small></td><td>세는나이 43세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rat/1984/">1984년생</a></td><td>푸른 쥐띠 <small>갑자년</small></td><td>세는나이 44세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/pig/1983/">1983년생</a></td><td>검은 돼지띠 <small>계해년</small></td><td>세는나이 45세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dog/1982/">1982년생</a></td><td>검은 개띠 <small>임술년</small></td><td>세는나이 46세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rooster/1981/">1981년생</a></td><td>흰 닭띠 <small>신유년</small></td><td>세는나이 47세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/monkey/1980/">1980년생</a></td><td>흰 원숭이띠 <small>경신년</small></td><td>세는나이 48세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/goat/1979/">1979년생</a></td><td>황금 양띠 <small>기미년</small></td><td>세는나이 49세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/horse/1978/">1978년생</a></td><td>황금 말띠 <small>무오년</small></td><td>세는나이 50세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/snake/1977/">1977년생</a></td><td>붉은 뱀띠 <small>정사년</small></td><td>세는나이 51세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dragon/1976/">1976년생</a></td><td>붉은 용띠 <small>병진년</small></td><td>세는나이 52세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rabbit/1975/">1975년생</a></td><td>푸른 토끼띠 <small>을묘년</small></td><td>세는나이 53세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/tiger/1974/">1974년생</a></td><td>푸른 호랑이띠 <small>갑인년</small></td><td>세는나이 54세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/ox/1973/">1973년생</a></td><td>검은 소띠 <small>계축년</small></td><td>세는나이 55세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rat/1972/">1972년생</a></td><td>검은 쥐띠 <small>임자년</small></td><td>세는나이 56세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/pig/1971/">1971년생</a></td><td>흰 돼지띠 <small>신해년</small></td><td>세는나이 57세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dog/1970/">1970년생</a></td><td>흰 개띠 <small>경술년</small></td><td>세는나이 58세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rooster/1969/">1969년생</a></td><td>황금 닭띠 <small>기유년</small></td><td>세는나이 59세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/monkey/1968/">1968년생</a></td><td>황금 원숭이띠 <small>무신년</small></td><td>세는나이 60세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/goat/1967/">1967년생</a></td><td>붉은 양띠 <small>정미년</small></td><td>세는나이 61세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/horse/1966/">1966년생</a></td><td>붉은 말띠 <small>병오년</small></td><td>세는나이 62세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/snake/1965/">1965년생</a></td><td>푸른 뱀띠 <small>을사년</small></td><td>세는나이 63세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dragon/1964/">1964년생</a></td><td>푸른 용띠 <small>갑진년</small></td><td>세는나이 64세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rabbit/1963/">1963년생</a></td><td>검은 토끼띠 <small>계묘년</small></td><td>세는나이 65세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/tiger/1962/">1962년생</a></td><td>검은 호랑이띠 <small>임인년</small></td><td>세는나이 66세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/ox/1961/">1961년생</a></td><td>흰 소띠 <small>신축년</small></td><td>세는나이 67세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rat/1960/">1960년생</a></td><td>흰 쥐띠 <small>경자년</small></td><td>세는나이 68세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/pig/1959/">1959년생</a></td><td>황금 돼지띠 <small>기해년</small></td><td>세는나이 69세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dog/1958/">1958년생</a></td><td>황금 개띠 <small>무술년</small></td><td>세는나이 70세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rooster/1957/">1957년생</a></td><td>붉은 닭띠 <small>정유년</small></td><td>세는나이 71세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/monkey/1956/">1956년생</a></td><td>붉은 원숭이띠 <small>병신년</small></td><td>세는나이 72세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/goat/1955/">1955년생</a></td><td>푸른 양띠 <small>을미년</small></td><td>세는나이 73세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/horse/1954/">1954년생</a></td><td>푸른 말띠 <small>갑오년</small></td><td>세는나이 74세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/snake/1953/">1953년생</a></td><td>검은 뱀띠 <small>계사년</small></td><td>세는나이 75세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dragon/1952/">1952년생</a></td><td>검은 용띠 <small>임진년</small></td><td>세는나이 76세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rabbit/1951/">1951년생</a></td><td>흰 토끼띠 <small>신묘년</small></td><td>세는나이 77세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/tiger/1950/">1950년생</a></td><td>흰 호랑이띠 <small>경인년</small></td><td>세는나이 78세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/ox/1949/">1949년생</a></td><td>황금 소띠 <small>기축년</small></td><td>세는나이 79세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rat/1948/">1948년생</a></td><td>황금 쥐띠 <small>무자년</small></td><td>세는나이 80세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/pig/1947/">1947년생</a></td><td>붉은 돼지띠 <small>정해년</small></td><td>세는나이 81세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/dog/1946/">1946년생</a></td><td>붉은 개띠 <small>병술년</small></td><td>세는나이 82세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
-          <tr><td><a href="../../2027/ddi/rooster/1945/">1945년생</a></td><td>푸른 닭띠 <small>을유년</small></td><td>세는나이 83세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>2010년생</b></td><td>흰 호랑이띠 <small>경인년</small></td><td>세는나이 18세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
+          <tr><td><b>2009년생</b></td><td>황금 소띠 <small>기축년</small></td><td>세는나이 19세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
+          <tr><td><b>2008년생</b></td><td>황금 쥐띠 <small>무자년</small></td><td>세는나이 20세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
+          <tr><td><b>2007년생</b></td><td>붉은 돼지띠 <small>정해년</small></td><td>세는나이 21세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
+          <tr><td><b>2006년생</b></td><td>붉은 개띠 <small>병술년</small></td><td>세는나이 22세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
+          <tr><td><b>2005년생</b></td><td>푸른 닭띠 <small>을유년</small></td><td>세는나이 23세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>2004년생</b></td><td>푸른 원숭이띠 <small>갑신년</small></td><td>세는나이 24세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>2003년생</b></td><td>검은 양띠 <small>계미년</small></td><td>세는나이 25세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
+          <tr><td><b>2002년생</b></td><td>검은 말띠 <small>임오년</small></td><td>세는나이 26세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
+          <tr><td><b>2001년생</b></td><td>흰 뱀띠 <small>신사년</small></td><td>세는나이 27세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
+          <tr><td><b>2000년생</b></td><td>흰 용띠 <small>경진년</small></td><td>세는나이 28세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
+          <tr><td><b>1999년생</b></td><td>황금 토끼띠 <small>기묘년</small></td><td>세는나이 29세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
+          <tr><td><b>1998년생</b></td><td>황금 호랑이띠 <small>무인년</small></td><td>세는나이 30세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
+          <tr><td><b>1997년생</b></td><td>붉은 소띠 <small>정축년</small></td><td>세는나이 31세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
+          <tr><td><b>1996년생</b></td><td>붉은 쥐띠 <small>병자년</small></td><td>세는나이 32세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
+          <tr><td><b>1995년생</b></td><td>푸른 돼지띠 <small>을해년</small></td><td>세는나이 33세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
+          <tr><td><b>1994년생</b></td><td>푸른 개띠 <small>갑술년</small></td><td>세는나이 34세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
+          <tr><td><b>1993년생</b></td><td>검은 닭띠 <small>계유년</small></td><td>세는나이 35세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>1992년생</b></td><td>검은 원숭이띠 <small>임신년</small></td><td>세는나이 36세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>1991년생</b></td><td>흰 양띠 <small>신미년</small></td><td>세는나이 37세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
+          <tr><td><b>1990년생</b></td><td>흰 말띠 <small>경오년</small></td><td>세는나이 38세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
+          <tr><td><b>1989년생</b></td><td>황금 뱀띠 <small>기사년</small></td><td>세는나이 39세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
+          <tr><td><b>1988년생</b></td><td>황금 용띠 <small>무진년</small></td><td>세는나이 40세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
+          <tr><td><b>1987년생</b></td><td>붉은 토끼띠 <small>정묘년</small></td><td>세는나이 41세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
+          <tr><td><b>1986년생</b></td><td>붉은 호랑이띠 <small>병인년</small></td><td>세는나이 42세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
+          <tr><td><b>1985년생</b></td><td>푸른 소띠 <small>을축년</small></td><td>세는나이 43세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
+          <tr><td><b>1984년생</b></td><td>푸른 쥐띠 <small>갑자년</small></td><td>세는나이 44세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
+          <tr><td><b>1983년생</b></td><td>검은 돼지띠 <small>계해년</small></td><td>세는나이 45세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
+          <tr><td><b>1982년생</b></td><td>검은 개띠 <small>임술년</small></td><td>세는나이 46세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
+          <tr><td><b>1981년생</b></td><td>흰 닭띠 <small>신유년</small></td><td>세는나이 47세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>1980년생</b></td><td>흰 원숭이띠 <small>경신년</small></td><td>세는나이 48세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>1979년생</b></td><td>황금 양띠 <small>기미년</small></td><td>세는나이 49세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
+          <tr><td><b>1978년생</b></td><td>황금 말띠 <small>무오년</small></td><td>세는나이 50세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
+          <tr><td><b>1977년생</b></td><td>붉은 뱀띠 <small>정사년</small></td><td>세는나이 51세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
+          <tr><td><b>1976년생</b></td><td>붉은 용띠 <small>병진년</small></td><td>세는나이 52세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
+          <tr><td><b>1975년생</b></td><td>푸른 토끼띠 <small>을묘년</small></td><td>세는나이 53세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
+          <tr><td><b>1974년생</b></td><td>푸른 호랑이띠 <small>갑인년</small></td><td>세는나이 54세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
+          <tr><td><b>1973년생</b></td><td>검은 소띠 <small>계축년</small></td><td>세는나이 55세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
+          <tr><td><b>1972년생</b></td><td>검은 쥐띠 <small>임자년</small></td><td>세는나이 56세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
+          <tr><td><b>1971년생</b></td><td>흰 돼지띠 <small>신해년</small></td><td>세는나이 57세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
+          <tr><td><b>1970년생</b></td><td>흰 개띠 <small>경술년</small></td><td>세는나이 58세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
+          <tr><td><b>1969년생</b></td><td>황금 닭띠 <small>기유년</small></td><td>세는나이 59세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>1968년생</b></td><td>황금 원숭이띠 <small>무신년</small></td><td>세는나이 60세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>1967년생</b></td><td>붉은 양띠 <small>정미년</small></td><td>세는나이 61세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
+          <tr><td><b>1966년생</b></td><td>붉은 말띠 <small>병오년</small></td><td>세는나이 62세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
+          <tr><td><b>1965년생</b></td><td>푸른 뱀띠 <small>을사년</small></td><td>세는나이 63세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
+          <tr><td><b>1964년생</b></td><td>푸른 용띠 <small>갑진년</small></td><td>세는나이 64세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
+          <tr><td><b>1963년생</b></td><td>검은 토끼띠 <small>계묘년</small></td><td>세는나이 65세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
+          <tr><td><b>1962년생</b></td><td>검은 호랑이띠 <small>임인년</small></td><td>세는나이 66세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
+          <tr><td><b>1961년생</b></td><td>흰 소띠 <small>신축년</small></td><td>세는나이 67세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
+          <tr><td><b>1960년생</b></td><td>흰 쥐띠 <small>경자년</small></td><td>세는나이 68세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
+          <tr><td><b>1959년생</b></td><td>황금 돼지띠 <small>기해년</small></td><td>세는나이 69세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
+          <tr><td><b>1958년생</b></td><td>황금 개띠 <small>무술년</small></td><td>세는나이 70세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
+          <tr><td><b>1957년생</b></td><td>붉은 닭띠 <small>정유년</small></td><td>세는나이 71세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>1956년생</b></td><td>붉은 원숭이띠 <small>병신년</small></td><td>세는나이 72세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
+          <tr><td><b>1955년생</b></td><td>푸른 양띠 <small>을미년</small></td><td>세는나이 73세</td><td><span class="ny-tag neutral">본명년</span> <small>75점</small></td></tr>
+          <tr><td><b>1954년생</b></td><td>푸른 말띠 <small>갑오년</small></td><td>세는나이 74세</td><td><span class="ny-tag good">육합(六合)</span> <small>95점</small></td></tr>
+          <tr><td><b>1953년생</b></td><td>검은 뱀띠 <small>계사년</small></td><td>세는나이 75세</td><td><span class="ny-tag good">방합(方合)</span> <small>87점</small></td></tr>
+          <tr><td><b>1952년생</b></td><td>검은 용띠 <small>임진년</small></td><td>세는나이 76세</td><td><span class="ny-tag neutral">무난</span> <small>81점</small></td></tr>
+          <tr><td><b>1951년생</b></td><td>흰 토끼띠 <small>신묘년</small></td><td>세는나이 77세</td><td><span class="ny-tag good">삼합(三合)</span> <small>91점</small></td></tr>
+          <tr><td><b>1950년생</b></td><td>흰 호랑이띠 <small>경인년</small></td><td>세는나이 78세</td><td><span class="ny-tag neutral">무난</span> <small>80점</small></td></tr>
+          <tr><td><b>1949년생</b></td><td>황금 소띠 <small>기축년</small></td><td>세는나이 79세</td><td><span class="ny-tag warn">충(沖)</span> <small>60점</small></td></tr>
+          <tr><td><b>1948년생</b></td><td>황금 쥐띠 <small>무자년</small></td><td>세는나이 80세</td><td><span class="ny-tag warn">해(害)</span> <small>66점</small></td></tr>
+          <tr><td><b>1947년생</b></td><td>붉은 돼지띠 <small>정해년</small></td><td>세는나이 81세</td><td><span class="ny-tag good">삼합(三合)</span> <small>93점</small></td></tr>
+          <tr><td><b>1946년생</b></td><td>붉은 개띠 <small>병술년</small></td><td>세는나이 82세</td><td><span class="ny-tag warn">형(刑)</span> <small>66점</small></td></tr>
+          <tr><td><b>1945년생</b></td><td>푸른 닭띠 <small>을유년</small></td><td>세는나이 83세</td><td><span class="ny-tag neutral">무난</span> <small>76점</small></td></tr>
         </tbody>
       </table>
       <p class="callout"><a href="../../2027/">정미년 운세 허브</a> · <a href="../../tojeong/2027/">2027 토정비결</a> · <a href="../../2027/ilju/">60일주별 2027 운세</a> · <a href="../../today/ddi/">오늘의 띠별 운세</a> · <a href="../../ddi-gunghap/">띠 궁합</a> · <a href="../../tojeong/">2027 토정비결</a> · <a href="http://saengil.sajucheop.com/ddi/">생일첩 띠별 해 목록</a></p>
@@ -244,7 +259,7 @@
     <div class="footer-row">
       <span class="copy">© 사주첩</span>
       <nav class="footer-links">
-        <a href="../../guide/">서재</a><a href="../../about/">소개</a><a href="../../terms.html">이용약관</a><a href="../../privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a>
+        <a href="../../guide/">서재</a><a href="../../about/">소개</a><a href="../../about/method/">계산 방법</a><a href="../../terms.html">이용약관</a><a href="../../privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a>
       </nav>
     </div>
     <p class="footer-note">본 콘텐츠는 전통 명리학 이론을 바탕으로 한 참고용입니다.</p>

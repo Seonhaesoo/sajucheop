@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="../../css/style.css">
-  <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"사주첩","item":"https://sajucheop.com/"},{"@type":"ListItem","position":2,"name":"2027 정미년 운세","item":"https://sajucheop.com/2027/"},{"@type":"ListItem","position":3,"name":"60일주별 운세","item":"https://sajucheop.com/2027/ilju/"}]},{"@context":"https://schema.org","@type":"Article","headline":"2027년 60일주 운세 — 내 일주로 보는 정미년 신년운세·월별 흐름","description":"태어난 날의 두 글자(일주) 60가지로 읽는 2027 정미년 운세. 내 일주에게 2027년이 돈의 해인지, 공부의 해인지, 책임의 해인지 봅니다. 재물·직장·가정과 좋은 달·조심할 달, 열두 달 흐름까지 무료로.","datePublished":"2026-09-06","dateModified":"2026-10-03","inLanguage":"ko","author":{"@type":"Organization","name":"사주첩"},"publisher":{"@type":"Organization","name":"사주첩"},"mainEntityOfPage":"https://sajucheop.com/2027/ilju/","image":["https://sajucheop.com/og/2027-ilju.jpg"]}]</script>
+  <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"사주첩","item":"https://sajucheop.com/"},{"@type":"ListItem","position":2,"name":"2027 정미년 운세","item":"https://sajucheop.com/2027/"},{"@type":"ListItem","position":3,"name":"60일주별 운세","item":"https://sajucheop.com/2027/ilju/"}]},{"@context":"https://schema.org","@type":"Article","headline":"2027년 60일주 운세 — 내 일주로 보는 정미년 신년운세·월별 흐름","description":"태어난 날의 두 글자(일주) 60가지로 읽는 2027 정미년 운세. 내 일주에게 2027년이 돈의 해인지, 공부의 해인지, 책임의 해인지 봅니다. 재물·직장·가정과 좋은 달·조심할 달, 열두 달 흐름까지 무료로.","datePublished":"2026-09-06","dateModified":"2026-11-02","inLanguage":"ko","author":{"@type":"Organization","name":"사주첩"},"publisher":{"@type":"Organization","name":"사주첩"},"mainEntityOfPage":"https://sajucheop.com/2027/ilju/","image":["https://sajucheop.com/og/2027-ilju.jpg"]}]</script>
   <meta property="og:title" content="2027년 60일주 운세">
   <meta property="og:description" content="태어난 날의 두 글자(일주) 60가지로 읽는 2027 정미년 운세. 내 일주에게 2027년이 돈의 해인지, 공부의 해인지, 책임의 해인지 봅니다. 재물·직장·가정과 좋은 달·조심할 달, 열두 달 흐름까지 무료로.">
   <meta property="og:image" content="https://sajucheop.com/og/2027-ilju.jpg">
@@ -68,10 +68,10 @@
     .ny-two li { font-size: 13px; line-height: 1.55; padding: 5px 0; border-top: 1px solid var(--line-soft); color: var(--ink-body); }
     .ny-two li b { font-family: 'Noto Serif KR', serif; } .ny-two li small { color: var(--faint); }
     .ny-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 18px; }
-    .ny-grid a { display: block; padding: 10px 8px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; text-align: center; }
-    .ny-grid a b { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; }
-    .ny-grid a small { display: block; font-size: 11px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
-    .ny-grid a small i { font-style: normal; color: var(--seal); font-weight: 700; }
+    .ny-grid a, .ny-grid span { display: block; padding: 10px 8px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; text-align: center; }
+    .ny-grid a b, .ny-grid span b { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; }
+    .ny-grid a small, .ny-grid span small { display: block; font-size: 11px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
+    .ny-grid a small i, .ny-grid span small i { font-style: normal; color: var(--seal); font-weight: 700; }
     .ny-grid a.cur { border-color: var(--seal); background: #FBF3E6; }
     .ny-grid.four { grid-template-columns: repeat(4, 1fr); }
     .ny-years { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 14px; }
@@ -85,6 +85,14 @@
     .ny-yrs li span { display: block; color: var(--ink-body); }
     .ny-group { margin-top: 22px; } .ny-group h2 a { text-decoration: none; }
     @media (max-width: 480px) { .ny-grid.four { grid-template-columns: repeat(3, 1fr); } .ny-hero .ny-han { font-size: 36px; } .ny-two { grid-template-columns: 1fr; } }
+  </style><style>
+    .pick { margin: 10px 0 16px; padding: 14px 16px; background: #FFFDF9; border: 1px solid var(--line); border-radius: 12px; }
+    .pick-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; }
+    .pick-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+    .pick-row label { flex: 1 1 140px; font-size: 12px; font-weight: 700; color: var(--muted); }
+    .pick-row select { display: block; width: 100%; margin-top: 5px; font: inherit; font-size: 15px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); }
+    .pick-row button { flex: none; font: inherit; font-weight: 700; font-size: 14px; padding: 9px 18px; border: 0; border-radius: 8px; background: var(--seal); color: #F6F1E8; cursor: pointer; }
+    .pick-note { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; line-height: 1.55; }
   </style>
   <link rel="alternate" hreflang="ko" href="https://sajucheop.com/2027/ilju/">
   <link rel="alternate" hreflang="en" href="https://sajucheop.com/en/2027/day-pillar/">
@@ -120,85 +128,93 @@
     <p class="ga-meta">사주첩 · 2027 신년운세 · 일간 10 × 일지 12</p>
     <p class="ga-lead">띠는 태어난 해의 한 글자지만, 사주의 주인공은 태어난 날의 천간인 일간입니다. 같은 정미년도 갑목에게는 상관생재의 해, 경금에게는 관인상생의 해, 임수에게는 재생관의 해로 전혀 다르게 옵니다. 내 일주를 모르면 <a href="../../">생일만 넣으면 10초</a>에 나오고, 60일주의 성격은 <a href="../../ilju/">일주 사전</a>에 있습니다.</p>
     <div class="ga-body">
+      <form class="pick" id="ny-ilju-pick" action="." onsubmit="return false;">
+        <div class="pick-title">내 일주로 2027년 운세 보기</div>
+        <div class="pick-row"><label>태어난 날의 두 글자(일주)<select name="ilju"><option value="gapja">갑자일주(甲子) · 갑목 일간</option><option value="gabin">갑인일주(甲寅) · 갑목 일간</option><option value="gapjin">갑진일주(甲辰) · 갑목 일간</option><option value="gabo">갑오일주(甲午) · 갑목 일간</option><option value="gapsin">갑신일주(甲申) · 갑목 일간</option><option value="gapsul">갑술일주(甲戌) · 갑목 일간</option><option value="eulchuk">을축일주(乙丑) · 을목 일간</option><option value="eulmyo">을묘일주(乙卯) · 을목 일간</option><option value="eulsa">을사일주(乙巳) · 을목 일간</option><option value="eulmi">을미일주(乙未) · 을목 일간</option><option value="euryu">을유일주(乙酉) · 을목 일간</option><option value="eulhae">을해일주(乙亥) · 을목 일간</option><option value="byeongja">병자일주(丙子) · 병화 일간</option><option value="byeongin">병인일주(丙寅) · 병화 일간</option><option value="byeongjin">병진일주(丙辰) · 병화 일간</option><option value="byeongo">병오일주(丙午) · 병화 일간</option><option value="byeongsin">병신일주(丙申) · 병화 일간</option><option value="byeongsul">병술일주(丙戌) · 병화 일간</option><option value="jeongchuk">정축일주(丁丑) · 정화 일간</option><option value="jeongmyo">정묘일주(丁卯) · 정화 일간</option><option value="jeongsa">정사일주(丁巳) · 정화 일간</option><option value="jeongmi">정미일주(丁未) · 정화 일간</option><option value="jeongyu">정유일주(丁酉) · 정화 일간</option><option value="jeonghae">정해일주(丁亥) · 정화 일간</option><option value="muja">무자일주(戊子) · 무토 일간</option><option value="muin">무인일주(戊寅) · 무토 일간</option><option value="mujin">무진일주(戊辰) · 무토 일간</option><option value="muo">무오일주(戊午) · 무토 일간</option><option value="musin">무신일주(戊申) · 무토 일간</option><option value="musul">무술일주(戊戌) · 무토 일간</option><option value="gichuk">기축일주(己丑) · 기토 일간</option><option value="gimyo">기묘일주(己卯) · 기토 일간</option><option value="gisa">기사일주(己巳) · 기토 일간</option><option value="gimi">기미일주(己未) · 기토 일간</option><option value="giyu">기유일주(己酉) · 기토 일간</option><option value="gihae">기해일주(己亥) · 기토 일간</option><option value="gyeongja">경자일주(庚子) · 경금 일간</option><option value="gyeongin">경인일주(庚寅) · 경금 일간</option><option value="gyeongjin">경진일주(庚辰) · 경금 일간</option><option value="gyeongo">경오일주(庚午) · 경금 일간</option><option value="gyeongsin">경신일주(庚申) · 경금 일간</option><option value="gyeongsul">경술일주(庚戌) · 경금 일간</option><option value="sinchuk">신축일주(辛丑) · 신금 일간</option><option value="sinmyo">신묘일주(辛卯) · 신금 일간</option><option value="sinsa">신사일주(辛巳) · 신금 일간</option><option value="sinmi">신미일주(辛未) · 신금 일간</option><option value="sinyu">신유일주(辛酉) · 신금 일간</option><option value="sinhae">신해일주(辛亥) · 신금 일간</option><option value="imja">임자일주(壬子) · 임수 일간</option><option value="imin">임인일주(壬寅) · 임수 일간</option><option value="imjin">임진일주(壬辰) · 임수 일간</option><option value="imo">임오일주(壬午) · 임수 일간</option><option value="imsin">임신일주(壬申) · 임수 일간</option><option value="imsul">임술일주(壬戌) · 임수 일간</option><option value="gyechuk">계축일주(癸丑) · 계수 일간</option><option value="gyemyo">계묘일주(癸卯) · 계수 일간</option><option value="gyesa">계사일주(癸巳) · 계수 일간</option><option value="gyemi">계미일주(癸未) · 계수 일간</option><option value="gyeyu">계유일주(癸酉) · 계수 일간</option><option value="gyehae">계해일주(癸亥) · 계수 일간</option></select></label><button type="submit">보기</button></div>
+        <p class="pick-note">일주를 모르면 <a href="../../">생일만 넣으면 10초</a>에 나오고, <a href="../../ilju/">60일주 사전</a>의 각 일주 페이지에서도 2027년 운세로 이어집니다.</p>
+        <noscript><p class="pick-note">주소는 /2027/ilju/일주/ 꼴입니다. 예: /2027/ilju/gapja/</p></noscript>
+      </form>
+      <script>(function(){var f=document.getElementById("ny-ilju-pick");if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();var v={};for(var i=0;i<f.elements.length;i++){var el=f.elements[i];if(el.name)v[el.name]=el.value;}var to=(function(v){return './' + v.ilju + '/';})(v);if(to)location.href=to;});})();</script>
+      <p>일간별로 묶은 표입니다. 일간 옆의 표는 정화(丁)가 그 일간에게 드는 십성, 미토(未)가 드는 십성, 그리고 한 해의 틀입니다. 칸마다 일지와 미(未)의 관계, 일간이 미(未)에서 맞는 12운성을 적었습니다. 내 일주를 위에서 고르면 그 일주의 재물·직장·가정과 열두 달 흐름이 열립니다.</p>
       <div class="ny-group"><h2>갑목(甲) 일간 <span class="ny-tag good">정화 상관</span> <span class="ny-tag">미토 정재</span> <span class="ny-tag">상관생재(傷官生財)</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/gapja/"><b>甲子</b><small>갑자일주<br>일지 해 · 묘</small></a>
-        <a href="../../2027/ilju/gapsul/"><b>甲戌</b><small>갑술일주<br>일지 형 · 묘</small></a>
-        <a href="../../2027/ilju/gapsin/"><b>甲申</b><small>갑신일주<br>일지 무난 · 묘</small></a>
-        <a href="../../2027/ilju/gabo/"><b>甲午</b><small>갑오일주<br>일지 육합 · 묘</small></a>
-        <a href="../../2027/ilju/gapjin/"><b>甲辰</b><small>갑진일주<br>일지 무난 · 묘</small></a>
-        <a href="../../2027/ilju/gabin/"><b>甲寅</b><small>갑인일주<br>일지 무난 · 묘</small></a>
+        <span><b>甲子</b><small>갑자일주<br>일지 해 · 묘</small></span>
+        <span><b>甲戌</b><small>갑술일주<br>일지 형 · 묘</small></span>
+        <span><b>甲申</b><small>갑신일주<br>일지 무난 · 묘</small></span>
+        <span><b>甲午</b><small>갑오일주<br>일지 육합 · 묘</small></span>
+        <span><b>甲辰</b><small>갑진일주<br>일지 무난 · 묘</small></span>
+        <span><b>甲寅</b><small>갑인일주<br>일지 무난 · 묘</small></span>
       </div></div>
 <div class="ny-group"><h2>을목(乙) 일간 <span class="ny-tag good">정화 식신</span> <span class="ny-tag">미토 편재</span> <span class="ny-tag">식신생재(食神生財)</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/eulchuk/"><b>乙丑</b><small>을축일주<br>일지 충 · 양</small></a>
-        <a href="../../2027/ilju/eulhae/"><b>乙亥</b><small>을해일주<br>일지 삼합 · 양</small></a>
-        <a href="../../2027/ilju/euryu/"><b>乙酉</b><small>을유일주<br>일지 무난 · 양</small></a>
-        <a href="../../2027/ilju/eulmi/"><b>乙未</b><small>을미일주<br>일지 동일 · 양</small></a>
-        <a href="../../2027/ilju/eulsa/"><b>乙巳</b><small>을사일주<br>일지 방합 · 양</small></a>
-        <a href="../../2027/ilju/eulmyo/"><b>乙卯</b><small>을묘일주<br>일지 삼합 · 양</small></a>
+        <span><b>乙丑</b><small>을축일주<br>일지 충 · 양</small></span>
+        <span><b>乙亥</b><small>을해일주<br>일지 삼합 · 양</small></span>
+        <span><b>乙酉</b><small>을유일주<br>일지 무난 · 양</small></span>
+        <span><b>乙未</b><small>을미일주<br>일지 동일 · 양</small></span>
+        <span><b>乙巳</b><small>을사일주<br>일지 방합 · 양</small></span>
+        <span><b>乙卯</b><small>을묘일주<br>일지 삼합 · 양</small></span>
       </div></div>
 <div class="ny-group"><h2>병화(丙) 일간 <span class="ny-tag good">정화 겁재</span> <span class="ny-tag">미토 상관</span> <span class="ny-tag">겁재와 상관</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/byeongin/"><b>丙寅</b><small>병인일주<br>일지 무난 · 쇠</small></a>
-        <a href="../../2027/ilju/byeongja/"><b>丙子</b><small>병자일주<br>일지 해 · 쇠</small></a>
-        <a href="../../2027/ilju/byeongsul/"><b>丙戌</b><small>병술일주<br>일지 형 · 쇠</small></a>
-        <a href="../../2027/ilju/byeongsin/"><b>丙申</b><small>병신일주<br>일지 무난 · 쇠</small></a>
-        <a href="../../2027/ilju/byeongo/"><b>丙午</b><small>병오일주<br>일지 육합 · 쇠</small></a>
-        <a href="../../2027/ilju/byeongjin/"><b>丙辰</b><small>병진일주<br>일지 무난 · 쇠</small></a>
+        <span><b>丙寅</b><small>병인일주<br>일지 무난 · 쇠</small></span>
+        <span><b>丙子</b><small>병자일주<br>일지 해 · 쇠</small></span>
+        <span><b>丙戌</b><small>병술일주<br>일지 형 · 쇠</small></span>
+        <span><b>丙申</b><small>병신일주<br>일지 무난 · 쇠</small></span>
+        <span><b>丙午</b><small>병오일주<br>일지 육합 · 쇠</small></span>
+        <span><b>丙辰</b><small>병진일주<br>일지 무난 · 쇠</small></span>
       </div></div>
 <div class="ny-group"><h2>정화(丁) 일간 <span class="ny-tag good">정화 비견</span> <span class="ny-tag">미토 식신</span> <span class="ny-tag">비견과 식신</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/jeongmyo/"><b>丁卯</b><small>정묘일주<br>일지 삼합 · 관대</small></a>
-        <a href="../../2027/ilju/jeongchuk/"><b>丁丑</b><small>정축일주<br>일지 충 · 관대</small></a>
-        <a href="../../2027/ilju/jeonghae/"><b>丁亥</b><small>정해일주<br>일지 삼합 · 관대</small></a>
-        <a href="../../2027/ilju/jeongyu/"><b>丁酉</b><small>정유일주<br>일지 무난 · 관대</small></a>
-        <a href="../../2027/ilju/jeongmi/"><b>丁未</b><small>정미일주<br>일지 동일 · 관대</small></a>
-        <a href="../../2027/ilju/jeongsa/"><b>丁巳</b><small>정사일주<br>일지 방합 · 관대</small></a>
+        <span><b>丁卯</b><small>정묘일주<br>일지 삼합 · 관대</small></span>
+        <span><b>丁丑</b><small>정축일주<br>일지 충 · 관대</small></span>
+        <span><b>丁亥</b><small>정해일주<br>일지 삼합 · 관대</small></span>
+        <span><b>丁酉</b><small>정유일주<br>일지 무난 · 관대</small></span>
+        <span><b>丁未</b><small>정미일주<br>일지 동일 · 관대</small></span>
+        <span><b>丁巳</b><small>정사일주<br>일지 방합 · 관대</small></span>
       </div></div>
 <div class="ny-group"><h2>무토(戊) 일간 <span class="ny-tag good">정화 정인</span> <span class="ny-tag">미토 겁재</span> <span class="ny-tag">정인과 겁재</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/mujin/"><b>戊辰</b><small>무진일주<br>일지 무난 · 쇠</small></a>
-        <a href="../../2027/ilju/muin/"><b>戊寅</b><small>무인일주<br>일지 무난 · 쇠</small></a>
-        <a href="../../2027/ilju/muja/"><b>戊子</b><small>무자일주<br>일지 해 · 쇠</small></a>
-        <a href="../../2027/ilju/musul/"><b>戊戌</b><small>무술일주<br>일지 형 · 쇠</small></a>
-        <a href="../../2027/ilju/musin/"><b>戊申</b><small>무신일주<br>일지 무난 · 쇠</small></a>
-        <a href="../../2027/ilju/muo/"><b>戊午</b><small>무오일주<br>일지 육합 · 쇠</small></a>
+        <span><b>戊辰</b><small>무진일주<br>일지 무난 · 쇠</small></span>
+        <span><b>戊寅</b><small>무인일주<br>일지 무난 · 쇠</small></span>
+        <span><b>戊子</b><small>무자일주<br>일지 해 · 쇠</small></span>
+        <span><b>戊戌</b><small>무술일주<br>일지 형 · 쇠</small></span>
+        <span><b>戊申</b><small>무신일주<br>일지 무난 · 쇠</small></span>
+        <span><b>戊午</b><small>무오일주<br>일지 육합 · 쇠</small></span>
       </div></div>
 <div class="ny-group"><h2>기토(己) 일간 <span class="ny-tag good">정화 편인</span> <span class="ny-tag">미토 비견</span> <span class="ny-tag">편인과 비견</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/gisa/"><b>己巳</b><small>기사일주<br>일지 방합 · 관대</small></a>
-        <a href="../../2027/ilju/gimyo/"><b>己卯</b><small>기묘일주<br>일지 삼합 · 관대</small></a>
-        <a href="../../2027/ilju/gichuk/"><b>己丑</b><small>기축일주<br>일지 충 · 관대</small></a>
-        <a href="../../2027/ilju/gihae/"><b>己亥</b><small>기해일주<br>일지 삼합 · 관대</small></a>
-        <a href="../../2027/ilju/giyu/"><b>己酉</b><small>기유일주<br>일지 무난 · 관대</small></a>
-        <a href="../../2027/ilju/gimi/"><b>己未</b><small>기미일주<br>일지 동일 · 관대</small></a>
+        <span><b>己巳</b><small>기사일주<br>일지 방합 · 관대</small></span>
+        <span><b>己卯</b><small>기묘일주<br>일지 삼합 · 관대</small></span>
+        <span><b>己丑</b><small>기축일주<br>일지 충 · 관대</small></span>
+        <span><b>己亥</b><small>기해일주<br>일지 삼합 · 관대</small></span>
+        <span><b>己酉</b><small>기유일주<br>일지 무난 · 관대</small></span>
+        <span><b>己未</b><small>기미일주<br>일지 동일 · 관대</small></span>
       </div></div>
 <div class="ny-group"><h2>경금(庚) 일간 <span class="ny-tag good">정화 정관</span> <span class="ny-tag">미토 정인</span> <span class="ny-tag">관인상생(官印相生)</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/gyeongo/"><b>庚午</b><small>경오일주<br>일지 육합 · 관대</small></a>
-        <a href="../../2027/ilju/gyeongjin/"><b>庚辰</b><small>경진일주<br>일지 무난 · 관대</small></a>
-        <a href="../../2027/ilju/gyeongin/"><b>庚寅</b><small>경인일주<br>일지 무난 · 관대</small></a>
-        <a href="../../2027/ilju/gyeongja/"><b>庚子</b><small>경자일주<br>일지 해 · 관대</small></a>
-        <a href="../../2027/ilju/gyeongsul/"><b>庚戌</b><small>경술일주<br>일지 형 · 관대</small></a>
-        <a href="../../2027/ilju/gyeongsin/"><b>庚申</b><small>경신일주<br>일지 무난 · 관대</small></a>
+        <span><b>庚午</b><small>경오일주<br>일지 육합 · 관대</small></span>
+        <span><b>庚辰</b><small>경진일주<br>일지 무난 · 관대</small></span>
+        <span><b>庚寅</b><small>경인일주<br>일지 무난 · 관대</small></span>
+        <span><b>庚子</b><small>경자일주<br>일지 해 · 관대</small></span>
+        <span><b>庚戌</b><small>경술일주<br>일지 형 · 관대</small></span>
+        <span><b>庚申</b><small>경신일주<br>일지 무난 · 관대</small></span>
       </div></div>
 <div class="ny-group"><h2>신금(辛) 일간 <span class="ny-tag good">정화 편관</span> <span class="ny-tag">미토 편인</span> <span class="ny-tag">살인상생(殺印相生)</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/sinmi/"><b>辛未</b><small>신미일주<br>일지 동일 · 쇠</small></a>
-        <a href="../../2027/ilju/sinsa/"><b>辛巳</b><small>신사일주<br>일지 방합 · 쇠</small></a>
-        <a href="../../2027/ilju/sinmyo/"><b>辛卯</b><small>신묘일주<br>일지 삼합 · 쇠</small></a>
-        <a href="../../2027/ilju/sinchuk/"><b>辛丑</b><small>신축일주<br>일지 충 · 쇠</small></a>
-        <a href="../../2027/ilju/sinhae/"><b>辛亥</b><small>신해일주<br>일지 삼합 · 쇠</small></a>
-        <a href="../../2027/ilju/sinyu/"><b>辛酉</b><small>신유일주<br>일지 무난 · 쇠</small></a>
+        <span><b>辛未</b><small>신미일주<br>일지 동일 · 쇠</small></span>
+        <span><b>辛巳</b><small>신사일주<br>일지 방합 · 쇠</small></span>
+        <span><b>辛卯</b><small>신묘일주<br>일지 삼합 · 쇠</small></span>
+        <span><b>辛丑</b><small>신축일주<br>일지 충 · 쇠</small></span>
+        <span><b>辛亥</b><small>신해일주<br>일지 삼합 · 쇠</small></span>
+        <span><b>辛酉</b><small>신유일주<br>일지 무난 · 쇠</small></span>
       </div></div>
 <div class="ny-group"><h2>임수(壬) 일간 <span class="ny-tag good">정화 정재</span> <span class="ny-tag">미토 정관</span> <span class="ny-tag">재생관(財生官)</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/imsin/"><b>壬申</b><small>임신일주<br>일지 무난 · 양</small></a>
-        <a href="../../2027/ilju/imo/"><b>壬午</b><small>임오일주<br>일지 육합 · 양</small></a>
-        <a href="../../2027/ilju/imjin/"><b>壬辰</b><small>임진일주<br>일지 무난 · 양</small></a>
-        <a href="../../2027/ilju/imin/"><b>壬寅</b><small>임인일주<br>일지 무난 · 양</small></a>
-        <a href="../../2027/ilju/imja/"><b>壬子</b><small>임자일주<br>일지 해 · 양</small></a>
-        <a href="../../2027/ilju/imsul/"><b>壬戌</b><small>임술일주<br>일지 형 · 양</small></a>
+        <span><b>壬申</b><small>임신일주<br>일지 무난 · 양</small></span>
+        <span><b>壬午</b><small>임오일주<br>일지 육합 · 양</small></span>
+        <span><b>壬辰</b><small>임진일주<br>일지 무난 · 양</small></span>
+        <span><b>壬寅</b><small>임인일주<br>일지 무난 · 양</small></span>
+        <span><b>壬子</b><small>임자일주<br>일지 해 · 양</small></span>
+        <span><b>壬戌</b><small>임술일주<br>일지 형 · 양</small></span>
       </div></div>
 <div class="ny-group"><h2>계수(癸) 일간 <span class="ny-tag good">정화 편재</span> <span class="ny-tag">미토 편관</span> <span class="ny-tag">재생살(財生殺)</span></h2><div class="ny-grid">
-        <a href="../../2027/ilju/gyeyu/"><b>癸酉</b><small>계유일주<br>일지 무난 · 묘</small></a>
-        <a href="../../2027/ilju/gyemi/"><b>癸未</b><small>계미일주<br>일지 동일 · 묘</small></a>
-        <a href="../../2027/ilju/gyesa/"><b>癸巳</b><small>계사일주<br>일지 방합 · 묘</small></a>
-        <a href="../../2027/ilju/gyemyo/"><b>癸卯</b><small>계묘일주<br>일지 삼합 · 묘</small></a>
-        <a href="../../2027/ilju/gyechuk/"><b>癸丑</b><small>계축일주<br>일지 충 · 묘</small></a>
-        <a href="../../2027/ilju/gyehae/"><b>癸亥</b><small>계해일주<br>일지 삼합 · 묘</small></a>
+        <span><b>癸酉</b><small>계유일주<br>일지 무난 · 묘</small></span>
+        <span><b>癸未</b><small>계미일주<br>일지 동일 · 묘</small></span>
+        <span><b>癸巳</b><small>계사일주<br>일지 방합 · 묘</small></span>
+        <span><b>癸卯</b><small>계묘일주<br>일지 삼합 · 묘</small></span>
+        <span><b>癸丑</b><small>계축일주<br>일지 충 · 묘</small></span>
+        <span><b>癸亥</b><small>계해일주<br>일지 삼합 · 묘</small></span>
       </div></div>
       <p class="callout"><a href="../../2027/">정미년 운세 허브</a> · <a href="../../tojeong/2027/">2027 토정비결</a> · <a href="../../2027/ddi/">띠별 2027 운세</a> · <a href="../../today/ddi/">오늘의 띠별 운세</a> · <a href="../../guide/sipseong.html">십성 한눈에</a> · <a href="../../ilju/">60일주 사전</a></p>
     </div>
@@ -213,7 +229,7 @@
     <div class="footer-row">
       <span class="copy">© 사주첩</span>
       <nav class="footer-links">
-        <a href="../../guide/">서재</a><a href="../../about/">소개</a><a href="../../terms.html">이용약관</a><a href="../../privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a>
+        <a href="../../guide/">서재</a><a href="../../about/">소개</a><a href="../../about/method/">계산 방법</a><a href="../../terms.html">이용약관</a><a href="../../privacy.html">개인정보</a><a href="http://saengil.sajucheop.com/">생일 사전</a><a href="https://dream.sajucheop.com/">꿈해몽</a><a href="https://tarot.sajucheop.com/">타로</a>
       </nav>
     </div>
     <p class="footer-note">본 콘텐츠는 전통 명리학 이론을 바탕으로 한 참고용입니다.</p>

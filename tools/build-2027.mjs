@@ -9,7 +9,7 @@ import { reportPromo } from './report-config.mjs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
-import { shell, esc, breadcrumb } from './page-shell.mjs';
+import { shell, esc, breadcrumb, picker, PICKER_STYLE } from './page-shell.mjs';
 import { ILJU } from './ilju-data.mjs';
 import { ILJU_EN } from './en-ilju-data.mjs';   /* 영문 2027 일주 페이지 hreflang 짝 */
 import { TRAIT, josa, ddiDreamLink, DREAM_SITE } from './ddi-data.mjs';
@@ -23,6 +23,7 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-06';
 const MODIFIED = '2026-10-03';   /* 2026-10-03 문장 다듬기(번역투), 허브에 '2027년 한눈에' — 이전: 2026-09-18 제목·설명 쉬운 말로 */   /* 2026-09-18 제목·설명을 쉬운 말로, 출생연도 페이지에 열두 달 흐름 */
+const MODIFIED_HUB = '2026-11-02';   /* 인덱스 /2027/ddi/·/2027/ilju/ 와 허브 /2027/ — 출생연도 66장·일주 60장으로 가는 링크 격자를 고르기 상자로 (구글 제외 페이지로 가는 링크 묶음 줄이기). 띠 12장·출생연도·일주 본문은 그대로 */
 const MODIFIED_ILJU = '2026-10-03';   /* 일주 60장 본문(ilju-data) 문장 다듬기 2026-10-03 */   /* 일주 60장은 본문이 그대로라 수정일도 그대로(사이트맵 lastmod 같음) */
 const Y = YEAR.y, YS = YEAR.stem, YB = YEAR.branch; /* 丁=3, 未=7 */
 const BIRTH_FROM = 1945, BIRTH_TO = 2010;
@@ -279,10 +280,10 @@ const STYLE = `<style>
     .ny-two li { font-size: 13px; line-height: 1.55; padding: 5px 0; border-top: 1px solid var(--line-soft); color: var(--ink-body); }
     .ny-two li b { font-family: 'Noto Serif KR', serif; } .ny-two li small { color: var(--faint); }
     .ny-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 18px; }
-    .ny-grid a { display: block; padding: 10px 8px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; text-align: center; }
-    .ny-grid a b { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; }
-    .ny-grid a small { display: block; font-size: 11px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
-    .ny-grid a small i { font-style: normal; color: var(--seal); font-weight: 700; }
+    .ny-grid a, .ny-grid span { display: block; padding: 10px 8px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; text-align: center; }
+    .ny-grid a b, .ny-grid span b { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; }
+    .ny-grid a small, .ny-grid span small { display: block; font-size: 11px; color: var(--faint); margin-top: 3px; line-height: 1.4; }
+    .ny-grid a small i, .ny-grid span small i { font-style: normal; color: var(--seal); font-weight: 700; }
     .ny-grid a.cur { border-color: var(--seal); background: #FBF3E6; }
     .ny-grid.four { grid-template-columns: repeat(4, 1fr); }
     .ny-years { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 14px; }
@@ -635,6 +636,22 @@ iljuList.forEach((e, i) => {
   urls.push(SITE + url);
 });
 
+/* ---------- 고르기 상자 (2026-11-02) — 출생연도 66장·일주 60장으로 가는 링크 격자 대신 ---------- */
+const DDI_SLUGS = JSON.stringify(DDI.map((d) => d.slug));
+const yearOpts = (() => { const o = []; for (let y = BIRTH_TO; y >= BIRTH_FROM; y--) { const g = ganjiOfYear(y); o.push([String(y), `${y}년생 · ${DDI[g.b].animal}띠`]); } return o; })();
+/* base: 고른 뒤 갈 주소의 앞부분 ('' 이면 /2027/ 허브에서, './' 이면 /2027/ddi/ 인덱스에서) */
+const yearPicker = (id, base) => picker({ id, title: '출생연도로 2027년 운세 보기', button: '보기',
+  selects: [{ name: 'y', label: '태어난 해', options: yearOpts }],
+  go: `(function(){var SL=${DDI_SLUGS};var y=+v.y;return '${base}'+SL[((y-4)%12+12)%12]+'/'+y+'/';})()`,
+  note: `${BIRTH_FROM}~${BIRTH_TO}년생, 띠마다 다섯·여섯 해가 있습니다. 1월·2월 초 출생은 입춘 전이면 앞 해의 띠로 보세요.`,
+  fallback: '주소는 /2027/ddi/띠/출생연도/ 꼴이고, 띠별 페이지 아래의 나이별 목록에서도 갈 수 있습니다.' });
+const iljuOpts = iljuList.slice().sort((a, b) => a.s - b.s || a.b - b.b).map((x) => [x.slug, `${x.kor}일주(${x.han}) · ${M.STEMS[x.s].kor}${M.STEMS[x.s].el} 일간`]);
+const iljuPicker = (id, base, rel) => picker({ id, title: '내 일주로 2027년 운세 보기', button: '보기',
+  selects: [{ name: 'ilju', label: '태어난 날의 두 글자(일주)', options: iljuOpts }],
+  go: `'${base}' + v.ilju + '/'`,
+  note: `일주를 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나오고, <a href="${rel}ilju/">60일주 사전</a>의 각 일주 페이지에서도 2027년 운세로 이어집니다.`,
+  fallback: '주소는 /2027/ilju/일주/ 꼴입니다. 예: /2027/ilju/gapja/' });
+
 /* ---------- 인덱스: 띠별 ---------- */
 {
   const rel = '../../';
@@ -645,7 +662,7 @@ iljuList.forEach((e, i) => {
   const yearTable = [];
   for (let y = BIRTH_TO; y >= BIRTH_FROM; y--) {
     const g = ganjiOfYear(y), d = DDI[g.b], st = M.STEMS[g.s];
-    yearTable.push(`<tr><td><a href="${rel}2027/ddi/${d.slug}/${y}/">${y}년생</a></td><td>${COLOR[g.s]} ${d.animal}띠 <small>${st.kor}${M.BRANCHES[g.b].kor}년</small></td><td>세는나이 ${Y - y + 1}세</td><td><span class="ny-tag ${REL[d.rel].badge}">${REL[d.rel].label}</span> <small>${SCORES[g.b]}점</small></td></tr>`);
+    yearTable.push(`<tr><td><b>${y}년생</b></td><td>${COLOR[g.s]} ${d.animal}띠 <small>${st.kor}${M.BRANCHES[g.b].kor}년</small></td><td>세는나이 ${Y - y + 1}세</td><td><span class="ny-tag ${REL[d.rel].badge}">${REL[d.rel].label}</span> <small>${SCORES[g.b]}점</small></td></tr>`);
   }
   const title = '2027년 띠별 운세 총정리 — 12띠 점수·좋은 달·나이별 운세';
   const top = ranked[0], low = ranked[ranked.length - 1];
@@ -673,7 +690,8 @@ iljuList.forEach((e, i) => {
       <h2>2027년 삼재</h2>
       <p>${esc(SAMJAE_TEXT['날삼재'])} <a href="${rel}samjae/">내 삼재 기간 계산하기</a></p>
       <h2>출생연도별 2027년 운세</h2>
-      <p>같은 띠라도 태어난 해의 천간이 다르면 정화(丁火)를 다르게 맞습니다. 내 출생연도로 바로 들어가세요.</p>
+      <p>같은 띠라도 태어난 해의 천간이 다르면 정화(丁火)를 다르게 맞습니다. 아래에서 태어난 해를 고르면 그 해의 페이지가 열리고, 표에서는 띠·연주·세는나이를 한눈에 볼 수 있습니다.</p>
+      ${yearPicker('ny-year-pick', './')}
       <table class="ny-years">
         <thead><tr><th>출생연도</th><th>띠·연주</th><th>2027년 나이</th><th>미(未)와</th></tr></thead>
         <tbody>
@@ -688,8 +706,8 @@ iljuList.forEach((e, i) => {
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>띠 말고 내 사주로 2027 보기</span></a>
     </div>
   </article>`;
-  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + '\n  <script defer src="/js/push.js"></script>', ogTitle: '2027년 띠별 운세',
-    jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '띠별 운세', url: SITE + url }]), article({ title, desc, url })], body }));
+  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + PICKER_STYLE + '\n  <script defer src="/js/push.js"></script>', ogTitle: '2027년 띠별 운세',
+    jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '띠별 운세', url: SITE + url }]), article({ title, desc, url, modified: MODIFIED_HUB })], body }));
   urls.unshift(SITE + url);
 }
 
@@ -699,7 +717,7 @@ iljuList.forEach((e, i) => {
   const url = '/2027/ilju/';
   const groups = M.STEMS.map((st, s) => {
     const G = ILGAN_SEUN[s];
-    const cells = iljuList.filter((x) => x.s === s).map((x) => `<a href="${rel}2027/ilju/${x.slug}/"><b>${x.han}</b><small>${x.kor}일주<br>일지 ${REL_KO[primaryRel(x.b, YB)]} · ${unseong(x.s, YB)}</small></a>`).join('\n        ');
+    const cells = iljuList.filter((x) => x.s === s).map((x) => `<span><b>${x.han}</b><small>${x.kor}일주<br>일지 ${REL_KO[primaryRel(x.b, YB)]} · ${unseong(x.s, YB)}</small></span>`).join('\n        ');
     return `<div class="ny-group"><h2>${st.kor}${st.el}(${st.han}) 일간 <span class="ny-tag good">정화 ${G.sip}</span> <span class="ny-tag">미토 ${G.bsip}</span> <span class="ny-tag">${G.pattern}</span></h2><div class="ny-grid">\n        ${cells}\n      </div></div>`;
   }).join('\n');
   const title = '2027년 60일주 운세 — 내 일주로 보는 정미년 신년운세·월별 흐름';
@@ -712,6 +730,8 @@ iljuList.forEach((e, i) => {
     <p class="ga-meta">사주첩 · 2027 신년운세 · 일간 10 × 일지 12</p>
     <p class="ga-lead">띠는 태어난 해의 한 글자지만, 사주의 주인공은 태어난 날의 천간인 일간입니다. 같은 정미년도 갑목에게는 상관생재의 해, 경금에게는 관인상생의 해, 임수에게는 재생관의 해로 전혀 다르게 옵니다. 내 일주를 모르면 <a href="${rel}">생일만 넣으면 10초</a>에 나오고, 60일주의 성격은 <a href="${rel}ilju/">일주 사전</a>에 있습니다.</p>
     <div class="ga-body">
+      ${iljuPicker('ny-ilju-pick', './', rel)}
+      <p>일간별로 묶은 표입니다. 일간 옆의 표는 정화(丁)가 그 일간에게 드는 십성, 미토(未)가 드는 십성, 그리고 한 해의 틀입니다. 칸마다 일지와 미(未)의 관계, 일간이 미(未)에서 맞는 12운성을 적었습니다. 내 일주를 위에서 고르면 그 일주의 재물·직장·가정과 열두 달 흐름이 열립니다.</p>
       ${groups}
       <p class="callout"><a href="${rel}2027/">정미년 운세 허브</a> · <a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}2027/ddi/">띠별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}guide/sipseong.html">십성 한눈에</a> · <a href="${rel}ilju/">60일주 사전</a></p>
     </div>
@@ -719,10 +739,10 @@ iljuList.forEach((e, i) => {
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 일주 확인하고 2027 보기</span></a>
     </div>
   </article>`;
-  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + `
+  write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + PICKER_STYLE + `
   <link rel="alternate" hreflang="ko" href="${SITE}${url}">
   <link rel="alternate" hreflang="en" href="${SITE}/en/2027/day-pillar/">`, ogTitle: '2027년 60일주 운세',
-    jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '60일주별 운세', url: SITE + url }]), article({ title, desc, url })], body }));
+    jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '60일주별 운세', url: SITE + url }]), article({ title, desc, url, modified: MODIFIED_HUB })], body }));
   urls.unshift(SITE + url);
 }
 
@@ -736,13 +756,10 @@ iljuList.forEach((e, i) => {
     return src.slice(0, a + open.length) + '\n' + inner + '\n        ' + src.slice(z);
   };
   const cards = DDI.map((d, b) => `        <a class="ny-card" href="ddi/${d.slug}/"><b>${d.han}</b><span class="nc-name">${d.animal}띠</span><span class="nc-score">${SCORES[b]}<i>점</i></span><small>${esc(DDI_ONE[d.slug])}</small></a>`).join('\n');
-  const grid = M.STEMS.map((st, s) => {
-    const G = ILGAN_SEUN[s];
-    const cells = iljuList.filter((x) => x.s === s).map((x) => `<a href="ilju/${x.slug}/"><b>${x.han}</b><small>${x.kor}</small></a>`).join('');
-    return `        <div class="ny-ilju-row"><div class="nir-head">${st.kor}${st.el}(${st.han}) 일간 — 정화 ${G.sip}</div><div class="nir-cells">${cells}</div></div>`;
-  }).join('\n');
-  /* 나이별 바로 가기 — 출생연도 66장으로 가는 길을 허브에서 바로(검색은 '72년생 쥐띠'처럼 두 자리로 많이 한다) */
-  const yearLinks = DDI.map((d, b) => `        <div class="ny-yl-row"><a class="yl-ddi" href="ddi/${d.slug}/">${d.animal}띠</a><span class="yl-ys">${yearsOf(b).map((y) => `<a href="ddi/${d.slug}/${y}/" title="${y}년생 ${d.animal}띠 2027년 운세">${yy2(y)}년생</a>`).join('')}</span></div>`).join('\n');
+  /* 2026-11-02: 60일주 격자(링크 60개)와 나이별 링크 66개를 고르기 상자로. 격자의 일간별 십성 요약은 글로 남긴다 */
+  const grid = `        <p class="reading-body" style="font-size: 13px; margin-top: 0;">정화(丁)가 각 일간에게 드는 십성: ${M.STEMS.map((st, s) => `${st.kor}${st.el} ${ILGAN_SEUN[s].sip}`).join(' · ')}. 일주 60장은 <a href="ilju/">60일주별 2027 운세</a>에 일간별로 묶여 있습니다.</p>
+${iljuPicker('ny-hub-ilju', 'ilju/', '../').split('\n').map((l) => '        ' + l).join('\n')}`;
+  const yearLinks = PICKER_STYLE.split('\n').map((l) => '        ' + l.trim()).join('\n') + '\n' + yearPicker('ny-hub-year', 'ddi/').split('\n').map((l) => '        ' + l).join('\n');
   /* '2027년 한눈에' — AI 비서와 검색이 첫머리에서 바로 인용할 수 있게 사실만 한 상자로 (점수·관계는 SCORES·REL 에서) */
   const glance = (() => {
     const require = createRequire(import.meta.url);
@@ -777,7 +794,7 @@ iljuList.forEach((e, i) => {
 
 /* ---------- 사이트맵 + robots ---------- */
 fs.writeFileSync(path.join(DOCS, 'sitemap-2027.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${/\/2027\/ilju\/[a-z]+\/$/.test(u) ? MODIFIED_ILJU : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${u === SITE + '/2027/ddi/' || u === SITE + '/2027/ilju/' ? MODIFIED_HUB : /\/2027\/ilju\/[a-z]+\/$/.test(u) ? MODIFIED_ILJU : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-2027.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-2027.xml\n');

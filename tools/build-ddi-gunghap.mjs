@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
-import { shell, esc, breadcrumb } from './page-shell.mjs';
+import { shell, esc, breadcrumb, picker, PICKER_STYLE } from './page-shell.mjs';
 import { DDI, TRAIT, REL, GH_REL, GH_EL, EL_HAN, SAMHAP_G, SAMHAP_NAME, BANGHAP_G, BANGHAP_NAME, relations, elRelation, grade, josa, ddiDreamLink } from './ddi-data.mjs';
 
 const { M } = loadEngine();
@@ -15,6 +15,7 @@ const SAENGIL = 'http://saengil.sajucheop.com';
 const PUBLISHED = '2026-09-08';
 const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod */
 const MODIFIED_DDI = '2026-10-03';   /* 띠별 12장 — 제목을 검색어 그대로(질문+답), 한눈에 상자, 자주 묻는 질문 */
+const MODIFIED_HUB = '2026-11-02';   /* /ddi-gunghap/ 인덱스만 — 12×12 표 144칸의 짝 링크를 빼고 고르기 상자로 (구글 제외 짝 78장으로 가는 링크 묶음 줄이기). 띠별 12장·짝 78장은 그대로 */
 const urls = [];
 const pairUrl = (a, b) => a <= b ? `/ddi-gunghap/${DDI[a].slug}-${DDI[b].slug}/` : `/ddi-gunghap/${DDI[b].slug}-${DDI[a].slug}/`;
 const ddiUrl = (a) => `/ddi-gunghap/${DDI[a].slug}/`;
@@ -39,7 +40,7 @@ const STYLE = `<style>
     .gh-matrix { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
     .gh-matrix th, .gh-matrix td { padding: 5px 2px; text-align: center; border: 1px solid var(--line-soft); }
     .gh-matrix th { font-weight: 500; color: var(--faint); }
-    .gh-matrix a { text-decoration: none; color: inherit; display: block; }
+    .gh-matrix a, .gh-matrix span { text-decoration: none; color: inherit; display: block; }
     .gh-matrix .g3 { background: #E9F3EC; } .gh-matrix .g2 { background: #F4F7F0; } .gh-matrix .g1 { background: #FBF3E6; } .gh-matrix .g0 { background: #F8E7E2; }
     .gh-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
     .gh-chips a { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); text-decoration: none; color: inherit; background: #FFFDF9; }
@@ -201,7 +202,14 @@ function indexPage() {
   const rel = '../';
   const cls = (s) => s >= 80 ? 'g3' : s >= 65 ? 'g2' : s >= 50 ? 'g1' : 'g0';
   const head = DDI.map((d) => `<th>${d.animal}</th>`).join('');
-  const rows = DDI.map((d, a) => `<tr><th><a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠</a></th>${DDI.map((_, b) => { const s = pairScore(a, b).score; return `<td class="${cls(s)}"><a href="${rel}ddi-gunghap/${pairUrl(a, b).split('/')[2]}/">${s}</a></td>`; }).join('')}</tr>`).join('\n        ');
+  const rows = DDI.map((d, a) => `<tr><th><a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠</a></th>${DDI.map((_, b) => { const s = pairScore(a, b).score; return `<td class="${cls(s)}"><span title="${name(a)} × ${name(b)}">${s}</span></td>`; }).join('')}</tr>`).join('\n        ');
+  /* 2026-11-02: 표 144칸의 짝 링크를 빼고 고르기 상자로. 띠별 12장 링크(행 머리·띠별로 보기)는 그대로 두어 짝 페이지는 띠별 페이지의 순위표로 이어진다 */
+  const ddiOpts = DDI.map((d, i) => [String(i), `${d.animal}띠(${d.han})`]);
+  const pick = picker({ id: 'gh-pick', title: '두 사람의 띠로 궁합 보기', button: '궁합 보기',
+    selects: [{ name: 'a', label: '나의 띠', options: ddiOpts }, { name: 'b', label: '상대의 띠', options: ddiOpts }],
+    go: `(function(){var SL=${JSON.stringify(DDI.map((d) => d.slug))};var a=+v.a,b=+v.b;return './'+SL[Math.min(a,b)]+'-'+SL[Math.max(a,b)]+'/';})()`,
+    note: `표는 대칭이라 어느 쪽을 먼저 골라도 같은 페이지가 열립니다. 띠는 입춘(2월 4일 전후) 기준으로 바뀌니 1월·2월 초 출생은 <a href="${SAENGIL}/">생일 사전</a>에서 띠를 먼저 확인하세요.`,
+    fallback: '주소는 /ddi-gunghap/띠-띠/ 꼴이고, 띠별 페이지의 순위표에서도 각 짝으로 갈 수 있습니다.' });
   const title = '띠 궁합표 — 12띠 × 12띠 점수와 잘 맞는 띠';
   const desc = '쥐띠부터 돼지띠까지 12띠 × 12띠 궁합 점수를 한 표로. 육합·삼합·방합·충·형·해·파·원진과 오행 상생상극으로 계산했고, 칸을 누르면 연애·결혼·친구·가족으로 만났을 때의 풀이가 나옵니다.';
   const body = `
@@ -217,6 +225,7 @@ function indexPage() {
         ${rows}
       </table></div>
       <p style="font-size: 12px; color: var(--faint);">80점 이상 초록 · 65~79 연두 · 50~64 노랑 · 50 미만 분홍. 표는 대칭이라 어느 쪽에서 찾아도 같습니다.</p>
+      ${pick}
       <h2>띠별로 보기</h2>
       <div class="gh-chips">${DDI.map((d, a) => `<a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a>`).join('')}</div>
       <h2>관계 읽는 법</h2>
@@ -234,7 +243,7 @@ function indexPage() {
       <a class="btn-primary" href="${rel}gunghap/"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 정확한 궁합 보기</span></a>
     </div>
   </article>`;
-  write('ddi-gunghap', shell({ rel, title, desc, canonical: SITE + '/ddi-gunghap/', nav: NAV(rel), extraHead: STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/ddi-gunghap/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/zodiac/compatibility/">`, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }]), body }));
+  write('ddi-gunghap', shell({ rel, title, desc, canonical: SITE + '/ddi-gunghap/', nav: NAV(rel), extraHead: STYLE + PICKER_STYLE + `\n  <link rel="alternate" hreflang="ko" href="${SITE}/ddi-gunghap/">\n  <link rel="alternate" hreflang="en" href="${SITE}/en/zodiac/compatibility/">`, jsonld: breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '띠 궁합', url: SITE + '/ddi-gunghap/' }]), body }));
   urls.push('/ddi-gunghap/');
 }
 
@@ -243,7 +252,7 @@ indexPage();
 for (let a = 0; a < 12; a++) ddiPage(a);
 for (let a = 0; a < 12; a++) for (let b = a; b < 12; b++) pairPage(a, b);
 const sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${DDI.some((_, a) => ddiUrl(a) === u) ? MODIFIED_DDI : MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n');
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${u === '/ddi-gunghap/' ? MODIFIED_HUB : DDI.some((_, a) => ddiUrl(a) === u) ? MODIFIED_DDI : MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n');
 fs.writeFileSync(path.join(DOCS, 'sitemap-ddi-gunghap.xml'), sm);
 const robotsPath = path.join(DOCS, 'robots.txt');
 let robots = fs.readFileSync(robotsPath, 'utf8');

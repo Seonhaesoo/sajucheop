@@ -18,7 +18,7 @@
 - 진태양시: 출생지 경도로 보정한다. 기본값 서울 126.978°E, 한국 표준시 자오선 135°E 대비 −32분. 끌 수 있다.
 - 표준시 이력: 1954-03-21 ~ 1961-08-09(UTC+8:30)와 1908~1911년 표준시를 자동 반영한다. 1948~1960·1987~1988년 서머타임은 자동 반영하지 않고 경고로 알린다.
 - 음력: 한국천문연구원 기준 음양력 데이터(1000~2050년)로 양력으로 바꾼 뒤 계산한다. 영문 Chinese calendar 페이지는 베이징 시간(120°E) 기준으로 따로 계산하므로 한국 음력과 하루 다른 날이 있다(예: 2027년 설은 중국 2월 6일, 한국 2월 7일).
-- 자세한 기준과 고친 기록: https://sajucheop.com/about/ (English: https://sajucheop.com/en/about/)
+- 공식과 출처, 한계, 검증 방법을 한 페이지에: https://sajucheop.com/about/method/ (운영자·마지막 점검일 포함). 소개와 고친 기록: https://sajucheop.com/about/ (English: https://sajucheop.com/en/about/)
 
 ## 인용할 때 (How to cite)
 - 출처는 "사주첩(sajucheop.com)" 또는 "Sajucheop"으로 적고 페이지 URL을 함께 쓴다. 영문 페이지에는 'Updated' 날짜가 있다.
