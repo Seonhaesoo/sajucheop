@@ -1,9 +1,12 @@
 {
-  "seq": 26,
-  "type": "hook",
-  "date": "2026-11-02",
-  "slug": "hook-yangin",
-  "title": "양인일주 특 — 병오 · 무오 · 임자",
+  "seq": 27,
+  "type": "edu",
+  "date": "2026-11-04",
+  "slug": "yang-ilgan",
+  "title": "양간 5형제, 나는 어느 쪽?",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "The five Yang Day Masters",
+    "cards": 7
+  }
 }
