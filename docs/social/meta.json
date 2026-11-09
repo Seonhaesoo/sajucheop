@@ -1,12 +1,9 @@
 {
-  "seq": 28,
-  "type": "viral",
-  "date": "2026-11-06",
-  "slug": "teuk-gyesu",
-  "title": "계수 특",
+  "seq": 29,
+  "type": "hook",
+  "date": "2026-11-09",
+  "slug": "hook-jan-born",
+  "title": "1월생, 내 띠 틀렸을 수 있음",
   "cards": 7,
-  "en": {
-    "title": "Morning Dew things",
-    "cards": 7
-  }
+  "en": null
 }
