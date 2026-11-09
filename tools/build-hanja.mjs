@@ -11,6 +11,7 @@
  * 사용: node tools/build-hanja.mjs */
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb, picker, PICKER_STYLE } from './page-shell.mjs';
 import { SYLLABLES } from './en-name-data.mjs';
@@ -20,10 +21,12 @@ import { KO_MEAN, EXCLUDE } from './hanja-names-ko.mjs';
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-18';
-const REVISED = '2026-11-05';   /* 이번 빌드에서 글 영역이 바뀐 페이지의 수정일 — 내용을 또 고치면 그날로 바꾼다(글이 그대로인 페이지는 예전 날짜 유지) */
-const UNIHAN_VER = 'Unicode 18.0, 2026년 7월';
-const EL_HAN = { 목: '木', 화: '火', 토: '土', 금: '金', 수: '水' };
-const EL_ORDER = ['목', '화', '토', '금', '수'];
+const REVISED = '2026-11-09';   /* 이번 빌드에서 글 영역이 바뀐 페이지의 수정일 — 내용을 또 고치면 그날로 바꾼다(글이 그대로인 페이지는 예전 날짜 유지). 2026-11-09: 허브에 이름 풀이 안내 */
+export const UNIHAN_VER = 'Unicode 18.0, 2026년 7월';
+export const EL_HAN = { 목: '木', 화: '火', 토: '土', 금: '金', 수: '水' };
+export const EL_ORDER = ['목', '화', '토', '금', '수'];
+/* 이 파일을 직접 돌릴 때만 페이지를 쓴다 — tools/build-naming-pulyi.mjs 가 자료(groups·uni·slugOf …)만 가져다 쓸 수 있게 */
+const IS_MAIN = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 const NAV = (rel) => [{ href: rel, label: '사주 보기' }, { href: rel + 'naming/', label: '이름 짓기' }, { href: rel + 'naming/hanja/', label: '이름 한자 사전' }];
 
 /* ---------- 부수: 강희 부수 번호 → 원형 글자·이름·획수 ---------- */
@@ -38,7 +41,7 @@ const RAD_NAME = {
   174: '靑 푸를 청', 177: '革 가죽 혁', 184: '食 밥 식', 186: '香 향기 향', 187: '馬 말 마', 195: '魚 물고기 어', 212: '龍 용 룡'
 };
 /* 부수가 변형(변·방·머리·받침)으로 쓰여 원획이 쓰는 획수보다 커지는 부수 — 음 페이지의 '원획이 다른 글자' 설명에 쓴다 */
-const RAD_VARIANT = { 85: ['氵', '水', 4], 140: ['艹', '艸', 6], 96: ['王', '玉', 5], 170: ['왼쪽 阝', '阜', 8], 163: ['오른쪽 阝', '邑', 7], 162: ['辶', '辵', 7], 61: ['忄', '心', 4], 64: ['扌', '手', 4], 145: ['衤', '衣', 6] };
+export const RAD_VARIANT = { 85: ['氵', '水', 4], 140: ['艹', '艸', 6], 96: ['王', '玉', 5], 170: ['왼쪽 阝', '阜', 8], 163: ['오른쪽 阝', '邑', 7], 162: ['辶', '辵', 7], 61: ['忄', '心', 4], 64: ['扌', '手', 4], 145: ['衤', '衣', 6] };
 /* 유니코드 나머지 획이 강희자전과 다른 글자 — Unihan kRSAdobe_Japan1_6·자전과 대조해 고쳤다(2026-09-18)
  *  成 계열: 유니코드 6획, 한국 자전·성명학 7획(戈부 3획) · 熙 13획(火부 9획) · 路 계열: 路 는 13획인데 璐·潞·蕗·露 의 나머지를 12로 셈
  *  巋(歸 18) · 斌(武 8) · 廙(異 11) · 柴(此 6) · 郎(良 7, 유니코드는 점 없는 良 6) · 延(한국 자전 7획, 유니코드 총획 8은 대만 자형) */
@@ -48,8 +51,9 @@ const FIX_WHY = { '成': '成을 한국 자전대로 7획으로 셈', '誠': '�
   '熙': '한국 자전·성명학은 13획', '凞': '熙를 13획으로 셈', '璐': '王→玉 5획, 路 13획', '潞': '氵→水 4획, 路 13획', '蕗': '艹→艸 6획, 路 13획', '露': '路를 13획으로 셈', '郎': '良을 7획, 오른쪽 阝을 邑 7획으로 셈', '延': '한국 자전은 7획, 유니코드 8획은 대만 자형' };
 const NUM_STROKE = { '一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9, '十': 10 };
 
-function uni(ch) {
-  const u = UNIHAN[ch];
+/* Unihan 한 줄([kRSUnicode, kTotalStrokes, kHangul])을 부수·획수·원획·음으로. extra 는 UNIHAN 에 없는 글자를 보탤 표(성씨 한자) */
+export function uni(ch, extra) {
+  const u = UNIHAN[ch] || (extra && extra[ch]);
   if (!u || !u[0]) return null;
   const m = u[0].split(' ')[0].match(/^(\d+)('*)\.(-?\d+)$/);
   const rad = +m[1], rest = +m[3];
@@ -61,15 +65,15 @@ function uni(ch) {
 
 /* 두음법칙 정규화 — 련→연, 률→율, 녕→영, 로→노 … (이름 첫소리 음과 사전 음을 같은 것으로 본다) */
 const YV = [20, 2, 6, 12, 17, 7];   /* ㅣ ㅑ ㅕ ㅛ ㅠ ㅖ */
-function norm(s) {
+export function norm(s) {
   const c = s.charCodeAt(0) - 0xAC00; let ini = Math.floor(c / 588); const med = Math.floor((c % 588) / 28), fin = c % 28;
   if (ini === 5) ini = YV.includes(med) ? 11 : 2;
   else if (ini === 2 && YV.includes(med)) ini = 11;
   return String.fromCharCode(0xAC00 + ini * 588 + med * 28 + fin);
 }
 const CHO = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
-const CHO_EL = { 'ㄱ': '목', 'ㄲ': '목', 'ㅋ': '목', 'ㄴ': '화', 'ㄷ': '화', 'ㄸ': '화', 'ㄹ': '화', 'ㅌ': '화', 'ㅇ': '토', 'ㅎ': '토', 'ㅅ': '금', 'ㅆ': '금', 'ㅈ': '금', 'ㅉ': '금', 'ㅊ': '금', 'ㅁ': '수', 'ㅂ': '수', 'ㅃ': '수', 'ㅍ': '수' };
-const choOf = (s) => CHO[Math.floor((s.charCodeAt(0) - 0xAC00) / 588)];
+export const CHO_EL = { 'ㄱ': '목', 'ㄲ': '목', 'ㅋ': '목', 'ㄴ': '화', 'ㄷ': '화', 'ㄸ': '화', 'ㄹ': '화', 'ㅌ': '화', 'ㅇ': '토', 'ㅎ': '토', 'ㅅ': '금', 'ㅆ': '금', 'ㅈ': '금', 'ㅉ': '금', 'ㅊ': '금', 'ㅁ': '수', 'ㅂ': '수', 'ㅃ': '수', 'ㅍ': '수' };
+export const choOf = (s) => CHO[Math.floor((s.charCodeAt(0) - 0xAC00) / 588)];
 /* 조사 — 마지막 글자에 받침이 있으면 a(은·이·을·이나), 없으면 b(는·가·를·나) */
 const P = (word, a, b) => ((word.charCodeAt(word.length - 1) - 0xAC00) % 28 ? a : b);
 
@@ -83,7 +87,7 @@ if (strokeDiff.length) throw new Error('작명 도구와 원획이 다름: ' + s
 const POS_KO = { first: '앞 글자에 많이', last: '뒤 글자에 많이', both: '앞·뒤 모두' };
 const G_KO = { f: '여자 이름에 많이', m: '남자 이름에 많이', n: '남녀 모두' };
 const skipped = [];
-const groups = SYLLABLES.map((S) => {
+export const groups = SYLLABLES.map((S) => {
   const items = [];
   for (const h of S.hj) {
     if (EXCLUDE[h.h]) { skipped.push(`${h.h}(${S.s}) 뜻`); continue; }
@@ -100,7 +104,7 @@ const groups = SYLLABLES.map((S) => {
   }
   return { s: S.s, rr: S.rr, g: S.g, pos: S.pos, pop: S.pop, items };
 }).filter((g) => g.items.length);
-const slugOf = (g) => g.rr.replace(/[^a-z]/g, '');
+export const slugOf = (g) => g.rr.replace(/[^a-z]/g, '');
 { const seen = new Set(); groups.forEach((g) => { const k = slugOf(g); if (seen.has(k)) throw new Error('주소 겹침 ' + k); seen.add(k); }); }
 const TOTAL = groups.reduce((n, g) => n + g.items.length, 0);
 const TOTAL_EDU = groups.reduce((n, g) => n + g.items.filter((x) => x.edu).length, 0);
@@ -124,8 +128,8 @@ const THEMES = [
 const meanWords = (m) => m.split(/[·,\s]+/).filter(Boolean);
 const inTheme = (x, t) => (t.whole || []).includes(x.mean) || meanWords(x.mean).some((w) => t.exact.includes(w) || (t.suffix || []).some((s) => w.length > s.length && w.endsWith(s)));
 
-/* ---------- 수정일 — 글 영역이 이전 빌드와 같으면 그 파일의 날짜 그대로 ---------- */
-const contentKey = (html) => { const a = html.indexOf('<article'), b = html.indexOf('</article>'); return html.slice(a, b).replace(/<div class="hj-grid">[\s\S]*?<\/div>/g, '').replace(/\s+/g, ' ').trim(); };
+/* ---------- 수정일 — 글 영역이 이전 빌드와 같으면 그 파일의 날짜 그대로. 다른 음 바둑판과 맨 아래 도구 단추(ga-cta)는 길잡이라 글 영역으로 치지 않는다 ---------- */
+const contentKey = (html) => { const a = html.indexOf('<article'), b = html.indexOf('</article>'); return html.slice(a, b).replace(/<div class="hj-grid">[\s\S]*?<\/div>/g, '').replace(/<div class="ga-cta">[\s\S]*?<\/a>\s*<\/div>/g, '').replace(/\s+/g, ' ').trim(); };
 function modifiedFor(url, body) {
   const file = path.join(DOCS, url.slice(1), 'index.html');
   if (!fs.existsSync(file)) return REVISED;
@@ -182,7 +186,7 @@ const han = (list) => list.map((x) => x.h).join('·');
 const elTag = (e) => `<span class="hj-el ${e}">${e}(${EL_HAN[e]})</span>`;
 const count = (list, f) => list.filter(f).length;
 /* 원획이 쓰는 획수와 다른 이유 — 글자별 */
-function strokeWhy(x) {
+export function strokeWhy(x) {
   if (FIX_WHY[x.h]) return FIX_WHY[x.h];
   const v = RAD_VARIANT[x.rad];
   if (v) return `${v[0]}을 원형 ${v[1]} ${v[2]}획으로 셈`;
@@ -291,7 +295,7 @@ function sylPage(g) {
       <div class="hj-grid">${others}</div>
     </div>
     <div class="ga-cta">
-      <a class="btn-primary" href="${rel}naming/"><span class="seal-dot" aria-hidden="true"></span><span>이 한자로 이름 풀어 보기</span></a>
+      <a class="btn-primary" href="${rel}naming/pulyi/"><span class="seal-dot" aria-hidden="true"></span><span>이 한자로 이름 풀이 보기 — 원획·4격·오행</span></a>
     </div>
   </article>`;
   const modified = modifiedFor(url, body);
@@ -351,8 +355,9 @@ function hub() {
     <div class="ga-overline"><a href="${rel}naming/" style="color: inherit; text-decoration: none;">이름 짓기</a> · 이름 한자 사전</div>
     <h1 class="ga-title">이름 한자 사전 —<br>${groups.length}개 음, ${TOTAL}자</h1>
     <p class="ga-meta">인명용 한자 · 뜻 · 원획(강희자전 부수 원형) · 자원오행 · 발음오행</p>
-    <p class="ga-lead">이름에 자주 쓰는 음마다 인명용 한자를 모아 뜻과 원획, 자원오행을 정리했어요. ${TOTAL}자 중 ${TOTAL_EDU}자는 학교에서 배우는 교육용 기초한자이고, 나머지는 인명용 한자표에만 있는 글자예요. 음을 누르면 그 음의 한자가 한 표로 나오고, 음 페이지마다 오행별로 몇 자인지, 빠진 오행은 무엇인지, 원획이 쓰는 획수와 다른 글자는 왜 다른지까지 그 음의 글자로 풀어 두었어요. 한자를 고른 뒤에는 <a href="${rel}naming/">이름 짓기 도구</a>에서 발음오행과 81수리(전통 작명 관습)까지 풀어 볼 수 있어요.</p>
+    <p class="ga-lead">이름에 자주 쓰는 음마다 인명용 한자를 모아 뜻과 원획, 자원오행을 정리했어요. ${TOTAL}자 중 ${TOTAL_EDU}자는 학교에서 배우는 교육용 기초한자이고, 나머지는 인명용 한자표에만 있는 글자예요. 음을 누르면 그 음의 한자가 한 표로 나오고, 음 페이지마다 오행별로 몇 자인지, 빠진 오행은 무엇인지, 원획이 쓰는 획수와 다른 글자는 왜 다른지까지 그 음의 글자로 풀어 두었어요. 한자를 고른 뒤에는 <a href="${rel}naming/pulyi/">이름 풀이</a>에서 성과 이름을 합쳐 원획·획수 음양·자원오행·발음오행·81수리 4격(전통 작명 관습)을 한 번에 볼 수 있어요.</p>
     <div class="ga-body">
+      <p class="callout"><b><a href="${rel}naming/pulyi/">이름 풀이</a></b> — 성과 이름 한글을 넣고 여기 ${TOTAL}자 중에서 한자를 고르면 글자마다 원획·자원오행, 첫소리 발음오행, 81수리 원형이정 4격을 계산해 규칙과 함께 보여 줘요. 생년월일을 넣으면 사주 오행 분포에 이름 한자의 오행이 어디를 채우는지도 함께 봐요. 계산은 브라우저 안에서만 해요.</p>
       ${pick}
       ${find}
       <h2>음으로 찾기</h2>
@@ -381,12 +386,14 @@ function hub() {
   return themes;
 }
 
-groups.forEach(sylPage);
-const themes = hub();
-fs.writeFileSync(path.join(DOCS, 'sitemap-hanja.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map(([u, m]) => `  <url><loc>${SITE}${u}</loc><lastmod>${m}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
-const robotsPath = path.join(DOCS, 'robots.txt');
-const robots = fs.readFileSync(robotsPath, 'utf8');
-if (!robots.includes('sitemap-hanja.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-hanja.xml\n');
-const byDate = urls.reduce((a, [, m]) => (a[m] = (a[m] || 0) + 1, a), {});
-console.log(`이름 한자 사전 — 음 ${groups.length}장 · 한자 ${TOTAL}자(교육용 ${TOTAL_EDU}) + 허브, 뜻 갈래 ${themes.map((t) => `${t.name} ${t.total}`).join(' · ')}, 수정일 ${Object.entries(byDate).map(([d, n]) => `${d}×${n}`).join(' ')}, 뺀 글자 ${skipped.length} (${skipped.join(' ')})`);
+if (IS_MAIN) {
+  groups.forEach(sylPage);
+  const themes = hub();
+  fs.writeFileSync(path.join(DOCS, 'sitemap-hanja.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    .concat(urls.map(([u, m]) => `  <url><loc>${SITE}${u}</loc><lastmod>${m}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  const robotsPath = path.join(DOCS, 'robots.txt');
+  const robots = fs.readFileSync(robotsPath, 'utf8');
+  if (!robots.includes('sitemap-hanja.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-hanja.xml\n');
+  const byDate = urls.reduce((a, [, m]) => (a[m] = (a[m] || 0) + 1, a), {});
+  console.log(`이름 한자 사전 — 음 ${groups.length}장 · 한자 ${TOTAL}자(교육용 ${TOTAL_EDU}) + 허브, 뜻 갈래 ${themes.map((t) => `${t.name} ${t.total}`).join(' · ')}, 수정일 ${Object.entries(byDate).map(([d, n]) => `${d}×${n}`).join(' ')}, 뺀 글자 ${skipped.length} (${skipped.join(' ')})`);
+}

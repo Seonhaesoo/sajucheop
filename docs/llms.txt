@@ -50,6 +50,7 @@
 - [음력 양력 변환 · 음력 기념일](https://sajucheop.com/lunar/): 제사·음력 생신 10년치 양력 날짜, .ics 캘린더.
 - [삼재 계산](https://sajucheop.com/samjae/) · [손없는날 달력](https://sajucheop.com/son/)
 - [이름 한자 사전](https://sajucheop.com/naming/hanja/): 인명용 한자 645자를 70개 음별로 뜻·원획·자원오행과 함께.
+- [이름 풀이](https://sajucheop.com/naming/pulyi/): 성과 이름 한자를 고르면 원획·획수 음양·자원오행·발음오행(운해·해례)·81수리 4격(전통 작명 관습)을 규칙과 함께 계산. 생년월일을 넣으면 사주 오행에 이름이 보태는 오행까지. 브라우저 안에서만 계산.
 
 ## English pages
 - [Saju calculator](https://sajucheop.com/en/): Korean Four Pillars chart — Day Master, Five Elements balance, Ten Gods, special stars, with time zone of birthplace.
