@@ -507,6 +507,7 @@ function buildSonIndex(byMonth) {
         ${items}
       </ul>
       <p>모두의 손없는날이 나의 길일은 아닙니다. 내 일지와 충이 드는 날은 손없는날이어도 흔들립니다. <a href="${rel}">내 사주를 넣으면</a> 손없는날 중 나에게도 트이는 날만 골라 드립니다.</p>
+      <p>손없는날에 황도일과 내 띠·일지의 충까지 한 달력에서 보려면 <a href="${rel}taegil/">택일 달력</a>을 쓰세요.</p>
       <p class="callout"><a href="${rel}day/">날짜별 일진</a> · <a href="${rel}jeolgi/${Y0}/">${Y0}년 절기</a> · <a href="${rel}lunar/">음력 기념일 변환</a></p>
     </div>
     ${coupangBox('son')}<div class="ga-cta">
