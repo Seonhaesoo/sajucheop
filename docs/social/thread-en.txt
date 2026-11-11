@@ -1,0 +1,9 @@
+Saju is not BaZi — 3 differences
+
+1. Solar terms computed for Korea, not Beijing
+2. True-solar-time correction (Seoul runs ~32 min behind its clock)
+3. The late Rat hour convention for births after 11 pm
+
+Same eight characters, Korean calendar rules.
+
+The Korean chart in English → sajucheop.com/en
