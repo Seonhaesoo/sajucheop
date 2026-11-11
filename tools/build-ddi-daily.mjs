@@ -1,6 +1,7 @@
 /* 오늘의 띠별 운세 — /today/ddi/ + /today/ddi/<띠>/ 12장, /tomorrow/ddi/ + 12장. 매일 daily-story.yml 이 다시 생성한다.
  * 그날 일진의 지지와 내 띠의 관계(합·충·형·해·파·원진), 천간의 오행이 내 띠에게 드는 십성 무리, 출생연도 천간별 십성으로 조합한다.
  * 사용: node tools/build-ddi-daily.mjs */
+import { coupangBox } from './coupang.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, kstToday, ROOT_DIR } from './engine.mjs';
@@ -179,7 +180,7 @@ function ddiPage(day, a, kind) {
       <p class="callout">${kind === 'today' ? `<a href="${rel}tomorrow/ddi/${D.slug}/">내일의 ${D.animal}띠 운세 →</a>` : `<a href="${rel}today/ddi/${D.slug}/">← 오늘의 ${D.animal}띠 운세</a>`} · <a href="${rel}${wolunUrl(day).url}#${D.slug}">${wolunUrl(day).m}월의 ${D.animal}띠 운세</a> · <a href="${rel}day/${iso(day.y, day.m, day.d)}/">${day.m}월 ${day.d}일 일진 (일간별)</a> · <a href="${rel}ddi-gunghap/${D.slug}/">${D.animal}띠 궁합</a> · <a href="${rel}2027/ddi/${D.slug}/">${D.animal}띠 2027년 운세</a> · <a href="${SAENGIL}/ddi/${D.slug}/">${D.animal}띠 출생연도 (생일 사전)</a>${ddiDreamLink(D) ? ' · ' + ddiDreamLink(D) : ''}</p>
     </div>
 
-    <div class="ga-cta">
+    ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주로 ${label} 점수 보기</span></a>
       <p class="form-microcopy" style="margin-top: 10px;">띠 운세는 태어난 해 한 글자로 보는 약식입니다. 생년월일시를 넣으면 여덟 글자로 본 ${label}의 흐름과 시간대별 점수가 나옵니다.</p>
     </div>
@@ -219,7 +220,7 @@ function indexPage(day, kind, items) {
       <p class="callout"><b>${label}의 꿈해몽 · ${esc(dream.t)}</b>: ${esc(firstSent(dream.lead))} <a href="${DREAM_SITE}${dream.u}">꿈첩에서 상황별로 보기 →</a> · <a href="${DREAM_SITE}/d/">꿈해몽 사전 전체 목록</a></p>
       <p class="callout">${kind === 'today' ? `<a href="${rel}tomorrow/ddi/">내일의 띠별 운세 →</a>` : `<a href="${rel}today/ddi/">← 오늘의 띠별 운세</a>`} · <a href="${rel}${wolunUrl(day).url}">${wolunUrl(day).m}월 띠별 운세</a> · <a href="${rel}day/${iso(day.y, day.m, day.d)}/">${day.m}월 ${day.d}일 일진 (일간별 흐름)</a> · <a href="${rel}ddi-gunghap/">띠 궁합표</a> · <a href="${rel}2027/">2027년 띠별 운세</a></p>
     </div>
-    <div class="ga-cta">
+    ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주로 ${label} 점수 보기</span></a>
     </div>
   </article>`;

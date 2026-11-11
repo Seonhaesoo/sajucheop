@@ -5,6 +5,7 @@
  *  생년월일은 브라우저 밖으로 나가지 않는다(주소의 # 뒤에만 담김). 날짜별 페이지를 찍어 내지 않는다 — 이 한 장뿐.
  *  수정일: 글 영역(스크립트 제외)이 이전 빌드와 같으면 예전 날짜 유지. 예시는 '다음 달'이라 달이 바뀐 뒤 다시 돌리면 그날로 바뀐다.
  * 사용: node tools/build-taegil.mjs */
+import { coupangBox } from './coupang.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT_DIR, loadEngine, kstToday } from './engine.mjs';
@@ -162,7 +163,7 @@ const body = `
       </ul>
       <p class="callout">모든 계산은 이 브라우저 안에서만 해요. 주소를 복사하면 고른 조건이 # 뒤에 담겨 같은 화면을 다시 볼 수 있어요. <a href="${REL}son/">월별 손없는날</a> · <a href="${REL}manse/">만세력</a> · <a href="${REL}day/">날짜별 일진</a> · <a href="${REL}guide/hapchung.html">합과 충</a></p>
     </div>
-    <div class="ga-cta">
+    ${coupangBox('son')}<div class="ga-cta">
       <a class="btn-primary" href="${REL}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주 여덟 글자 보기</span></a>
     </div>
   </article>

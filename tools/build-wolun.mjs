@@ -6,6 +6,7 @@
  * 범위: 이번 절기 달부터 내년 12월까지. 문장 변형은 절대 달 번호로 골라 범위가 굴러가도 페이지 문장이 바뀌지 않는다.
  * daily-story.yml 이 매일 다시 돌려 '이번 달' 표시와 새 달을 붙인다. → sitemap-wolun.xml
  * 사용: node tools/build-wolun.mjs */
+import { coupangBox } from './coupang.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadEngine, kstToday, ROOT_DIR } from './engine.mjs';
@@ -178,7 +179,7 @@ function monthPage(y, m) {
       ${faq.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${esc(a)}</p>`).join('\n      ')}
       <p class="callout">${hasPrev ? `← <a href="${rel}wolun/${monthKey(py, pm)}/">${py !== y ? py + '년 ' : ''}${pm}월 운세</a> · ` : ''}${hasNext ? `<a href="${rel}wolun/${monthKey(ny, nm)}/">${ny !== y ? ny + '년 ' : ''}${nm}월 운세</a> → · ` : ''}<a href="${rel}wolun/">달별 목록</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}2027/">2027 신년운세</a> · <a href="${rel}jeolgi/${S.start.y}/">${S.start.y}년 절기</a></p>
     </div>
-    <div class="ga-cta">
+    ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>띠 말고 내 사주로 이달 보기</span></a>
       <p class="form-microcopy" style="margin-top: 10px;">점수는 띠 글자와 이달 글자의 관계(합은 더하고 충·형·해·원진·파는 빼고)에 오행 보정을 더해 55~96점으로 맞춘 참고값입니다.</p>
     </div>
@@ -218,7 +219,7 @@ function hub(months) {
       ${faq.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${esc(a)}</p>`).join('\n      ')}
       <p class="callout"><a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}2027/">2027 신년운세 (월별 흐름)</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${rel}jeolgi/">절기 달력</a></p>
     </div>
-    <div class="ga-cta">
+    ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}"><span class="seal-dot" aria-hidden="true"></span><span>내 사주로 이달 흐름 보기</span></a>
     </div>
   </article>`;
