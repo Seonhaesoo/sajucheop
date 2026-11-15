@@ -24,3 +24,10 @@ export function coupangBox(kind) {
   if (!items.length) return '';
   return `<aside class="cp-box"><p class="cp-h">${HEAD[kind] || '함께 쓰면 좋은 물건'}</p><div class="cp-list">${items.map((x) => `<a class="cp-item" href="${x.href}" target="_blank" rel="sponsored noopener">${x.img ? `<img class="cp-img" src="${x.img}" alt="" width="80" height="80" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : ''}<span class="cp-t"><b>${x.label}</b><small>${x.note}</small></span><span class="cp-go">쿠팡에서 보기</span></a>`).join('')}</div><p class="cp-note">${DISCLOSURE}</p></aside>\n    `;
 }
+
+/* 2026-11-16 쿠팡 다이나믹 배너 '고객 관심 기반 추천'(파트너스 배너 1019568) — 보는 사람이 쿠팡에서 본 상품을 띄워 고정 상자보다 클릭이 잘 나온다.
+ * page-shell 이 한국어 페이지 본문 끝(바닥글 위)에 한 번 넣는다. 폭은 화면에 맞춰 최대 680px, subId 로 사이트별 실적을 가른다.
+ * g.js 는 스크립트가 놓인 자리에 iframe 을 끼우므로 상자 안에 둔다. 대가성 문구는 상자 아래에 늘 보인다. */
+export function dynBanner(subId = 'saju') {
+  return `<aside class="cp-box cp-dyn"><p class="cp-h">쿠팡 추천 상품</p><div class="cp-dyn-slot"><script src="https://ads-partners.coupang.com/g.js"></script><script>(function(){var s=document.currentScript,w=Math.min(680,Math.max(280,(s.parentNode&&s.parentNode.clientWidth)||680));new PartnersCoupang.G({"id":1019568,"trackingCode":"AF3659962","subId":"${subId}","template":"carousel","width":String(w),"height":"140"});})();</script></div><p class="cp-note">${DISCLOSURE}</p></aside>`;
+}

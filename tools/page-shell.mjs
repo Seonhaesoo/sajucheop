@@ -38,6 +38,7 @@ export function brandSvg() {
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { dynBanner } from './coupang.mjs';
 const OG_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs', 'og');
 const OG_FILES = new Set(fs.existsSync(OG_DIR) ? fs.readdirSync(OG_DIR).filter((f) => f.endsWith('.jpg')).map((f) => f.slice(0, -4)) : []);
 const OG_BY_PATH = [['/2027/ilju/', '2027-ilju'], ['/2027/', '2027'], ['/wolun/', 'wolun'], ['/ddi-gunghap/', 'ddi-gunghap'], ['/gunghap/', 'gunghap'], ['/today/ddi/', 'today-ddi'], ['/tomorrow/ddi/', 'today-ddi'],
@@ -125,6 +126,7 @@ export function shell(o) {
   </header>
 
 ${o.body}
+${lang === 'ko' && !o.noDyn && !/\/(about|terms|privacy)/.test(String(o.canonical || '')) ? `<div style="width:100%;max-width:720px;margin:0 auto;padding:0 16px;box-sizing:border-box">${dynBanner('saju')}</div>` : ''}
 ${shareCard}
   <footer class="site-footer" style="margin-top: 30px;">
     <div class="footer-row">

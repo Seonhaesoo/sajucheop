@@ -2913,3 +2913,6 @@ body.invite-mode .resume-chip { display: none !important; }
   /* 사주 계산기 밖의 페이지(2027·띠별 운세·서재·일주 사전 등)도 PC 에서 같은 읽기 폭 */
   .app:not(:has(.view)) { max-width: 760px; }
 }
+/* 2026-11-16 쿠팡 다이나믹 배너 — 칸 높이를 미리 잡아 글이 밀리지 않게 */
+.cp-dyn .cp-dyn-slot { min-height: 140px; overflow: hidden; }
+.cp-dyn .cp-dyn-slot iframe { max-width: 100%; display: block; }
