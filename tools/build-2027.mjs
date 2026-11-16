@@ -17,13 +17,14 @@ import { publishedTime, NAME_INDEX } from './solar-terms-data.mjs';
 import { YEAR, DDI, REL, DDI_TEXT, DDI_TEXT_MORE, DDI_EL_LINE, DDI_ONE, SAMJAE_TEXT, STEM_REL_TEXT, STEM_LINE, AGE_TEXT, MONTH_LINE, MONTH_LINE_PLAIN, MONTH_SIP, MONTH_WHY, ILGAN_SEUN, ILJI_TEXT, ILJI_EL_MONEY, UN_TEXT, UN_WORK, UN_STRENGTH, STRENGTH_LINE, SIP_GROUP, SEUN_GROUP_VAR, SIP_KW, REL_KW, REL_KW_NONE, UN_KW, YEAR_REL_SCORE, YEAR_EL_ADJ, SAMJAE_ADJ, yearGrade } from './newyear-2027-data.mjs';
 import { coupangBox } from './coupang.mjs';
 
-const { M } = loadEngine();
+const { M, W } = loadEngine(['tojeong']);   /* tojeong — 허브의 '2027 토정비결' 상자에 태세수를 도구(docs/js/tojeong.js)와 같은 값으로 */
 const I = M._internals;
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const PUBLISHED = '2026-09-06';
 const MODIFIED = '2026-10-03';   /* 2026-10-03 문장 다듬기(번역투), 허브에 '2027년 한눈에' — 이전: 2026-09-18 제목·설명 쉬운 말로 */   /* 2026-09-18 제목·설명을 쉬운 말로, 출생연도 페이지에 열두 달 흐름 */
 const MODIFIED_HUB = '2026-11-02';   /* 인덱스 /2027/ddi/·/2027/ilju/ 와 허브 /2027/ — 출생연도 66장·일주 60장으로 가는 링크 격자를 고르기 상자로 (구글 제외 페이지로 가는 링크 묶음 줄이기). 띠 12장·출생연도·일주 본문은 그대로 */
+const MODIFIED_DDI_INDEX = '2026-11-16';   /* 인덱스 /2027/ddi/ 만 — 점수표에 좋은 달·조심할 달, 입춘 경계(1월생 띠) 설명, 자주 묻는 질문. 허브 /2027/ 은 손으로 쓴 파일이라 dateModified 를 그 파일에서 고친다(같은 날). 띠 12장·출생연도·일주는 그대로 */
 const MODIFIED_ILJU = '2026-10-03';   /* 일주 60장 본문(ilju-data) 문장 다듬기 2026-10-03 */   /* 일주 60장은 본문이 그대로라 수정일도 그대로(사이트맵 lastmod 같음) */
 const Y = YEAR.y, YS = YEAR.stem, YB = YEAR.branch; /* 丁=3, 未=7 */
 const BIRTH_FROM = 1945, BIRTH_TO = 2010;
@@ -336,7 +337,8 @@ const LEAN_COR = {
   수: { name: '물', color: '검정·남색', dir: '북쪽', nums: '1·6' },
 };
 const ddiPairUrl = (a, b) => (a <= b ? `/ddi-gunghap/${DDI[a].slug}-${DDI[b].slug}/` : `/ddi-gunghap/${DDI[b].slug}-${DDI[a].slug}/`);
-const ipchunLine = `정미년은 ${IPCHUN.y}년 ${IPCHUN.m}월 ${IPCHUN.d}일 ${pad2(IPCHUN.hh)}:${pad2(IPCHUN.mm)} 입춘부터 ${MONTHS[11].end.y}년 ${MONTHS[11].end.m}월 ${MONTHS[11].end.d}일 입춘 전까지입니다. 그 전(1월 1일~2월 3일)은 아직 병오년(丙午) 기운으로 봅니다.`;
+/* 2026-11-16: '그 전(1월 1일~2월 3일)' → 입춘 당일 아침도 병오년이라 시각까지. 문장만 바로잡은 것이라 띠·출생연도 페이지 수정일은 그대로 */
+const ipchunLine = `정미년은 ${IPCHUN.y}년 ${IPCHUN.m}월 ${IPCHUN.d}일 ${pad2(IPCHUN.hh)}:${pad2(IPCHUN.mm)} 입춘부터 ${MONTHS[11].end.y}년 ${MONTHS[11].end.m}월 ${MONTHS[11].end.d}일 입춘 전까지입니다. 그 전(1월 1일부터 ${IPCHUN.m}월 ${IPCHUN.d}일 ${pad2(IPCHUN.hh)}:${pad2(IPCHUN.mm)} 전까지)은 아직 병오년(丙午) 기운으로 봅니다.`;
 const kwChips = (arr) => `<div class="ny-kw">${arr.map((k) => `<span>#${esc(k)}</span>`).join('')}</div>`;
 /* 검색은 '72년생 쥐띠 운세'처럼 두 자리로 많이 한다 — 제목·목록에 두 자리도 함께 */
 const yy2 = (y) => String(y % 100).padStart(2, '0');
@@ -345,6 +347,81 @@ const DDI_H1 = { ox: '변동이 큰 해', goat: '내 띠의 해, 책임과 이�
 const ddiTail = (slug) => DDI_H1[slug] || DDI_ONE[slug].split(' — ')[0];
 /* 제목에 넣을 대표 출생연도 — 세는나이 30~65세(1963~1998년생), 띠마다 셋 */
 const mainYears = (b) => yearsOf(b).filter((y) => y >= 1963 && y <= 1998);
+
+/* ---------- 시즌 보강(2026-11-16) — 허브 /2027/ 와 인덱스 /2027/ddi/ 가 함께 쓰는 조각 ----------
+ * 12~1월 '2027 신년운세·2027 띠별 운세·2027 토정비결' 검색으로 들어온 사람이 첫 화면 근처에서 찾는 것:
+ * 띠별 점수·좋은 달을 한 표로, 1월생은 무슨 띠인지(입춘 경계), 토정비결은 어떻게 뽑는지. 날짜·수는 모두 엔진·발표 시각표에서 */
+const WDAY = (y, m, d) => '일월화수목금토'[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+const fmtDay = (c) => `${c.y}년 ${c.m}월 ${c.d}일(${WDAY(c.y, c.m, c.d)})`;
+const fmtMdW = (c) => `${c.m}월 ${c.d}일(${WDAY(c.y, c.m, c.d)})`;
+const hhmm = (c) => `${pad2(c.hh)}:${pad2(c.mm)}`;
+const minusMinute = (c) => (c.mm > 0 ? `${pad2(c.hh)}:${pad2(c.mm - 1)}` : `${pad2(c.hh - 1)}:59`);
+const lunarNewYear = (y) => { const k = new W.KoreanLunarCalendar(); k.setLunarDate(y, 1, 1, false); const s = k.getSolarCalendar(); return { y: s.year, m: s.month, d: s.day }; };
+const dayBefore = (c) => { const t = new Date(Date.UTC(c.y, c.m - 1, c.d - 1)); return { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() }; };
+const SEOL = lunarNewYear(Y), SEOL_NEXT = lunarNewYear(Y + 1);
+const IPCHUN_NEXT = MONTHS[11].end;
+const PREV = { han: M.STEMS[(YS + 9) % 10].han + M.BRANCHES[(YB + 11) % 12].han, kor: M.STEMS[(YS + 9) % 10].kor + M.BRANCHES[(YB + 11) % 12].kor, animal: DDI[(YB + 11) % 12].animal };
+const CUR_ANIMAL = DDI[YB].animal;
+if (PREV.han !== '丙午' || CUR_ANIMAL !== '양' || YEAR.han !== '丁未') throw new Error('정미년·병오년 간지 확인 실패');
+if (SEOL.y !== Y || SEOL.m !== 2 || SEOL.d <= IPCHUN.d) throw new Error('설날이 입춘 뒤라는 문장 전제가 깨짐: ' + JSON.stringify(SEOL));
+/* 1945~2010년 입춘이 든 양력 날짜(엔진 계산, 한국 시각) — '1월생·2월 초생' 안내에 쓴다 */
+const IPCHUN_DAYS = (() => { const s = new Set(); for (let y = BIRTH_FROM; y <= BIRTH_TO; y++) { const c = jdToKst(I.ipchunJd(y)); if (c.m !== 2) throw new Error('입춘이 2월 밖 ' + y); s.add(c.d); } return [...s].sort((a, b) => a - b); })();
+const TJ = W.Tojeong;
+const TAESE = TJ.taeseSu(Y);
+const TJ_EX = { y: 1990 };   /* 상괘 예시 — 음력 1990년생 */
+TJ_EX.age = Y - TJ_EX.y + 1; TJ_EX.sang = TJ._mod1(TJ_EX.age + TAESE, 8);
+
+/* 띠별 한눈에 표 — base: 띠 페이지 주소 앞부분, order: 띠 번호 순서 */
+function ddiGlanceTable(base, order, withOne = false) {
+  const rows = order.map((b) => {
+    const d = DDI[b], ms = monthPickShort(b);
+    const yrs = yearsOf(b).filter((y) => y >= 1960).reverse().map(yy2).join('·');
+    const one = withOne ? `<tr class="nyg-one"><td colspan="3">${esc(DDI_ONE[d.slug])}</td></tr>` : '';
+    return `<tr${withOne ? ' class="nyg-has"' : ''}><td><a href="${base}${d.slug}/"><b>${d.animal}띠</b></a><small>${yrs}년생</small></td><td><b>${SCORES[b]}점</b><small>${REL[d.rel].label}${d.samjae ? ' · ' + d.samjae : ''}</small></td><td><span class="nyg-m"><i class="g">좋은 달</i>${ms.good}</span><span class="nyg-m"><i>조심할 달</i>${ms.bad}</span></td></tr>${one}`;
+  }).join('\n            ');
+  return `<div class="nyg-wrap"><table class="nyg-t">
+          <thead><tr><th>띠 · 출생연도</th><th>점수 · 관계</th><th>좋은 달 · 조심할 달</th></tr></thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table></div>
+        <p class="nyg-note">달은 절기로 나눈 달입니다. 예를 들어 3월은 ${fmtMd(MONTHS[1].start)} 경칩부터, 4월은 ${fmtMd(MONTHS[2].start)} 청명부터입니다. 출생연도는 1960년 이후만 적었고, 1월생·2월 초생은 입춘 전이면 앞 해의 띠로 봅니다.</p>
+        <style>.nyg-wrap{overflow-x:auto;margin:8px 0 4px}.nyg-t{width:100%;border-collapse:collapse;font-size:13px;line-height:1.45}.nyg-t th,.nyg-t td{padding:8px 6px;border-bottom:1px solid var(--line-soft);text-align:left;vertical-align:top;word-break:keep-all}.nyg-t th{font-size:11.5px;color:var(--muted);font-weight:500}.nyg-t td a{text-decoration:none}.nyg-t td b{font-weight:700}.nyg-t td small{display:block;font-size:11px;color:var(--faint);margin-top:2px;word-break:normal}.nyg-t td:first-child{width:34%}.nyg-t td:nth-child(2){width:22%}.nyg-m{display:block}.nyg-m+.nyg-m{margin-top:3px}.nyg-m i{font-style:normal;white-space:nowrap;font-size:11px;color:var(--muted);margin-right:5px}.nyg-m i.g{color:var(--seal);font-weight:700}.nyg-note{font-size:12.5px;color:var(--muted);margin:6px 0 0;line-height:1.55}.nyg-t tr.nyg-has td{border-bottom:0;padding-bottom:2px}.nyg-t tr.nyg-one td{font-size:12.5px;color:var(--ink-body);padding-top:0}</style>`;
+}
+const DDI_ORDER = DDI.map((_, b) => b);
+const RANK_ORDER = DDI_ORDER.slice().sort((a, b) => SCORES[b] - SCORES[a] || a - b);
+
+/* 입춘 경계 — 1월생이 앞 해 띠인 까닭 (문단 배열, 링크는 rel 기준) */
+function ipchunParas(rel) {
+  const days = IPCHUN_DAYS.map((d) => `${d}일`).join('이나 ');
+  return [
+    `사주에서 한 해는 양력 1월 1일도, 설날도 아닌 <b>입춘</b>에 바뀝니다. 입춘은 태양이 황경 315°에 닿는 순간이고, ${Y}년에는 <b>${fmtMdW(IPCHUN)} ${hhmm(IPCHUN)}</b>(한국천문연구원 발표 시각)입니다. 이 시각부터 정미년(${YEAR.han}年)이고, 그 전은 ${PREV.kor}년(${PREV.han}年)입니다.`,
+    `그래서 ${Y}년 1월 1일부터 ${IPCHUN.m}월 ${IPCHUN.d}일 ${minusMinute(IPCHUN)} 사이에 태어난 아기는 사주로 <b>${PREV.kor}년 ${PREV.animal}띠</b>이고, ${hhmm(IPCHUN)}부터 ${CUR_ANIMAL}띠입니다. 지난 해들도 같아서, ${BIRTH_FROM}~${BIRTH_TO}년의 입춘은 해마다 양력 2월 ${days}에 들었습니다. 1월생과 2월 초생은 태어난 해 숫자와 띠가 다를 수 있으니 띠별 운세는 앞 해의 띠로 보세요. 내 생일의 띠와 입춘 시각은 <a href="${SAENGIL}/ddi/">생일첩 띠별 해 목록</a>과 <a href="${rel}jeolgi/${Y}/">${Y}년 24절기 시각표</a>에서 확인할 수 있습니다.`,
+    `집안에서는 설날(음력 1월 1일)에 띠가 바뀐다고 말하기도 합니다. ${Y}년 설날은 ${fmtMdW(SEOL)}이라, ${IPCHUN.m}월 ${IPCHUN.d}일 ${hhmm(IPCHUN)}부터 ${SEOL.m}월 ${dayBefore(SEOL).d}일 사이에 태어나면 입춘 기준으로는 ${CUR_ANIMAL}띠, 설날 기준으로는 ${PREV.animal}띠가 됩니다. 사주첩의 띠별 운세와 사주 풀이는 입춘 기준이고, <a href="${rel}tojeong/">토정비결</a>만 음력 생년월일을 쓰므로 설날 기준입니다.`,
+  ];
+}
+
+/* 자주 묻는 질문 — 답은 HTML(화면), 구조화 데이터에는 태그를 뺀 글 */
+const stripTags = (s) => s.replace(/<[^>]+>/g, '');
+function faqItems(rel, which) {
+  const order = DDI.map((d, b) => ({ d, b, s: SCORES[b] }));
+  const top = [...order].sort((x, y) => y.s - x.s).slice(0, 3);
+  const warn = order.filter((x) => REL[x.d.rel].badge === 'warn').sort((x, y) => x.s - y.s);
+  const sam = DDI.filter((d) => d.samjae).map((d) => d.animal + '띠');
+  const lab = (x) => `${x.d.animal}띠 ${x.s}점(${REL[x.d.rel].label.replace(/\(.*\)/, '')})`;
+  const all = {
+    what: [`${Y}년은 무슨 해인가요?`, `${Y}년은 정미년(${YEAR.han}年), 육십갑자의 ${((Y - 4) % 60) + 1}번째 해입니다. 천간 정(丁)은 오행으로 불이고 색으로는 붉은색, 지지 미(未)는 양이라 <b>'붉은 양의 해'</b>라고 부릅니다.`],
+    when: [`${Y}년 정미년은 언제부터인가요?`, `사주로는 ${fmtDay(IPCHUN)} ${hhmm(IPCHUN)} 입춘부터 ${fmtDay(IPCHUN_NEXT)} ${hhmm(IPCHUN_NEXT)} 입춘 전까지가 정미년입니다. 양력 1월 1일이나 설날(${SEOL.m}월 ${SEOL.d}일)이 아니라 입춘이 해의 경계입니다.`],
+    jan: [`${Y}년 1월에 태어나면 무슨 띠인가요?`, `입춘 전이라 ${PREV.kor}년 ${PREV.animal}띠입니다. ${Y}년 1월 1일부터 ${IPCHUN.m}월 ${IPCHUN.d}일 ${minusMinute(IPCHUN)}까지 태어나면 ${PREV.animal}띠, ${hhmm(IPCHUN)}부터 ${CUR_ANIMAL}띠입니다. 설날 기준으로 띠를 말하는 집에서는 설 전날인 ${SEOL.m}월 ${dayBefore(SEOL).d}일까지 ${PREV.animal}띠로 치기도 합니다.`],
+    best: [`${Y}년에 운이 좋은 띠와 조심할 띠는?`, `미(未)와의 관계로 매긴 점수로는 ${top.map(lab).join(', ')} 순으로 높습니다. 미(未)와 충·해·형으로 부딪히는 띠는 ${warn.map(lab).join(', ')}입니다. 점수는 합·충 관계에 가중치를 더한 참고값이며, 띠별 페이지에 좋은 달과 조심할 달을 함께 적었습니다.`],
+    samjae: [`${Y}년 삼재 띠는 무엇인가요?`, `${sam.join('·')}의 날삼재(삼재 3년 중 마지막 해)입니다. 날삼재는 예부터 나가는 삼재라 마무리와 정리에 좋다고 봤습니다. ${Y + 1}년부터는 호랑이띠·말띠·개띠의 삼재가 새로 시작됩니다. <a href="${rel}samjae/">삼재 계산</a>에서 내 띠의 삼재 기간을 볼 수 있습니다.`],
+    tojeong: [`${Y} 토정비결은 어떻게 보나요?`, `토정비결은 음력 생년월일로 봅니다. ${Y}년 세는나이에 정미년의 태세수 ${TAESE}를 더해 상괘를, 음력 생월로 중괘를, 생일로 하괘를 정해 세 자리 괘를 뽑습니다. <a href="${rel}tojeong/">토정비결</a>에 양력 생일을 넣으면 음력으로 바꿔 ${Y}년 괘와 음력 달별 흐름을 보여 주고, 표로 직접 찾으려면 <a href="${rel}tojeong/${Y}/">${Y} 토정비결 괘 찾기표</a>를 보세요.`],
+    baby: [`붉은 양의 해에 태어나는 아기는 어떤가요?`, `정(丁)의 온기와 미(未)의 포용을 바탕에 둔 명식이 많습니다. 다만 아기의 기질은 태어난 날의 일간이 중심이니, 태어나면 <a href="${rel}">아기 사주 풀이</a>로 확인해 보세요. 출산 예정이라면 <a href="${rel}taegil/">출산 택일</a>도 준비돼 있고, 태몽은 자매 사이트 꿈첩의 <a href="${DREAM_SITE}/taemong/">태몽 해몽</a>에서 볼 수 있습니다.`],
+    where: [`${Y} 신년운세는 어디서 보나요?`, `이 페이지의 <b>'내 사주로 보는 ${Y}'</b>에 생일만 넣으면 내 일간이 정화(丁)를 맞는 별로 읽은 ${Y}년 흐름이 나옵니다. 띠로 보려면 <a href="${rel}${Y}/ddi/">띠별 ${Y} 운세</a>, 태어난 날의 두 글자로 보려면 <a href="${rel}${Y}/ilju/">60일주별 ${Y} 운세</a>, 144괘 신수와 음력 달별 흐름은 <a href="${rel}tojeong/">토정비결</a>에서 볼 수 있습니다.`],
+    free: [`${Y} 신년운세는 무료인가요? 얼마나 믿어야 하나요?`, `띠별·출생연도별·일주별 ${Y}년 운세와 토정비결은 가입 없이 무료로 볼 수 있습니다. 풀이는 전통 명리 이론을 바탕으로 정해 둔 규칙대로 고른 참고 글이라, 한 해를 돌아보는 재미와 참고로 읽어 주세요. 점수와 달을 고르는 방법은 <a href="${rel}about/method/">계산 방법</a>에 공개해 두었습니다.`],
+  };
+  return which.map((k) => { if (!all[k]) throw new Error('FAQ 키 없음 ' + k); return all[k]; });
+}
 
 /* ---------- 띠 페이지 12 ---------- */
 DDI.forEach((d, b) => {
@@ -449,7 +526,7 @@ DDI.forEach((d, b) => {
 
       <h2>자주 묻는 질문</h2>
       ${faqList.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${esc(a)}</p>`).join('\n      ')}
-      <p class="callout"><a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
+      <p class="callout"><a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}today/ddi/${d.slug}/">${d.animal}띠 오늘의 운세</a> · <a href="${rel}ddi-gunghap/${d.slug}/">${d.animal}띠 궁합</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}2027/">2027 정미년 운세 전체</a> · <a href="${rel}wolun/">이달의 ${d.animal}띠 운세</a> · <a href="${rel}tojeong/">생년월일로 토정비결 보기</a> · <a href="${rel}samjae/">삼재 계산</a> · ${ddiDreamLink(d) || `<a href="${DREAM_SITE}/taemong/">2027 양띠 아기 태몽 해몽</a>`}</p>
     </div>
 
     <div class="push-box" data-push data-ddi="${d.slug}" data-name="${d.animal}띠" data-where="2027-ddi" style="margin: 24px 0 0;"><p class="push-text"><b>🔔 매일 아침 ${d.animal}띠 운세를 알림으로 받기</b></p></div>
@@ -658,13 +735,13 @@ const iljuPicker = (id, base, rel) => picker({ id, title: '내 일주로 2027년
   const url = '/2027/ddi/';
   const cells = DDI.map((d, b) => `<a href="${rel}2027/ddi/${d.slug}/"><b>${d.han}</b><small>${d.animal}띠 <i>${SCORES[b]}</i><br>${REL[d.rel].label}${d.samjae ? ' · ' + d.samjae : ''}</small></a>`).join('\n        ');
   const ranked = DDI.map((d, b) => ({ d, b, s: SCORES[b] })).sort((x, y) => y.s - x.s);
-  const rankRows = ranked.map((x) => `<tr><td><a href="${rel}2027/ddi/${x.d.slug}/">${x.d.animal}띠</a> <small>${x.d.han}</small></td><td><b>${x.s}점</b> <small>${yearGrade(x.s).label}</small></td><td><span class="ny-tag ${REL[x.d.rel].badge}">${REL[x.d.rel].label}</span></td><td>${esc(DDI_ONE[x.d.slug])}</td></tr>`).join('\n          ');
+  const ddiIndexFaq = faqItems(rel, ['jan', 'best', 'samjae', 'tojeong']);
   const yearTable = [];
   for (let y = BIRTH_TO; y >= BIRTH_FROM; y--) {
     const g = ganjiOfYear(y), d = DDI[g.b], st = M.STEMS[g.s];
     yearTable.push(`<tr><td><b>${y}년생</b></td><td>${COLOR[g.s]} ${d.animal}띠 <small>${st.kor}${M.BRANCHES[g.b].kor}년</small></td><td>세는나이 ${Y - y + 1}세</td><td><span class="ny-tag ${REL[d.rel].badge}">${REL[d.rel].label}</span> <small>${SCORES[g.b]}점</small></td></tr>`);
   }
-  const title = '2027년 띠별 운세 총정리 — 12띠 점수·좋은 달·나이별 운세';
+  const title = '2027년 띠별 운세 무료 총정리 — 12띠 점수·좋은 달·나이별 한눈에';
   const top = ranked[0], low = ranked[ranked.length - 1];
   const desc = checkDesc(url, `2027 정미년 12띠 운세를 한눈에. ${top.d.animal}띠 ${top.s}점부터 ${low.d.animal}띠 ${low.s}점까지 점수 순위와 띠별 좋은 달·조심할 달, 삼재(돼지·토끼·양띠), ${BIRTH_FROM}~${BIRTH_TO}년생 나이별 운세표까지 쉬운 말로 정리했어요.`);
   const body = `
@@ -679,16 +756,14 @@ const iljuPicker = (id, base, rel) => picker({ id, title: '내 일주로 2027년
       <div class="ny-grid four">
         ${cells}
       </div>
-      <h2>점수 순으로 보기</h2>
-      <table class="ny-years">
-        <thead><tr><th>띠</th><th>점수</th><th>미(未)와</th><th>한 줄</th></tr></thead>
-        <tbody>
-          ${rankRows}
-        </tbody>
-      </table>
+      <h2>2027 띠별 운세 한눈에 — 점수 순</h2>
+      <p>열두 띠의 점수와 미(未)와의 관계, 좋은 달과 조심할 달을 한 표에 모았습니다. 띠 이름을 누르면 총운·재물·직장·연애·건강과 열두 달 흐름으로 이어집니다.</p>
+      ${ddiGlanceTable(rel + '2027/ddi/', RANK_ORDER, true)}
       <p style="font-size: 12.5px; color: var(--muted);">점수는 미(未)와의 지지 관계(육합·삼합·방합은 더하고 충·형·해·원진·파는 빼고)에 띠 오행이 정화(丁火)에게 받는 십성 보정과 날삼재를 더해 60~95점으로 맞춘 참고값입니다.</p>
       <h2>2027년 삼재</h2>
       <p>${esc(SAMJAE_TEXT['날삼재'])} <a href="${rel}samjae/">내 삼재 기간 계산하기</a></p>
+      <h2>1월생은 무슨 띠? — 띠는 입춘에 바뀝니다</h2>
+      ${ipchunParas(rel).map((p) => `<p>${p}</p>`).join('\n      ')}
       <h2>출생연도별 2027년 운세</h2>
       <p>같은 띠라도 태어난 해의 천간이 다르면 정화(丁火)를 다르게 맞습니다. 아래에서 태어난 해를 고르면 그 해의 페이지가 열리고, 표에서는 띠·연주·세는나이를 한눈에 볼 수 있습니다.</p>
       ${yearPicker('ny-year-pick', './')}
@@ -698,7 +773,9 @@ const iljuPicker = (id, base, rel) => picker({ id, title: '내 일주로 2027년
           ${yearTable.join('\n          ')}
         </tbody>
       </table>
-      <p class="callout"><a href="${rel}2027/">정미년 운세 허브</a> · <a href="${rel}tojeong/2027/">2027 토정비결</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${rel}tojeong/">2027 토정비결</a> · <a href="${SAENGIL}/ddi/">생일첩 띠별 해 목록</a></p>
+      <h2>자주 묻는 질문</h2>
+      ${ddiIndexFaq.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${a}</p>`).join('\n      ')}
+      <p class="callout"><a href="${rel}2027/">2027 신년운세 전체</a> · <a href="${rel}tojeong/">생년월일로 2027 토정비결 보기</a> · <a href="${rel}tojeong/2027/">2027 토정비결 괘 찾기표</a> · <a href="${rel}2027/ilju/">60일주별 2027 운세</a> · <a href="${rel}today/ddi/">오늘의 띠별 운세</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${SAENGIL}/ddi/">생일첩 띠별 해 목록</a></p>
     </div>
     <div class="push-box" data-push data-where="2027-hub" style="margin: 24px 0 0;"><p class="push-text"><b>🔔 매일 아침 내 띠 운세를 알림으로 받기</b></p></div>
     ${reportPromo(rel, '2027-hub')}
@@ -707,7 +784,8 @@ const iljuPicker = (id, base, rel) => picker({ id, title: '내 일주로 2027년
     </div>
   </article>`;
   write(url.slice(1), shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE + PICKER_STYLE + '\n  <script defer src="/js/push.js"></script>', ogTitle: '2027년 띠별 운세',
-    jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '띠별 운세', url: SITE + url }]), article({ title, desc, url, modified: MODIFIED_HUB })], body }));
+    jsonld: [breadcrumb([{ name: '사주첩', url: SITE + '/' }, { name: '2027 정미년 운세', url: SITE + '/2027/' }, { name: '띠별 운세', url: SITE + url }]), article({ title, desc, url, modified: MODIFIED_DDI_INDEX }),
+      faq(ddiIndexFaq.map(([q, a]) => [q, stripTags(a)]))], body }));
   urls.unshift(SITE + url);
 }
 
@@ -785,6 +863,36 @@ ${iljuPicker('ny-hub-ilju', 'ilju/', '../').split('\n').map((l) => '        ' + 
           <style>.ny-gl{margin:10px 0 0;display:grid;gap:8px}.ny-gl div{display:grid;grid-template-columns:7.5em 1fr;gap:10px;font-size:14px;line-height:1.55}.ny-gl dt{color:var(--muted);font-weight:700}.ny-gl dd{margin:0;color:var(--ink)}</style>
         </div>`;
   })();
+  /* 2026-11-16 시즌 보강: 띠별 한눈에 표(예전엔 자바스크립트로 그려 검색 로봇에 안 보였다), 입춘 경계, 토정비결, 자주 묻는 질문(화면과 구조화 데이터를 한 목록에서) */
+  const paras = (arr) => arr.map((p, i) => `          <p class="reading-body"${i ? ' style="margin-top: 10px;"' : ''}>${p}</p>`).join('\n');
+  const ddiTable = `        ${ddiGlanceTable('ddi/', DDI_ORDER)}`;
+  const ipchunCard = `        <div class="card reading-card" id="y-ipchun" style="margin-top: 14px;">
+          <div class="reading-overline">띠가 바뀌는 때</div>
+          <h2 class="reading-title" style="font-size: 17px;">1월생은 무슨 띠? — 정미년은 ${IPCHUN.m}월 ${IPCHUN.d}일 ${hhmm(IPCHUN)} 입춘부터</h2>
+${paras(ipchunParas('../'))}
+        </div>`;
+  const tjPart = (n) => `<b>${n}</b>`;
+  const tojeongCard = `        <div class="card reading-card" id="y-tojeong" style="margin-top: 14px;">
+          <div class="reading-overline">${Y} 토정비결</div>
+          <h2 class="reading-title" style="font-size: 17px;">음력 생년월일로 뽑는 정미년 신수 — ${Y} 토정비결</h2>
+${paras([
+    `토정비결은 조선 중기 학자 토정 이지함의 이름을 빌려 전해 오는 신수 풀이로, 정초에 한 해의 흐름을 가늠해 보던 풍습입니다. 실제로 누가 지었는지는 분명하지 않습니다. 여덟 글자를 세우는 사주와 달리 <b>음력 생년·생월·생일</b> 세 값만으로 144괘 가운데 하나를 뽑습니다.`,
+    `괘는 세 자리 수입니다. ${tjPart('상괘')}는 ${Y}년 세는나이에 정미년의 태세수 ${TAESE}를 더해 8로 나눈 나머지, ${tjPart('중괘')}는 ${Y}년 그 음력 생월의 날수(29·30)에 그 달의 월건수를 더해 6으로 나눈 나머지, ${tjPart('하괘')}는 음력 생일에 ${Y}년 같은 음력 날짜의 일진수를 더해 3으로 나눈 나머지입니다(나머지가 0이면 나누는 수를 씁니다). 예를 들어 음력 ${TJ_EX.y}년생은 ${Y}년 세는나이 ${TJ_EX.age}세라 ${TJ_EX.age} + ${TAESE} = ${TJ_EX.age + TAESE}, 8로 나눈 나머지가 ${TJ_EX.sang}이므로 상괘가 ${TJ_EX.sang}입니다.`,
+    `${Y} 토정비결의 한 해는 음력 정월 초하루인 ${fmtDay(SEOL)} 설날부터 ${fmtDay(dayBefore(SEOL_NEXT))}까지입니다. 양력 1월생·2월 초생은 음력으로는 앞 해에 태어난 경우가 많아 세는나이와 괘가 달라질 수 있으니, 음력 생일을 모르면 양력 생일을 넣어 도구가 바꿔 계산하게 하세요.`,
+  ])}
+          <div class="btn-stack" style="margin-top: 12px; padding: 0;">
+            <a class="btn-outline" href="../tojeong/" style="display: flex; align-items: center; justify-content: center; text-decoration: none;">생년월일로 ${Y} 토정비결 보기</a>
+          </div>
+          <p class="form-microcopy" style="margin-top: 8px;">표로 직접 찾으려면 <a href="../tojeong/${Y}/">${Y} 토정비결 괘 찾기표</a>, 괘 번호의 뜻은 <a href="../tojeong/gwae/">144괘 풀이</a>에 있습니다.</p>
+        </div>`;
+  const hubFaq = faqItems('../', ['what', 'when', 'jan', 'best', 'samjae', 'where', 'tojeong', 'baby', 'free']);
+  const faqHtml = hubFaq.map(([q, a], i) => `        <details class="ics-help"${i ? '' : ' open'}><summary>${esc(q)}</summary><div class="ih-body"><p>${a}</p></div></details>`).join('\n');
+  const faqLd = `  <script type="application/ld+json">${JSON.stringify(faq(hubFaq.map(([q, a]) => [q, stripTags(a)])))}</script>`;
+  hub = replaceBetween(hub, '<!-- ny:ddi-table -->', '<!-- /ny:ddi-table -->', ddiTable);
+  hub = replaceBetween(hub, '<!-- ny:ipchun -->', '<!-- /ny:ipchun -->', ipchunCard);
+  hub = replaceBetween(hub, '<!-- ny:tojeong -->', '<!-- /ny:tojeong -->', tojeongCard);
+  hub = replaceBetween(hub, '<!-- ny:faq -->', '<!-- /ny:faq -->', faqHtml);
+  hub = replaceBetween(hub, '<!-- ny:faq-ld -->', '<!-- /ny:faq-ld -->', faqLd);
   hub = replaceBetween(hub, '<!-- ny:glance -->', '<!-- /ny:glance -->', glance);
   hub = replaceBetween(hub, '<!-- ny:year-links -->', '<!-- /ny:year-links -->', yearLinks);
   hub = replaceBetween(hub, '<!-- ny:ddi-cards -->', '<!-- /ny:ddi-cards -->', cards);
@@ -794,7 +902,7 @@ ${iljuPicker('ny-hub-ilju', 'ilju/', '../').split('\n').map((l) => '        ' + 
 
 /* ---------- 사이트맵 + robots ---------- */
 fs.writeFileSync(path.join(DOCS, 'sitemap-2027.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${u === SITE + '/2027/ddi/' || u === SITE + '/2027/ilju/' ? MODIFIED_HUB : /\/2027\/ilju\/[a-z]+\/$/.test(u) ? MODIFIED_ILJU : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${u}</loc><lastmod>${u === SITE + '/2027/ddi/' ? MODIFIED_DDI_INDEX : u === SITE + '/2027/ilju/' ? MODIFIED_HUB : /\/2027\/ilju\/[a-z]+\/$/.test(u) ? MODIFIED_ILJU : MODIFIED}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-2027.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-2027.xml\n');

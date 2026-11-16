@@ -8,6 +8,8 @@ import path from 'node:path';
 import { loadEngine, ROOT_DIR } from './engine.mjs';
 import { shell, esc, breadcrumb } from './page-shell.mjs';
 import { coupangBox } from './coupang.mjs';
+import { DDI } from './newyear-2027-data.mjs';
+import { publishedTime, NAME_INDEX } from './solar-terms-data.mjs';   /* 띠별 2027 운세 링크(띠 이름·주소) */
 
 const { M, W } = loadEngine(['tojeong']);
 const TJ = W.Tojeong;
@@ -16,7 +18,8 @@ const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const FY = 2027;
 const PUBLISHED = '2026-09-12';
-const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod */
+const MODIFIED_TXT = '2026-10-03';   /* 본문 문장 다듬기(번역투) — dateModified·사이트맵 lastmod (/tojeong/gwae/) */
+const MODIFIED_YEAR = '2026-11-16';  /* /tojeong/2027/ 만 — 토정비결이란·음력 생일을 쓰는 까닭·2027 토정비결의 한 해(설날~)·신년운세와 차이, 자주 묻는 질문. 144괘 풀이 페이지는 그대로 */
 const Y_MIN = 1930;
 const mod1 = TJ._mod1;
 const cal = new W.KoreanLunarCalendar();
@@ -56,6 +59,16 @@ const HA_GRID = MONTHS.map((mo) => Array.from({ length: 30 }, (_, i) => {
 }));
 const codeOf = (ly, lm, ld) => sangOf(ly) * 100 + MONTHS[lm - 1].jung * 10 + HA_GRID[lm - 1][ld - 1].ha;
 
+/* 2026-11-16 보강용 사실 — 토정비결의 한 해(음력 정월 초하루 ~ 다음 설 전날), 양력 1월생의 음력 출생연도 예시 */
+const LY_START = MONTHS[0].start;
+const LY_END = (() => { cal.setLunarDate(FY + 1, 1, 1, false); const s = cal.getSolarCalendar(); const t = new Date(Date.UTC(s.year, s.month - 1, s.day - 1)); return { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() }; })();
+const LEAP_FY = Array.from({ length: 12 }, (_, i) => i + 1).filter((m) => cal.setLunarDate(FY, m, 1, true));
+const JAN_EX = (() => { const sy = 1990, sm = 1, sd = 15; cal.setSolarDate(sy, sm, sd); const l = cal.getLunarCalendar(); return { sy, sm, sd, ly: l.year, lm: l.month, ld: l.day, age: FY - l.year + 1 }; })();
+if (JAN_EX.ly !== JAN_EX.sy - 1) throw new Error('양력 1월생 예시가 음력 앞 해가 아님');
+const IPCHUN_FY = publishedTime(FY, NAME_INDEX['입춘']);   /* 천문연 발표 시각 — 허브 /2027/ 과 같은 값 */
+if (!IPCHUN_FY) throw new Error('입춘 발표 시각 없음 ' + FY);
+const fmtDay = (c) => `${c.y}년 ${c.m}월 ${c.d}일(${wd(c.y, c.m, c.d)})`;
+
 /* 찾기표 = 도구: 무작위 양력 생일 500개를 도구의 compute() 와 대조 */
 {
   let seed = 20270101;
@@ -76,12 +89,15 @@ const codeOf = (ly, lm, ld) => sangOf(ly) * 100 + MONTHS[lm - 1].jung * 10 + HA_
 
 /* ---------- 공용 ---------- */
 const urls = [];
-function write(url, html) {
+const lastmodOf = {};
+function write(url, html, modified = MODIFIED_TXT) {
   const file = path.join(DOCS, url.slice(1), 'index.html');
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, html);
   urls.push(url);
+  lastmodOf[url] = modified;
 }
+const faqLd = (items) => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } })) });
 const NAV = (rel) => [{ href: rel, label: '사주 보기' }, { href: rel + 'tojeong/', label: '토정비결' }, { href: rel + '2027/', label: '2027 신년운세' }, { href: rel + 'ddi-gunghap/', label: '띠 궁합' }];
 const STYLE = `<style>
     .tj-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 14px; }
@@ -111,7 +127,7 @@ const STYLE = `<style>
     @media (max-width: 480px) { .tj-months { grid-template-columns: 1fr; } }
   </style>`;
 const crumbs = (items) => breadcrumb([{ name: '사주첩', url: SITE + '/' }].concat(items.map(([name, url]) => ({ name, url: SITE + url }))));
-const article = (url, title, desc) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: MODIFIED_TXT, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
+const article = (url, title, desc, modified = MODIFIED_TXT) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: PUBLISHED, dateModified: modified, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
 const titleOf = (code) => TJ.text(code).title;
 
 /* ---------- /tojeong/2027/ ---------- */
@@ -124,8 +140,15 @@ function yearPage() {
   const jungRows = MONTHS.map((mo) => `<tr><td>음력 ${mo.m}월</td><td>${mo.days}일<small>${han(mo.stem, mo.branch)}월 · 수 ${mo.su}</small></td><td><b class="k">${mo.jung}</b></td><td>${JUNG[mo.jung - 1].han}<small>${JUNG[mo.jung - 1].short}</small></td></tr>`).join('');
   const grids = MONTHS.map((mo, mi) => `<div class="tj-month"><h3>음력 ${mo.m}월<small>${FY}년 ${mo.days}일까지</small></h3><div class="tj-days">${HA_GRID[mi].map((c) => `<span class="h${c.ha}${c.use !== c.d ? ' x' : ''}" title="${mo.m}월 ${c.d}일생 → 하괘 ${c.ha}${c.use !== c.d ? ' (29일로 봄)' : ''}">${c.d}<b>${c.ha}</b></span>`).join('')}</div></div>`).join('');
   const calRows = MONTHS.map((mo) => `<tr><td>음력 ${mo.m}월</td><td>${mo.start.y}년 ${mo.start.m}월 ${mo.start.d}일(${wd(mo.start.y, mo.start.m, mo.start.d)})</td><td>${mo.days}일</td><td>${han(mo.stem, mo.branch)}월</td></tr>`).join('');
-  const title = `${FY} 토정비결 무료 — 정미년 괘 찾기표(출생연도·생월·생일)와 144괘 풀이`;
-  const desc = `${FY}년 정미년(丁未年) 토정비결을 표로 찾습니다. 태세수 ${TAESE}로 음력 출생연도→상괘, 음력 생월→중괘, 생월·생일→하괘를 찾아 세 자리 괘 번호를 만들고, 144괘 풀이와 ${FY}년 음력 달까지 한 페이지에.`;
+  const title = `${FY} 토정비결 무료 — 정미년 괘 찾기표·보는 법(음력 생년월일)·144괘 풀이`;
+  const desc = `${FY} 토정비결 무료 보기. 정미년(丁未年) 태세수 ${TAESE}로 음력 출생연도·생월·생일에서 세 자리 괘를 찾는 표와 보는 법, 144괘 풀이, ${FY}년 음력 달까지. ${FY} 토정비결의 한 해는 ${LY_START.m}월 ${LY_START.d}일 설날부터입니다.`;
+  const faqs = [
+    [`${FY} 토정비결은 언제부터 언제까지의 운세인가요?`, `토정비결은 음력으로 한 해를 봅니다. ${FY}년 신수는 음력 정월 초하루인 ${fmtDay(LY_START)} 설날부터 ${fmtDay(LY_END)}까지의 흐름입니다. 괘는 생년월일과 ${FY}년 간지로 정해지므로 언제 찾아봐도 같은 괘가 나옵니다.`],
+    [`음력 생일을 모르는데 볼 수 있나요?`, `네. <a href="${rel}tojeong/">토정비결 도구</a>에 양력 생일을 넣으면 음력으로 바꿔 괘를 뽑습니다. 표로 직접 찾으려면 <a href="${rel}lunar/">음력 변환</a>으로 음력 생일을 먼저 확인하세요.`],
+    [`양력 1월에 태어났으면 몇 년생으로 보나요?`, `음력 출생연도로 봅니다. 예를 들어 양력 ${JAN_EX.sy}년 ${JAN_EX.sm}월 ${JAN_EX.sd}일생은 음력으로 ${JAN_EX.ly}년 ${JAN_EX.lm}월 ${JAN_EX.ld}일생이라 ${FY}년 세는나이가 ${JAN_EX.age}세이고, 상괘도 음력 ${JAN_EX.ly}년 칸에서 찾습니다. 양력 1월생과 2월 초생은 음력으로 앞 해인 경우가 많습니다.`],
+    [`윤달에 태어났으면 어떻게 하나요?`, `윤달생은 본달로 봅니다. 예를 들어 윤4월생이면 음력 4월로 중괘와 하괘를 찾습니다.${LEAP_FY.length ? '' : ` ${FY}년에는 윤달이 없어 음력 1~12월 열두 달로 한 해를 봅니다.`}`],
+    [`토정비결과 ${FY} 신년운세(사주)는 어떻게 다른가요?`, `토정비결은 음력 생년·생월·생일 세 값으로 144괘 가운데 하나를 뽑는 신수 풀이이고, 해의 경계가 설날입니다. 사주로 보는 신년운세는 태어난 해·달·날·시의 여덟 글자와 ${FY}년 정미(丁未)의 관계를 읽고, 해의 경계가 입춘입니다. 두 풀이를 함께 보려면 <a href="${rel}2027/">${FY} 신년운세</a>와 <a href="${rel}2027/ddi/">띠별 ${FY} 운세</a>를 이어서 보세요.`],
+  ];
   const body = `
   <article class="guide-article">
     <div class="ga-overline"><a href="${rel}tojeong/" style="color: inherit; text-decoration: none;">토정비결</a> · ${FY} 정미년</div>
@@ -134,6 +157,13 @@ function yearPage() {
     <p class="ga-lead">토정비결은 태어난 해·달·날을 신수를 볼 해의 간지와 맞춰 세 자리 괘를 뽑고, 그 괘로 한 해의 흐름을 봅니다. ${FY}년은 정미년(丁未年)이라 태세수가 ${TAESE}입니다. 아래 세 표에서 음력 출생연도·생월·생일에 맞는 숫자를 차례로 찾으면 괘 번호가 나옵니다.</p>
     <div class="tj-box">양력 생일만 알아도 됩니다. <a href="${rel}tojeong/"><b>생년월일로 바로 뽑기 →</b></a> 음력 변환부터 괘·풀이·음력 달별 흐름까지 한 번에 보여 줍니다.</div>
     <div class="ga-body">
+      <h2>${FY} 토정비결 한눈에</h2>
+      <div class="tj-wrap"><table class="tj-table">
+        <tr><td style="width: 34%;">${FY}년 간지</td><td>정미년(${han(YS, YB)}年) · 태세수 <b>${TAESE}</b> <small>천간 ${M.STEMS[YS].kor}(${M.STEMS[YS].han}) ${STEM_SU[YS]} + 지지 ${M.BRANCHES[YB].kor}(${M.BRANCHES[YB].han}) ${BRANCH_SU[YB]}</small></td></tr>
+        <tr><td>토정비결의 한 해</td><td>${fmtDay(LY_START)} 설날 ~ ${fmtDay(LY_END)} <small>음력 ${FY}년 정월부터 섣달까지${LEAP_FY.length ? '' : ', 윤달 없음'}</small></td></tr>
+        <tr><td>필요한 것</td><td>음력 생년월일 <small>양력 생일만 알면 <a href="${rel}tojeong/">도구</a>가 음력으로 바꿔 줍니다. 태어난 시각은 쓰지 않습니다</small></td></tr>
+        <tr><td>나이</td><td>${FY}년 세는나이 <small>음력 출생연도를 1살로 세어 ${FY}년까지</small></td></tr>
+      </table></div>
       <h2>1. 상괘 — 음력 출생연도로</h2>
       <p>상괘는 ${FY}년 세는나이에 태세수 ${TAESE}를 더해 8로 나눈 나머지입니다(0이면 8). 세는나이는 음력 출생연도로 따지므로, 양력 1월~2월 초에 태어나 음력으로는 전년도라면 전년도 칸을 보세요.</p>
       <div class="tj-wrap"><table class="tj-table"><tr><th>상괘 · 한 해의 바탕</th><th>음력 출생연도</th></tr>${sangRows}</table></div>
@@ -149,16 +179,22 @@ function yearPage() {
       <h2>${FY}년 음력 달 — 월별 흐름을 볼 때</h2>
       <p>토정비결의 달별 흐름은 음력 달로 봅니다. ${FY}년 음력 달이 양력으로 언제 시작하는지 정리했습니다.</p>
       <div class="tj-wrap"><table class="tj-table"><tr><th>음력</th><th>초하루(양력)</th><th>날수</th><th>월건</th></tr>${calRows}</table></div>
-      <h2>토정비결은</h2>
+      <h2>토정비결이란 — 세 값으로 뽑는 한 해의 신수</h2>
       <p>조선 중기 학자 토정 이지함의 이름을 빌려 전해 오는 신수 풀이로, 실제로 누가 지었는지는 분명하지 않습니다. 144괘로 한 해를 가늠하는 가벼운 풍습이라, 정초에 가족끼리 서로의 괘를 찾아보며 한 해의 마음가짐을 나누는 데 쓰였습니다. 사주첩의 풀이 본문은 옛 괘의 뜻을 오늘의 말로 새로 쓴 것입니다.</p>
-      <p class="callout"><a href="${rel}tojeong/gwae/">144괘 풀이</a> · <a href="${rel}tojeong/">생년월일로 토정비결 보기</a> · <a href="${rel}2027/">${FY} 신년운세</a> · <a href="${rel}samjae/">삼재 계산</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a></p>
+      <p>사주가 태어난 시각까지 여덟 글자를 세우는 것과 달리, 토정비결은 음력 생년·생월·생일 세 값만 씁니다. 그래서 같은 해 같은 날 태어난 사람은 같은 괘를 받고, 같은 사람도 해마다 태세수·월건수·일진수가 달라져 괘가 바뀝니다. 음력을 쓰는 까닭은 괘를 정하는 달과 날이 모두 음력 달력의 달·날이기 때문이고, 그래서 토정비결의 새해도 입춘이 아닌 설날부터입니다. 정해진 규칙으로 뽑는 전통 풀이라 한 해를 돌아보는 참고와 재미로 읽어 주세요.</p>
+      <h2>${FY} 신년운세와 함께 보기</h2>
+      <p>토정비결이 음력 생일로 한 해의 큰 결을 본다면, 사주로 보는 <a href="${rel}2027/">${FY} 신년운세</a>는 입춘(${fmtDay(IPCHUN_FY)} ${String(IPCHUN_FY.hh).padStart(2, '0')}:${String(IPCHUN_FY.mm).padStart(2, '0')})부터 시작하는 정미년을 띠·일주·여덟 글자로 읽습니다. 띠별로는 아래에서 바로 이어집니다.</p>
+      <p>띠별 ${FY} 운세: ${DDI.map((d) => `<a href="${rel}2027/ddi/${d.slug}/">${d.animal}띠</a>`).join(' · ')} · <a href="${rel}2027/ddi/">12띠 한눈에</a></p>
+      <h2>자주 묻는 질문</h2>
+      ${faqs.map(([q, a]) => `<h3>${esc(q)}</h3>\n      <p>${a}</p>`).join('\n      ')}
+      <p class="callout"><a href="${rel}tojeong/gwae/">144괘 풀이</a> · <a href="${rel}tojeong/">생년월일로 토정비결 보기</a> · <a href="${rel}2027/">${FY} 신년운세</a> · <a href="${rel}2027/ddi/">띠별 ${FY} 운세</a> · <a href="${rel}samjae/">삼재 계산</a> · <a href="${rel}ddi-gunghap/">띠 궁합</a> · <a href="${rel}">사주 보기</a></p>
     </div>${reportPromo(rel, 'tojeong-2027')}
     ${coupangBox('2027')}<div class="ga-cta">
       <a class="btn-primary" href="${rel}tojeong/"><span class="seal-dot" aria-hidden="true"></span><span>생년월일로 ${FY} 토정비결 보기</span></a>
     </div>
   </article>`;
-  write(url, shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${FY} 토정비결 — 정미년 괘 찾기표`,
-    jsonld: [crumbs([['토정비결', '/tojeong/'], [`${FY} 토정비결`, url]]), article(url, title, desc)], body }));
+  write(url, shell({ rel, title, desc, canonical: SITE + url, nav: NAV(rel), extraHead: STYLE, ogTitle: `${FY} 토정비결 — 정미년 괘 찾기표·보는 법`,
+    jsonld: [crumbs([['토정비결', '/tojeong/'], [`${FY} 토정비결`, url]]), article(url, title, desc, MODIFIED_YEAR), faqLd(faqs)], body }), MODIFIED_YEAR);
 }
 
 /* ---------- /tojeong/gwae/ ---------- */
@@ -208,7 +244,7 @@ yearPage();
 gwaePage();
 
 fs.writeFileSync(path.join(DOCS, 'sitemap-tojeong.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${MODIFIED_TXT}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
+  .concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${lastmodOf[u]}</lastmod></url>`)).concat(['</urlset>', '']).join('\n'));
 const robotsPath = path.join(DOCS, 'robots.txt');
 const robots = fs.readFileSync(robotsPath, 'utf8');
 if (!robots.includes('sitemap-tojeong.xml')) fs.writeFileSync(robotsPath, robots.trimEnd() + '\nSitemap: https://sajucheop.com/sitemap-tojeong.xml\n');
