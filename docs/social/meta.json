@@ -1,12 +1,9 @@
 {
-  "seq": 31,
-  "type": "viral",
-  "date": "2026-11-13",
-  "slug": "demo-gunghap",
-  "title": "궁합, 이제 링크로 보냅니다",
+  "seq": 32,
+  "type": "hook",
+  "date": "2026-11-16",
+  "slug": "hook-son-day",
+  "title": "손없는날 이사하면 안 되는 사람",
   "cards": 7,
-  "en": {
-    "title": "Compatibility in ten seconds",
-    "cards": 7
-  }
+  "en": null
 }
