@@ -3,7 +3,7 @@
  * docs/index.html 의 data-report-promo 두 곳에서 hidden 을 지운다. Threads 글에는 리포트를 직접 올리지 않는다(사용자 2026-10-11).
  * 생성기·서버는 공개 저장소 밖(SAZU-REPORT)에 있다. */
 export const REPORT = {
-  live: true,
+  live: false,   /* 2026-11-17 판매 중단(사용자 결정) — 홍보 상자를 모두 끄고 안내 페이지는 '판매 종료'로 바꾼다. 구매 코드 입력(/make/)은 산 사람을 위해 남긴다 */
   ko: '/report/2027/',
   en: '/en/report/2027/',
   price: '9,900원',

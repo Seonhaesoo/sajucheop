@@ -6,6 +6,44 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { shell, breadcrumb, esc } from './page-shell.mjs';
+import { REPORT } from './report-config.mjs';
+
+/* 2026-11-17 판매 중단 — 안내·샘플 페이지는 '판매를 마쳤습니다' 한 장으로 바꾸고(noindex), 사이트맵·robots 에서 뺀다.
+ * 구매 코드 입력(/report/2027/make/)은 이미 산 사람이 리포트를 다시 받을 수 있게 그대로 둔다(이 스크립트가 다시 쓰지 않는다). */
+if (!REPORT.live) {
+  const R = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
+  const pages = [
+    ['/report/2027/', 'ko', '../../'], ['/report/2027/sample/', 'ko', '../../../'],
+    ['/en/report/2027/', 'en', '../../../'], ['/en/report/2027/sample/', 'en', '../../../../'],
+  ];
+  for (const [url, lang, rel] of pages) {
+    const ko = lang === 'ko';
+    const body = ko
+      ? `<article class="guide-article"><div class="ga-overline">안내</div><h1 class="ga-title">2027 개인 리포트 판매를 마쳤습니다</h1>
+<p>유료 리포트는 더 이상 판매하지 않습니다. 2027년 운세는 무료 페이지에서 그대로 보실 수 있습니다.</p>
+<ul><li><a href="${rel}2027/">2027 신년운세 — 띠별 운세 한눈에</a></li><li><a href="${rel}tojeong/2027/">2027 토정비결</a></li><li><a href="${rel}">무료 사주 계산기</a></li></ul>
+<p>이미 구매하신 분은 <a href="${rel}report/2027/make/">구매 코드 입력</a>에서 리포트를 다시 받으실 수 있습니다.</p></article>`
+      : `<article class="guide-article"><div class="ga-overline">Notice</div><h1 class="ga-title">The 2027 personal report is no longer sold</h1>
+<p>We have stopped selling the paid report. Your free 2027 reading is still here:</p>
+<ul><li><a href="${rel}en/2027/">2027 Chinese zodiac forecast</a></li><li><a href="${rel}en/">Free BaZi chart</a></li></ul>
+<p>If you already bought it, you can download it again at <a href="${rel}en/report/2027/make/">enter your purchase code</a>.</p></article>`;
+    const html = shell({ lang, rel, noindex: true, noDyn: true, canonical: 'https://sajucheop.com' + url,
+      title: ko ? '2027 개인 리포트 — 판매 종료 | 사주첩' : '2027 personal report — no longer sold | Sajucheop',
+      desc: ko ? '사주첩 2027 개인 리포트 판매를 마쳤습니다. 무료 2027 신년운세·토정비결은 그대로 이용하실 수 있습니다.' : 'The paid 2027 report is no longer sold. The free 2027 forecast is still available.',
+      body });
+    const out = path.join(R, url, 'index.html');
+    fs.mkdirSync(path.dirname(out), { recursive: true });
+    fs.writeFileSync(out, html);
+  }
+  const sm = path.join(R, 'sitemap-report.xml');
+  if (fs.existsSync(sm)) fs.unlinkSync(sm);
+  for (const f of ['sitemap-index.xml', 'robots.txt']) {
+    const fp = path.join(R, f), x = fs.readFileSync(fp, 'utf8');
+    fs.writeFileSync(fp, x.split('\n').filter((l) => !l.includes('sitemap-report.xml')).join('\n'));
+  }
+  console.log('유료 리포트: 판매 종료 페이지 4장, 사이트맵에서 뺌');
+  process.exit(0);
+}
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = path.join(ROOT, 'docs');
@@ -195,7 +233,7 @@ function buildSample(lang) {
     <p style="margin-top: 14px;"><a href="../">${lang === 'ko' ? '← 리포트 안내로' : '← Back to the report page'}</a></p>
   </article>`;
   const html = shell({
-    rel, lang, title: `${t.fullH} — ${t.h1}`, desc: t.fullLead, canonical: SITE + url, noindex: true, ogTitle: t.h1,
+    rel, lang, title: `${t.fullH} — ${t.h1}`, desc: t.fullLead, canonical: 'https://sajucheop.com' + url, noindex: true, ogTitle: t.h1,
     extraHead: STYLE + `\n  <style>.rp-full { display: grid; gap: 14px; margin: 18px 0; } .rp-full img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 2px 10px rgba(33,28,21,.08); background: #fff; }</style>`,
     body,
   });
