@@ -1,9 +1,12 @@
 {
-  "seq": 32,
-  "type": "hook",
-  "date": "2026-11-16",
-  "slug": "hook-son-day",
-  "title": "손없는날 이사하면 안 되는 사람",
+  "seq": 33,
+  "type": "edu",
+  "date": "2026-11-18",
+  "slug": "saju-myths",
+  "title": "사주 볼 때 다들 오해하는 5가지",
   "cards": 7,
-  "en": null
+  "en": {
+    "title": "5 things people get wrong about Saju",
+    "cards": 7
+  }
 }
