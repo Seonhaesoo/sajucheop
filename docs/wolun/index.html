@@ -59,6 +59,13 @@
     .wo-list li.cur { background: #FBF3E6; margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 8px; }
     .wo-list li b.han { font-family: 'Noto Serif KR', serif; }
     .wo-list li small { color: var(--muted); }
+    .wo-ny { margin: 4px 0 18px; padding: 16px 16px 14px; background: #FBF3E6; border: 1px solid #E8D3AE; border-radius: 12px; }
+    .wo-ny b.h { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; margin-bottom: 4px; }
+    .wo-ny p { margin: 0 0 10px; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+    .wo-ny .go { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .wo-ny .go a { display: block; padding: 10px 12px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; font-size: 13px; line-height: 1.5; }
+    .wo-ny .go a b { display: block; font-family: 'Noto Serif KR', serif; font-size: 15px; color: var(--seal); }
+    @media (max-width: 480px) { .wo-ny .go { grid-template-columns: 1fr; } }
     @media (max-width: 480px) { .wo-grid { grid-template-columns: repeat(3, 1fr); } .wo-two { grid-template-columns: 1fr; } }
   </style>
   <script defer src="/js/push.js"></script>
@@ -94,6 +101,11 @@
     <h1 class="ga-title">이달의 띠별 운세 —<br>12띠, 달마다 한 장</h1>
     <p class="ga-meta">14달 · 2026년 11월 ~ 2027년 12월 · 달은 절기에서 바뀝니다</p>
     <p class="ga-lead">사주에서 한 달은 양력 1일이 아니라 절기에서 시작합니다. 달마다 두 글자(월주)가 있어서, 그 달의 아랫글자가 내 띠와 짝을 이루는지 부딪히는지로 열두 띠의 한 달을 읽을 수 있습니다. 지금은 <a href="../wolun/2026-11/">2026년 11월 기해월</a>입니다.</p>
+    <div class="wo-ny">
+      <b class="h">11월·12월이 지나면 2027년 — 내 띠 2027 운세 미리 보기</b>
+      <p>2027년은 정미년(丁未年), 양의 해입니다. 띠는 1월 1일이 아니라 2월 4일 10:46 입춘에 바뀌어요. 이달 흐름을 봤다면 한 해 흐름도 같이 보세요.</p>
+      <div class="go"><a href="../2027/"><b>2027 신년운세</b>12띠 2027년 운세 한눈에</a><a href="../tojeong/2027/"><b>2027 토정비결</b>음력 생일로 보는 한 해 괘</a></div>
+    </div>
     <div class="ga-body">
       <ul class="wo-list">
         <li class="cur"><b><a href="../wolun/2026-11/">2026년 11월 띠별 운세</a></b> — <b class="han">己亥</b> 기해월 · <b>이번 달</b><br><small>11월 7일 ~ 12월 6일 · 운이 좋은 띠 토끼띠·호랑이띠·양띠</small></li>

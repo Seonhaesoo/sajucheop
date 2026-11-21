@@ -17,14 +17,14 @@ import { makeWolun, JIE_NAME, nextMonth, prevMonth, monthKey } from './wolun-lib
 import { WOL_CHAR, WOL_STEM, WOL_TAG, WOL_REL, WOL_EXTRA, WOL_EL, WOL_REL_SCORE, WOL_EL_SCORE, wolGrade } from './wolun-data.mjs';
 
 const { M, I } = loadEngine();
-const { currentSolarMonth, solarMonth } = makeWolun({ M, I });
+const { currentSolarMonth, solarMonth, jieOf } = makeWolun({ M, I });
 const SITE = 'https://sajucheop.com';
 const DOCS = path.join(ROOT_DIR, 'docs');
 const today = kstToday();
 const WD = ['일', '월', '화', '수', '목', '금', '토'];
 const pad = (n) => String(n).padStart(2, '0');
 const iso = (c) => `${c.y}-${pad(c.m)}-${pad(c.d)}`;
-const WOLUN_LAUNCH = '2026-09-18', WOLUN_MODIFIED = '2026-10-03';   /* 처음 올린 날, 문장을 마지막으로 고친 날 — 사이트맵·Article 날짜는 미래가 되면 안 된다 */
+const WOLUN_LAUNCH = '2026-09-18', WOLUN_MODIFIED = '2026-11-21';   /* 처음 올린 날, 문장을 마지막으로 고친 날 — 사이트맵·Article 날짜는 미래가 되면 안 된다 */
 const hm = (t) => `${pad(t.hh)}:${pad(t.mm)}`;
 const ILGAN_SLUG = ['gapmok', 'eulmok', 'byeonghwa', 'jeonghwa', 'muto', 'gito', 'gyeonggeum', 'singeum', 'imsu', 'gyesu'];
 const NAV = (rel) => [{ href: rel, label: '사주 보기' }, { href: rel + 'today/ddi/', label: '오늘의 띠별 운세' }, { href: rel + '2027/', label: '2027 신년운세' }, { href: rel + 'ddi-gunghap/', label: '띠 궁합' }];
@@ -79,6 +79,13 @@ const STYLE = `<style>
     .wo-list li.cur { background: #FBF3E6; margin: 0 -8px; padding-left: 8px; padding-right: 8px; border-radius: 8px; }
     .wo-list li b.han { font-family: 'Noto Serif KR', serif; }
     .wo-list li small { color: var(--muted); }
+    .wo-ny { margin: 4px 0 18px; padding: 16px 16px 14px; background: #FBF3E6; border: 1px solid #E8D3AE; border-radius: 12px; }
+    .wo-ny b.h { display: block; font-family: 'Noto Serif KR', serif; font-size: 16px; margin-bottom: 4px; }
+    .wo-ny p { margin: 0 0 10px; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+    .wo-ny .go { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .wo-ny .go a { display: block; padding: 10px 12px; background: #FFFDF9; border: 1px solid var(--line-soft); border-radius: 10px; text-decoration: none; color: inherit; font-size: 13px; line-height: 1.5; }
+    .wo-ny .go a b { display: block; font-family: 'Noto Serif KR', serif; font-size: 15px; color: var(--seal); }
+    @media (max-width: 480px) { .wo-ny .go { grid-template-columns: 1fr; } }
     @media (max-width: 480px) { .wo-grid { grid-template-columns: repeat(3, 1fr); } .wo-two { grid-template-columns: 1fr; } }
   </style>`;
 
@@ -90,6 +97,22 @@ function write(url, o) {
 }
 const faqLd = (faq) => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
 const article = (url, title, desc, published, modified = published) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: published, dateModified: modified, inLanguage: 'ko', author: { '@type': 'Organization', name: '사주첩' }, publisher: { '@type': 'Organization', name: '사주첩' }, mainEntityOfPage: SITE + url });
+
+/* ---------- 2027 신년운세 안내 — 이달 운세를 보러 온 사람에게 다음 해(2027 띠별·토정비결)를 잇는다. 2027년이 끝나면 저절로 빠진다 ---------- */
+const IPCHUN27 = jieOf(2027, 2);   /* 정미년 시작(띠가 바뀌는 때) */
+function nyBlock(y, m, rel) {
+  if (y > 2027) return '';
+  const head = y < 2027 ? (m === 12 ? '12월 다음엔 2027년 — 내 띠 2027 운세 보기' : `${m}월·12월이 지나면 2027년 — 내 띠 2027 운세 미리 보기`)
+    : m === 1 ? '곧 정미년 — 내 띠 2027 운세 보기' : '2027 정미년 — 내 띠 올해 운세 한 번에 보기';
+  const note = y < 2027 || m === 1
+    ? `2027년은 정미년(丁未年), 양의 해입니다. 띠는 1월 1일이 아니라 ${IPCHUN27.m}월 ${IPCHUN27.d}일 ${hm(IPCHUN27)} 입춘에 바뀌어요. 이달 흐름을 봤다면 한 해 흐름도 같이 보세요.`
+    : '이달 흐름은 한 해 흐름 안의 한 조각입니다. 내 띠의 2027년 점수와 좋은 달·조심할 달, 음력으로 보는 토정비결까지 함께 보세요.';
+  return `<div class="wo-ny">
+      <b class="h">${head}</b>
+      <p>${note}</p>
+      <div class="go"><a href="${rel}2027/"><b>2027 신년운세</b>12띠 2027년 운세 한눈에</a><a href="${rel}tojeong/2027/"><b>2027 토정비결</b>음력 생일로 보는 한 해 괘</a></div>
+    </div>`;
+}
 
 /* ---------- 범위 ---------- */
 const [CY, CM] = currentSolarMonth(today);
@@ -124,7 +147,7 @@ function monthPage(y, m) {
         <h3>${name(b)} ${m}월 운세<span class="sc">${score}점</span><span class="ny-tag ${tone}">${WOL_TAG[p]}</span></h3>
         <p>${esc(relText)}${extras.length ? ' ' + esc(extras.join(' ')) : ''} ${esc(elText)}</p>
         <p class="days"><b>좋은 날</b> ${best.length ? dayList(best, rel) : '두드러진 날 없음'} · <b>조심할 날</b> ${care.length ? dayList(care, rel) : '부딪히는 날 없음'}</p>
-        <p class="more"><a href="${rel}today/ddi/${D.slug}/">오늘의 ${name(b)} 운세</a> · <a href="${rel}2027/ddi/${D.slug}/">${name(b)} 2027년 운세</a> · <a href="${rel}ddi-gunghap/${D.slug}/">${name(b)} 궁합</a></p>
+        <p class="more">${y <= 2027 ? `<a href="${rel}2027/ddi/${D.slug}/"><b>${name(b)} 2027년 운세 →</b></a> · <a href="${rel}today/ddi/${D.slug}/">오늘의 ${name(b)} 운세</a>` : `<a href="${rel}today/ddi/${D.slug}/">오늘의 ${name(b)} 운세</a>`} · <a href="${rel}ddi-gunghap/${D.slug}/">${name(b)} 궁합</a></p>
       </section>` };
   });
   const ranked = signs.slice().sort((x, z) => z.score - x.score || x.b - z.b);
@@ -163,6 +186,7 @@ function monthPage(y, m) {
       <div><b class="h">운이 좋은 띠</b>${top.map((s) => `<a href="#${s.D.slug}">${name(s.b)}</a> ${s.score}점`).join(' · ')}</div>
       <div><b class="h">조심할 띠</b>${low.map((s) => `<a href="#${s.D.slug}">${name(s.b)}</a> ${s.score}점`).join(' · ')}</div>
     </div>
+    ${nyBlock(y, m, rel)}
     <div class="ga-body">
       <h2>12띠 ${m}월 운세</h2>
       <p>${josa(`띠마다 두 가지로 읽었습니다. 이달의 아랫글자 ${br.kor}(${br.han})가 내 띠 글자와 짝을 이루는지 부딪히는지, 그리고 윗글자 ${st.kor}${st.el}(${st.han})의 오행이 내 띠의 오행을 돕는지 누르는지입니다.`)} 좋은 날은 그날의 글자가 내 띠와 짝을 이루는 날, 조심할 날은 정면으로 부딪히는 날입니다.</p>
@@ -210,6 +234,7 @@ function hub(months) {
     <h1 class="ga-title">이달의 띠별 운세 —<br>12띠, 달마다 한 장</h1>
     <p class="ga-meta">${months.length}달 · ${months[0].y}년 ${months[0].m}월 ~ ${months[months.length - 1].y}년 ${months[months.length - 1].m}월 · 달은 절기에서 바뀝니다</p>
     <p class="ga-lead">사주에서 한 달은 양력 1일이 아니라 절기에서 시작합니다. 달마다 두 글자(월주)가 있어서, 그 달의 아랫글자가 내 띠와 짝을 이루는지 부딪히는지로 열두 띠의 한 달을 읽을 수 있습니다.${cur ? ` 지금은 <a href="${rel}wolun/${monthKey(cur.y, cur.m)}/">${cur.y}년 ${cur.m}월 ${cur.kor}월</a>입니다.` : ''}</p>
+    ${cur ? nyBlock(cur.y, cur.m, rel) : ''}
     <div class="ga-body">
       <ul class="wo-list">
         ${items}
