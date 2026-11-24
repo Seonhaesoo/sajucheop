@@ -54,6 +54,22 @@ export function ogImage(o) {
 }
 
 /* o: { rel, title, desc, canonical, jsonld (object|array), nav: [{href,label}], body, lang, extraHead, noindex, og } */
+export /* 2026-11-25 쿠팡 다이나믹 배너를 본문 중간으로 — 휴대폰에서 맨 아래까지 내려오는 사람이 적다(사용자 요청).
+ * 본문 30% 뒤에서 처음 시작하는 구역·소제목 바로 앞에 넣는다. 그런 자리가 없으면 null — 그때는 맨 아래에 둔다 */
+function midInsert(body, html) {
+  const s = String(body || '');
+  // 구역(<section)이 둘 이상이면 앞에서 40% 쯤 되는 구역 앞에, 아니면 소제목(<h2) 기준으로 같은 자리에.
+  // 글자 수로 재지 않는다 — 본문 끝에 큰 스크립트가 붙은 페이지에서 자리가 맨 아래로 밀렸다
+  for (const re of [/<section\b/g, /<h2\b/g]) {
+    const at = [...s.matchAll(re)].map((m) => m.index);
+    if (at.length >= 2) {
+      const i = at[Math.max(1, Math.floor(at.length * 0.4))];
+      return s.slice(0, i) + '\n' + html + '\n' + s.slice(i);
+    }
+  }
+  return null;
+}
+
 export function shell(o) {
   const lang = o.lang || 'ko';
   const foreign = lang === 'en' || lang === 'ja';
@@ -81,6 +97,8 @@ export function shell(o) {
     ? `\n  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap">`
     : '';
   const jaStyle = lang === 'ja' ? `\n  <style>:root{--serif:'Noto Serif JP','Noto Serif KR',serif;--sans:'Noto Sans JP','Noto Sans KR',sans-serif}</style>` : '';
+  const _dyn = lang === 'ko' && !o.noDyn && !/\/(about|terms|privacy)/.test(String(o.canonical || '')) ? `<div style="width:100%;max-width:720px;margin:0 auto;padding:0 16px;box-sizing:border-box">${dynBanner('saju')}</div>` : '';
+  const _mid = _dyn ? midInsert(o.body, _dyn) : null;
   return `<!doctype html>
 <html lang="${lang}">
 <head>
@@ -125,8 +143,8 @@ export function shell(o) {
     </nav>
   </header>
 
-${o.body}
-${lang === 'ko' && !o.noDyn && !/\/(about|terms|privacy)/.test(String(o.canonical || '')) ? `<div style="width:100%;max-width:720px;margin:0 auto;padding:0 16px;box-sizing:border-box">${dynBanner('saju')}</div>` : ''}
+${_mid ?? o.body}
+${_dyn && !_mid ? _dyn : ''}
 ${shareCard}
   <footer class="site-footer" style="margin-top: 30px;">
     <div class="footer-row">
